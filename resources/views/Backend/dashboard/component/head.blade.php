@@ -1,4 +1,4 @@
-<base href="{{ env('APP_URL') }}">
+<base href="{{ config('app.url') }}">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- đối với là phương thức gửi là POST ở AJAX thì ta thêm  -->

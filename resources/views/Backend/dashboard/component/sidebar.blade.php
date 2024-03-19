@@ -20,14 +20,18 @@
                         IN+
                     </div>
                 </li>
+                @foreach(config('apps.module.module') as $key => $val)
                 <li class="active">
-                    <a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Quản lí thành viên</span> <span class="fa arrow"></span></a>
+                    <a href="#"><i class="{{ $val['icon'] }}"></i> <span class="nav-label">{{ $val['title'] }}</span> <span class="fa arrow"></span></a>
+                    @if(isset($val['subModule']))
                     <ul class="nav nav-second-level">
-                        <li><a href="{{ route('user.catalogue.index') }}">QL nhóm thành viên</a></li>
-                        <li><a href="{{ route('user.index') }}">QL thành viên</a></li>
+                        @foreach($val['subModule'] as $module)
+                        <li><a href="{{ $module['route'] }}">{{ $module['title'] }}</a></li>
+                        @endforeach
                     </ul>
+                    @endif
                 </li>
-                
+                @endforeach
             </ul>
 
         </div>

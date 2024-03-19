@@ -38,6 +38,7 @@ class DashboardController extends Controller
                 'Backend/js/plugins/sparkline/jquery.sparkline.min.js',
                 'Backend/js/demo/sparkline-demo.js'
             ]
+            
         ];
     }
 }
