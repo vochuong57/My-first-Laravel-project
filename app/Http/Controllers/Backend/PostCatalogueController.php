@@ -21,6 +21,7 @@ class PostCatalogueController extends Controller
     protected $postCatalogueService;
     protected $postCatalogueRepository;
     protected $nestedset;
+    protected $language;
 
     public function __construct(PostCatalogueService $postCatalogueService, PostCatalogueRepository $postCatalogueRepository){
         $this->postCatalogueService=$postCatalogueService;//định nghĩa  $this->userService=$userCatalogueService để biến này nó có thể trỏ tới các phương tức của UserCatalogueService
@@ -30,6 +31,7 @@ class PostCatalogueController extends Controller
             'foreignkey'=>'post_catalogue_id',
             'language_id'=>1,
         ]);
+        $this->language=$this->currentLanguage();
     }
     //giao diện tổng
     public function index(Request $request){//Request $request để tiến hành chức năng tìm kiếm
@@ -96,10 +98,14 @@ class PostCatalogueController extends Controller
         $config['method']='edit';//kiểm tra metho để thay đổi giao diện cho phù hợp
 
         //truy vấn thông tin
-        $postCatalogue=$this->postCatalogueRepository->findById($id);
-        //dd($user); die();
+        $postCatalogue=$this->postCatalogueRepository->getPostCatalogueById($id,$this->language);
+        
+        //dd($postCatalogue);
 
-        return view('Backend.dashboard.layout', compact('template','config','postCatalogue'));
+
+        $dropdown= $this->nestedset->Dropdown();
+
+        return view('Backend.dashboard.layout', compact('template','config','postCatalogue','dropdown'));
     }
     //xử lý sửa user
     public function update($id, UpdatePostCatalogueRequest $request){

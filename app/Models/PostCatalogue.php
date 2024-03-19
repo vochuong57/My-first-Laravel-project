@@ -22,12 +22,13 @@ class PostCatalogue extends Model
         'album',
         'publish',
         'order',
-        'user_id'
+        'user_id',
+        'follow'
     ];
 
     protected $table='post_catalogues';
 
-    public function languages(){
+    public function languages(){//function này sẽ đc lưu và tạo ở lơp base để dễ kiểm soát các phwuong sẽ khởi tạo cụ thể nó là createLanguagePivot
         return $this->belongsToMany(Language::class, 'post_catalogue_language', 'post_catalogue_id', 'language_id')
         ->withPivot(
         'name', 
@@ -38,5 +39,10 @@ class PostCatalogue extends Model
         'description', 
         'content'
         )->withTimestamps();
+    }
+
+    //để tiến hành lấy dữ liệu ra để tạo tính năng cập nhật bằng function findById khi cần lấy dữ liệu từ 2 bảng đổ vào cùng 1 form thì ta cần khai báo mỗi quan hệ 1-n cho nó
+    public function post_catalogue_language(){
+        return $this->hasMany(PostCatalogueLanguage::class, 'post_catalogue_id', 'id');
     }
 }

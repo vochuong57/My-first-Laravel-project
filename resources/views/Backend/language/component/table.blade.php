@@ -23,7 +23,7 @@
             </td>
             <td>
                 <span class="image img-cover"><img
-                        src="{{ $language->image }}"
+                        src="{{ old('image', $language->image) ?? 'Backend/img/not-found.png' }}"
                         alt=""></span>
             </td>
             <td>

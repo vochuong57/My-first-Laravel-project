@@ -40,7 +40,7 @@ class UserCatalogueService implements UserCatalogueServiceInterface
         }
         //dd($condition);
         $perpage=$request->integer('perpage', 20);
-        $userCatalogues=$this->userCatalogueRepository->pagination(['id','name','description','publish'], $condition,[], ['path'=> 'user/catalogue/index'], $perpage,['users']);
+        $userCatalogues=$this->userCatalogueRepository->pagination(['id','name','description','publish'], $condition,[], ['path'=> 'user/catalogue/index'], $perpage,['users'],[]);
         //dd($userCatalogues);
         return $userCatalogues;
     }

@@ -11,7 +11,7 @@ class UpdatePostCatalogueRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,18 @@ class UpdatePostCatalogueRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name'=>'required|string|regex:/^[^\d]+$/',
+            'canonical'=>'required|unique:post_catalogue_language,canonical, '.$this->id.',post_catalogue_id',
+        ];
+    }
+    public function messages(): array
+    {
+        return [
+            'name.required'=>'Bạn chưa nhập họ tên',
+            'name.string'=>'Tên phải là dạng ký tự',
+            'name.regex'=>'Tên không được chứa ký tự số',
+            'canonical.required'=>'Bạn chưa nhập vào ô đường dẫn',
+            'canonical.unique'=>'Đường dẫn đã tồn tại, hãy chọn đường dẫn khác'
         ];
     }
 }

@@ -28,13 +28,17 @@ class UserService implements UserServiceInterface
     public function paginate($request){//$request để tiến hành chức năng tìm kiếm
         $condition['keyword']=addslashes($request->input('keyword'));
         $condition['publish']=$request->input('publish');
+        $condition['user_catalogue_id']=$request->input('user_catalogue_id');
         // Kiểm tra nếu giá trị publish là 0, thì gán lại thành null
         if ($condition['publish'] == '0') {
             $condition['publish'] = null;
         }
+        if($condition['user_catalogue_id']=='0'){
+            $condition['user_catalogue_id']=null;
+        }
         //dd($condition);
         $perpage=$request->integer('perpage', 20);
-        $users=$this->userRepository->pagination(['id','email','phone','address','name','image','publish','user_catalogue_id'], $condition,[], ['path'=> 'user/index'], $perpage);
+        $users=$this->userRepository->pagination(['id','email','phone','address','name','image','publish','user_catalogue_id'], $condition,[], ['path'=> 'user/index'], $perpage,[],[]);
         return $users;
     }
     public function createUser($request){

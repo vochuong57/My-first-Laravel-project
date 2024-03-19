@@ -92,7 +92,7 @@ class Nestedsetbie{
             $temp=NULL;
             $temp[0]=(isset($param['text'])&&!empty($param['text']))?$param['text']:'[Root]';
             foreach($this->data as $key => $val){
-                $temp[$val->id] = str_repeat('|-----', (($val->level>0)?($val->level-1):0)).$val->name;
+                $temp[$val->id] = str_repeat('|----', (($val->level>0)?($val->level-1):0)).$val->name;
             }
             return $temp;
         }
