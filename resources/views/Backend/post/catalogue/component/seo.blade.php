@@ -1,13 +1,12 @@
 <div class="seo-container">
     <div class="meta-title">
-        Học Laravel Framework - Học PHP
+        Bạn chưa có tiêu đề SEO
     </div>
     <div class="canonical">
-        http://laravel.com/tu-hoc-laravel.html/
+        https://duong-dan-cua-ban.html
     </div>
     <div class="meta-description">
-        Bài 25: Middleware trong Laravel. Tiếp tục với series tự học Laravel của Toidicode.com, hôm nay mình sẽ giới
-        thiệu với mọi người về Middleware...
+        Bạn chưa có mô tả SEO
     </div>
 </div>
 <div class="seo-wrapper">
@@ -57,12 +56,16 @@
             <div class="form-row">
                 <label for="" class="control-label text-left">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <span>Đường dẫn</span>
+                        <span>Đường dẫn <span class="text-danger">*</span></span>
                         <span class="count_meta-title">0 ký tự</span>
                     </div>
                 </label>
-                <input type="text" name="canonical" value="{{ old('canonical', ($postCatalogue->canonical)??'') }}"
-                    class="form-control" placeholder="" autocomplete="off">
+                <div class="input-wrapper">
+                    <input type="text" name="canonical" value="{{ old('canonical', ($postCatalogue->canonical)??'') }}"
+                        class="form-control" placeholder="" autocomplete="off">
+                        <span class="baseUrl">{{ config('app.url') }}</span>
+                </div>
+                
             </div>
         </div>
     </div>

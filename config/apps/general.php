@@ -10,4 +10,5 @@
             '1'=>'nofollow',
             '2'=>'fllow'
         ],
+        'suffix'=>'.html'
     ];

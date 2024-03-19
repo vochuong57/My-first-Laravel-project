@@ -21,6 +21,7 @@
     <!-- SET UP CKEDITOR4 -->
     <script>
         var BASE_URL = '{{ env('APP_URL') }}'
+        var SUFFIX = '{{ config('apps.general.suffix') }}'
     </script>
 
 
