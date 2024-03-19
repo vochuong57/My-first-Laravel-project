@@ -1,12 +1,12 @@
 <div class="ibox">
+    <div class="ibox-title">
+        <h5>Chọn danh mục cha</h5>
+    </div>
     <div class="ibox-content">
         <div class="row">
             <div class="col-lg-12">
                 <div class="form-row">
-                    <label for="" class="control-label text-left">Chọn danh mục cha:
-                        <span class="text-danger">(*)</span>
-                        <span class="text-danger notice">*Chọn root nếu không có danh mục cha</span>
-                    </label>
+                    <span class="text-danger notice">*Chọn root nếu không có danh mục cha</span>
                     <select name="parent_id" class="form-control setupSelect2" id="">
                         @foreach($dropdown as $key => $val)
                         <option

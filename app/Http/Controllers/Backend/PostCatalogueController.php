@@ -105,7 +105,9 @@ class PostCatalogueController extends Controller
 
         $dropdown= $this->nestedset->Dropdown();
 
-        return view('Backend.dashboard.layout', compact('template','config','postCatalogue','dropdown'));
+        $album = json_decode($postCatalogue->album);
+
+        return view('Backend.dashboard.layout', compact('template','config','postCatalogue','dropdown','album'));
     }
     //xử lý sửa user
     public function update($id, UpdatePostCatalogueRequest $request){

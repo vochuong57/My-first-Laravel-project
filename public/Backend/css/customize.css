@@ -12,6 +12,12 @@
 .mb10{
     margin-bottom: 10px;
 }
+.mb30{
+    margin-bottom: 30px;
+}
+.mb25{
+    margin-bottom: 25px;
+}
 h5{
     text-transform: uppercase;
     font-weight: normal;
@@ -178,4 +184,72 @@ input[name=canonical]{
     position: fixed !important;
     bottom: 30px;
     right: 30px;
+}
+/* CSS CHO ALBUM */
+.clearfix:before{
+    content: "";
+    display: table-cell;
+}
+
+.clearfix:after{
+    content: "";
+    display: table;
+    clear: both;
+}
+#sortable{
+    list-style: none;
+    padding-left: 0;
+}
+.sortui .ui-state-default{
+    width: calc(20% - 2px);
+    float: left;
+    padding-left: 10px;
+    margin: 0 0 10px 0;
+    margin-bottom: 10px;
+    cursor: move;
+    background: transparent;
+    box-shadow: none;
+    border: 0;
+}
+.sortui .ui-state-default .thumb{
+    border: 1px solid #ddd;
+    height: 200px;
+}
+.img-scaledown{
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+.img-scaledown img{
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: scale-down;
+}
+.click-to-upload{
+    text-align: center;
+    padding: 20px;
+    border: 1px dashed #b8b2b2;
+}
+#sortable .thumb{
+    position: relative;
+}
+#sortable .delete-image{
+    position: absolute;
+    background: linear-gradient(to bottom,#fff, #f9fafb);
+    color: red;
+    right: 10px;
+    top: 10px;
+    border: 0;
+    box-shadow: rgb(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+}
+#sortable .delete-image:hover{
+    background: red;
+    color: #fff;
+}
+.hidden{
+    display:none;
 }

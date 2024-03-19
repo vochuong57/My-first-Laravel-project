@@ -38,7 +38,13 @@ class UserService implements UserServiceInterface
         }
         //dd($condition);
         $perpage=$request->integer('perpage', 20);
-        $users=$this->userRepository->pagination(['id','email','phone','address','name','image','publish','user_catalogue_id'], $condition,[], ['path'=> 'user/index'], $perpage,[],[]);
+        $users=$this->userRepository->pagination(
+            $this->paginateSelect(), 
+            $condition, 
+            $perpage, 
+            ['path'=> 'user/index'],
+            []
+        );
         return $users;
     }
     public function createUser($request){
@@ -145,5 +151,10 @@ class UserService implements UserServiceInterface
             echo $ex->getMessage();//die();
             return false;
         }
+    }
+    private function paginateSelect(){
+        return [
+            'id','email','phone','address','name','image','publish','user_catalogue_id'
+        ];
     }
 }

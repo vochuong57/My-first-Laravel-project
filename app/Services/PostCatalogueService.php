@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Services\BaseService;//tiến hành chèn dữ liệu vào bảng ngoài cụ thể là post_catalogue_language
 use App\Classes\Nestedsetbie;
 use Spatie\LaravelIgnition\Exceptions\CannotExecuteSolutionForNonLocalIp;
+use Illuminate\Support\Str;
 
 /**
  * Class UserService
@@ -52,15 +53,15 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
         $postCatalogues=$this->postCatalogueRepository->pagination(
             $this->paginateSelect(),
             $condition,
-            [
-                ['post_catalogue_language as tb2','tb2.post_catalogue_id','=','post_catalogues.id']
-            ], 
-            ['path'=> 'post/catalogue/index'], 
             $perpage,
-            [],
+            ['path'=> 'post/catalogue/index'],
             [
                 'post_catalogues.lft', 'ASC'
+            ],
+            [
+                ['post_catalogue_language as tb2','tb2.post_catalogue_id','=','post_catalogues.id']
             ]
+  
         );
         //dd($postCatalogues);
         return $postCatalogues;
@@ -72,6 +73,9 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
             //dd($payload);
             //vì chúng ta có khóa ngoại khi thêm bảng này mà khóa ngoại này là user_id thì đó là tài khoản đã đăng nhập thì
             $payload['user_id']=Auth::id();
+            if(isset($payload['album'])){
+                $payload['album']=json_encode($payload['album']);
+            }
             //dd($payload);
             $postCatalogue=$this->postCatalogueRepository->create($payload);
             //dd($language);
@@ -81,6 +85,7 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
                 $payloadLanguage = $request->only($this->payloadLanguage());
                 //dd($payloadLanguage);
                 //dd($this->currentLanguage());
+                $payloadLanguage['canonical']=Str::slug($payloadLanguage['canonical']);
                 $payloadLanguage['language_id']=$this->currentLanguage();
                 $payloadLanguage['post_catalogue_id']=$postCatalogue->id;
                 //dd($payloadLanguage);
@@ -108,6 +113,9 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
             $postCatalogue=$this->postCatalogueRepository->findById($id);
             //dd($postCatalogue);
             $payload = $request->only($this->payload());//lấy tất cả ngoại trừ hai trường này thay vì dùng input là lấy tất cả
+            if(isset($payload['album'])){
+                $payload['album']=json_encode($payload['album']);
+            }
             //dd($payload);
             $flag=$this->postCatalogueRepository->update($id,$payload);
             if($flag==TRUE){
@@ -246,7 +254,8 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
             'parent_id',
             'follow',
             'publish',
-            'image'
+            'image',
+            'album'
         ];
     }
 

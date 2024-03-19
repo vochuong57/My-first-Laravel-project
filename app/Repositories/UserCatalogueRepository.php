@@ -17,7 +17,15 @@ class UserCatalogueRepository extends BaseRepository implements UserCatalogueRep
     public function __construct(UserCatalogue $model){
         $this->model=$model;//chúng ta định nghĩa $this->model=User để đưa nó qua lớp kế thừa BaseRepository để lúc này phương thức create() của nó sẽ thành userRepository->create() ở lớp UserService để từ lớp UserService sẽ gọi nó lên controller để thực hiện việc thêm dữ liệu 
     }
-    public function pagination(array $column = ['*'], array $condition = [], array $join = [], array $extend = [], int $perpage = 0, array $relations=[], array $orderBy=[]) {
+    public function pagination(
+        array $column=['*'],
+        array $condition=[],
+        int $perpage=0, 
+        array $extend=[],
+        array $orderBy=[],
+        array $join=[],
+        array $relations=[]
+    ) {
         $query = $this->model->select($column)->where(function ($query) use ($condition) {
             if (isset($condition['keyword']) && !empty($condition['keyword'])) {
                 $query->where(function ($query) use ($condition) {

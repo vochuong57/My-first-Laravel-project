@@ -192,6 +192,11 @@
         }
     }
 
+    HT.sortui=()=>{
+        $('#sortable').sortable()
+        $('#sortable').disableSelection()
+    }
+
     $document.ready(function(){
         console.log(123);
         //gọi function lặp switchery (giao diện)
@@ -212,6 +217,8 @@
 
         // Chức năng xóa hàng loạt user trong toolboox
         HT.deleteAll();
+
+        HT.sortui();
     })
 
 })(jQuery)

@@ -40,7 +40,12 @@ class LanguageService implements LanguageServiceInterface
         }
         //dd($condition);
         $perpage=$request->integer('perpage', 20);
-        $languages=$this->languageRepository->pagination(['id','name','canonical','publish','description','image'], $condition,[], ['path'=> 'language/index'], $perpage,[],[]);
+        $languages=$this->languageRepository->pagination(
+            $this->paginateSelect(),
+            $condition,
+            $perpage,
+            ['path'=> 'language/index']
+        );
         //dd($userCatalogues);
         return $languages;
     }
@@ -170,4 +175,9 @@ class LanguageService implements LanguageServiceInterface
     //         return false;
     //     }
     // }
+    private function paginateSelect(){
+        return[
+            'id','name','canonical','publish','description','image'
+        ];
+    }
 }

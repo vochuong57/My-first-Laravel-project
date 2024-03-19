@@ -22,7 +22,7 @@ class StorePostCatalogueRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'=>'required|string|regex:/^[^\d]+$/',
+            'name'=>'required|string',
             'canonical'=>'required|unique:post_catalogue_language'
         ];
     }
@@ -31,7 +31,6 @@ class StorePostCatalogueRequest extends FormRequest
         return [
             'name.required'=>'Bạn chưa nhập họ tên',
             'name.string'=>'Tên phải là dạng ký tự',
-            'name.regex'=>'Tên không được chứa ký tự số',
             'canonical.required'=>'Bạn chưa nhập vào ô đường dẫn',
             'canonical.unique'=>'Đường dẫn đã tồn tại, hãy chọn đường dẫn khác'
         ];
