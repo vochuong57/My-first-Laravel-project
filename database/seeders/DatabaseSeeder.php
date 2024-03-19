@@ -20,7 +20,12 @@ class DatabaseSeeder extends Seeder
         DB::table('users')->insert([
             'name'=>'Newbie Laravel',
             'email'=>'vochuong57@gmail.com',
-            'password'=>Hash::make('password'),
+            'password'=>Hash::make('123'),
+        ]);
+
+        //tạo ra 500 bản ghi
+        $this->call([
+            UserSeeder::class
         ]);
     }
 }

@@ -1,5 +1,6 @@
 <?php
-
+// file này có sẵn lúc mới tạo project laravel
+// Laravel giả định rằng tên bảng là biểu diễn số ít và chữ thường của tên model với thêm vào đó là "s" ở cuối. Trong trường hợp của User.php, Laravel sẽ tự động liên kết nó với bảng "users".
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -17,10 +18,20 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $fillable = [
+    protected $fillable = [//c=những trường nào cho phép người dùng cập nhật thông tin
         'name',
         'email',
         'password',
+        'phone',
+        'province_id',
+        'district_id',
+        'ward_id',
+        'address',
+        'birthday',
+        'image',
+        'description',
+        'user_agent',
+        'ip',
     ];
 
     /**
