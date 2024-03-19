@@ -16,5 +16,16 @@ class District extends Model
 
     //Khai báo một cái bảng
     protected $table ='districts';
+    protected $primaryKey='code';
+    public $incrementing=false;
 
+
+    public function provinces(){
+        return $this->belongsTo(Province::class, 'code');
+    }
+
+    //xử lí từ huyện chọn xã
+    public function wards(){//tên của function trùng với tên trong DB
+        return $this->hasMany(Ward::class, 'district_code', 'code');//nếu khóa ngoại tên khác thì thông báo khóa ngoại ở đây
+    }
 }

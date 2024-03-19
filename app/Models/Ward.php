@@ -15,4 +15,10 @@ class Ward extends Model
 
     //Khai báo một cái bảng
     protected $table ='wards';
+    protected $primaryKey='code';//khai báo khóa chính của province
+    public $incrementing=false;
+
+    public function districts(){
+        return $this->belongsTo(District::class, 'district_code','code');
+    }
 }

@@ -1,6 +1,16 @@
 @include('Backend.dashboard.component.breadcrumb', ['title' =>$config['seo']['create']['title']])
-
-<form action="" method="post" class="box">
+<!-- từ khóa tìm kiếm/validation/Displaying the Validation Errors -->
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+<form action="{{ route('user.store') }}" method="post" class="box">
+    @csrf
     <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
             <div class="col-lg-5">
@@ -25,7 +35,7 @@
                                     <input 
                                     type="text"
                                     name="email"
-                                    value=""
+                                    value="{{ old('email') }}"
                                     class="form-control"
                                     placeholder=""
                                     autocomplate="off"
@@ -38,7 +48,7 @@
                                     <input 
                                     type="text"
                                     name="name"
-                                    value=""
+                                    value="{{ old('name') }}"
                                     class="form-control"
                                     placeholder=""
                                     autocomplate="off"
@@ -50,7 +60,7 @@
                             <div class="col-lg-6">
                                 <div class="form-row">
                                     <label for="" class="control-label text-left">Nhóm thành viên: <span class="text-danger">(*)</span></label>
-                                    <select name="user_catalogue_id" id="" class="form-control">
+                                    <select name="user_catalogue_id" id="" class="form-control setupSelect2">
                                         <option value="0">[Chọm nhóm thành viên]</option>
                                         <option value="1">Quản trị viên</option>
                                         <option value="2">Cộng tác viên viên</option>
@@ -63,7 +73,7 @@
                                     <input 
                                     type="date"
                                     name="birthday"
-                                    value=""
+                                    value="{{ old('birthday') }}"
                                     class="form-control"
                                     placeholder=""
                                     autocomplate="off"
@@ -104,12 +114,13 @@
                                 <div class="form-row">
                                     <label for="" class="control-label text-left">Ảnh đại diện: </label>
                                     <input 
-                                    type="file"
+                                    type="text"
                                     name="image"
-                                    value=""
-                                    class="form-control"
+                                    value="{{ old('image') }}"
+                                    class="form-control input-image"
                                     placeholder=""
                                     autocomplate="off"
+                                    data-upload="Images"
                                     >
                                 </div>
                             </div>
@@ -140,7 +151,7 @@
                             <div class="col-lg-6">
                                 <div class="form-row">
                                     <label for="" class="control-label text-left">Thành phố: </label>
-                                    <select name="province_id" id="" class="form-control setupSelect2 province">
+                                    <select name="province_id" id="" class="form-control setupSelect2 provinces location" data-target="DTdistricts">
                                         <option value="0">[Chọn thành phố]</option>
                                         @if(isset($provinces))
                                         @foreach($provinces as $province)
@@ -153,7 +164,7 @@
                             <div class="col-lg-6">
                                 <div class="form-row">
                                     <label for="" class="control-label text-left">Quận/Huyện: </label>
-                                    <select name="district_id" id="" class="form-control setupSelect2 districts">
+                                    <select name="district_id" id="" class="form-control setupSelect2 districts DTdistricts location" data-target="DTwards">
                                         <option value="0">[Chọn Quận/Huyện]</option>
                                     </select>
                                 </div>
@@ -163,7 +174,7 @@
                             <div class="col-lg-6">
                                 <div class="form-row">
                                     <label for="" class="control-label text-left">Phường/Xã: </label>
-                                    <select name="ward_id" id="" class="form-control setupSelect2">
+                                    <select name="ward_id" id="" class="form-control setupSelect2 wards DTwards">
                                         <option value="0">[Chọn Phường/Xã]</option>
                                         
                                     </select>
@@ -175,7 +186,7 @@
                                     <input 
                                     type="text"
                                     name="address"
-                                    value=""
+                                    value="{{ old('address') }}"
                                     class="form-control"
                                     placeholder=""
                                     autocomplate="off"
@@ -190,7 +201,7 @@
                                     <input 
                                     type="text"
                                     name="phone"
-                                    value=""
+                                    value="{{ old('phone') }}"
                                     class="form-control"
                                     placeholder=""
                                     autocomplate="off"
@@ -203,7 +214,7 @@
                                     <input 
                                     type="text"
                                     name="description"
-                                    value=""
+                                    value="{{ old('description') }}"
                                     class="form-control"
                                     placeholder=""
                                     autocomplate="off"
@@ -221,3 +232,9 @@
         </div>
     </div>
 </form>
+<!-- XỬ LÝ HUYỆN XẢ KHI NHẬP SAI BỊ LOAD LẠI TRANG -->
+<script>
+    var province_id='{{ old('province_id') }}'
+    var district_id='{{ old('district_id') }}'
+    var ward_id='{{ old('ward_id') }}'
+</script>
