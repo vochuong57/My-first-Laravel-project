@@ -135,10 +135,10 @@
                                     type="text"
                                     name="image"
                                     value="{{ old('image', ($user->image)??'') }}"
-                                    class="form-control input-image"
+                                    class="form-control upload-image"
                                     placeholder=""
                                     autocomplete="off"
-                                    data-upload="Images"
+                                    data-type="Images"
                                     >
                                 </div>
                             </div>

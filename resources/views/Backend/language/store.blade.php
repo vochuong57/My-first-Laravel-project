@@ -67,9 +67,10 @@
                                     type="text"
                                     name="image"
                                     value="{{ old('image', ($language->image)??'') }}"
-                                    class="form-control"
+                                    class="form-control upload-image"
                                     placeholder=""
                                     autocomplete="off"
+                                    data-type="Images"
                                     >
                                 </div>
                             </div>
