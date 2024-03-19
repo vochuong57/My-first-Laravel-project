@@ -18,6 +18,8 @@
             </div>
         </div>
     </div>
+
+    
 </div>
 <!-- Để chạy <input type="checkbox" class="js-switch" checked /> cần thêm vào file js và css riêng của nó cùng với đoạn mã script này -->
 

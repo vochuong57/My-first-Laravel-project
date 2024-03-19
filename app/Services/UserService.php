@@ -34,7 +34,7 @@ class UserService implements UserServiceInterface
         }
         //dd($condition);
         $perpage=$request->integer('perpage', 20);
-        $users=$this->userRepository->pagination(['id','email','phone','address','name','image','publish'], $condition,[], ['path'=> 'user/index'], $perpage);
+        $users=$this->userRepository->pagination(['id','email','phone','address','name','image','publish','user_catalogue_id'], $condition,[], ['path'=> 'user/index'], $perpage);
         return $users;
     }
     public function createUser($request){

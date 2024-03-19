@@ -1,6 +1,6 @@
     <!-- Mainly scripts -->
-    <script src="Backend/js/jquery-3.1.1.min.js"></script>
     <script src="Backend/js/bootstrap.min.js"></script>
+    <script src= "Backend/js/inspinia.js"></script>
     <script src="Backend/js/plugins/metisMenu/jquery.metisMenu.js"></script>
     <script src="Backend/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
     <!-- file js này tự tạo -->

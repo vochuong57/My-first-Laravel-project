@@ -32,7 +32,7 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
             if (isset($condition['publish'])) {
                 $query->where('publish', '=', $condition['publish']);
             }
-        });
+        })->with('user_catalogues');
         if(isset($relations)&&!empty($relations)){
             foreach($relations as $relation){
                 $query->withCount($relation);

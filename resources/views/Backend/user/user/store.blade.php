@@ -68,7 +68,7 @@
                                         @php
                                             if(isset($user)) {
                                                 $userCatalogueId = $user->user_catalogue_id; // Lấy giá trị user_catalogue_id từ biến $user
-                                                $userCatalogue = \App\Models\UserCatalogue::find($userCatalogueId); // Tìm kiếm thông tin của user_catalogue dựa trên id
+                                                $userCatalogue = App\Models\UserCatalogue::find($userCatalogueId); // Tìm kiếm thông tin của user_catalogue dựa trên id
                                             }
                                         @endphp
 

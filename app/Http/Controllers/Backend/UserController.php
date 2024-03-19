@@ -39,13 +39,13 @@ class UserController extends Controller
         //$users=User::paginate(20);//từ khóa tìm kiếm eloquent
 
         //Lấy dữ liệu các mảng là các đường dẫn js và css ở function config phía dưới lưu vào biến $config
-        $config=$this->configIndex();
+        $config = $this->configIndex();
 
         //biến template là nới lưu đường dẫn main của từng dao diện
         $template='Backend.user.user.index';
 
         //chèn thêm mảng 'seo' vào biến config để mảng 'seo' này lấy toàn bộ giá trị của folder config/apps/user.php
-        $config['seo']=config('apps.user.index');
+        $config['seo'] = config('apps.user.index');
 
         //Đổ dữ liệu User từ DB vào form theo mô hình service và repository
         $users = $this->userService->paginate($request);//$request để tiến hành chức năng tìm kiếm
@@ -106,7 +106,7 @@ class UserController extends Controller
 
         $userCatalogues=$this->userCatalogueRepository->all();
 
-        return view('Backend.dashboard.layout', compact('template','config','provinces','user','userCatalogues'));
+        return view('Backend.dashboard.layout', compact('template','config','provinces','user', 'userCatalogues'));
     }
     //xử lý sửa user
     public function update($id, UpdateUserRequest $request){
@@ -144,6 +144,7 @@ class UserController extends Controller
             'js'=>[
                 'Backend/js/plugins/switchery/switchery.js',
                 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js'
+                
             ],
             'css'=>[
                 'Backend/css/plugins/switchery/switchery.css',
