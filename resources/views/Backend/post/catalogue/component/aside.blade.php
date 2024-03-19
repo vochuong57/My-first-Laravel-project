@@ -26,10 +26,10 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="form-row">
-                    <span class="image img-cover">
+                    <span class="image img-cover image-target">
                         <img src="Backend/img/not-found.png" alt="">
-                        <input type="hidden" name="image" value="">
                     </span>
+                    <input type="hidden" name="image" value="">
                 </div>
             </div>
 

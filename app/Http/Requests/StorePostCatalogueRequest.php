@@ -11,7 +11,7 @@ class StorePostCatalogueRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,15 @@ class StorePostCatalogueRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name'=>'required|string|regex:/^[^\d]+$/',
+        ];
+    }
+    public function messages(): array
+    {
+        return [
+            'name.required'=>'Bạn chưa nhập họ tên',
+            'name.string'=>'Tên phải là dạng ký tự',
+            'name.regex'=>'Tên không được chứa ký tự số'
         ];
     }
 }

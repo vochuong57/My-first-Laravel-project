@@ -28,9 +28,9 @@ class StoreUserCatalogueRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required'=>'Bạn chưa nhập họ tên',
-            'name.string'=>'Tên phải là dạng ký tự',
-            'name.regex'=>'Tên không được chứa ký tự số'
+            'name.required'=>'Bạn chưa nhập tiều đề',
+            'name.string'=>'Tiêu đề phải là dạng ký tự',
+            'name.regex'=>'Tiêu đề không được chứa ký tự số'
         ];
     }
 }
