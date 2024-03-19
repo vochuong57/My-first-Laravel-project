@@ -17,7 +17,7 @@
         <!-- lấy được thông tin từ biến $users truyền qua từ UsserController thông qua compact -->
         @if(isset($users) && is_object($users))
         @foreach($users as $user)
-        <tr>
+        <tr class="rowdel-{{ $user->id }}">
             <td>
                 <input type="checkbox" value="{{ $user->id }}" name="" class="input-checkbox checkBoxItem">
             </td>
@@ -39,7 +39,7 @@
                 <div class="address-item name">{{ $user->address }}</div>
             </td>
             <td class="text-center js-switch-{{ $user->id }}">
-                <input type="checkbox" class="js-switch status" value="{{ $user->publish_at }}" data-field="publish_at" data-model="User" data-modelId="{{ $user->id }}" {{ ($user->publish_at==1)?'checked':'' }} >
+                <input type="checkbox" class="js-switch status" value="{{ $user->publish }}" data-field="publish" data-model="User" data-modelId="{{ $user->id }}" {{ ($user->publish==2)?'checked':'' }} >
             </td>
             <td class="text-center">
                 <a href="{{ route('user.edit', $user->id) }}" class="btn btn-success"><i class="fa fa-edit"></i></a>

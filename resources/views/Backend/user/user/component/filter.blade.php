@@ -13,11 +13,20 @@
         </div>
         <div class="action">
             <div class="uk-flex uk-flex-middle">
+                @php
+                    $publishArray=['Chọn tình trạng', 'UnPublish', 'Publish'];
+                    $publish = request('publish') ?: old('publish');
+                @endphp
+                <select name="publish" class="form-control ml10 setupSelect2">
+                    @foreach($publishArray as $key => $val)
+                        <option {{ ($publish == $key) ? 'selected' : '' }} value="{{ $key }}">{{ $val }}</option>
+                    @endforeach
+                </select>
                 <select name="user_catalogue_id" class="form-control mr10 setupSelect2">
                     <option value="0" selected="selected">Chọn nhóm thành viên</option>
                     <option value="1">Quản trị viên</option>
                 </select>
-                <div class="uk-search uk-flex uk-flex-middle ml10">
+                <div class="uk-search uk-flex uk-flex-middle">
                     <div class="input-group">
                         <input type="text" name="keyword" value="{{ request('keyword') ?: old('keyword') }}" placeholder="Nhập từ khóa bạn muốn tìm kiếm..."
                             class="form-control">
