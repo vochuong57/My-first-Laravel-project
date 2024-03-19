@@ -17,11 +17,11 @@
                 placeholder="" 
                 autocomplete="off"
                 name="description" 
-                value="{{ old('description', ($postCatalogue->description)??'') }}"
                 class="form-control ck-editor" 
                 id="description" 
                 data-height="150"
             >
+            {{ old('description', ($postCatalogue->description)??'') }}
             </textarea>
         </div>
     </div>
@@ -35,11 +35,11 @@
                 placeholder="" 
                 autocomplete="off"
                 name="content" 
-                value="{{ old('content', ($postCatalogue->content)??'') }}"
                 class="form-control ck-editor" 
                 id="content" 
                 data-height="500"
             >
+            {{ old('content', ($postCatalogue->content)??'') }}
             </textarea>
         </div>
     </div>

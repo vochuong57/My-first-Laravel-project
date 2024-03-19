@@ -1,12 +1,12 @@
 <div class="seo-container">
     <div class="meta-title">
-        Bạn chưa có tiêu đề SEO
+        {{ old('meta_title') ?? 'Bạn chưa có tiêu đề SEO' }}
     </div>
     <div class="canonical">
-        https://duong-dan-cua-ban.html
+        {{ old('canonical') ? config('app.url').old('canonical').config('apps.general.suffix') : 'https://duong-dan-cua-ban.html' }}
     </div>
     <div class="meta-description">
-        Bạn chưa có mô tả SEO
+        {{ old('meta_description') ?? 'Bạn chưa có mô tả SEO' }}
     </div>
 </div>
 <div class="seo-wrapper">
@@ -45,9 +45,12 @@
                         <span class="count_meta-title">0 ký tự</span>
                     </div>
                 </label>
-                <textarea type="text" name="meta_description"
-                    value="{{ old('meta_description', ($postCatalogue->meta_descriptoin)??'') }}" class="form-control"
-                    placeholder="" autocomplete="off"></textarea>
+                <textarea 
+                    type="text" 
+                    name="meta_description"
+                    placeholder="" 
+                    class="form-control"
+                    autocomplete="off">{{ old('meta_description', ($postCatalogue->meta_descriptoin)??'') }}</textarea>
             </div>
         </div>
     </div>

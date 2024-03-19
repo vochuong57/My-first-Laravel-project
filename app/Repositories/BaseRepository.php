@@ -70,4 +70,7 @@ class BaseRepository implements BaseRepositoryInterface
         return $this->model->whereIn($whereInField, $whereIn)->forceDelete();
     }
     
+    public function createLanguagePivot($model, array $payload=[]){
+        return $model->languages()->attach($model->id, $payload);
+    }
 }
