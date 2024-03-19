@@ -41,8 +41,8 @@ class Post extends Model
 
     //CHỨC NĂNG HIỂN THỊ
     //Thêm khai báo cho mối qua hệ với bảng post_catalogues n-n
-    public function post_catalogues(){
-        return $this->belongsToMany(PostCatalogue::class, 'post_catalogue_post', 'post_id', 'post_catalogue_id');
+    public function post_catalogues(){// dùng để add, update dữ liệu của post_catalogue_id và catalogue vào bảng post_catalogue_post khi đang ở form thêm của bang Post và dùng để show tên nhóm bài viết của từng bài viết trong table/post trước tiến lấy được các id của bài viết đó
+        return $this->belongsToMany(PostCatalogue::class, 'post_catalogue_post', 'post_id', 'post_catalogue_id');//sau đó ở đây nó sẽ lấy được tên nhờ việc nó truy cập được vào trong các function PostCatalogue::class cụ thể ở đây là post_catalogue_language() nơi lưu tên nhóm bào viêt
     }
 
 }

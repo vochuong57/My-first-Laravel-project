@@ -24,7 +24,8 @@ class PostCatalogueRepository extends BaseRepository implements PostCatalogueRep
         array $extend=[],
         array $orderBy=[],
         array $join=[],
-        array $relations=[]
+        array $relations=[],
+        array $rawQuery = []
         ) {
         $query = $this->model->select($column)->where(function ($query) use ($condition) {
             if (isset($condition['keyword']) && !empty($condition['keyword'])) {
@@ -38,6 +39,12 @@ class PostCatalogueRepository extends BaseRepository implements PostCatalogueRep
             // Thêm điều kiện kiểm tra publish nếu tồn tại
             if (isset($condition['publish'])) {
                 $query->where('publish', '=', $condition['publish']);
+            }
+
+            if(isset($condition['where']) && count($condition['where'])){
+                foreach($condition['where'] as $key => $val){
+                    $query->where($val[0], $val[1], $val[2]);
+                }
             }
         });
         if(isset($relations) && !empty($relations)) {

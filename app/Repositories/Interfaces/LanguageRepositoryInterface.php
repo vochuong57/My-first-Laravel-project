@@ -16,7 +16,8 @@ interface LanguageRepositoryInterface
         array $extend=[],
         array $orderBy=['id', 'DESC'],
         array $join=[],
-        array $relations=[]
+        array $relations=[],
+        array $rawQuery = []
     );
     public function create(array $payload =[]);
     public function findById(int $id, array $column=['*'], array $relation =[]);

@@ -24,7 +24,8 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
         array $extend=[],
         array $orderBy=[],
         array $join=[],
-        array $relations=[]
+        array $relations=[],
+        array $rawQuery = []
         ) {
         $query = $this->model->select($column)->where(function ($query) use ($condition) {
             if (isset($condition['keyword']) && !empty($condition['keyword'])) {
@@ -38,8 +39,23 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
             // Thêm điều kiện kiểm tra publish nếu tồn tại
             if (isset($condition['publish'])) {
                 $query->where('publish', '=', $condition['publish']);
+            }   
+
+            if(isset($condition['where']) && count($condition['where'])){
+                foreach($condition['where'] as $key => $val){
+                    $query->where($val[0], $val[1], $val[2]);
+                }
             }
+
+            return $query;
         });
+
+        if(isset($rawQuery['whereRaw']) && count($rawQuery['whereRaw'])){
+            foreach($rawQuery['whereRaw'] as $key => $val){
+                $query->whereRaw($val[0], $val[1]);
+            }
+        }
+
         if(isset($relations) && !empty($relations)) {
             foreach($relations as $relation) {
                 $query->withCount($relation);
@@ -50,9 +66,15 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
                 $query->join($val[0],$val[1],$val[2],$val[3]);
             }
         }
+        if(isset($extend['groupBy']) && !empty($extend['groupBy'])){
+            $query->groupBy($extend['groupBy']);
+        }
         if(isset($orderBy)&&!empty($orderBy)){
             $query->orderBy($orderBy[0], $orderBy[1]);
         }
+
+        //echo $query->toSql(); die();
+
         return $query->paginate($perpage)->withQueryString()->withPath(env('APP_URL') . $extend['path']);
     }    
 

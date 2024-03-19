@@ -19,6 +19,7 @@ use Request;
 use Spatie\LaravelIgnition\Exceptions\CannotExecuteSolutionForNonLocalIp;
 use Illuminate\Support\Str;
 
+
 /**
  * Class UserService
  * @package App\Services
@@ -26,11 +27,11 @@ use Illuminate\Support\Str;
 class PostService extends BaseService implements PostServiceInterface
 {
     protected $postRepository;
-    //protected $userRepository;
+    protected $language;
 
     public function __construct(PostRepository $postRepository){
         $this->postRepository=$postRepository;
-        //$this->userRepository=$userRepository;
+        $this->language=$this->currentLanguage();
     }
 
     public function paginate($request){//$request để tiến hành chức năng tìm kiếm
@@ -42,20 +43,26 @@ class PostService extends BaseService implements PostServiceInterface
         if ($condition['publish'] == '0') {
             $condition['publish'] = null;
         }
+        $condition['where']=[
+            ['tb2.language_id', '=', $this->language],
+        ];
         //dd($condition);
         $perpage=$request->integer('perpage', 20);
         $posts=$this->postRepository->pagination(
             $this->paginateSelect(),
             $condition,
             $perpage,
-            ['path'=> 'post/index'],
+            ['path'=> 'post/index', 'groupBy' => $this->paginateSelect()],
             ['posts.id', 'DESC'],
             [
-                ['post_language as tb2','tb2.post_id','=','posts.id']
+                ['post_language as tb2','tb2.post_id','=','posts.id'],//dùng cho hiển thị nội dung table
+                ['post_catalogue_post as tb3','posts.id', '=', 'tb3.post_id']//dùng cho whereRaw lọc tìm kiếm bài viết theo nhóm bài viêt
             ],
-            ['post_catalogues']
+            ['post_catalogues'],//là function post_catalogues của Model/Post
+            $this->whereRaw($request),
         );
         //dd($posts);
+        
         return $posts;
     }
     public function createPost($request){
@@ -73,6 +80,7 @@ class PostService extends BaseService implements PostServiceInterface
             //dd($language);
             //echo -1; die();
             //echo $post->id; die();
+            
             if($post->id>0){
                 $payloadLanguage = $request->only($this->payloadLanguage());
                 //dd($payloadLanguage);
@@ -87,7 +95,7 @@ class PostService extends BaseService implements PostServiceInterface
 
                 $catalogue=$this->catalogue($request);
                 //dd($catalogue);
-                $post->post_catalogues()->sync($catalogue);
+                $post->post_catalogues()->sync($catalogue);//là function post_catalogues của Model/Post
             }
             DB::commit();
             return true;
@@ -103,6 +111,7 @@ class PostService extends BaseService implements PostServiceInterface
         try{
             $post=$this->postRepository->findById($id);
             //dd($post);
+
             $payload = $request->only($this->payload());//lấy tất cả ngoại trừ hai trường này thay vì dùng input là lấy tất cả
             if(isset($payload['album'])){
                 $payload['album']=json_encode($payload['album']);
@@ -110,6 +119,7 @@ class PostService extends BaseService implements PostServiceInterface
             //dd($payload);
             $flag=$this->postRepository->update($id,$payload);
             //dd($flag);
+
             if($flag==TRUE){
                 $payloadLanguage = $request->only($this->payloadLanguage());
                 //dd($payloadLanguage);
@@ -124,6 +134,7 @@ class PostService extends BaseService implements PostServiceInterface
                 // Tạo lại mối quan hệ giữa mục và ngôn ngữ dựa trên dữ liệu trong $payloadLanguage
                 $reponse=$this->postRepository->createPivot($post,$payloadLanguage,'languages');
                 //dd($reponse);
+
                 $catalogue=$this->catalogue($request);
                 //dd($catalogue);
                 $post->post_catalogues()->sync($catalogue);
@@ -206,30 +217,7 @@ class PostService extends BaseService implements PostServiceInterface
             return false;
         }
     }
-    // private function changeUserStatus($post, $value){
-       
-    //     DB::beginTransaction();
-    //     try{
-    //         //dd($post);
-    //         $array=[];
-    //         if(isset($post['modelId'])){
-    //             $array[]=$post['modelId'];
-    //         }else{
-    //             $array=$post['id'];
-    //         }//push vào trong mảng để update theo kiểu by where in
-    //         //dd($post);
-    //         $payload[$post['field']]=$value;
-    //         $this->userRepository->updateByWhereIn('user_catalogue_id', $array, $payload);
-    //         //echo 123; die();
-    //         DB::commit();
-    //         return true;
-    //     }catch(\Exception $ex){
-    //         DB::rollBack();
-    //         echo $ex->getMessage();//die();
-    //         return false;
-    //     }
-    // }
-    
+
     private function paginateSelect(){
         return[
             'posts.id',
@@ -262,8 +250,41 @@ class PostService extends BaseService implements PostServiceInterface
         ];
     }
 
+    public function currentLanguage(){
+        return 1;
+    }
+
+    //merge dữ liệu từ hai mảng khác nhau vào chung một bảng
     private function catalogue($request){
-        return array_unique(array_merge($request->input('catalogue'),[$request->post_catalogue_id]));
+        $catalogueInput = $request->input('catalogue');
+        
+        // Kiểm tra nếu $catalogueInput tồn tại và không rỗng
+        if ($request->filled('catalogue') && is_array($catalogueInput)) {
+            return array_unique(array_merge($catalogueInput, [$request->post_catalogue_id]));
+        } else {
+            // Nếu không tồn tại hoặc rỗng, trả về chỉ mảng chứa $request->post_catalogue_id
+            return [$request->post_catalogue_id];
+        }
+    }
+    
+
+    //whereRaw tìm kiếm bài viết theo nhóm bài viết
+    private function whereRaw($request){
+        $rawCondition = [];
+        if($request->integer('post_catalogue_id')>0){
+            $rawCondition['whereRaw']=[
+                [
+                    'tb3.post_catalogue_id IN (
+                        SELECT id
+                        FROM post_catalogues
+                        WHERE lft >= (SELECT lft FROM post_catalogues as pc WHERE pc.id = ?)
+                        AND rgt <= (SELECT rgt FROM post_catalogues as pc WHERE pc.id = ?)
+                    )',
+                    [$request->integer('post_catalogue_id'), $request->integer('post_catalogue_id')]
+                ]
+            ];
+        }
+        return $rawCondition;
     }
 }
 
