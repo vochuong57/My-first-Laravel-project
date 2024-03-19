@@ -5,12 +5,12 @@
                 <input type="checkbox" value="" name="" id="checkAll" class="input-checkbox">
             </th>
             <!-- <th style="width: 90px">Ảnh</th> -->
-            <th>Tên nhóm</th>
+            <th>{{ __('messages.table_name') }}</th>
             <!-- <th>Số thành viên</th> -->
             <!-- <th>Canonical</th> -->
             <!-- <th>Ghi chú</th> -->
-            <th class="text-center" style="width: 100px">Tình trạng</th>
-            <th class="text-center" style="width: 100px">Thao tác</th>
+            <th class="text-center" style="width: 100px">{{ __('messages.table_status') }}</th>
+            <th class="text-center" style="width: 100px">{{ __('messages.table_action') }}</th>
         </tr>
     </thead>
     <tbody>

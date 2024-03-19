@@ -1,12 +1,12 @@
 <div class="seo-container">
     <div class="meta-title">
-        {{ old('meta_title', ($postCatalogue->meta_title) ?? 'Bạn chưa có tiêu đề SEO') }}
+        {{ old('meta_title', ($postCatalogue->meta_title) ?? __('messages.seo_title')) }}
     </div>
     <div class="canonical">
-        {{ old('canonical', ($postCatalogue->canonical)??'') ? config('app.url').old('canonical', ($postCatalogue->canonical)??'').config('apps.general.suffix') : 'https://duong-dan-cua-ban.html' }}
+        {{ old('canonical', ($postCatalogue->canonical)??'') ? config('app.url').old('canonical', ($postCatalogue->canonical)??'').config('apps.general.suffix') : __('messages.seo_canonical') }}
     </div>
     <div class="meta-description">
-        {{ old('meta_description', ($postCatalogue->meta_description) ?? 'Bạn chưa có mô tả SEO') }}
+        {{ old('meta_description', ($postCatalogue->meta_description) ?? __('messages.seo_description')) }}
     </div>
 </div>
 <div class="seo-wrapper">
@@ -15,8 +15,8 @@
             <div class="form-row">
                 <label for="" class="control-label text-left">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <span>Tiều đề SEO</span>
-                        <span class="count_meta-title">0 ký tự</span>
+                        <span>{{ __('messages.seo_meta_title') }}</span>
+                        <span class="count_meta-title">0 {{__('messages.character') }}</span>
                     </div>
                 </label>
                 <input type="text" name="meta_title" 
@@ -28,7 +28,7 @@
         <div class="col-lg-12">
             <div class="form-row">
                 <label for="" class="control-label text-left">
-                    <span>Từ khóa SEO</span>
+                    <span>{{ __('messages.seo_meta_keyword') }}</span>
                 </label>
                 <input type="text" name="meta_keyword"
                     value="{{ old('meta_keyword', ($postCatalogue->meta_keyword)??'') }}" class="form-control"
@@ -41,8 +41,8 @@
             <div class="form-row">
                 <label for="" class="control-label text-left">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <span>Mô tả SEO</span>
-                        <span class="count_meta-title">0 ký tự</span>
+                        <span>{{ __('messages.seo_meta_description') }}</span>
+                        <span class="count_meta-title">0 {{ __('messages.character') }}</span>
                     </div>
                 </label>
                 <textarea 
@@ -59,8 +59,8 @@
             <div class="form-row">
                 <label for="" class="control-label text-left">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <span>Đường dẫn <span class="text-danger">*</span></span>
-                        <span class="count_meta-title">0 ký tự</span>
+                        <span>{{ __('messages.seo_meta_canonical') }} <span class="text-danger">*</span></span>
+                        <span class="count_meta-title">0 {{ __('messages.character') }}</span>
                     </div>
                 </label>
                 <div class="input-wrapper">

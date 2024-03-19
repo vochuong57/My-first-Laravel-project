@@ -47,8 +47,8 @@ class PostCatalogueController extends Controller
         $template='Backend.post.catalogue.index';
 
         //chèn thêm mảng 'seo' vào biến config để mảng 'seo' này lấy toàn bộ giá trị của folder config/apps/user.php
-        $config['seo']=config('apps.postCatalogue.index');
-
+        $config['seo']=__('messages.postCatalogue');
+        //dd($config['seo']);
         //Đổ dữ liệu User từ DB vào form theo mô hình service và repository
         $postCatalogues = $this->postCatalogueService->paginate($request);//$request để tiến hành chức năng tìm kiếm
         //dd($userCatalogues);
@@ -61,7 +61,7 @@ class PostCatalogueController extends Controller
 
         $config=$this->configCUD();
 
-        $config['seo']=config('apps.postCatalogue.create');
+        $config['seo']=__('messages.postCatalogue.create');
 
         $config['method']='create';
 
@@ -94,7 +94,7 @@ class PostCatalogueController extends Controller
 
         $config=$this->configCUD();
 
-        $config['seo']=config('apps.postCatalogue.edit');
+        $config['seo']=__('messages.postCatalogue.create');//config('apps.postCatalogue.edit');
 
         $config['method']='edit';//kiểm tra metho để thay đổi giao diện cho phù hợp
 
@@ -124,7 +124,7 @@ class PostCatalogueController extends Controller
 
         $config=$this->configCUD();
 
-        $config['seo']=config('apps.postCatalogue.delete');
+        $config['seo']=__('messages.postCatalogue.delete');
 
         //truy vấn thông tin
         $postCatalogue=$this->postCatalogueRepository->getPostCatalogueById($id,$this->language);
