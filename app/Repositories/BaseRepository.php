@@ -21,12 +21,16 @@ class BaseRepository implements BaseRepositoryInterface
     public function all(){
         return $this->model->all();
     }
-    public function pagination(array $column=['*'],array $condition=[],array $join=[],int $perpage=20){
-        $query=$this->model->select($column)->where($condition);
+    public function pagination(array $column=['*'],array $condition=[],array $join=[],array $extend=[],int $perpage=0){
+        $query=$this->model->select($column)->where(function($query) use($condition){
+            if(isset($condition['keyword']) && !empty($condition['keyword'])){
+                $query->where('name', 'LIKE', '%'.$condition['keyword'].'%');
+            }
+        });
         if(!empty($join)){
             $query->join(...$join);
         }
-        return $query->paginate($perpage);
+        return $query->paginate($perpage)->withQueryString()->withPath(env('APP_URL').$extend['path']);
     }
     public function findById(int $id, array $column=['*'], array $relation =[]){
         return $this->model->select($column)->with($relation)->findOrFail($id);
@@ -43,6 +47,10 @@ class BaseRepository implements BaseRepositoryInterface
     public function update(int $id=0, array $payload=[]){
         $model=$this->findById($id);
         return $model->update($payload);
+    }
+    //Phương thức cập nhật WHERE IN (UPDATE)
+    public function updateByWhereIn(string $whereInField='', array $whereIn=[], array $payload=[]){
+        return $this->model->whereIn($whereInField, $whereIn)->update($payload);
     }
     //Phương thức xóa mềm (DELETE) 
     public function delete(int $id=0){

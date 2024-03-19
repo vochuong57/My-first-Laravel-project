@@ -14,6 +14,7 @@ use App\Http\Requests\StoreUserRequest;
 use App\Repositories\Interfaces\UserRepositoryInterface as UserRepository;
 //chèn thêm thư viện tự tạo request để kiểm tra dữ liệu đầu vào khi edit user
 use App\Http\Requests\UpdateUserRequest;
+//use App\Models\User;
 
 
 class UserController extends Controller
@@ -28,8 +29,8 @@ class UserController extends Controller
         $this->userRepository=$userRepository;
     }
     //giao diện tổng
-    public function index(){
-        //$users=User::paginate(15);//từ khóa tìm kiếm eloquent
+    public function index(Request $request){//Request $request để tiến hành chức năng tìm kiếm
+        //$users=User::paginate(20);//từ khóa tìm kiếm eloquent
 
         //Lấy dữ liệu các mảng là các đường dẫn js và css ở function config phía dưới lưu vào biến $config
         $config=$this->configIndex();
@@ -41,7 +42,7 @@ class UserController extends Controller
         $config['seo']=config('apps.user.index');
 
         //Đổ dữ liệu User từ DB vào form theo mô hình service và repository
-        $users = $this->userService->paginate();
+        $users = $this->userService->paginate($request);//$request để tiến hành chức năng tìm kiếm
 
         return view('Backend.dashboard.layout', compact('template','config','users'));
     }
@@ -130,10 +131,12 @@ class UserController extends Controller
     private function configIndex(){
         return[
             'js'=>[
-                'Backend/js/plugins/switchery/switchery.js'
+                'Backend/js/plugins/switchery/switchery.js',
+                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js'
             ],
             'css'=>[
-                'Backend/css/plugins/switchery/switchery.css'
+                'Backend/css/plugins/switchery/switchery.css',
+                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css',
             ]
         ];
     }

@@ -78,6 +78,9 @@ table strong{
 .mr5{
     margin-right: 5px;
 }
+.ml10{
+    margin-left: 10px;
+}
 .box .ibox{
     box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
 }
@@ -94,4 +97,12 @@ table strong{
 }
 .panel-desciption{
     font-size: 15px;
+}
+/* CSS CHO CHECKBOX USER.INDEX */
+#checkAll, .checkBoxItem{
+    width: 15px;
+    height: 15px;
+}
+.active-bg{
+    background: #ffc !important;
 }

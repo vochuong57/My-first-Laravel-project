@@ -6,9 +6,9 @@
         <i class="fa fa-wrench"></i>
     </a>
     <ul class="dropdown-menu dropdown-user">
-        <li><a href="#">Config option 1</a>
+        <li><a href="#" class="changeStatusAll" data-field="publish_at" data-model="User" data-value="1">Publish toàn bộ</a>
         </li>
-        <li><a href="#">Config option 2</a>
+        <li><a href="#" class="changeStatusAll" data-field="publish_at" data-model="User" data-value="0">Unpublish toàn bộ</a>
         </li>
     </ul>
     <a class="close-link">

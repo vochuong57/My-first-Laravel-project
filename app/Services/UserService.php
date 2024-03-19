@@ -25,8 +25,11 @@ class UserService implements UserServiceInterface
         $this->userRepository=$userRepository;
     }
 
-    public function paginate(){
-        $users=$this->userRepository->pagination(['id','email','phone','address','name','image','publish_at']);
+    public function paginate($request){//$request để tiến hành chức năng tìm kiếm
+        $condition['keyword']=addslashes($request->input('keyword'));
+        //dd($condition);
+        $perpage=$request->integer('perpage', 20);
+        $users=$this->userRepository->pagination(['id','email','phone','address','name','image','publish_at'], $condition,[], ['path'=> 'user/index'], $perpage);
         return $users;
     }
     public function createUser($request){
@@ -44,7 +47,7 @@ class UserService implements UserServiceInterface
             return true;
         }catch(\Exception $ex){
             DB::rollBack();
-            echo $ex->getMessage();die();
+            echo $ex->getMessage();//die();
             return false;
         }
     }
@@ -63,7 +66,7 @@ class UserService implements UserServiceInterface
             return true;
         }catch(\Exception $ex){
             DB::rollBack();
-            echo $ex->getMessage();die();
+            echo $ex->getMessage();//die();
             return false;
         }
     }
@@ -81,8 +84,45 @@ class UserService implements UserServiceInterface
             return true;
         }catch(\Exception $ex){
             DB::rollBack();
-            echo $ex->getMessage();die();
+            echo $ex->getMessage();//die();
             return false;
         }
+    }
+    public function updateStatus($post=[]){
+        //echo 123; die();
+        DB::beginTransaction();
+        try{
+            $payload[$post['field']]=(($post['value']==1)?0:1);
+            
+            //dd($payload);
+            $user=$this->userRepository->update($post['modelId'], $payload);
+            
+            DB::commit();
+            return true;
+        }catch(\Exception $ex){
+            DB::rollBack();
+            echo $ex->getMessage();//die();
+            return false;
+        }
+        
+    }
+    public function updateStatusAll($post=[]){
+        //echo 123; die();
+        DB::beginTransaction();
+        try{
+            //dd($post);
+            $payload[$post['field']]=$post['value'];
+            
+            //dd($payload);
+            $user=$this->userRepository->updateByWhereIn('id', $post['id'], $payload);
+            //echo 1; die();
+            DB::commit();
+            return true;
+        }catch(\Exception $ex){
+            DB::rollBack();
+            echo $ex->getMessage();//die();
+            return false;
+        }
+        
     }
 }
