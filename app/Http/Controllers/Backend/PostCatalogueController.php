@@ -94,7 +94,7 @@ class PostCatalogueController extends Controller
 
         $config=$this->configCUD();
 
-        $config['seo']=__('messages.postCatalogue.create');//config('apps.postCatalogue.edit');
+        $config['seo']=__('messages.postCatalogue.edit');//config('apps.postCatalogue.edit');
 
         $config['method']='edit';//kiểm tra metho để thay đổi giao diện cho phù hợp
 

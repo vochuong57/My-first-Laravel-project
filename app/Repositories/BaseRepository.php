@@ -62,8 +62,15 @@ class BaseRepository implements BaseRepositoryInterface
     public function findById(int $id, array $column=['*'], array $relation =[]){
         return $this->model->select($column)->with($relation)->findOrFail($id);
     }
-    public function findTableById(int $id = 0){
-        return $this->model->where('id','=',$id)->get();
+    public function findModuleId(int $id = 0){//find basic and weak
+        return $this->model->where('module_id','=',$id)->get();
+    }
+    public function findByCondition(array $condition = []){
+        $query = $this->model->newQuery();
+        foreach($condition as $key => $val){
+            $query->where($val[0], $val[1], $val[2]);
+        }
+        return $query->first();
     }
     //phương thức thêm (CREATE)
     public function create(array $payload =[]){
@@ -79,7 +86,7 @@ class BaseRepository implements BaseRepositoryInterface
     public function updateByWhereIn(string $whereInField='', array $whereIn=[], array $payload=[]){
         return $this->model->whereIn($whereInField, $whereIn)->update($payload);
     }
-    // Phương thức cập nhật WHERE (UPDATE)
+    // Phương thức cập nhật WHERE (UPDATE) dùng trong cập nhật ngôn ngữ giao diện trnag web
     public function updateByWhere(array $condition=[], array $payload=[]){
         $query = $this->model->newQuery();
         foreach($condition as $key => $val){

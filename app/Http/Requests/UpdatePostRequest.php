@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 
 class UpdatePostRequest extends FormRequest
 {
@@ -23,7 +24,7 @@ class UpdatePostRequest extends FormRequest
     {
         return [
             'name'=>'required|string',
-            'canonical'=>'required|unique:post_language,canonical, '.$this->id.',post_id',
+            'canonical'=>'required|unique:routers,canonical, '.$this->id.',module_id',
             'post_catalogue_id'=>'gt:0'
         ];
     }
@@ -36,5 +37,11 @@ class UpdatePostRequest extends FormRequest
             'canonical.unique'=>'Đường dẫn đã tồn tại, hãy chọn đường dẫn khác',
             'post_catalogue_id.gt'=>'Bạn chưa chọn danh mục cha',
         ];
+    }
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'canonical' => Str::slug($this->canonical)
+        ]);
     }
 }

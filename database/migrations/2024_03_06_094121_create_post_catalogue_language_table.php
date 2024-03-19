@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreign('language_id')->references('id')->on('languages')->onDelete('cascade');
             $table->string('name');
             $table->text('description')->nullable();
-            $table->string('canonical')->unique();
+            $table->string('canonical')->nullable()->unique();
             $table->longText('content')->nullable();
             $table->string('meta_title')->nullable();
             $table->string('meta_keyword')->nullable();
