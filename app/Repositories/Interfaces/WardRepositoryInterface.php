@@ -9,6 +9,6 @@ namespace App\Repositories\Interfaces;
 interface WardRepositoryInterface
 {
     public function all();
-    public function findWardByDistrictId(int $ward_id);//để tìm ra chính nó (c1)
+    public function findWardByDistrictId(int $district_id = 0);//để tìm ra chính nó (tìm ra xã) dựa vào khóa ngoại của nó (c1) 
 
 }

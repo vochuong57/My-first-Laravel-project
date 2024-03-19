@@ -9,8 +9,7 @@ namespace App\Repositories\Interfaces;
 interface DistrictRepositoryInterface
 {
     public function all();
-    public function findDistrictByProvinceId(int $province_id);//để tìm ra chính nó (c1)
-    public function findById(array $column=['*'], array $relation =[],int $id);//để tìm ra xã (c2)
-
+    public function findDistrictByProvinceId(int $province_id = 0);//để tìm ra chính nó (tìm ra huyện) dựa vào khóa ngoại của nó (c1) 
+    public function findById(int $id, array $column=['*'], array $relation =[]);//để tìm ra chính nó (tìm ra huyện) dựa vào khóa ngoại của nó (c2) 
 
 }

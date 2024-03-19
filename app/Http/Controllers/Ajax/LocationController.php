@@ -50,11 +50,11 @@ class LocationController extends Controller
         $get=$request->input();
 
         if($get['target']=='DTdistricts'){
-            $ListDistricts=$this->provinceRepository->findById(['code','name'],['districts'],$get['data']['location_id']);
+            $ListDistricts=$this->provinceRepository->findById($get['data']['location_id'],['code','name'],['districts']);
             //dd(ListDistricts);
             $html=$this->renderHTML($ListDistricts->districts, '[Chọn Quận/Huyện]');
         }else if($get['target']=='DTwards'){
-            $ListWards=$this->districtRepository->findById(['code','name'],['wards'],$get['data']['location_id']);
+            $ListWards=$this->districtRepository->findById($get['data']['location_id'],['code','name'],['wards']);
             //dd($ListWards);
             $html=$this->renderHTML($ListWards->wards, '[Chọn Phường/Xã]');
 

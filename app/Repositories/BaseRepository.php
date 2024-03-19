@@ -21,15 +21,35 @@ class BaseRepository implements BaseRepositoryInterface
     public function all(){
         return $this->model->all();
     }
-    public function findById(array $column=['*'], array $relation =[], int $id){
-        return $this->model->select($column)->with($relation)->findOrFail($id);
-        // select(các cột cần hiển thị) với những cột này thuộc về bảng with(bảng x) tìm được dữ liệu hay không dựa vào id khóa ngoại (của bảng y)
-        // trường hợp ở đây bảng y là provinces và bảng x là districts. Như vậy gọi phương thức này ở interface của bảng y provinces
+    public function pagination(array $column=['*'],array $condition=[],array $join=[],int $perpage=20){
+        $query=$this->model->select($column)->where($condition);
+        if(!empty($join)){
+            $query->join(...$join);
+        }
+        return $query->paginate($perpage);
     }
-
-    //phương thức thêm (INSERT)
+    public function findById(int $id, array $column=['*'], array $relation =[]){
+        return $this->model->select($column)->with($relation)->findOrFail($id);
+    }
+    public function findTableById(int $id = 0){
+        return $this->model->where('id','=',$id)->get();
+    }
+    //phương thức thêm (CREATE)
     public function create(array $payload =[]){
         $model= $this->model->create($payload);
         return $model->fresh();
     }
+    //Phương thức cập nhật (UPDATE)
+    public function update(int $id=0, array $payload=[]){
+        $model=$this->findById($id);
+        return $model->update($payload);
+    }
+    //Phương thức xóa mềm (DELETE) 
+    public function delete(int $id=0){
+        return $this->findById($id)->delete();
+    }
+    //Phương thức xóa cứng (DELETE)
+    public function forceDelete(int $id=0){
+        return $this->findById($id)->forceDelete();
+    } 
 }
