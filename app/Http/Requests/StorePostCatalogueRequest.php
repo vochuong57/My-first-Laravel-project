@@ -23,6 +23,7 @@ class StorePostCatalogueRequest extends FormRequest
     {
         return [
             'name'=>'required|string|regex:/^[^\d]+$/',
+            'canonical'=>'required|unique:post_catalogue_language'
         ];
     }
     public function messages(): array
@@ -30,7 +31,8 @@ class StorePostCatalogueRequest extends FormRequest
         return [
             'name.required'=>'Bạn chưa nhập họ tên',
             'name.string'=>'Tên phải là dạng ký tự',
-            'name.regex'=>'Tên không được chứa ký tự số'
+            'name.regex'=>'Tên không được chứa ký tự số',
+            'canonical.required'=>'Bạn chưa nhập vào ô đường dẫn'
         ];
     }
 }

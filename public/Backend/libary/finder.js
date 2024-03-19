@@ -41,7 +41,6 @@
             elementHeight=500;
         }
         CKEDITOR.replace( elementId, {
-            autoUpdateElement: false,
             height: elementHeight,
             removeButtons: '',
             entities: true,
@@ -64,6 +63,7 @@
         });
     }
 
+    //xấy dựng upload ảnh ảnh đại diện cho postCatalogues
     HT.uploadImageAvatar=()=>{
         $('.image-target').click(function(){
             let input=$(this)

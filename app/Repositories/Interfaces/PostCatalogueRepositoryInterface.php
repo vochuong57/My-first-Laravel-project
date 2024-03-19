@@ -17,5 +17,5 @@ interface PostCatalogueRepositoryInterface
     public function forceDelete(int $id=0);
     public function updateByWhereIn(string $whereInField='', array $whereIn=[], array $payload=[]);//dùng khi ở toolbox thay đổi hàng loạt trạng thái user
     public function deleteByWhereIn(string $whereInField = '', array $whereIn = []);
-
+    public function createLanguagePivot($model, array $payload=[]);
 }

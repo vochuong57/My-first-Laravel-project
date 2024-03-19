@@ -14,19 +14,28 @@ use Illuminate\Support\Facades\Hash;
 //gọi thư viện userRepository để cập nhật trạng thái khi đã chọn thay đổi trạng thái của userCatalogue
 //use App\Repositories\Interfaces\UserRepositoryInterface as UserRepository;
 use Illuminate\Support\Facades\Auth;
+use App\Services\BaseService;//tiến hành chèn dữ liệu vào bảng ngoài cụ thể là post_catalogue_language
+use App\Classes\Nestedsetbie;
+use Spatie\LaravelIgnition\Exceptions\CannotExecuteSolutionForNonLocalIp;
 
 /**
  * Class UserService
  * @package App\Services
  */
-class PostCatalogueService implements PostCatalogueServiceInterface
+class PostCatalogueService extends BaseService implements PostCatalogueServiceInterface
 {
     protected $postCatalogueRepository;
     //protected $userRepository;
+    protected $nestedset;
 
     public function __construct(PostCatalogueRepository $postCatalogueRepository){
         $this->postCatalogueRepository=$postCatalogueRepository;
         //$this->userRepository=$userRepository;
+        $this->nestedset=new Nestedsetbie([
+            'table'=>'post_catalogues',
+            'foreignkey'=>'post_catalogue_id',
+            'language_id'=>$this->currentLanguage(),
+        ]);
     }
 
     public function paginate($request){//$request để tiến hành chức năng tìm kiếm
@@ -47,14 +56,31 @@ class PostCatalogueService implements PostCatalogueServiceInterface
     public function createPostCatalogue($request){
         DB::beginTransaction();
         try{
-            $payload = $request->except('_token','send');//lấy tất cả ngoại trừ hai trường này thay vì dùng input là lấy tất cả
-            
+            $payload = $request->only($this->payload());//lấy tất cả ngoại trừ hai trường này thay vì dùng input là lấy tất cả
+            //dd($payload);
             //vì chúng ta có khóa ngoại khi thêm bảng này mà khóa ngoại này là user_id thì đó là tài khoản đã đăng nhập thì
             $payload['user_id']=Auth::id();
             //dd($payload);
             $postCatalogue=$this->postCatalogueRepository->create($payload);
             //dd($language);
             //echo -1; die();
+            //echo $postCatalogue->id; die();
+            if($postCatalogue->id>0){
+                $payloadLanguage = $request->only($this->payloadLanguage());
+                //dd($payloadLanguage);
+                //dd($this->currentLanguage());
+                $payloadLanguage['language_id']=$this->currentLanguage();
+                $payloadLanguage['post_catalogue_id']=$postCatalogue->id;
+                //dd($payloadLanguage);
+
+                $language = $this->postCatalogueRepository->createLanguagePivot($postCatalogue,$payloadLanguage);
+                //dd($language); die();
+            }
+            //sử dụng nested set
+            //dd($this->nestedset);
+            $this->nestedset->Get();//gọi Get để lấy dữ liệu
+            $this->nestedset->Recursive(0, $this->nestedset->Set());//gọi Recursive để tính toán lại các giá trị của từng node
+            $this->nestedset->Action();//gọi đến Action để cập nhật lại các giá trị lft rgt
             DB::commit();
             return true;
         }catch(\Exception $ex){
@@ -170,4 +196,26 @@ class PostCatalogueService implements PostCatalogueServiceInterface
     //         return false;
     //     }
     // }
+
+    private function payload(){
+        return [
+            'parent_id',
+            'follow',
+            'publish',
+            'image'
+        ];
+    }
+
+    private function payloadLanguage(){
+        return [
+            'name',
+            'description',
+            'content',
+            'meta_title',
+            'meta_keyword',
+            'meta_description',
+            'canonical'
+        ];
+    }
 }
+

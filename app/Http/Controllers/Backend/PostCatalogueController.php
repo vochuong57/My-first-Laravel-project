@@ -13,16 +13,23 @@ use App\Repositories\Interfaces\PostCatalogueRepositoryInterface as PostCatalogu
 //chèn thêm thư viện tự tạo request để kiểm tra dữ liệu đầu vào khi edit user
 use App\Http\Requests\UpdatePostCatalogueRequest;
 //use App\Models\User;
+use App\Classes\Nestedsetbie;
 
 
 class PostCatalogueController extends Controller
 {
     protected $postCatalogueService;
     protected $postCatalogueRepository;
+    protected $nestedset;
 
     public function __construct(PostCatalogueService $postCatalogueService, PostCatalogueRepository $postCatalogueRepository){
         $this->postCatalogueService=$postCatalogueService;//định nghĩa  $this->userService=$userCatalogueService để biến này nó có thể trỏ tới các phương tức của UserCatalogueService
         $this->postCatalogueRepository=$postCatalogueRepository;
+        $this->nestedset=new Nestedsetbie([
+            'table'=>'post_catalogues',
+            'foreignkey'=>'post_catalogue_id',
+            'language_id'=>1,
+        ]);
     }
     //giao diện tổng
     public function index(Request $request){//Request $request để tiến hành chức năng tìm kiếm
@@ -64,7 +71,9 @@ class PostCatalogueController extends Controller
        
         //dd($provinces);
 
-        return view('Backend.dashboard.layout', compact('template','config'));
+        $dropdown= $this->nestedset->Dropdown();
+        //dd($dropdown);
+        return view('Backend.dashboard.layout', compact('template','config','dropdown'));
     }
 
     //xử lý thêm user
