@@ -7,14 +7,14 @@
     <div class="col-lg-12">
         <div class="ibox float-e-margins">
             <div class="ibox-title">
-                <h5>{{ __('messages.tableUserCatalogue_brand') }} </h5>
-                @include('Backend.dashboard.component.toolbox', ['content'=>(__('messages.toolboxDestroyUserCatalogue'))])
+                <h5>{{ __('messages.tablePermission_brand') }} </h5>
+                @include('Backend.dashboard.component.toolbox', ['content'=>(__('messages.toolboxDestroyPermission'))])
             </div>
             <div class="ibox-content">
                 <!-- tìm kiếm user -->
-                @include('Backend.user.catalogue.component.filter')
+                @include('Backend.permission.component.filter')
                 <!-- bảng user -->
-                @include('Backend.user.catalogue.component.table')
+                @include('Backend.permission.component.table')
             </div>
         </div>
     </div>

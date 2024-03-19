@@ -52,6 +52,9 @@ class PostCatalogueController extends Controller
         //Đổ dữ liệu User từ DB vào form theo mô hình service và repository
         $postCatalogues = $this->postCatalogueService->paginate($request);//$request để tiến hành chức năng tìm kiếm
         //dd($userCatalogues);
+
+        $this->authorize('modules', 'post.catalogue.index');//phân quyền
+
         return view('Backend.dashboard.layout', compact('template','config','postCatalogues'));
     }
 
@@ -76,6 +79,9 @@ class PostCatalogueController extends Controller
 
         $dropdown= $this->nestedset->Dropdown();
         //dd($dropdown);
+
+        $this->authorize('modules', 'post.catalogue.store');//phân quyền
+
         return view('Backend.dashboard.layout', compact('template','config','dropdown'));
     }
 
@@ -107,6 +113,8 @@ class PostCatalogueController extends Controller
 
         $album = json_decode($postCatalogue->album);
 
+        $this->authorize('modules', 'post.catalogue.edit');//phân quyền
+
         return view('Backend.dashboard.layout', compact('template','config','postCatalogue','dropdown','album'));
     }
     //xử lý sửa user
@@ -132,6 +140,8 @@ class PostCatalogueController extends Controller
         //dd($postCatalogue);
 
         $dropdown= $this->nestedset->Dropdown();
+
+        $this->authorize('modules', 'post.catalogue.destroy');//phân quyền
 
         return view('Backend.dashboard.layout', compact('template','config','postCatalogue'));
     }
@@ -162,7 +172,6 @@ class PostCatalogueController extends Controller
         return[
             'js'=>[
                 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
-                'Backend/libary/location.js',
                 'Backend/plugins/ckfinder/ckfinder.js',
                 'Backend/libary/finder.js',
                 'Backend/plugins/ckeditor/ckeditor.js',

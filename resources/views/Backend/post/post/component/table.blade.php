@@ -40,7 +40,7 @@
 
                         <div class="catalogue">
                             <span class="text-danger">Nhóm hiển thị</span>
-                            @foreach($post->post_catalogues as $val) <?php // '->post_catalogues' là function post_catalogues của Model/Post có LQ theo đường PostRepository ?>
+                            @foreach($post->post_catalogues as $val) <?php // '->post_catalogues' là function post_catalogues() của Model/Post có LQ theo đường PostRepository ?>
                             @foreach($val->post_catalogue_language as $cat)
                             <a href="{{ route('post.index', ['post_catalogue_id'=>$val->id]) }}">{{ $cat->name }}</a>
                             @endforeach

@@ -43,10 +43,10 @@ return [
     'seo_meta_description'=>'SEO描述',
     'seo_meta_canonical'=>'规范URL',
     // table
-    'table_brand'=>'文章分组列表',
-    'table_name'=>'分组名称',
-    'table_status'=>'状态',
-    'table_action'=>'操作',
+    'tablePostCatalogue_brand'=>'文章分组列表',
+    'tablePostCatalogue_name'=>'分组名称',
+    'tablePostCatalogue_status'=>'状态',
+    'tablePostCatalogue_action'=>'操作',
 
     'publish'=>[
         '0'=>'选择状态',
@@ -60,13 +60,136 @@ return [
     ],
     //destroy
     'destroy'=>'通用信息',
-    'destroy_panel_description_1'=>'- 您即将删除一个名为的文章分组:',
-    'destroy_panel_description_2'=>'- 注意:',
-    'destroy_panel_description_3'=>'无法',
-    'destroy_panel_description_4'=>'在删除后恢复文章分组。',
-    'destroy_panel_description_5'=>'确保您要执行此操作',
-    'destroy_name'=>'文章分组名称:',
+    'destroy_panel_description_postCatalogue_1'=>'- 您即将删除一个名为的文章分组:',
+    'destroy_panel_description_1'=>'- 注意:',
+    'destroy_panel_description_2'=>'无法',
+    'destroy_panel_description_postCatalogue_2'=>'在删除后恢复文章分组。',
+    'destroy_panel_description_3'=>'确保您要执行此操作',
+    'destroyPostCatalogue_name'=>'文章分组名称:',
     //toolbox
     'toolbox_name'=>'全部',
-    'toolboxDestroy'=>'您确定要删除这些文章分组吗？'
+    'toolboxDestroyPostCatalogue'=>'您确定要删除这些文章分组吗？',
+
+    'permission' => [
+        'index' => [
+            'title' => '管理权限',
+        ],
+        'create' => [
+            'title' => '添加新权限',
+            'btnTitle' => '添加新的'
+        ],
+        'edit' => [
+            'title' => '更新权限',
+            'btnTitle' => '更新'
+        ],
+        'delete' => [
+            'title' => '删除权限',
+            'btnDelete' => '删除数据'
+        ],
+    ],
+    //toolbox
+    'toolboxDestroyPermission' =>  '你确定要删除这些权限吗？',
+    
+    // table
+    'tablePermission_brand' => '权限列表',
+    'tablePermission_name' => '权限名称',
+    'tablePermission_action' => '操作',
+
+    // destroy
+    'destroy_panel_description_permission_1'=>'- 你打算删除一个名为的权限:',
+    'destroy_panel_description_permission_2'=>'删除后恢复权限。',
+
+    // store
+    'note_permission' => '- 输入权限的一般信息',
+    'note_1' => '- 注意: 标记的字段',
+    'note_2' => '是必需的',
+    'permission_title' => '权限名称:',
+
+    //USER CATALOGUE
+    'userCatalogue' => [
+        'index' => [
+            'title' => '管理用户组',
+        ],
+        'create' => [
+            'title' => '添加新用户组',
+            'btnTitle' => '添加新',
+        ],
+        'edit' => [
+            'title' => '更新用户组',
+            'btnTitle' => '更新',
+        ],
+        'delete' => [
+            'title' => '删除用户组',
+            'btnDelete' => '删除数据',
+        ],
+        'permission' => [
+            'title' => '更新权限',
+            'btnTitle' => '更新',
+        ],
+    ],
+
+    //table
+    'tableUserCatalogue_brand' => '用户组列表',
+    'tableUserCatalogue_name' => '用户组名称',
+    'tableUserCatalogue_count' => '成员数量',
+    'tableUserCatalogue_description' => '描述',
+    'tableUserCatalogue_publish' => '状态',
+    'tableUserCatalogue_action' => '操作',
+
+    //toolbox
+    'toolboxDestroyUserCatalogue' => '您确定要删除此用户组吗？',
+
+    //filter
+    'permission_name' => '权限名称',
+
+    //store
+    'note_userCatalogue' => '- 输入用户组的常规信息',
+    'userCatalogue_title' => '组名称：',
+    'note' => '备注：',
+
+    // destroy
+    'destroy_panel_description_userCatalogue_1' => '- 您即将删除名为的用户组:',
+    'destroy_panel_description_userCatalogue_2' => '删除后恢复用户组。',
+
+    //LANGUAGE
+    'language' => [
+        'index' => [
+            'title' => '语言管理',
+        ],
+        'create' => [
+            'title' => '添加新语言',
+            'btnTitle' => '添加新',
+        ],
+        'edit' => [
+            'title' => '更新语言',
+            'btnTitle' => '更新',
+        ],
+        'delete' => [
+            'title' => '删除语言',
+            'btnDelete' => '删除数据',
+        ],
+    ],
+
+    //table
+    'tableLanguage_brand' => '语言列表',
+    'tableLanguage_image' => '图片',
+    'tableLanguage_name' => '语言名称',
+    'tableLanguage_note' => '备注',
+    'tableLanguage_publish' => '状态',
+    'tableLanguage_action' => '操作',
+
+    //toolbox
+    'toolboxDestroyLanguage' => '您确定要删除这些语言吗？',
+
+    //store
+    //store
+    'note_language' => '- 输入语言的常规信息',
+    'language_title' => '语言名称：',
+    'language_avatar' => '头像：',
+    'language_note' => '备注：',
+
+    // destroy
+    'destroy_panel_description_language_1' => '- 您即将删除名为的语言:',
+    'destroy_panel_description_language_2' => '删除后恢复语言。',
+
 ];

@@ -16,23 +16,23 @@
         <div class="row">
             <div class="col-lg-5">
                 <div class="panel-head">
-                    <div class="panel-title">Thông tin chung</div>
+                    <div class="panel-title">{{ __('messages.general') }}</div>
                     <div class="panel-description">
-                        <p>- Bạn đang muốn xóa thành viên có email là: <span style="color: red">{{ $userCatalogue->email }}</span></p>
-                        <p>- Lưu ý <span class="text-danger">KHÔNG THỂ</span> khôi phục thành viên sau khi xóa. <br> Hãy chắc chắn bạn muốn thực hiện chức năng này</p>
+                        <p>{{ __('messages.destroy_panel_description_userCatalogue_1') }} <span style="color: red">{{ $userCatalogue->name }}</span></p>
+                        <p>{{ __('messages.destroy_panel_description_1') }} <span class="text-danger">{{ __('messages.destroy_panel_description_2') }}</span> {{ __('messages.destroy_panel_description_postCatalogue_2') }} <br> {{ __('messages.destroy_panel_description_3') }}</p>
                     </div>
                 </div>
             </div>
             <div class="col-lg-7">
                 <div class="ibox">
                     <div class="ibox-title">
-                        <h5>Thông tin chung</h5>
+                        <h5>{{ __('messages.general') }}</h5>
                     </div>
                     <div class="ibox-content">
                         <div class="row mb15">
                             <div class="col-lg-6">
                                 <div class="form-row">
-                                    <label for="" class="control-label text-left">Tên nhóm: <span class="text-danger">(*)</span></label>
+                                    <label for="" class="control-label text-left">{{ __('messages.userCatalogue_title') }} <span class="text-danger">(*)</span></label>
                                     <input 
                                     type="text"
                                     name="name"
@@ -46,7 +46,7 @@
                             </div>
                             <div class="col-lg-6">
                                 <div class="form-row">
-                                    <label for="" class="control-label text-left">Ghi chú: <span class="text-danger">(*)</span></label>
+                                    <label for="" class="control-label text-left">{{ __('messages.note') }} <span class="text-danger">(*)</span></label>
                                     <input 
                                     type="text"
                                     name="description"

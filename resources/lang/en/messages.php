@@ -43,10 +43,10 @@ return[
     'seo_meta_description'=>'SEO description',
     'seo_meta_canonical'=>'Canonical URL',
     // table
-    'table_brand'=>'List of post groups',
-    'table_name'=>'Group name',
-    'table_status'=>'Status',
-    'table_action'=>'Action',
+    'tablePostCatalogue_brand'=>'List of post groups',
+    'tablePostCatalogue_name'=>'Group name',
+    'tablePostCatalogue_status'=>'Status',
+    'tablePostCatalogue_action'=>'Action',
 
     'publish'=>[
         '0'=>'Select status',
@@ -60,13 +60,135 @@ return[
     ],
     //destroy
     'destroy'=>'General information',
-    'destroy_panel_description_1'=>'- You are about to delete a post group named:',
-    'destroy_panel_description_2'=>'- Note:',
-    'destroy_panel_description_3'=>'UNABLE',
-    'destroy_panel_description_4'=>'to recover the post group after deletion.',
-    'destroy_panel_description_5'=>'Make sure you want to perform this action',
-    'destroy_name'=>'Post group name:',
+    'destroy_panel_description_postCatalogue_1'=>'- You are about to delete a post group named:',
+    'destroy_panel_description_1'=>'- Note:',
+    'destroy_panel_description_2'=>'UNABLE',
+    'destroy_panel_description_postCatalogue_2'=>'to recover the post group after deletion.',
+    'destroy_panel_description_3'=>'Make sure you want to perform this action',
+    'destroyPostCatalogue_name'=>'Post group name:',
     //toolbox
     'toolbox_name'=>'all',
-    'toolboxDestroy'=>'Are you sure you want to delete these post groups?'
+    'toolboxDestroyPostCatalogue'=>'Are you sure you want to delete these post groups?',
+
+    'permission' => [
+        'index' => [
+            'title' => 'Manage Permissions',
+        ],
+        'create' => [
+            'title' => 'Add New Permission',
+            'btnTitle' => 'Add New'
+        ],
+        'edit' => [
+            'title' => 'Update Permission',
+            'btnTitle' => 'Update'
+        ],
+        'delete' => [
+            'title' => 'Delete Permission',
+            'btnDelete' => 'Delete Data'
+        ],
+    ],
+    //toolbox
+    'toolboxDestroyPermission' => 'Are you sure you want to delete these permissions?',
+    
+    // table
+    'tablePermission_brand' => 'List of Permissions',
+    'tablePermission_name' => 'Permission Name',
+    'tablePermission_action' => 'Action',
+
+    // destroy
+    'destroy_panel_description_permission_1'=>'- You are intending to delete a permission named:',
+    'destroy_panel_description_permission_2'=>'restore permissions after deletion.',
+
+    // store
+    'note_permission' => '- Enter general information of the permission',
+    'note_1' => '- Note: fields marked',
+    'note_2' => 'are required',
+    'permission_title' => 'Permission Name:',
+
+    //USER CATALOGUE
+    'userCatalogue' => [
+        'index' => [
+            'title' => 'Manage User Groups',
+        ],
+        'create' => [
+            'title' => 'Add New User Group',
+            'btnTitle' => 'Add New',
+        ],
+        'edit' => [
+            'title' => 'Update User Group',
+            'btnTitle' => 'Update',
+        ],
+        'delete' => [
+            'title' => 'Delete User Group',
+            'btnDelete' => 'Delete Data',
+        ],
+        'permission' => [
+            'title' => 'Update Permission',
+            'btnTitle' => 'Update',
+        ],
+    ],
+
+    //table
+    'tableUserCatalogue_brand' => 'User Group List',
+    'tableUserCatalogue_name' => 'Group Name',
+    'tableUserCatalogue_count' => 'Number of Members',
+    'tableUserCatalogue_description' => 'Description',
+    'tableUserCatalogue_publish' => 'Status',
+    'tableUserCatalogue_action' => 'Actions',
+
+    //toolbox
+    'toolboxDestroyUserCatalogue' => 'Are you sure you want to delete this user group?',
+
+    //filter
+    'permission_name' => 'Permission',
+
+    //store
+    'note_userCatalogue' => '- Enter general information of the user group',
+    'userCatalogue_title' => 'Group Name:',
+    'note' => 'Note:',
+
+    // destroy
+    'destroy_panel_description_userCatalogue_1' => '- You are about to delete the user group named:',
+    'destroy_panel_description_userCatalogue_2' => 'restore the user group after deletion.',
+
+    //LANGUAGE
+    'language' => [
+        'index' => [
+            'title' => 'Language Management',
+        ],
+        'create' => [
+            'title' => 'Add New Language',
+            'btnTitle' => 'Add New',
+        ],
+        'edit' => [
+            'title' => 'Update Language',
+            'btnTitle' => 'Update',
+        ],
+        'delete' => [
+            'title' => 'Delete Language',
+            'btnDelete' => 'Delete Data',
+        ],
+    ],
+
+    //table
+    'tableLanguage_brand' => 'Language List',
+    'tableLanguage_image' => 'Image',
+    'tableLanguage_name' => 'Language Name',
+    'tableLanguage_note' => 'Note',
+    'tableLanguage_publish' => 'Status',
+    'tableLanguage_action' => 'Actions',
+
+    //toolbox
+    'toolboxDestroyLanguage' => 'Are you sure you want to delete these languages?',
+
+    //store
+    'note_language' => '- Enter general information of the language',
+    'language_title' => 'Language Name:',
+    'language_avatar' => 'Avatar:',
+    'language_note' => 'Note:',
+
+    // destroy
+    'destroy_panel_description_language_1' => '- You are about to delete the language named:',
+    'destroy_panel_description_language_2' => 'restore the language after deletion.',
+
 ];

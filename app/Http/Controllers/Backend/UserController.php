@@ -50,7 +50,9 @@ class UserController extends Controller
         //Đổ dữ liệu User từ DB vào form theo mô hình service và repository
         $users = $this->userService->paginate($request);//$request để tiến hành chức năng tìm kiếm
 
-        $userCatalogues=$this->userCatalogueRepository->all();
+        $userCatalogues=$this->userCatalogueRepository->all();//sổ select option khi thêm sửa user
+
+        $this->authorize('modules', 'user.index');//phân quyền
 
         return view('Backend.dashboard.layout', compact('template','config','users','userCatalogues'));
     }
@@ -76,6 +78,8 @@ class UserController extends Controller
         //dd($provinces);
 
         $userCatalogues=$this->userCatalogueRepository->all();
+
+        $this->authorize('modules', 'user.store');//phân quyền
 
         return view('Backend.dashboard.layout', compact('template','config','provinces','userCatalogues'));
     }
@@ -108,6 +112,8 @@ class UserController extends Controller
 
         $userCatalogues=$this->userCatalogueRepository->all();
 
+        $this->authorize('modules', 'user.edit');//phân quyền
+
         return view('Backend.dashboard.layout', compact('template','config','provinces','user', 'userCatalogues'));
     }
     //xử lý sửa user
@@ -130,6 +136,8 @@ class UserController extends Controller
         //truy vấn thông tin
         $user=$this->userRepository->findById($id);
         //dd($user); die();
+
+        $this->authorize('modules', 'user.destroy');//phân quyền
 
         return view('Backend.dashboard.layout', compact('template','config','user'));
     }

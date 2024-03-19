@@ -55,6 +55,9 @@ class PostController extends Controller
         $dropdown= $this->nestedset->Dropdown();
 
         //dd($languages);
+
+        $this->authorize('modules', 'post.index');//phân quyền
+
         return view('Backend.dashboard.layout', compact('template','config','posts','dropdown'));
     }
 
@@ -79,6 +82,9 @@ class PostController extends Controller
 
         $dropdown= $this->nestedset->Dropdown();
         //dd($dropdown);
+
+        $this->authorize('modules', 'post.store');//phân quyền
+
         return view('Backend.dashboard.layout', compact('template','config','dropdown'));
     }
 
@@ -110,6 +116,8 @@ class PostController extends Controller
 
         $album = json_decode($post->album);
 
+        $this->authorize('modules', 'post.edit');//phân quyền
+
         return view('Backend.dashboard.layout', compact('template','config','post','dropdown','album'));
     }
     //xử lý sửa user
@@ -135,6 +143,8 @@ class PostController extends Controller
         //dd($postCatalogue);
 
         $dropdown= $this->nestedset->Dropdown();
+
+        $this->authorize('modules', 'post.destroy');//phân quyền
 
         return view('Backend.dashboard.layout', compact('template','config','post'));
     }
@@ -165,7 +175,6 @@ class PostController extends Controller
         return[
             'js'=>[
                 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
-                'Backend/libary/location.js',
                 'Backend/plugins/ckfinder/ckfinder.js',
                 'Backend/libary/finder.js',
                 'Backend/plugins/ckeditor/ckeditor.js',

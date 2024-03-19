@@ -9,5 +9,5 @@ namespace App\Repositories\Interfaces;
 interface PostCatalogueLanguageRepositoryInterface
 {
     public function all();
-    public function updateByWhere(array $condition=[], array $payload=[]);
+    public function updateByWhere(array $condition=[], array $payload=[]);//dùng để cập cột canonical về null trong PostCatalogueService
 }
