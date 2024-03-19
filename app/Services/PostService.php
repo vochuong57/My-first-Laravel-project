@@ -18,7 +18,8 @@ use App\Services\BaseService;//tiến hành chèn dữ liệu vào bảng ngoài
 use Request;
 use Spatie\LaravelIgnition\Exceptions\CannotExecuteSolutionForNonLocalIp;
 use Illuminate\Support\Str;
-
+use App\Repositories\Interfaces\RouterRepositoryInterface as RouterRepository;
+use App\Repositories\Interfaces\PostLanguageRepositoryInterface as PostLanguageRepository;
 
 /**
  * Class UserService
@@ -28,10 +29,15 @@ class PostService extends BaseService implements PostServiceInterface
 {
     protected $postRepository;
     protected $language;
+    protected $routerRepository;
+    protected $postLanguageRepository;
+    protected $controllerName = 'PostController';
 
-    public function __construct(PostRepository $postRepository){
+    public function __construct(PostRepository $postRepository, RouterRepository $routerRepository, PostLanguageRepository $postLanguageRepository){
         $this->postRepository=$postRepository;
         $this->language=$this->currentLanguage();
+        $this->routerRepository=$routerRepository;
+        $this->postLanguageRepository=$postLanguageRepository;
     }
 
     public function paginate($request){//$request để tiến hành chức năng tìm kiếm
@@ -68,34 +74,16 @@ class PostService extends BaseService implements PostServiceInterface
     public function createPost($request){
         DB::beginTransaction();
         try{
-            $payload = $request->only($this->payload());//lấy tất cả ngoại trừ hai trường này thay vì dùng input là lấy tất cả
-            //dd($payload);
-            //vì chúng ta có khóa ngoại khi thêm bảng này mà khóa ngoại này là user_id thì đó là tài khoản đã đăng nhập thì
-            $payload['user_id']=Auth::id();
-            if(isset($payload['album'])){
-                $payload['album']=json_encode($payload['album']);
-            }
-            //dd($payload);
-            $post=$this->postRepository->create($payload);
-            //dd($language);
-            //echo -1; die();
-            //echo $post->id; die();
+            $post = $this->createTablePost($request);
             
             if($post->id>0){
-                $payloadLanguage = $request->only($this->payloadLanguage());
-                //dd($payloadLanguage);
-                //dd($this->currentLanguage());
-                $payloadLanguage['canonical']=Str::slug($payloadLanguage['canonical']);
-                $payloadLanguage['language_id']=$this->currentLanguage();
-                $payloadLanguage['post_id']=$post->id;
-                //dd($payloadLanguage);
-
-                $language = $this->postRepository->createPivot($post,$payloadLanguage,'languages');
-                //dd($language); die();
-
-                $catalogue=$this->catalogue($request);
+                $this->updateLanguageForPost($request, $post);
+                $this->createRouter($request, $post, $this->controllerName);
+                
+                //xử lí add dữ liệu vào post_catalogue_post
+                $catalogue=$this->mergeCatalogue($request);
                 //dd($catalogue);
-                $post->post_catalogues()->sync($catalogue);//là function post_catalogues của Model/Post
+                $post->post_catalogues()->sync($catalogue);//post_catalogues() là function của Model/Post
             }
             DB::commit();
             return true;
@@ -110,41 +98,16 @@ class PostService extends BaseService implements PostServiceInterface
         DB::beginTransaction();
         try{
             $post=$this->postRepository->findById($id);
-            //dd($post);
-
-            $payload = $request->only($this->payload());//lấy tất cả ngoại trừ hai trường này thay vì dùng input là lấy tất cả
-            if(isset($payload['album'])){
-                $payload['album']=json_encode($payload['album']);
-            }
-            //dd($payload);
-            $flag=$this->postRepository->update($id,$payload);
+            $flag=$this->updateTablePost($request, $id);
             //dd($flag);
-
             if($flag==TRUE){
-                $payloadLanguage = $request->only($this->payloadLanguage());
-                //dd($payloadLanguage);
-                //dd($this->currentLanguage());
-                $payloadLanguage['canonical']=Str::slug($payloadLanguage['canonical']);
-                $payloadLanguage['language_id']=$this->currentLanguage();
-                $payloadLanguage['post_id']=$post->id;
-                //dd($payloadLanguage);
-                //: Loại bỏ mối quan hệ giữa mục hiện tại và ngôn ngữ của nó.
-                $post->languages()->detach([$payloadLanguage['language_id'],$id]);
-                //dd($post);
-                // Tạo lại mối quan hệ giữa mục và ngôn ngữ dựa trên dữ liệu trong $payloadLanguage
-                $reponse=$this->postRepository->createPivot($post,$payloadLanguage,'languages');
-                //dd($reponse);
+                $this->updateLanguageForPost($request, $post);
+                $this->updateRouter($request, $post, $this->controllerName);
 
-                $catalogue=$this->catalogue($request);
+                $catalogue=$this->mergeCatalogue($request);
                 //dd($catalogue);
                 $post->post_catalogues()->sync($catalogue);
             }
-            
-
-            //$post=$this->postRepository->update($id, $payload);
-            //echo 1; die();
-            //dd($user);
-
             DB::commit();
             return true;
         }catch(\Exception $ex){
@@ -158,6 +121,18 @@ class PostService extends BaseService implements PostServiceInterface
         DB::beginTransaction();
         try{
             $post=$this->postRepository->delete($id);
+            $conditionByRouter=[
+                ['module_id', '=', $id]
+            ];
+            $router=$this->routerRepository->findByCondition($conditionByRouter);
+            //dd($router->id);
+            $this->routerRepository->forceDelete($router->id);//router chỉ hiện những cái canonical đang tồn tại sẽ không có xóa mềm
+            //echo '123'; die();
+            $where=[
+                ['post_id', '=', $id]
+            ];
+            $payload=['canonical'=>null];
+            $this->postLanguageRepository->updateByWhere($where,$payload);
             DB::commit();
             return true;
         }catch(\Exception $ex){
@@ -255,7 +230,7 @@ class PostService extends BaseService implements PostServiceInterface
     }
 
     //merge dữ liệu từ hai mảng khác nhau vào chung một bảng
-    private function catalogue($request){
+    private function mergeCatalogue($request){
         $catalogueInput = $request->input('catalogue');
         
         // Kiểm tra nếu $catalogueInput tồn tại và không rỗng
@@ -268,7 +243,7 @@ class PostService extends BaseService implements PostServiceInterface
     }
     
 
-    //whereRaw tìm kiếm bài viết theo nhóm bài viết
+    //whereRaw tìm kiếm bài viết theo nhóm bài viết mở rộng
     private function whereRaw($request){
         $rawCondition = [];
         if($request->integer('post_catalogue_id')>0){
@@ -285,6 +260,44 @@ class PostService extends BaseService implements PostServiceInterface
             ];
         }
         return $rawCondition;
+    }
+    //----TỐI ƯU SOURCE CODE
+    private function createTablePost($request){
+        $payload = $request->only($this->payload());//lấy tất cả ngoại trừ hai trường này thay vì dùng input là lấy tất cả
+        //dd($payload);
+        //vì chúng ta có khóa ngoại khi thêm bảng này mà khóa ngoại này là user_id thì đó là tài khoản đã đăng nhập thì
+        $payload['user_id']=Auth::id();
+        $payload['album']=$this->formatAlbum($request);
+        //dd($payload);
+        $post=$this->postRepository->create($payload);
+        //dd($language);
+        //echo -1; die();
+        //echo $post->id; die();
+        return $post;
+    }
+    private function updateTablePost($request, $id){
+        $payload = $request->only($this->payload());//lấy tất cả ngoại trừ hai trường này thay vì dùng input là lấy tất cả
+        $payload['album']=$this->formatAlbum($request);
+        //dd($payload);
+        $flag=$this->postRepository->update($id,$payload);
+        return $flag;
+    }
+    private function updateLanguageForPost($request, $post){
+        $payloadLanguage=$this->formatLanguagePayload($request, $post);
+        $post->languages()->detach([$this->language, $post->id]);
+        $language = $this->postRepository->createPivot($post,$payloadLanguage,'languages');
+        //dd($language); die();
+        return $language;
+    }
+    private function formatLanguagePayload($request, $post){
+        $payloadLanguage = $request->only($this->payloadLanguage());
+        //dd($payloadLanguage);
+        //dd($this->currentLanguage());
+        $payloadLanguage['canonical']=Str::slug($payloadLanguage['canonical']);
+        $payloadLanguage['language_id']=$this->currentLanguage();
+        $payloadLanguage['post_id']=$post->id;
+        //dd($payloadLanguage);
+        return $payloadLanguage;
     }
 }
 

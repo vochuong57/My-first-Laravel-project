@@ -19,6 +19,10 @@ use App\Classes\Nestedsetbie;
 use Spatie\LaravelIgnition\Exceptions\CannotExecuteSolutionForNonLocalIp;
 use Illuminate\Support\Str;
 
+use App\Repositories\Interfaces\RouterRepositoryInterface as RouterRepository;
+use App\Repositories\Interfaces\PostCatalogueLanguageRepositoryInterface as PostCatalogueLanguageRepository;
+
+
 /**
  * Class UserService
  * @package App\Services
@@ -27,9 +31,11 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
 {
     protected $postCatalogueRepository;
     protected $language;    
-    protected $nestedset;
+    protected $routerRepository;
+    protected $postCatalogueLanguageRepository;
+    protected $controllerName = 'PostCatalogueController';
 
-    public function __construct(PostCatalogueRepository $postCatalogueRepository){
+    public function __construct(PostCatalogueRepository $postCatalogueRepository, RouterRepository $routerRepository, PostCatalogueLanguageRepository $postCatalogueLanguageRepository){
         $this->postCatalogueRepository=$postCatalogueRepository;
         $this->language=$this->currentLanguage();
         $this->nestedset=new Nestedsetbie([
@@ -37,6 +43,8 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
             'foreignkey'=>'post_catalogue_id',
             'language_id'=>$this->currentLanguage(),
         ]);
+        $this->routerRepository=$routerRepository;
+        $this->postCatalogueLanguageRepository=$postCatalogueLanguageRepository;
     }
 
     public function paginate($request){//$request để tiến hành chức năng tìm kiếm
@@ -72,35 +80,12 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
     public function createPostCatalogue($request){
         DB::beginTransaction();
         try{
-            $payload = $request->only($this->payload());//lấy tất cả ngoại trừ hai trường này thay vì dùng input là lấy tất cả
-            //dd($payload);
-            //vì chúng ta có khóa ngoại khi thêm bảng này mà khóa ngoại này là user_id thì đó là tài khoản đã đăng nhập thì
-            $payload['user_id']=Auth::id();
-            if(isset($payload['album'])){
-                $payload['album']=json_encode($payload['album']);
-            }
-            //dd($payload);
-            $postCatalogue=$this->postCatalogueRepository->create($payload);
-            //dd($language);
-            //echo -1; die();
-            //echo $postCatalogue->id; die();
+            $postCatalogue = $this->createCatalogue($request);
             if($postCatalogue->id>0){
-                $payloadLanguage = $request->only($this->payloadLanguage());
-                //dd($payloadLanguage);
-                //dd($this->currentLanguage());
-                $payloadLanguage['canonical']=Str::slug($payloadLanguage['canonical']);
-                $payloadLanguage['language_id']=$this->currentLanguage();
-                $payloadLanguage['post_catalogue_id']=$postCatalogue->id;
-                //dd($payloadLanguage);
-
-                $language = $this->postCatalogueRepository->createPivot($postCatalogue,$payloadLanguage,'languages');
-                //dd($language); die();
+                $this->updateLanguageForCatalogue($request, $postCatalogue);
+                $this->createRouter($request, $postCatalogue, $this->controllerName);
+                $this->nestedset();
             }
-            //sử dụng nested set
-            //dd($this->nestedset);
-            $this->nestedset->Get();//gọi Get để lấy dữ liệu
-            $this->nestedset->Recursive(0, $this->nestedset->Set());//gọi Recursive để tính toán lại các giá trị của từng node
-            $this->nestedset->Action();//gọi đến Action để cập nhật lại các giá trị lft rgt
             DB::commit();
             return true;
         }catch(\Exception $ex){
@@ -114,35 +99,12 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
         DB::beginTransaction();
         try{
             $postCatalogue=$this->postCatalogueRepository->findById($id);
-            //dd($postCatalogue);
-            $payload = $request->only($this->payload());//lấy tất cả ngoại trừ hai trường này thay vì dùng input là lấy tất cả
-            if(isset($payload['album'])){
-                $payload['album']=json_encode($payload['album']);
-            }
-            //dd($payload);
-            $flag=$this->postCatalogueRepository->update($id,$payload);
+            $flag = $this->updateCatalogue($request, $id);
             if($flag==TRUE){
-                $payloadLanguage = $request->only($this->payloadLanguage());
-                //dd($payloadLanguage);
-                //dd($this->currentLanguage());
-                $payloadLanguage['canonical']=Str::slug($payloadLanguage['canonical']);
-                $payloadLanguage['language_id']=$this->currentLanguage();
-                $payloadLanguage['post_catalogue_id']=$postCatalogue->id;
-                //dd($payloadLanguage);
-                //: Loại bỏ mối quan hệ giữa mục hiện tại và ngôn ngữ của nó.
-                $postCatalogue->languages()->detach([$payloadLanguage['language_id'],$id]);
-                // Tạo lại mối quan hệ giữa mục và ngôn ngữ dựa trên dữ liệu trong $payloadLanguage
-                $reponse=$this->postCatalogueRepository->createPivot($postCatalogue,$payloadLanguage,'languages');
-                $this->nestedset->Get();//gọi Get để lấy dữ liệu
-                $this->nestedset->Recursive(0, $this->nestedset->Set());//gọi Recursive để tính toán lại các giá trị của từng node
-                $this->nestedset->Action();//gọi đến Action để cập nhật lại các giá trị lft rgt
+                $this->updateLanguageForCatalogue($request, $postCatalogue);
+                $this->updateRouter($request, $postCatalogue, $this->controllerName);
+                $this->nestedset();
             }
-            
-
-            //$postCatalogue=$this->postCatalogueRepository->update($id, $payload);
-            //echo 1; die();
-            //dd($user);
-
             DB::commit();
             return true;
         }catch(\Exception $ex){
@@ -156,9 +118,20 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
         DB::beginTransaction();
         try{
             $postCatalogue=$this->postCatalogueRepository->delete($id);
-            $this->nestedset->Get();//gọi Get để lấy dữ liệu
-            $this->nestedset->Recursive(0, $this->nestedset->Set());//gọi Recursive để tính toán lại các giá trị của từng node
-            $this->nestedset->Action();//gọi đến Action để cập nhật lại các giá trị lft rgt
+            $conditionByRouter=[
+                ['module_id', '=', $id]
+            ];
+            $router=$this->routerRepository->findByCondition($conditionByRouter);
+            //dd($router->id);
+            $this->routerRepository->forceDelete($router->id);//router chỉ hiện những cái canonical đang tồn tại sẽ không có xóa mềm
+            //echo '123'; die();
+            $where=[
+                ['post_catalogue_id', '=', $id]
+            ];
+            $payload=['canonical'=>null];
+            $this->postCatalogueLanguageRepository->updateByWhere($where,$payload);
+            //echo 123; die();
+            $this->nestedset();
             DB::commit();
             return true;
         }catch(\Exception $ex){
@@ -218,29 +191,7 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
             return false;
         }
     }
-    // private function changeUserStatus($post, $value){
-       
-    //     DB::beginTransaction();
-    //     try{
-    //         //dd($post);
-    //         $array=[];
-    //         if(isset($post['modelId'])){
-    //             $array[]=$post['modelId'];
-    //         }else{
-    //             $array=$post['id'];
-    //         }//push vào trong mảng để update theo kiểu by where in
-    //         //dd($post);
-    //         $payload[$post['field']]=$value;
-    //         $this->userRepository->updateByWhereIn('user_catalogue_id', $array, $payload);
-    //         //echo 123; die();
-    //         DB::commit();
-    //         return true;
-    //     }catch(\Exception $ex){
-    //         DB::rollBack();
-    //         echo $ex->getMessage();//die();
-    //         return false;
-    //     }
-    // }
+
     
     private function paginateSelect(){
         return[
@@ -277,5 +228,43 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
     public function currentLanguage(){
         return 1;
     }
+    private function createCatalogue($request){
+        $payload = $request->only($this->payload());//lấy tất cả ngoại trừ hai trường này thay vì dùng input là lấy tất cả
+        //dd($payload);
+        //vì chúng ta có khóa ngoại khi thêm bảng này mà khóa ngoại này là user_id thì đó là tài khoản đã đăng nhập thì
+        $payload['user_id']=Auth::id();
+        $payload['album']=$this->formatAlbum($request);
+        //dd($payload);
+        $postCatalogue=$this->postCatalogueRepository->create($payload);
+        //dd($language);
+        //echo -1; die();
+        //echo $postCatalogue->id; die();
+        return $postCatalogue;
+    }
+    private function updateCatalogue($request, $id){
+        $payload = $request->only($this->payload());//lấy tất cả ngoại trừ hai trường này thay vì dùng input là lấy tất cả
+        $payload['album']=$this->formatAlbum($request);
+        //dd($payload);
+        $flag=$this->postCatalogueRepository->update($id,$payload);
+        return $flag;
+    }
+    private function updateLanguageForCatalogue($request, $postCatalogue){
+        $payloadLanguage=$this->formatLanguagePayload($request, $postCatalogue);
+        $postCatalogue->languages()->detach([$this->language, $postCatalogue->id]);
+        $language = $this->postCatalogueRepository->createPivot($postCatalogue,$payloadLanguage,'languages');
+        //dd($language); die();
+        return $language;
+    }
+    private function formatLanguagePayload($request, $postCatalogue){
+        $payloadLanguage = $request->only($this->payloadLanguage());
+        //dd($payloadLanguage);
+        //dd($this->currentLanguage());
+        $payloadLanguage['canonical']=Str::slug($payloadLanguage['canonical']);
+        $payloadLanguage['language_id']=$this->currentLanguage();
+        $payloadLanguage['post_catalogue_id']=$postCatalogue->id;
+        //dd($payloadLanguage);
+        return $payloadLanguage;
+    }
+    
 }
 

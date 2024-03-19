@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->longText('content')->nullable();
-            $table->string('canonical')->unique();
+            $table->string('canonical')->nullable()->unique();
             $table->string('meta_title')->nullable();
             $table->string('meta_keyword')->nullable();
             $table->text('meta_description')->nullable();
