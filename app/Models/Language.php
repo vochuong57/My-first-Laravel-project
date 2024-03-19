@@ -18,7 +18,8 @@ class Language extends Model
         'publish',
         'user_id',
         'image',
-        'description'
+        'description',
+        'current'
     ];
 
     protected $table='languages';

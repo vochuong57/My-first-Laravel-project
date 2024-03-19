@@ -54,6 +54,7 @@ class PostController extends Controller
 
         $dropdown= $this->nestedset->Dropdown();
 
+        //dd($languages);
         return view('Backend.dashboard.layout', compact('template','config','posts','dropdown'));
     }
 

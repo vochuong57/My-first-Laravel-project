@@ -14,4 +14,5 @@ interface LanguageServiceInterface
     public function deleteLanguage($id);//xử lý xóa user Catalogue
     public function updateStatus($post=[]);//xử lý cập nhật tình trạng user Catalogue
     public function updateStatusAll($post=[]);//xử lý cập nhật tình trạng user Catalogue hàng loạt ở toolbox
+    public function switch($id);
 }

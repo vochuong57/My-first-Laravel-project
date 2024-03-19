@@ -64,5 +64,8 @@ class Kernel extends HttpKernel
         'signed' => \App\Http\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        //khai báo thêm middle ware tự tạo
+        'admin' => \App\Http\Middleware\AuthenticateMiddleware::class,
+        'locale' => \App\Http\Middleware\SetLocale::class,
     ];
 }

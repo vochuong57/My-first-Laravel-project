@@ -79,6 +79,14 @@ class BaseRepository implements BaseRepositoryInterface
     public function updateByWhereIn(string $whereInField='', array $whereIn=[], array $payload=[]){
         return $this->model->whereIn($whereInField, $whereIn)->update($payload);
     }
+    // Phương thức cập nhật WHERE (UPDATE)
+    public function updateByWhere(array $condition=[], array $payload=[]){
+        $query = $this->model->newQuery();
+        foreach($condition as $key => $val){
+            $query->where($val[0], $val[1], $val[2]);
+        }
+        return $query->update($payload);
+    }
     //Phương thức xóa mềm (DELETE) 
     public function delete(int $id=0){
         return $this->findById($id)->delete();
