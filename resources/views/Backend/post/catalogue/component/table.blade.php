@@ -39,7 +39,7 @@
                 <div class="info-item email"><?php //{{ $postCatalogue->description }} ?></div>
             </td> -->
             <td class="text-center js-switch-{{ $postCatalogue->id }}">
-                <input type="checkbox" class="js-switch status" value="{{ $postCatalogue->publish }}" data-field="publish" data-model="PostCatalogue" data-modelId="{{ $postCatalogue->id }}" {{ ($postCatalogue->publish==2)?'checked':'' }} >
+                <input type="checkbox" class="js-switch status" value="{{ $postCatalogue->publish }}" data-field="publish" data-model="{{ $config['model'] }}" data-modelId="{{ $postCatalogue->id }}" {{ ($postCatalogue->publish==2)?'checked':'' }} >
             </td>
             <td class="text-center">
                 <a href="{{ route('post.catalogue.edit', $postCatalogue->id) }}" class="btn btn-success"><i class="fa fa-edit"></i></a>
