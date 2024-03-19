@@ -19,7 +19,7 @@
         @foreach($users as $user)
         <tr>
             <td>
-                <input type="checkbox" value="" name="" id="checkAll" class="input-checkbox checkBoxItem">
+                <input type="checkbox" value="{{ $user->id }}" name="" class="input-checkbox checkBoxItem">
             </td>
             <td>
                 <span class="image img-cover"><img
@@ -38,8 +38,8 @@
             <td>
                 <div class="address-item name">{{ $user->address }}</div>
             </td>
-            <td class="text-center">
-                <input type="checkbox" class="js-switch" value="{{ $user->publish_at }}" {{ ($user->publish_at==1)?'checked':'' }} >
+            <td class="text-center js-switch-{{ $user->id }}">
+                <input type="checkbox" class="js-switch status" value="{{ $user->publish_at }}" data-field="publish_at" data-model="User" data-modelId="{{ $user->id }}" {{ ($user->publish_at==1)?'checked':'' }} >
             </td>
             <td class="text-center">
                 <a href="{{ route('user.edit', $user->id) }}" class="btn btn-success"><i class="fa fa-edit"></i></a>

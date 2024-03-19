@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\WardRepositoryInterface as WardRepository;
 use App\Repositories\Interfaces\DistrictRepositoryInterface as DistrictRepository;
 use App\Repositories\Interfaces\ProvinceRepositoryInterface as ProvinceRepository;
-//chèn thêm thư viện có sẵn Request để lấy thông tin value id từ option
+//chèn thêm thư viện có sẵn Request để lấy thông tin value id từ option mà ajax đã thiết lập
 use Illuminate\Http\Request;
 
 
