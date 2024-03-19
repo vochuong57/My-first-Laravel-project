@@ -1,5 +1,5 @@
 <?php
-
+// file này tự có khi mới tạo project laravel
 namespace App\Http\Controllers;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
