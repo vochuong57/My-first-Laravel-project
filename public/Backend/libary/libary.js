@@ -9,7 +9,7 @@
         })
     }
 
-    //Dùng trong form creat userv.v... để tạo bộ tọc cho select
+    //Dùng trong form creat userv.v... để tạo bộ lọc cho select option
     HT.select2=()=>{
         $('.setupSelect2').select2();
     }

@@ -8,5 +8,6 @@ namespace App\Services\Interfaces;
  */
 interface UserServiceInterface
 {
-    public function paginate();
+    public function paginate();//load dữ liệu user theo trang
+    public function createUser($request);//xử thêm user từ view
 }

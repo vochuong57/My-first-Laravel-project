@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use App\Services\Interfaces\UserServiceInterface as UserService;
 //chèn thêm tự viện ProvinceServiceInterface tự tạo để lấy thông tin province từ DB vào form
 use App\Repositories\Interfaces\ProvinceRepositoryInterface as ProvinceRepository;
+//chèn thêm thư viện tự tạo request để kiểm tra dữ liệu đầu vào khi thêm user
+use App\Http\Requests\StoreUserRequest;
 
 class UserController extends Controller
 {
@@ -36,7 +38,7 @@ class UserController extends Controller
         return view('Backend.dashboard.layout', compact('template','config','users'));
     }
 
-    
+    //giao diện thêm user
     public function create(){   
         $template='Backend.user.create';
 
@@ -57,7 +59,14 @@ class UserController extends Controller
         return view('Backend.dashboard.layout', compact('template','config','provinces'));
     }
 
-
+    //xử lý thêm user
+    public function store(StoreUserRequest $request){
+        if($this->userService->createUser($request)){
+            return redirect()->route('user.index')->with('success','Thêm mới thành viên thành công');
+        }
+           return redirect()->route('user.index')->with('error','Thêm mới thành viên thất bại. Hãy thử lại');
+        
+    }
     private function configIndex(){
         return[
             'js'=>[
@@ -73,7 +82,9 @@ class UserController extends Controller
         return[
             'js'=>[
                 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
-                'Backend/libary/location.js'
+                'Backend/libary/location.js',
+                'Backend/plugin/ckfinder/ckfinder.js',
+                'Backend/libary/finder.js'
             ],
             'css'=>[
                 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css',

@@ -9,4 +9,5 @@ namespace App\Repositories\Interfaces;
 interface UserRepositoryInterface
 {
     public function getAllPaginate();
+    public function create(array $payload =[]);
 }

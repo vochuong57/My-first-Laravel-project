@@ -21,5 +21,15 @@ class BaseRepository implements BaseRepositoryInterface
     public function all(){
         return $this->model->all();
     }
-   
+    public function findById(array $column=['*'], array $relation =[], int $id){
+        return $this->model->select($column)->with($relation)->findOrFail($id);
+        // select(các cột cần hiển thị) với những cột này thuộc về bảng with(bảng x) tìm được dữ liệu hay không dựa vào id khóa ngoại (của bảng y)
+        // trường hợp ở đây bảng y là provinces và bảng x là districts. Như vậy gọi phương thức này ở interface của bảng y provinces
+    }
+
+    //phương thức thêm (INSERT)
+    public function create(array $payload =[]){
+        $model= $this->model->create($payload);
+        return $model->fresh();
+    }
 }

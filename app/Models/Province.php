@@ -14,5 +14,12 @@ class Province extends Model
     ];
 
     //Khai báo một cái bảng
-    protected $table ='provinces';
+    protected $table ='provinces';//khai báo tên bảng,
+    protected $primaryKey='code';//khai báo khóa chính của province
+    public $incrementing=false;
+
+    //xử lí từ thành phố chọn huyện
+    public function districts(){//tên của function trùng với tên trong DB
+        return $this->hasMany(District::class, 'province_code', 'code');//nếu khóa ngoại tên khác thì thông báo khóa ngoại ở đây
+    }
 }
