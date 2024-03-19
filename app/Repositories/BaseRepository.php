@@ -21,12 +21,17 @@ class BaseRepository implements BaseRepositoryInterface
     public function all(){
         return $this->model->all();
     }
-    public function pagination(array $column=['*'],array $condition=[],array $join=[],array $extend=[],int $perpage=0){
+    public function pagination(array $column=['*'],array $condition=[],array $join=[],array $extend=[],int $perpage=0, array $relations=[]){
         $query=$this->model->select($column)->where(function($query) use($condition){
             if(isset($condition['keyword']) && !empty($condition['keyword'])){
                 $query->where('name', 'LIKE', '%'.$condition['keyword'].'%');
             }
         });
+        if(isset($relations)&&!empty($relations)){
+            foreach($relations as $relation){
+                $query->withCount($relation);
+            }
+        }
         if(!empty($join)){
             $query->join(...$join);
         }
@@ -56,8 +61,13 @@ class BaseRepository implements BaseRepositoryInterface
     public function delete(int $id=0){
         return $this->findById($id)->delete();
     }
-    //Phương thức xóa cứng (DELETE)
+    //Phương thức xóa cứng (FORCEDELETE)
     public function forceDelete(int $id=0){
         return $this->findById($id)->forceDelete();
-    } 
+    }
+    //Phương thức xóa WhereIn (DELETE/FORCEDELTE)
+    public function deleteByWhereIn(string $whereInField = '', array $whereIn = []) {
+        return $this->model->whereIn($whereInField, $whereIn)->forceDelete();
+    }
+    
 }

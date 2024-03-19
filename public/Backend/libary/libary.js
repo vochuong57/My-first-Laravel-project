@@ -6,7 +6,7 @@
     var _token=$('meta[name="csrf-token"]').attr('content');
     HT.switchery=()=>{
         $('.js-switch').each(function(){
-            var switchery = new Switchery(this, { color: '#1AB394' });
+            var switchery = new Switchery(this, { color: '#1AB394', size: 'small' });
         })
     }
 
@@ -17,7 +17,7 @@
         }
     }
 
-    //thay đổi trạng thái publish_at user
+    // V6 thay đổi trạng thái publish user
     HT.changeStatus = () => {
         if ($('.status').length) {
             $(document).on('change', '.status', function(){
@@ -40,7 +40,7 @@
                     success: function(res){
                         console.log(res);
                         // Sau khi AJAX được gửi thành công, cập nhật giá trị của currentValue
-                        currentValue = currentValue == 1 ? 0 : 1;
+                        currentValue = currentValue == 1 ? 2 : 1;
                         _this.val(currentValue); // Cập nhật giá trị của select
                     },
                     error: function(jqXHR, textStatus, errorThrown){
@@ -54,7 +54,7 @@
     }
     
 
-    //chọn tất cả các checkbox ở thead từ #checkAll
+    // V6 chọn tất cả các checkbox ở thead từ #checkAll
     HT.checkAll=()=>{
         if($('#checkAll').length){
             $(document).on('change', '#checkAll', function(){
@@ -72,7 +72,7 @@
         }
     }
 
-    //chọn từng checkboxItem từ tbody
+    // V6 chọn từng checkboxItem từ tbody
     HT.checkBoxItem=()=>{
         if($('.checkBoxItem').length){
             $(document).on('change','.checkBoxItem', function(){
@@ -93,6 +93,7 @@
         $('#checkAll').prop('checked', allChecked);
     }
 
+    // V6 Chức năng cập nhật hàng loạt trong tool box
     HT.changeStatusAll=()=>{
         if($('.changeStatusAll').length){
             $(document).on('click', '.changeStatusAll', function(e){
@@ -125,13 +126,60 @@
                         console.log(res);
                         if(res.flag==true){
                             let cssActive1='background-color: rgb(26, 179, 148); border-color: rgb(26, 179, 148); box-shadow: rgb(26, 179, 148) 0px 0px 0px 16px inset; transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s, background-color 1.2s ease 0s;';
-                            let cssActive2='left: 20px; background-color: rgb(255, 255, 255); transition: background-color 0.4s ease 0s, left 0.2s ease 0s;';
-                            if(option.value==1){
-                                for(let i=0;i<id.length;i++){
+                            let cssActive2='left: 10px; background-color: rgb(255, 255, 255); transition: background-color 0.4s ease 0s, left 0.2s ease 0s;';
+                            let cssUnActive1='background-color: rgb(255, 255, 255); border-color: rgb(223, 223, 223); box-shadow: rgb(223, 223, 223) 0px 0px 0px 0px inset; transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s;';
+                            let cssUnActive2='left: 0px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s;';
+                            for(let i =0;i<id.length;i++){
+                                if(option.value==2){
                                     $('.js-switch-'+id[i]).find('span.switchery').attr('style',cssActive1).find('small').attr('style', cssActive2)
-                                }
-                            }   
-                            
+                                    
+                                }else if(option.value==1){
+                                    $('.js-switch-'+id[i]).find('span.switchery').attr('style',cssUnActive1).find('small').attr('style', cssUnActive2)
+                                }   
+                            }
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown){
+                        console.log('Lỗi: '+jqXHR);
+                        console.log('Lỗi request: '+ textStatus);
+                        console.log('Lỗi nội dung: '+ errorThrown);
+                    }
+                });
+            })
+        }
+    }
+
+    //V7 xóa hàng loạt trong toolbox
+    HT.deleteAll=()=>{
+        if($('.deleteAll').length){
+            $(document).on('click','.deleteAll', function(e){
+                e.preventDefault();
+                let _this=$(this);
+                let id=[];
+                $('.checkBoxItem').each(function(){
+                    let checkBox=$(this)
+                    if(checkBox.prop('checked')){
+                        id.push(checkBox.val())
+                    }
+                })
+                let option={
+                    'model': _this.attr('data-model'),
+                    'id': id,
+                    '_token': _token
+                }
+                //console.log(option)
+                //return false;
+                $.ajax({
+                    url: 'ajax/dashboard/deleteAll',
+                    type: 'POST',
+                    data: option,
+                    dataType: 'json',
+                    success: function(res){
+                        console.log(res);
+                        if(res.flag==true){
+                            for(let i =0;i<id.length;i++){
+                                $('.rowdel-'+id[i]).remove();
+                            }
                         }
                     },
                     error: function(jqXHR, textStatus, errorThrown){
@@ -159,7 +207,11 @@
         HT.checkAll();
         HT.checkBoxItem();
 
+        // Chức năng cập nhật cột publish user hàng loạt trong tool box
         HT.changeStatusAll();
+
+        // Chức năng xóa hàng loạt user trong toolboox
+        HT.deleteAll();
     })
 
 })(jQuery)

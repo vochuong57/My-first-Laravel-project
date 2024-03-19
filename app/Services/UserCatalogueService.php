@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Services\Interfaces\UserServiceInterface;
-use App\Repositories\Interfaces\UserRepositoryInterface as UserRepository;
+use App\Services\Interfaces\UserCatalogueServiceInterface;
+use App\Repositories\Interfaces\UserCatalogueRepositoryInterface as UserCatalogueRepository;
 //thêm thư viện cho việc xử lý INSERT
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -17,15 +17,17 @@ use Illuminate\Support\Facades\Hash;
  * Class UserService
  * @package App\Services
  */
-class UserService implements UserServiceInterface
+class UserCatalogueService implements UserCatalogueServiceInterface
 {
-    protected $userRepository;
+    protected $userCatalogueRepository;
 
-    public function __construct(UserRepository $userRepository){
-        $this->userRepository=$userRepository;
+    public function __construct(UserCatalogueRepository $userCatalogueRepository){
+        $this->userCatalogueRepository=$userCatalogueRepository;
     }
 
     public function paginate($request){//$request để tiến hành chức năng tìm kiếm
+        //dd($request);
+        //echo 123; die();
         $condition['keyword']=addslashes($request->input('keyword'));
         $condition['publish']=$request->input('publish');
         // Kiểm tra nếu giá trị publish là 0, thì gán lại thành null
@@ -34,18 +36,17 @@ class UserService implements UserServiceInterface
         }
         //dd($condition);
         $perpage=$request->integer('perpage', 20);
-        $users=$this->userRepository->pagination(['id','email','phone','address','name','image','publish'], $condition,[], ['path'=> 'user/index'], $perpage);
-        return $users;
+        $userCatalogues=$this->userCatalogueRepository->pagination(['id','name','description','publish'], $condition,[], ['path'=> 'user/catalogue/index'], $perpage,['users']);
+        //dd($userCatalogues);
+        return $userCatalogues;
     }
-    public function createUser($request){
+    public function createUserCatalogue($request){
         DB::beginTransaction();
         try{
-            $payload = $request->except('_token','send','repassword');//lấy tất cả ngoại trừ hai trường này thay vì dùng input là lấy tất cả
-            //$payload['birthday']=$this->convertBirthdayDate($payload['birthday']);
-            $payload['password']=Hash::make($payload['password']);
+            $payload = $request->except('_token','send');//lấy tất cả ngoại trừ hai trường này thay vì dùng input là lấy tất cả
             //dd($payload);
 
-            $user=$this->userRepository->create($payload);
+            $userCatalogue=$this->userCatalogueRepository->create($payload);
             //dd($user);
 
             DB::commit();
@@ -57,14 +58,15 @@ class UserService implements UserServiceInterface
         }
     }
 
-    public function updateUser($id, $request){
+    public function updateUserCatalogue($id, $request){
         DB::beginTransaction();
         try{
             $payload = $request->except('_token','send');//lấy tất cả ngoại trừ hai trường này thay vì dùng input là lấy tất cả
             //$payload['birthday']=$this->convertBirthdayDate($payload['birthday']);
             //dd($payload);
 
-            $user=$this->userRepository->update($id, $payload);
+            $userCatalogue=$this->userCatalogueRepository->update($id, $payload);
+            //echo 1; die();
             //dd($user);
 
             DB::commit();
@@ -80,10 +82,10 @@ class UserService implements UserServiceInterface
         $birthday=$carbonDate->format('Y-m-d H:i:s');
         return $birthday;
     }
-    public function deleteUser($id){
+    public function deleteUserCatalogue($id){
         DB::beginTransaction();
         try{
-            $user=$this->userRepository->forceDelete($id);
+            $userCatalogue=$this->userCatalogueRepository->delete($id);
 
             DB::commit();
             return true;
@@ -100,7 +102,7 @@ class UserService implements UserServiceInterface
             $payload[$post['field']]=(($post['value']==1)?2:1);
             
             //dd($payload);
-            $user=$this->userRepository->update($post['modelId'], $payload);
+            $userCatalogue=$this->userCatalogueRepository->update($post['modelId'], $payload);
             //echo 1; die();
             DB::commit();
             return true;
@@ -119,7 +121,7 @@ class UserService implements UserServiceInterface
             $payload[$post['field']]=$post['value'];
             
             //dd($payload);
-            $user=$this->userRepository->updateByWhereIn('id', $post['id'], $payload);
+            $userCatalogues=$this->userCatalogueRepository->updateByWhereIn('id', $post['id'], $payload);
             //echo 1; die();
             DB::commit();
             return true;
@@ -132,7 +134,7 @@ class UserService implements UserServiceInterface
     public function deleteAll($post=[]){
         DB::beginTransaction();
         try{
-            $user=$this->userRepository->deleteByWhereIn('id',$post['id']);
+            $userCatalogues=$this->userCatalogueRepository->deleteByWhereIn('id',$post['id']);
             //echo 1; die();
             DB::commit();
             return true;

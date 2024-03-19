@@ -64,10 +64,23 @@
                                 <div class="form-row">
                                     <label for="" class="control-label text-left">Nhóm thành viên: <span class="text-danger">(*)</span></label>
                                     <select name="user_catalogue_id" id="" class="form-control setupSelect2">
-                                        <option value="0">[Chọm nhóm thành viên]</option>
-                                        <option value="1">Quản trị viên</option>
-                                        <option value="2">Cộng tác viên viên</option>
+                                        <option value="0">[Chọn nhóm thành viên]</option>
+                                        @php
+                                            if(isset($user)) {
+                                                $userCatalogueId = $user->user_catalogue_id; // Lấy giá trị user_catalogue_id từ biến $user
+                                                $userCatalogue = \App\Models\UserCatalogue::find($userCatalogueId); // Tìm kiếm thông tin của user_catalogue dựa trên id
+                                            }
+                                        @endphp
+
+                                        @if(isset($userCatalogues))
+                                            @foreach($userCatalogues as $catalogue)
+                                                <option value="{{ $catalogue->id }}" {{ old('user_catalogue_id', $user->user_catalogue_id ?? null) == $catalogue->id ? 'selected' : '' }}>
+                                                    {{ $catalogue->name }}
+                                                </option>
+                                            @endforeach
+                                        @endif
                                     </select>
+
                                 </div>
                             </div>
                             <div class="col-lg-6">

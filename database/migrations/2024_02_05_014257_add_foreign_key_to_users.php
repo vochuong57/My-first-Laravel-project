@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->tinyInteger('publish_at')->default(0);
+            $table->foreign('user_catalogue_id')->references('id')->on('user_catalogues');
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('publish_at');
+            $table->dropForeign(['user_catalogue_id']);
         });
     }
 };

@@ -39,6 +39,16 @@ class DashboardController extends Controller
         $flag=$serviceInstance->updateStatusAll($post);
         return response()->json(['flag'=>$flag]);
     }
+    public function deleteAll(Request $request){
+        $post=$request->input();
+        //dd($post);
+        $serviceInterfaceNamespace='\App\Services\\'.ucfirst($post['model']).'Service';
+        if(class_exists($serviceInterfaceNamespace)){
+            $serviceInstance=app($serviceInterfaceNamespace);
+        }
+        $flag=$serviceInstance->deleteAll($post);
+        return response()->json(['flag'=>$flag]);
+    }
     public function renderHTML(){
 
     }

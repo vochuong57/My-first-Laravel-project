@@ -3,63 +3,55 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-
 use Illuminate\Http\Request;
 //chèn thêm thư viện userInterface tự tạo để lấy thông tin user từ DB vào form
-use App\Services\Interfaces\UserServiceInterface as UserService;
-//chèn thêm tự viện ProvinceServiceInterface tự tạo để lấy thông tin province từ DB vào form
-use App\Repositories\Interfaces\ProvinceRepositoryInterface as ProvinceRepository;
+use App\Services\Interfaces\UserCatalogueServiceInterface as UserCatalogueService;
 //chèn thêm thư viện tự tạo request để kiểm tra dữ liệu đầu vào khi thêm user
-use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\StoreUserCatalogueRequest;
 //chèn thêm viện userRepositoryInterface để lấy function findById để truy xuất dữ liệu của id vừa nhập
-use App\Repositories\Interfaces\UserRepositoryInterface as UserRepository;
-//chèn thêm thư viện tự tạo request để kiểm tra dữ liệu đầu vào khi edit user
-use App\Http\Requests\UpdateUserRequest;
-//use App\Models\User;
-//chén thêm thư viện của userCatalogueRepository để lấy thông tin nhóm thành viên cho form thêm
 use App\Repositories\Interfaces\UserCatalogueRepositoryInterface as UserCatalogueRepository;
+//chèn thêm thư viện tự tạo request để kiểm tra dữ liệu đầu vào khi edit user
+use App\Http\Requests\UpdateUserCatalogueRequest;
+//use App\Models\User;
 
 
-
-class UserController extends Controller
+class UserCatalogueController extends Controller
 {
-    protected $userService;
-    protected $provinceRepository;
-    protected $userRepository;
+    protected $userCatalogueService;
     protected $userCatalogueRepository;
 
-    public function __construct(UserService $userService, ProvinceRepository $provinceRepository, UserRepository $userRepository, UserCatalogueRepository $userCatalogueRepository){
-        $this->userService=$userService;//định nghĩa  $this->userService=$userService để biến này nó có thể trỏ tới các phương tức của UserService
-        $this->provinceRepository=$provinceRepository;
-        $this->userRepository=$userRepository;
+    public function __construct(UserCatalogueService $userCatalogueService, UserCatalogueRepository $userCatalogueRepository){
+        $this->userCatalogueService=$userCatalogueService;//định nghĩa  $this->userService=$userCatalogueService để biến này nó có thể trỏ tới các phương tức của UserCatalogueService
         $this->userCatalogueRepository=$userCatalogueRepository;
     }
     //giao diện tổng
     public function index(Request $request){//Request $request để tiến hành chức năng tìm kiếm
         //$users=User::paginate(20);//từ khóa tìm kiếm eloquent
 
+        //echo 123; die();
+
         //Lấy dữ liệu các mảng là các đường dẫn js và css ở function config phía dưới lưu vào biến $config
         $config=$this->configIndex();
 
         //biến template là nới lưu đường dẫn main của từng dao diện
-        $template='Backend.user.user.index';
+        $template='Backend.user.catalogue.index';
 
         //chèn thêm mảng 'seo' vào biến config để mảng 'seo' này lấy toàn bộ giá trị của folder config/apps/user.php
-        $config['seo']=config('apps.user.index');
+        $config['seo']=config('apps.userCatalogue.index');
 
         //Đổ dữ liệu User từ DB vào form theo mô hình service và repository
-        $users = $this->userService->paginate($request);//$request để tiến hành chức năng tìm kiếm
-
-        return view('Backend.dashboard.layout', compact('template','config','users'));
+        $userCatalogues = $this->userCatalogueService->paginate($request);//$request để tiến hành chức năng tìm kiếm
+        //dd($userCatalogues);
+        return view('Backend.dashboard.layout', compact('template','config','userCatalogues'));
     }
 
     //giao diện thêm user
     public function store(){   
-        $template='Backend.user.user.store';
+        $template='Backend.user.catalogue.store';
 
         $config=$this->configCUD();
 
-        $config['seo']=config('apps.user.create');
+        $config['seo']=config('apps.userCatalogue.create');
 
         $config['method']='create';
 
@@ -69,27 +61,24 @@ class UserController extends Controller
         // ];
         // dd($location);
 
-        //lấy dữ liệu địa chỉ địa lý VN
-        $provinces=$this->provinceRepository->all();
+       
         //dd($provinces);
 
-        $userCatalogues=$this->userCatalogueRepository->all();
-
-        return view('Backend.dashboard.layout', compact('template','config','provinces','userCatalogues'));
+        return view('Backend.dashboard.layout', compact('template','config'));
     }
 
     //xử lý thêm user
-    public function create(StoreUserRequest $request){
-        if($this->userService->createUser($request)){
-            return redirect()->route('user.index')->with('success','Thêm mới thành viên thành công');
+    public function create(StoreUserCatalogueRequest $request){
+        if($this->userCatalogueService->createUserCatalogue($request)){
+            return redirect()->route('user.catalogue.index')->with('success','Thêm mới nhóm thành viên thành công');
         }
-           return redirect()->route('user.index')->with('error','Thêm mới thành viên thất bại. Hãy thử lại');
+           return redirect()->route('user.catalogue.index')->with('error','Thêm mới nhóm thành viên thất bại. Hãy thử lại');
         
     }
     //giao diện sửa user
     public function edit($id){
         //echo $id;
-        $template='Backend.user.user.store';
+        $template='Backend.user.catalogue.store';
 
         $config=$this->configCUD();
 
@@ -97,47 +86,42 @@ class UserController extends Controller
 
         $config['method']='edit';//kiểm tra metho để thay đổi giao diện cho phù hợp
 
-        $provinces=$this->provinceRepository->all();
-        //dd($provinces);
-
         //truy vấn thông tin
-        $user=$this->userRepository->findById($id);
+        $userCatalogue=$this->userCatalogueRepository->findById($id);
         //dd($user); die();
 
-        $userCatalogues=$this->userCatalogueRepository->all();
-
-        return view('Backend.dashboard.layout', compact('template','config','provinces','user','userCatalogues'));
+        return view('Backend.dashboard.layout', compact('template','config','userCatalogue'));
     }
     //xử lý sửa user
-    public function update($id, UpdateUserRequest $request){
+    public function update($id, UpdateUserCatalogueRequest $request){
         //echo $id; die();
         //dd($request);
-        if($this->userService->updateUser($id, $request)){
-            return redirect()->route('user.index')->with('success','Cập nhật thành viên thành công');
+        if($this->userCatalogueService->updateUserCatalogue($id, $request)){
+            return redirect()->route('user.catalogue.index')->with('success','Cập nhật nhóm thành viên thành công');
         }
-           return redirect()->route('user.index')->with('error','Cập nhật thành viên thất bại. Hãy thử lại');
+           return redirect()->route('user.catalogue.index')->with('error','Cập nhật nhóm thành viên thất bại. Hãy thử lại');
     }
     //giao diện xóa user
     public function destroy($id){
-        $template='Backend.user.user.destroy';
+        $template='Backend.user.catalogue.destroy';
 
         $config=$this->configCUD();
 
         $config['seo']=config('apps.user.delete');
 
         //truy vấn thông tin
-        $user=$this->userRepository->findById($id);
+        $userCatalogue=$this->userCatalogueRepository->findById($id);
         //dd($user); die();
 
-        return view('Backend.dashboard.layout', compact('template','config','user'));
+        return view('Backend.dashboard.layout', compact('template','config','userCatalogue'));
     }
     //xử lý xóa user
     public function delete($id){
         //echo $id;
-        if($this->userService->deleteUser($id)){
-            return redirect()->route('user.index')->with('success','Xóa thành viên thành công');
+        if($this->userCatalogueService->deleteUserCatalogue($id)){
+            return redirect()->route('user.catalogue.index')->with('success','Xóa nhóm thành viên thành công');
         }
-           return redirect()->route('user.index')->with('error','Xóa thành viên thất bại. Hãy thử lại');
+           return redirect()->route('user.catalogue.index')->with('error','Xóa nhóm thành viên thất bại. Hãy thử lại');
     }
     private function configIndex(){
         return[

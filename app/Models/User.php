@@ -34,7 +34,7 @@ class User extends Authenticatable
         'user_agent',
         'ip',
         'user_catalogue_id',
-        'publish_at'
+        'publish'
     ];
 
     /**
@@ -56,4 +56,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function user_catalogues(){
+        return $this->belongsTo(UserCatalogue::class,'user_catalogue_id', 'id');
+    }
 }
