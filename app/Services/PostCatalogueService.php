@@ -26,12 +26,12 @@ use Illuminate\Support\Str;
 class PostCatalogueService extends BaseService implements PostCatalogueServiceInterface
 {
     protected $postCatalogueRepository;
-    //protected $userRepository;
+    protected $language;    
     protected $nestedset;
 
     public function __construct(PostCatalogueRepository $postCatalogueRepository){
         $this->postCatalogueRepository=$postCatalogueRepository;
-        //$this->userRepository=$userRepository;
+        $this->language=$this->currentLanguage();
         $this->nestedset=new Nestedsetbie([
             'table'=>'post_catalogues',
             'foreignkey'=>'post_catalogue_id',
@@ -48,6 +48,9 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
         if ($condition['publish'] == '0') {
             $condition['publish'] = null;
         }
+        $condition['where']=[
+            ['tb2.language_id', '=', $this->language],
+        ];
         //dd($condition);
         $perpage=$request->integer('perpage', 20);
         $postCatalogues=$this->postCatalogueRepository->pagination(
@@ -270,6 +273,9 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
             'meta_description',
             'canonical'
         ];
+    }
+    public function currentLanguage(){
+        return 1;
     }
 }
 

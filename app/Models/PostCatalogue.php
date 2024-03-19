@@ -42,8 +42,7 @@ class PostCatalogue extends Model
         )->withTimestamps();
     }
 
-    //CHỨC NĂNG HIỂN THỊ
-    //để tiến hành lấy dữ liệu ra để tạo tính năng cập nhật bằng function findById khi cần lấy dữ liệu từ 2 bảng đổ vào cùng 1 form thì ta cần khai báo mỗi quan hệ 1-n cho nó
+    //thêm mối quan hệ cho bảng post_catalogue_language để mà lấy ra được tên của post_catalogue dựa vào id truyền tới khi cần vd sử hiện tên nhóm bài viết cho từng bài viết trong post/post/table
     public function post_catalogue_language(){
         return $this->hasMany(PostCatalogueLanguage::class, 'post_catalogue_id', 'id');
     }

@@ -50,8 +50,11 @@ class PostController extends Controller
 
         //Đổ dữ liệu User từ DB vào form theo mô hình service và repository
         $posts = $this->postService->paginate($request);//$request để tiến hành chức năng tìm kiếm
-        //dd($userCatalogues);
-        return view('Backend.dashboard.layout', compact('template','config','posts'));
+        //dd($posts);
+
+        $dropdown= $this->nestedset->Dropdown();
+
+        return view('Backend.dashboard.layout', compact('template','config','posts','dropdown'));
     }
 
     //giao diện thêm user

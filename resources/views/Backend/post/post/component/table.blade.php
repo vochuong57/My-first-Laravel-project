@@ -30,7 +30,7 @@
                 <div class="uk-flex uk-flex-middle">
                     <div class="image mr5">
                         <div class="img-cover image-post">
-                            <img src="{{ $post->image }}" alt="">
+                            <img src="{{ $post->image ?? 'Backend/img/not-found.png' }}" alt="">
                         </div>
                     </div>
                     <div class="main-info">
@@ -40,7 +40,7 @@
 
                         <div class="catalogue">
                             <span class="text-danger">Nhóm hiển thị</span>
-                            @foreach($post->post_catalogues as $val)
+                            @foreach($post->post_catalogues as $val)// '->post_catalogues' là function post_catalogues của Model/Post có LQ theo đường PostRepository
                             @foreach($val->post_catalogue_language as $cat)
                             <a href="{{ route('post.index', ['post_catalogue_id'=>$val->id]) }}">{{ $cat->name }}</a>
                             @endforeach

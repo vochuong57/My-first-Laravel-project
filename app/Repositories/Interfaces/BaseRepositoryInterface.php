@@ -16,7 +16,8 @@ interface BaseRepositoryInterface
         array $extend=[],
         array $orderBy=['id', 'DESC'],
         array $join=[],
-        array $relations=[]
+        array $relations=[],
+        array $rawQuery = []
     );
     public function findById(int $id, array $column=['*'], array $relation =[]);
     public function findTableById(int $id = 0);

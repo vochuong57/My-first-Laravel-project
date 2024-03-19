@@ -28,13 +28,19 @@ class BaseRepository implements BaseRepositoryInterface
         array $extend=[],
         array $orderBy=['id', 'DESC'],
         array $join=[],
-        array $relations=[]
+        array $relations=[],
+        array $rawQuery = []
         ){
         $query=$this->model->select($column)->where(function($query) use($condition){
             if(isset($condition['keyword']) && !empty($condition['keyword'])){
                 $query->where('name', 'LIKE', '%'.$condition['keyword'].'%');
             }
         });
+        if(isset($rawQuery['whereRaw']) && count($rawQuery['whereRaw'])){
+            foreach($rawQuery['whereRaw'] as $key => $val){
+                $query->whereRaw($val[0], $val[1]);
+            }
+        }
         if(isset($relations)&&!empty($relations)){
             foreach($relations as $relation){
                 $query->withCount($relation);
@@ -44,6 +50,9 @@ class BaseRepository implements BaseRepositoryInterface
             foreach($join as $key =>$val){
                 $query->join($val[0],$val[1],$val[2],$val[3]);
             }
+        }
+        if(isset($extend['groupBy']) && !empty($extend['groupBy'])){
+            $query->groupBy($extend['groupBy']);
         }
         if(isset($orderBy)&&!empty($orderBy)){
             $query->orderBy($orderBy[0], $orderBy[1]);
