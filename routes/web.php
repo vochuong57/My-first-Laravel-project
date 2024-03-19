@@ -14,6 +14,7 @@ use App\Http\Controllers\Backend\UserController;//hiện thị trang người d�
 use App\Http\Controllers\Backend\UserCatalogueController;
 use App\Http\Controllers\Backend\LanguageController;
 use App\Http\Controllers\Backend\PostCatalogueController;
+use App\Http\Controllers\Backend\PostController;
 
 
 //thư viện AJAX
@@ -107,4 +108,18 @@ Route::group(['prefix'=>'post/catalogue'], function(){
 
     Route::get('{id}/destroy',[PostCatalogueController::class, 'destroy'])->name('post.catalogue.destroy')->where(['id'=>'[0-9]+'])->middleware(AuthenticateMiddleware::class);//hiển thị form xóa user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
     Route::post('{id}/delete',[PostCatalogueController::class, 'delete'])->name('post.catalogue.delete')->where(['id'=>'[0-9]+'])->middleware(AuthenticateMiddleware::class);//Thực thi xử lý xóa user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+});
+
+//PostCatalogueController (Trang quản lí bài viết)
+Route::group(['prefix'=>'post'], function(){
+    Route::get('index',[PostController::class, 'index'])->name('post.index')->middleware(AuthenticateMiddleware::class);//hiển thị form user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+    
+    Route::get('store',[PostController::class, 'store'])->name('post.store')->middleware(AuthenticateMiddleware::class);//hiển thị form thêm user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+    Route::post('create',[PostController::class, 'create'])->name('post.create')->middleware(AuthenticateMiddleware::class);//thực thi xử lý thêm user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+    
+    Route::get('{id}/edit',[PostController::class, 'edit'])->name('post.edit')->where(['id'=>'[0-9]+'])->middleware(AuthenticateMiddleware::class);//hiển thị form cập nhật user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+    Route::post('{id}/update',[PostController::class, 'update'])->name('post.update')->where(['id'=>'[0-9]+'])->middleware(AuthenticateMiddleware::class);//Thực thi xử lý cập nhật user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+
+    Route::get('{id}/destroy',[PostController::class, 'destroy'])->name('post.destroy')->where(['id'=>'[0-9]+'])->middleware(AuthenticateMiddleware::class);//hiển thị form xóa user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+    Route::post('{id}/delete',[PostController::class, 'delete'])->name('postdelete')->where(['id'=>'[0-9]+'])->middleware(AuthenticateMiddleware::class);//Thực thi xử lý xóa user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
 });

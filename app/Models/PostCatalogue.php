@@ -48,6 +48,11 @@ class PostCatalogue extends Model
         return $this->hasMany(PostCatalogueLanguage::class, 'post_catalogue_id', 'id');
     }
 
+    //thêm mối quan hệ cho bảng posts
+    public function posts(){
+        return $this->belongsToMany(Post::class, 'post_catalogue_post', 'post_catalogue_id', 'post_id');
+    }
+
     //CHỨC NĂNG XÓA
     public static function isNodeCheck($id = 0){
         //echo $id; die();

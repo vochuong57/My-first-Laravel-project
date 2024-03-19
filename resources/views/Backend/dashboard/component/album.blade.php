@@ -5,10 +5,13 @@
             <div class="upload-album"><a href="" class="upload-picture">Chọn Hình</a></div>
         </div>
     </div>
+    @php
+        $gallery= (isset($album) && count($album)) ? $album : old('album')
+    @endphp
     <div class="ibox-content">
         <div class="row">
             <div class="col-lg-12">
-                @if(!isset($album)||count($album)==0)
+                @if(!isset($gallery)||count($gallery)==0)
                 <div class="click-to-upload">
                     <div class="icon">
                         <a href="" class="upload-picture">
@@ -25,11 +28,11 @@
                     <div class="small-text">Sử dụng nút chọn hình hoặc click vào đây để thêm hình ảnh</div>
                 </div>
                 @endif
-                @if(isset($album)&&count($album))
-                <div class="upload-list {{ (count($album)) ? '' : 'hidden' }}">
+                @if(isset($gallery)&&count($gallery))
+                <div class="upload-list {{ (count($gallery)) ? '' : 'hidden' }}">
                     <div class="row">
                         <ul id="sortable" class="clearfix data-album sortui ui-sortable">
-                            @foreach($album as $key => $val)
+                            @foreach($gallery as $key => $val)
                             <li class="ui-state-default">
                                 <div class="thumb">
                                     <span class="span image img-scaledown">
