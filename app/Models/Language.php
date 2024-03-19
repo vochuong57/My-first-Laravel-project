@@ -24,6 +24,7 @@ class Language extends Model
 
     protected $table='languages';
 
+    //comment vì chung ta chỉ sử dụng phương thức languages() này ở trong models/PostCatalogue thôi
     // public function languages(){//tạo phương thức languages này để tiến hành thêm dữ liệu của 2 bảng 'language_id', 'post_catalogue_id' vào trong bảng post_catalogue_language
     //     return $this->belongsToMany(PostCatalogue::class, 'post_catalogue_language', 'language_id', 'post_catalogue_id')
     //     ->withPivot(

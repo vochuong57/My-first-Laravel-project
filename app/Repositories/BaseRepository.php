@@ -18,8 +18,8 @@ class BaseRepository implements BaseRepositoryInterface
     public function __construct(Model $model){
         $this->model=$model;
     }
-    public function all(){
-        return $this->model->all();
+    public function all(array $relation = []){
+        return $this->model->with($relation)->get();
     }
     public function pagination(
         array $column=['*'],
@@ -62,8 +62,8 @@ class BaseRepository implements BaseRepositoryInterface
     public function findById(int $id, array $column=['*'], array $relation =[]){
         return $this->model->select($column)->with($relation)->findOrFail($id);
     }
-    public function findModuleId(int $id = 0){//find basic and weak
-        return $this->model->where('module_id','=',$id)->get();
+    public function findWhereIn(string $column='', array $ids = []){//dùng khi có một mảng id
+        return $this->model->whereIn($column, $ids)->get();
     }
     public function findByCondition(array $condition = []){
         $query = $this->model->newQuery();
@@ -92,6 +92,7 @@ class BaseRepository implements BaseRepositoryInterface
         foreach($condition as $key => $val){
             $query->where($val[0], $val[1], $val[2]);
         }
+        //echo $query->toSql(); die();
         return $query->update($payload);
     }
     //Phương thức xóa mềm (DELETE) 

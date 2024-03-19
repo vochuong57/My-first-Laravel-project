@@ -10,33 +10,33 @@
     </div>
 @endif
 
-<form action="{{ route('post.catalogue.delete',$postCatalogue->id) }}" method="post" class="box">
+<form action="{{ route('permission.delete',$permission->id) }}" method="post" class="box">
     @csrf
     <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
             <div class="col-lg-5">
                 <div class="panel-head">
-                    <div class="panel-title">{{ __('messages.general') }}</div>
+                    <div class="panel-title">{{ __('messages.destroy') }}</div>
                     <div class="panel-description">
-                        <p>{{ __('messages.destroy_panel_description_postCatalogue_1') }} <span style="color: red">{{ $postCatalogue->name }}</span></p>
-                        <p>{{ __('messages.destroy_panel_description_1') }} <span class="text-danger">{{ __('messages.destroy_panel_description_2') }}</span> {{ __('messages.destroy_panel_description_postCatalogue_2') }} <br> {{ __('messages.destroy_panel_description_3') }}</p>
+                        <p>{{ __('messages.destroy_panel_description_permission_1') }} <span style="color: red">{{ $permission->name }}</span></p>
+                        <p>{{ __('messages.destroy_panel_description_1') }} <span class="text-danger">{{ __('messages.destroy_panel_description_2') }}</span> {{ __('messages.destroy_panel_description_permission_2') }} <br> {{ __('messages.destroy_panel_description_3') }}</p>
                     </div>
                 </div>
             </div>
             <div class="col-lg-7">
                 <div class="ibox">
                     <div class="ibox-title">
-                        <h5>{{ __('messages.destroy') }}</h5>
+                        <h5>Thông tin chung</h5>
                     </div>
                     <div class="ibox-content">
                     <div class="row mb15">
                             <div class="col-lg-6">
                                 <div class="form-row">
-                                    <label for="" class="control-label text-left">{{ __('messages.destroyPostCatalogue_name') }} <span class="text-danger">(*)</span></label>
+                                    <label for="" class="control-label text-left">Tên ngôn ngữ: <span class="text-danger">(*)</span></label>
                                     <input 
                                     type="text"
                                     name="name"
-                                    value="{{ old('name', ($postCatalogue->name)??'') }}"
+                                    value="{{ old('name', ($permission->name)??'') }}"
                                     class="form-control"
                                     placeholder=""
                                     autocomplete="off"
@@ -49,7 +49,7 @@
                                     <input 
                                     type="text"
                                     name="canonical"
-                                    value="{{ old('canonical', ($postCatalogue->canonical)??'') ? config('app.url').old('canonical', ($postCatalogue->canonical)??'').config('apps.general.suffix') :  __('messages.seo_canonical') }}"
+                                    value="{{ old('canonical', ($permission->canonical)??'') }}"
                                     class="form-control"
                                     placeholder=""
                                     autocomplete="off"
@@ -57,6 +57,7 @@
                                 </div>
                             </div>
                         </div>
+                       
                     </div>
                 </div>
             </div>

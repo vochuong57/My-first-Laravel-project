@@ -4,11 +4,11 @@
             <th>
                 <input type="checkbox" value="" name="" id="checkAll" class="input-checkbox">
             </th>
-            <th>Tên nhóm</th>
-            <th>Số thành viên</th>
-            <th>Mô tả nhóm</th>
-            <th class="text-center">Tình trạng</th>
-            <th class="text-center">Thao tác</th>
+            <th>{{ __('messages.tableUserCatalogue_name') }}</th>
+            <th>{{ __('messages.tableUserCatalogue_count') }}</th>
+            <th>{{ __('messages.tableUserCatalogue_description') }}</th>
+            <th class="text-center">{{ __('messages.tableUserCatalogue_publish') }}</th>
+            <th class="text-center">{{ __('messages.tableUserCatalogue_action') }}</th>
         </tr>
     </thead>
     <tbody>

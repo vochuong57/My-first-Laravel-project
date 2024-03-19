@@ -186,4 +186,23 @@ class UserCatalogueService implements UserCatalogueServiceInterface
             'id','name','description','publish'
         ];
     }
+
+    public function setPermission($request){
+        //mục đích đưa được dữ liệu vào bên trong bảng user_catalogue_permission
+        DB::beginTransaction();
+        try{
+            $permissions = $request->input('permission');
+            //dd($permission);
+            foreach($permissions as $key => $val){
+                $userCatalogue = $this->userCatalogueRepository->findById($key);
+                $userCatalogue->permissions()->sync($val);
+            }
+            DB::commit();
+            return true;
+        }catch(\Exception $ex){
+            DB::rollBack();
+            echo $ex->getMessage();//die();
+            return false;
+        }
+    }
 }

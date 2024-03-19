@@ -22,8 +22,8 @@ class UpdateLanguageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'=>'required|string|regex:/^[^\d]+$/',
-            'canonical'=>'required|unique:languages|string|regex:/^[^\d]+$/'
+            'name'=>'required|string',
+            'canonical'=>'required|unique:languages,canonical, '.$this->id.'|string'
         ];
     }
 
@@ -31,13 +31,11 @@ class UpdateLanguageRequest extends FormRequest
     {
         return [
           
-            'name.required'=>'Bạn chưa nhập họ tên',
-            'name.string'=>'Tên phải là dạng ký tự',
-            'name.regex'=>'Tên không được chứa ký tự số',
+            'name.required'=>'Bạn chưa nhập tên ngôn ngữ',
+            'name.string'=>'Tên ngôn ngữ phải là dạng ký tự',
             'canonical.required'=>'Bạn chưa nhập canonical',
             'canonical.unique'=>'Canonical này đã tồn tại hãy nhập lại canonical khác',
             'canonical.string'=>'Canonical phải là dạng ký tự',
-            'canonical.regex'=>'Canonical không được chứa ký tự số'
         ];
     }
 }

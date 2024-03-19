@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreLanguageRequest extends FormRequest
+class StorePermissionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,20 +22,18 @@ class StoreLanguageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'=>'required|string|regex:/^[^\d]+$/',
-            'canonical'=>'required|unique:languages|string|regex:/^[^\d]+$/'
+            'name'=>'required|string',
+            'canonical'=>'required|unique:permissions|string'
         ];
     }
     public function messages(): array
     {
         return [
-            'name.required'=>'Bạn chưa nhập tên ngôn ngữ',
-            'name.string'=>'Tên ngôn ngữ phải là dạng ký tự',
-            'name.regex'=>'Tên ngôn ngữ không được chứa ký tự số',
+            'name.required'=>'Bạn chưa nhập tên quyền',
+            'name.string'=>'Tên quyền phải là dạng ký tự',
             'canonical.required'=>'Bạn chưa nhập canonical',
             'canonical.unique'=>'Canonical này đã tồn tại hãy nhập lại canonical khác',
             'canonical.string'=>'Canonical phải là dạng ký tự',
-            'canonical.regex'=>'Canonical không được chứa ký tự số'
         ];
     }
 }

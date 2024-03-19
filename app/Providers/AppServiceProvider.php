@@ -27,11 +27,16 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\PostServiceInterface' => 'App\Services\PostService',
         'App\Repositories\Interfaces\PostRepositoryInterface' => 'App\Repositories\PostRepository',
         
+        //xử lí quản lý routers
         'App\Repositories\Interfaces\RouterRepositoryInterface' => 'App\Repositories\RouterRepository',
 
-        'App\Repositories\Interfaces\PostCatalogueLanguageRepositoryInterface' => 'App\Repositories\PostCatalogueLanguageRepository',
+        'App\Repositories\Interfaces\PostCatalogueLanguageRepositoryInterface' => 'App\Repositories\PostCatalogueLanguageRepository',//ở đây tôi muốn khi xóa thì dữ liệu canonical ở bảng này sẽ bị null để vẫn thấy được các thông tin cũ và để khi thêm thông tin mới nếu có bị trùng với canonical trước đó thì sẽ không bị báo lỗi unique
 
         'App\Repositories\Interfaces\PostLanguageRepositoryInterface' => 'App\Repositories\PostLanguageRepository',
+
+        //phân quyền
+        'App\Services\Interfaces\PermissionServiceInterface' => 'App\Services\PermissionService',
+        'App\Repositories\Interfaces\PermissionRepositoryInterface' => 'App\Repositories\PermissionRepository',
     ];
     /**
      * Register any application services.

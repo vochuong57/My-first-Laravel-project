@@ -1,4 +1,4 @@
-<form action="{{ route('user.catalogue.index') }}">
+<form action="{{ route('permission.index') }}">
 <div class="filter-wrapper">
     <div class="uk-flex uk-flex-middle uk-flex-space-between">
         <div class="perpage">
@@ -30,10 +30,7 @@
                         </span>
                     </div>
                 </div>
-                <div class="uk-flex uk-flex-middle">
-                    <a href="{{ route('user.catalogue.permission') }}" class="btn btn-warning ml10"><i class="fa fa-key mr5"></i>{{ __('messages.permission_name') }}</a>
-                    <a href="{{ route('user.catalogue.store') }}" class="btn btn-danger ml10"><i class="fa fa-plus mr5"></i>{{ __('messages.userCatalogue.create.title') }}</a>
-                </div>
+                <a href="{{ route('permission.store') }}" class="btn btn-danger ml10"><i class="fa fa-plus mr5"></i>{{ __('messages.permission.create.title') }}</a>
             </div>
         </div>
     </div>

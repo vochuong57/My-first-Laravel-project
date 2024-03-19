@@ -18,23 +18,23 @@
         <div class="row">
             <div class="col-lg-5">
                 <div class="panel-head">
-                    <div class="panel-title">Thông tin chung</div>
+                    <div class="panel-title">{{ __('messages.general') }}</div>
                     <div class="panel-description">
-                        <p>- Nhập thông tin chung của ngôn ngữ</p>
-                        <p>- Lưu ý: những trường đánh dấu <span class="text-danger">(*)</span> là bắt buộc</p>
+                        <p>{{ __('messages.note_language') }}</p>
+                        <p>{{ __('messages.note_1') }} <span class="text-danger">(*)</span> {{ __('messages.note_2') }}</p>
                     </div>
                 </div>
             </div>
             <div class="col-lg-7">
                 <div class="ibox">
                     <div class="ibox-title">
-                        <h5>Thông tin chung</h5>
+                        <h5>{{ __('messages.general') }}</h5>
                     </div>
                     <div class="ibox-content">
                         <div class="row mb15">
                             <div class="col-lg-6">
                                 <div class="form-row">
-                                    <label for="" class="control-label text-left">Tên ngôn ngữ: <span class="text-danger">(*)</span></label>
+                                    <label for="" class="control-label text-left">{{ __('messages.language_title') }} <span class="text-danger">(*)</span></label>
                                     <input 
                                     type="text"
                                     name="name"
@@ -62,7 +62,7 @@
                         <div class="row mb15">
                             <div class="col-lg-6">
                                 <div class="form-row">
-                                    <label for="" class="control-label text-left">Ảnh đại diện: </label>
+                                    <label for="" class="control-label text-left">{{ __('messages.language_avatar') }} </label>
                                     <input 
                                     type="text"
                                     name="image"
@@ -76,7 +76,7 @@
                             </div>
                             <div class="col-lg-6">
                                 <div class="form-row">
-                                    <label for="" class="control-label text-left">Ghi chú:</label>
+                                    <label for="" class="control-label text-left">{{ __('messages.language_note') }}</label>
                                     <input 
                                     type="text"
                                     name="description"

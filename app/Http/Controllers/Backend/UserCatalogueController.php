@@ -13,16 +13,19 @@ use App\Repositories\Interfaces\UserCatalogueRepositoryInterface as UserCatalogu
 //chèn thêm thư viện tự tạo request để kiểm tra dữ liệu đầu vào khi edit user
 use App\Http\Requests\UpdateUserCatalogueRequest;
 //use App\Models\User;
+use App\Repositories\Interfaces\PermissionRepositoryInterface as PermissionRepository;
 
 
 class UserCatalogueController extends Controller
 {
     protected $userCatalogueService;
     protected $userCatalogueRepository;
+    protected $permissionRepository;
 
-    public function __construct(UserCatalogueService $userCatalogueService, UserCatalogueRepository $userCatalogueRepository){
+    public function __construct(UserCatalogueService $userCatalogueService, UserCatalogueRepository $userCatalogueRepository, PermissionRepository $permissionRepository){
         $this->userCatalogueService=$userCatalogueService;//định nghĩa  $this->userService=$userCatalogueService để biến này nó có thể trỏ tới các phương tức của UserCatalogueService
         $this->userCatalogueRepository=$userCatalogueRepository;
+        $this->permissionRepository=$permissionRepository;
     }
     //giao diện tổng
     public function index(Request $request){//Request $request để tiến hành chức năng tìm kiếm
@@ -37,11 +40,14 @@ class UserCatalogueController extends Controller
         $template='Backend.user.catalogue.index';
 
         //chèn thêm mảng 'seo' vào biến config để mảng 'seo' này lấy toàn bộ giá trị của folder config/apps/user.php
-        $config['seo']=config('apps.userCatalogue.index');
+        $config['seo']=__('messages.userCatalogue');
 
         //Đổ dữ liệu User từ DB vào form theo mô hình service và repository
         $userCatalogues = $this->userCatalogueService->paginate($request);//$request để tiến hành chức năng tìm kiếm
         //dd($userCatalogues);
+
+        $this->authorize('modules', 'user.catalogue.index');//phân quyền
+
         return view('Backend.dashboard.layout', compact('template','config','userCatalogues'));
     }
 
@@ -51,7 +57,7 @@ class UserCatalogueController extends Controller
 
         $config=$this->configCUD();
 
-        $config['seo']=config('apps.userCatalogue.create');
+        $config['seo']=__('messages.userCatalogue.create');
 
         $config['method']='create';
 
@@ -63,6 +69,8 @@ class UserCatalogueController extends Controller
 
        
         //dd($provinces);
+
+        $this->authorize('modules', 'user.catalogue.store');//phân quyền
 
         return view('Backend.dashboard.layout', compact('template','config'));
     }
@@ -82,13 +90,15 @@ class UserCatalogueController extends Controller
 
         $config=$this->configCUD();
 
-        $config['seo']=config('apps.user.edit');
+        $config['seo']=__('messages.userCatalogue.edit');
 
         $config['method']='edit';//kiểm tra metho để thay đổi giao diện cho phù hợp
 
         //truy vấn thông tin
         $userCatalogue=$this->userCatalogueRepository->findById($id);
         //dd($user); die();
+
+        $this->authorize('modules', 'user.catalogue.edit');//phân quyền
 
         return view('Backend.dashboard.layout', compact('template','config','userCatalogue'));
     }
@@ -107,11 +117,13 @@ class UserCatalogueController extends Controller
 
         $config=$this->configCUD();
 
-        $config['seo']=config('apps.user.delete');
+        $config['seo']=__('messages.userCatalogue.delete');
 
         //truy vấn thông tin
         $userCatalogue=$this->userCatalogueRepository->findById($id);
         //dd($user); die();
+
+        $this->authorize('modules', 'user.catalogue.destroy');//phân quyền
 
         return view('Backend.dashboard.layout', compact('template','config','userCatalogue'));
     }
@@ -122,6 +134,21 @@ class UserCatalogueController extends Controller
             return redirect()->route('user.catalogue.index')->with('success','Xóa nhóm thành viên thành công');
         }
            return redirect()->route('user.catalogue.index')->with('error','Xóa nhóm thành viên thất bại. Hãy thử lại');
+    }
+    public function permission(){
+        $userCatalogues = $this->userCatalogueRepository->all(['permissions']);
+        $permissions = $this->permissionRepository->all();
+        $template='Backend.user.catalogue.permission';
+        $config['seo']=__('messages.userCatalogue.permission');
+        return view('Backend.dashboard.layout', compact('template','userCatalogues','permissions','config'));
+    }
+    public function updatePermission(Request $request){
+        //$permission = $request->input('permission');
+        //dd($permission);
+        if($this->userCatalogueService->setPermission($request)){
+            return redirect()->route('user.catalogue.index')->with('success','Cập nhật quyền nhóm thành viên thành công');
+        }
+        return redirect()->route('user.catalogue.index')->with('error','Cập nhật quyền nhóm thành viên thất bại. Hãy thử lại');
     }
     private function configIndex(){
         return[

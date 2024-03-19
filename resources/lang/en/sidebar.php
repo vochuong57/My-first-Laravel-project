@@ -4,7 +4,7 @@
             [
                 'title'=>'User Group',
                 'icon'=>'fa fa-user',
-                'name'=>['user'],
+                'name'=>['user', 'permission'],
                 'subModule'=>[
                     [
                         'title'=>'User Group',
@@ -13,6 +13,10 @@
                     [
                         'title'=>'User',
                         'route'=>'user/index'
+                    ],
+                    [
+                        'title'=>'Permission',
+                        'route'=>'permission/index'
                     ]
                 ]
             ],

@@ -14,4 +14,5 @@ interface UserCatalogueServiceInterface
     public function deleteUserCatalogue($id);//xử lý xóa user Catalogue
     public function updateStatus($post=[]);//xử lý cập nhật tình trạng user Catalogue
     public function updateStatusAll($post=[]);//xử lý cập nhật tình trạng user Catalogue hàng loạt ở toolbox
+    public function setPermission($request);//xử lý lưu dữ liệu phân quyền
 }

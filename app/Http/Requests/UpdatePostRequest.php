@@ -31,8 +31,8 @@ class UpdatePostRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required'=>'Bạn chưa nhập họ tên',
-            'name.string'=>'Tên phải là dạng ký tự',
+            'name.required'=>'Bạn chưa nhập tiêu đề bài viết',
+            'name.string'=>'Tiêu đề bào viết phải là dạng ký tự',
             'canonical.required'=>'Bạn chưa nhập vào ô đường dẫn',
             'canonical.unique'=>'Đường dẫn đã tồn tại, hãy chọn đường dẫn khác',
             'post_catalogue_id.gt'=>'Bạn chưa chọn danh mục cha',

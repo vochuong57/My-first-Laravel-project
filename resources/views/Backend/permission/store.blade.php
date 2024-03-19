@@ -9,8 +9,10 @@
         </ul>
     </div>
 @endif
-
-<form action="{{ route('post.catalogue.delete',$postCatalogue->id) }}" method="post" class="box">
+@php
+    $url=($config['method']=='create')?route('permission.create'):route('permission.update', $permission->id)
+@endphp
+<form action="{{ $url }}" method="post" class="box">
     @csrf
     <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
@@ -18,25 +20,25 @@
                 <div class="panel-head">
                     <div class="panel-title">{{ __('messages.general') }}</div>
                     <div class="panel-description">
-                        <p>{{ __('messages.destroy_panel_description_postCatalogue_1') }} <span style="color: red">{{ $postCatalogue->name }}</span></p>
-                        <p>{{ __('messages.destroy_panel_description_1') }} <span class="text-danger">{{ __('messages.destroy_panel_description_2') }}</span> {{ __('messages.destroy_panel_description_postCatalogue_2') }} <br> {{ __('messages.destroy_panel_description_3') }}</p>
+                        <p>{{ __('messages.note_permission') }}</p>
+                        <p>{{ __('messages.note_1') }} <span class="text-danger">(*)</span> {{ __('messages.note_2') }}</p>
                     </div>
                 </div>
             </div>
             <div class="col-lg-7">
                 <div class="ibox">
                     <div class="ibox-title">
-                        <h5>{{ __('messages.destroy') }}</h5>
+                        <h5>{{ __('messages.general') }}</h5>
                     </div>
                     <div class="ibox-content">
-                    <div class="row mb15">
+                        <div class="row mb15">
                             <div class="col-lg-6">
                                 <div class="form-row">
-                                    <label for="" class="control-label text-left">{{ __('messages.destroyPostCatalogue_name') }} <span class="text-danger">(*)</span></label>
+                                    <label for="" class="control-label text-left">{{ __('messages.permission_title') }} <span class="text-danger">(*)</span></label>
                                     <input 
                                     type="text"
                                     name="name"
-                                    value="{{ old('name', ($postCatalogue->name)??'') }}"
+                                    value="{{ old('name', ($permission->name)??'') }}"
                                     class="form-control"
                                     placeholder=""
                                     autocomplete="off"
@@ -49,7 +51,7 @@
                                     <input 
                                     type="text"
                                     name="canonical"
-                                    value="{{ old('canonical', ($postCatalogue->canonical)??'') ? config('app.url').old('canonical', ($postCatalogue->canonical)??'').config('apps.general.suffix') :  __('messages.seo_canonical') }}"
+                                    value="{{ old('canonical', ($permission->canonical)??'') }}"
                                     class="form-control"
                                     placeholder=""
                                     autocomplete="off"
@@ -62,15 +64,8 @@
             </div>
         </div>
         
-        
         <div class="text-right mb15">
-            <button class="btn btn-danger" type="submit" name="send" value="send">{{ $config['seo']['btnDelete'] }}</button>
+            <button class="btn btn-primary" type="submit" name="send" value="send">{{ $config['seo']['btnTitle'] }}</button>
         </div>
     </div>
 </form>
-<!-- XỬ LÝ HUYỆN XẢ KHI NHẬP SAI BỊ LOAD LẠI TRANG -->
-<script>
-    var province_id='{{ (isset($user->province_id)) ? $user->province_id : old('province_id') }}'
-    var district_id='{{ (isset($user->district_id)) ? $user->district_id : old('district_id') }}'
-    var ward_id='{{ (isset($user->ward_id)) ? $user->ward_id : old('ward _id') }}'
-</script>

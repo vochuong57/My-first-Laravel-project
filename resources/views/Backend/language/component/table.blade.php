@@ -4,13 +4,13 @@
             <th>
                 <input type="checkbox" value="" name="" id="checkAll" class="input-checkbox">
             </th>
-            <th style="width: 90px">Ảnh</th>
-            <th>Tên ngôn ngữ</th>
+            <th style="width: 90px">{{ __('messages.tableLanguage_image') }}</th>
+            <th>{{ __('messages.tableLanguage_name') }}</th>
             <!-- <th>Số thành viên</th> -->
             <th>Canonical</th>
-            <th>Ghi chú</th>
-            <th class="text-center">Tình trạng</th>
-            <th class="text-center">Thao tác</th>
+            <th>{{ __('messages.tableLanguage_note') }}</th>
+            <th class="text-center">{{ __('messages.tableLanguage_publish') }}</th>
+            <th class="text-center">{{ __('messages.tableLanguage_action') }}</th>
         </tr>
     </thead>
     <tbody>

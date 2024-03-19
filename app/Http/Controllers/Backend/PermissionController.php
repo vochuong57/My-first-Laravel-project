@@ -5,24 +5,24 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 //chèn thêm thư viện userInterface tự tạo để lấy thông tin user từ DB vào form
-use App\Services\Interfaces\LanguageServiceInterface as LanguageService;
+use App\Services\Interfaces\PermissionServiceInterface as PermissionService;
 //chèn thêm thư viện tự tạo request để kiểm tra dữ liệu đầu vào khi thêm user
-use App\Http\Requests\StoreLanguageRequest;
+use App\Http\Requests\StorePermissionRequest;
 //chèn thêm viện userRepositoryInterface để lấy function findById để truy xuất dữ liệu của id vừa nhập
-use App\Repositories\Interfaces\LanguageRepositoryInterface as LanguageRepository;
+use App\Repositories\Interfaces\PermissionRepositoryInterface as PermissionRepository;
 //chèn thêm thư viện tự tạo request để kiểm tra dữ liệu đầu vào khi edit user
-use App\Http\Requests\UpdateLanguageRequest;
+use App\Http\Requests\UpdatePermissionRequest;
 //use App\Models\User;
 
 
-class LanguageController extends Controller
+class PermissionController extends Controller
 {
-    protected $languageService;
-    protected $languageRepository;
+    protected $permissionService;
+    protected $permissionRepository;
 
-    public function __construct(LanguageService $languageService, LanguageRepository $languageRepository){
-        $this->languageService=$languageService;//định nghĩa  $this->userService=$userCatalogueService để biến này nó có thể trỏ tới các phương tức của UserCatalogueService
-        $this->languageRepository=$languageRepository;
+    public function __construct(PermissionService $permissionService, PermissionRepository $permissionRepository){
+        $this->permissionService=$permissionService;//định nghĩa  $this->userService=$userCatalogueService để biến này nó có thể trỏ tới các phương tức của UserCatalogueService
+        $this->permissionRepository=$permissionRepository;
     }
     //giao diện tổng
     public function index(Request $request){//Request $request để tiến hành chức năng tìm kiếm
@@ -34,27 +34,27 @@ class LanguageController extends Controller
         $config=$this->configIndex();
 
         //biến template là nới lưu đường dẫn main của từng dao diện
-        $template='Backend.language.index';
+        $template='Backend.permission.index';
 
         //chèn thêm mảng 'seo' vào biến config để mảng 'seo' này lấy toàn bộ giá trị của folder config/apps/user.php
-        $config['seo']=__('messages.language');
+        $config['seo']=__('messages.permission');
 
         //Đổ dữ liệu User từ DB vào form theo mô hình service và repository
-        $languages = $this->languageService->paginate($request);//$request để tiến hành chức năng tìm kiếm
+        $permissions = $this->permissionService->paginate($request);//$request để tiến hành chức năng tìm kiếm
         //dd($userCatalogues);
 
-        $this->authorize('modules', 'language.index');//phân quyền
+        $this->authorize('modules', 'permission.index');//phân quyền
 
-        return view('Backend.dashboard.layout', compact('template','config','languages'));
+        return view('Backend.dashboard.layout', compact('template','config','permissions'));
     }
 
     //giao diện thêm user
     public function store(){   
-        $template='Backend.language.store';
+        $template='Backend.permission.store';
 
         $config=$this->configCUD();
 
-        $config['seo']=__('messages.language.create');
+        $config['seo']=__('messages.permission.create');
 
         $config['method']='create';
 
@@ -67,70 +67,70 @@ class LanguageController extends Controller
        
         //dd($provinces);
 
-        $this->authorize('modules', 'language.store');//phân quyền
+        $this->authorize('modules', 'permission.store');//phân quyền
 
         return view('Backend.dashboard.layout', compact('template','config'));
     }
 
     //xử lý thêm user
-    public function create(StoreLanguageRequest $request){
-        if($this->languageService->createLanguage($request)){
-            return redirect()->route('language.index')->with('success','Thêm mới ngôn ngữ thành công');
+    public function create(StorePermissionRequest $request){
+        if($this->permissionService->createPermission($request)){
+            return redirect()->route('permission.index')->with('success','Thêm mới quyền thành công');
         }
-           return redirect()->route('language.index')->with('error','Thêm mới ngôn ngữ thất bại. Hãy thử lại');
+           return redirect()->route('permission.index')->with('error','Thêm mới quyền thất bại. Hãy thử lại');
         
     }
     //giao diện sửa user
     public function edit($id){
         //echo $id;
-        $template='Backend.language.store';
+        $template='Backend.permission.store';
 
         $config=$this->configCUD();
 
-        $config['seo']=__('messages.language.edit');
+        $config['seo']=__('messages.permission.edit');
 
         $config['method']='edit';//kiểm tra metho để thay đổi giao diện cho phù hợp
 
         //truy vấn thông tin
-        $language=$this->languageRepository->findById($id);
+        $permission=$this->permissionRepository->findById($id);
         //dd($user); die();
 
-        $this->authorize('modules', 'language.edit');//phân quyền
+        $this->authorize('modules', 'permission.edit');//phân quyền
 
-        return view('Backend.dashboard.layout', compact('template','config','language'));
+        return view('Backend.dashboard.layout', compact('template','config','permission'));
     }
     //xử lý sửa user
-    public function update($id, UpdateLanguageRequest $request){
+    public function update($id, UpdatePermissionRequest $request){
         //echo $id; die();
         //dd($request);
-        if($this->languageService->updateLanguage($id, $request)){
-            return redirect()->route('language.index')->with('success','Cập nhật ngôn ngữ thành công');
+        if($this->permissionService->updatePermission($id, $request)){
+            return redirect()->route('permission.index')->with('success','Cập nhật quyền thành công');
         }
-           return redirect()->route('language.index')->with('error','Cập nhật ngôn ngữ thất bại. Hãy thử lại');
+           return redirect()->route('permission.index')->with('error','Cập nhật quyền thất bại. Hãy thử lại');
     }
     //giao diện xóa user
     public function destroy($id){
-        $template='Backend.language.destroy';
+        $template='Backend.permission.destroy';
 
         $config=$this->configCUD();
 
-        $config['seo']=__('messages.language.delete');
+        $config['seo']=__('messages.permission.delete');
 
         //truy vấn thông tin
-        $language=$this->languageRepository->findById($id);
+        $permission=$this->permissionRepository->findById($id);
         //dd($user); die();
 
-        $this->authorize('modules', 'language.destroy');//phân quyền
+        $this->authorize('modules', 'permission.destroy');//phân quyền
 
-        return view('Backend.dashboard.layout', compact('template','config','language'));
+        return view('Backend.dashboard.layout', compact('template','config','permission'));
     }
     //xử lý xóa user
     public function delete($id){
         //echo $id;
-        if($this->languageService->deleteLanguage($id)){
-            return redirect()->route('language.index')->with('success','Xóa ngôn ngữ thành công');
+        if($this->permissionService->deletePermission($id)){
+            return redirect()->route('permission.index')->with('success','Xóa quyền thành công');
         }
-           return redirect()->route('language.index')->with('error','Xóa ngôn ngữ thất bại. Hãy thử lại');
+           return redirect()->route('permission.index')->with('error','Xóa quyền thất bại. Hãy thử lại');
     }
     private function configIndex(){
         return[
@@ -142,7 +142,7 @@ class LanguageController extends Controller
                 'Backend/css/plugins/switchery/switchery.css',
                 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css',
             ],
-            'model'=>'Language'
+            'model'=>'Permission'
         ];
     }
 
@@ -160,13 +160,4 @@ class LanguageController extends Controller
         ];
     }
 
-    public function swithBackendLanguage($id){
-        //echo $id; die();
-        $language = $this->languageRepository->findById($id);
-        if($this->languageService->switch($id)){
-            session(['app_locale' => $language->canonical]);
-            \App::setLocale($language->canonical);
-        }
-        return redirect()->back();
-    }
 }

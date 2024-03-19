@@ -7,8 +7,8 @@
     <div class="col-lg-12">
         <div class="ibox float-e-margins">
             <div class="ibox-title">
-                <h5>{{ __('messages.table_brand') }} </h5>
-                @include('Backend.dashboard.component.toolbox', ['content'=>(__('messages.toolboxDestroy'))])
+                <h5>{{ __('messages.tablePostCatalogue_brand') }} </h5>
+                @include('Backend.dashboard.component.toolbox', ['content'=>(__('messages.toolboxDestroyPostCatalogue'))])
             </div>
             <div class="ibox-content">
                 <!-- tìm kiếm user -->
