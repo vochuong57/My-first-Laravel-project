@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use App\Traits\QueryScopes;
+
 
 class Post extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, QueryScopes;
 
     protected $fillable = [//c=những trường nào cho phép người dùng cập nhật thông tin
         'image',

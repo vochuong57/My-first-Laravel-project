@@ -57,6 +57,9 @@ class PostCatalogueRepository extends BaseRepository implements PostCatalogueRep
                 $query->join($val[0],$val[1],$val[2],$val[3]);
             }
         }
+        if(isset($extend['groupBy']) && !empty($extend['groupBy'])){
+            $query->groupBy($extend['groupBy']);
+        }
         if(isset($orderBy)&&!empty($orderBy)){
             $query->orderBy($orderBy[0], $orderBy[1]);
         }
