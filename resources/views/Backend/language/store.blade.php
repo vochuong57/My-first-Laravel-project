@@ -10,7 +10,7 @@
     </div>
 @endif
 @php
-    $url=($config['method']=='create')?route('user.catalogue.create'):route('user.catalogue.update', $userCatalogue->id)
+    $url=($config['method']=='create')?route('language.create'):route('language.update', $language->id)
 @endphp
 <form action="{{ $url }}" method="post" class="box">
     @csrf
@@ -20,7 +20,7 @@
                 <div class="panel-head">
                     <div class="panel-title">Thông tin chung</div>
                     <div class="panel-description">
-                        <p>- Nhập thông tin chung của nhóm thành viên</p>
+                        <p>- Nhập thông tin chung của ngôn ngữ</p>
                         <p>- Lưu ý: những trường đánh dấu <span class="text-danger">(*)</span> là bắt buộc</p>
                     </div>
                 </div>
@@ -34,11 +34,39 @@
                         <div class="row mb15">
                             <div class="col-lg-6">
                                 <div class="form-row">
-                                    <label for="" class="control-label text-left">Tên nhóm: <span class="text-danger">(*)</span></label>
+                                    <label for="" class="control-label text-left">Tên ngôn ngữ: <span class="text-danger">(*)</span></label>
                                     <input 
                                     type="text"
                                     name="name"
-                                    value="{{ old('name', ($userCatalogue->name)??'') }}"
+                                    value="{{ old('name', ($language->name)??'') }}"
+                                    class="form-control"
+                                    placeholder=""
+                                    autocomplete="off"
+                                    >
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-row">
+                                    <label for="" class="control-label text-left">Canonical: <span class="text-danger">(*)</span></label>
+                                    <input 
+                                    type="text"
+                                    name="canonical"
+                                    value="{{ old('canonical', ($language->canonical)??'') }}"
+                                    class="form-control"
+                                    placeholder=""
+                                    autocomplete="off"
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb15">
+                            <div class="col-lg-6">
+                                <div class="form-row">
+                                    <label for="" class="control-label text-left">Ảnh đại diện: </label>
+                                    <input 
+                                    type="text"
+                                    name="image"
+                                    value="{{ old('image', ($language->image)??'') }}"
                                     class="form-control"
                                     placeholder=""
                                     autocomplete="off"
@@ -51,7 +79,7 @@
                                     <input 
                                     type="text"
                                     name="description"
-                                    value="{{ old('description', ($userCatalogue->description)??'') }}"
+                                    value="{{ old('description', ($language->description)??'') }}"
                                     class="form-control"
                                     placeholder=""
                                     autocomplete="off"
@@ -59,7 +87,6 @@
                                 </div>
                             </div>
                         </div>
-                        
                     </div>
                 </div>
             </div>
