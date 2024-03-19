@@ -4,6 +4,7 @@
             [
                 'title'=>'Quản lý thành viên',
                 'icon'=>'fa fa-user',
+                'name'=>'user',
                 'subModule'=>[
                     [
                         'title'=>'QL Nhóm Thành Viên',
@@ -18,6 +19,7 @@
             [
                 'title'=>'Quản lý bài viết',
                 'icon'=>'fa fa-file',
+                'name'=>'post',
                 'subModule'=>[
                     [
                         'title'=>'QL Nhóm Bài Viết',
