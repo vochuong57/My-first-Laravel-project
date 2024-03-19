@@ -14,6 +14,7 @@ use App\Repositories\Interfaces\PostCatalogueRepositoryInterface as PostCatalogu
 use App\Http\Requests\UpdatePostCatalogueRequest;
 //use App\Models\User;
 use App\Classes\Nestedsetbie;
+use App\Http\Requests\DeletePostCatalogueRequest;
 
 
 class PostCatalogueController extends Controller
@@ -21,7 +22,7 @@ class PostCatalogueController extends Controller
     protected $postCatalogueService;
     protected $postCatalogueRepository;
     protected $nestedset;
-    protected $language;
+    protected $language;//được lấy từ extends Controller
 
     public function __construct(PostCatalogueService $postCatalogueService, PostCatalogueRepository $postCatalogueRepository){
         $this->postCatalogueService=$postCatalogueService;//định nghĩa  $this->userService=$userCatalogueService để biến này nó có thể trỏ tới các phương tức của UserCatalogueService
@@ -102,7 +103,6 @@ class PostCatalogueController extends Controller
         
         //dd($postCatalogue);
 
-
         $dropdown= $this->nestedset->Dropdown();
 
         return view('Backend.dashboard.layout', compact('template','config','postCatalogue','dropdown'));
@@ -125,14 +125,18 @@ class PostCatalogueController extends Controller
         $config['seo']=config('apps.postCatalogue.delete');
 
         //truy vấn thông tin
-        $postCatalogue=$this->postCatalogueRepository->findById($id);
-        //dd($user); die();
+        $postCatalogue=$this->postCatalogueRepository->getPostCatalogueById($id,$this->language);
+        
+        //dd($postCatalogue);
+
+        $dropdown= $this->nestedset->Dropdown();
 
         return view('Backend.dashboard.layout', compact('template','config','postCatalogue'));
     }
     //xử lý xóa user
-    public function delete($id){
+    public function delete($id, DeletePostCatalogueRequest $request){
         //echo $id;
+        //echo 123; die();
         if($this->postCatalogueService->deletePostCatalogue($id)){
             return redirect()->route('post.catalogue.index')->with('success','Xóa nhóm bài viết thành công');
         }

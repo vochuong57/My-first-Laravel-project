@@ -144,7 +144,9 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
         DB::beginTransaction();
         try{
             $postCatalogue=$this->postCatalogueRepository->delete($id);
-
+            $this->nestedset->Get();//gọi Get để lấy dữ liệu
+            $this->nestedset->Recursive(0, $this->nestedset->Set());//gọi Recursive để tính toán lại các giá trị của từng node
+            $this->nestedset->Action();//gọi đến Action để cập nhật lại các giá trị lft rgt
             DB::commit();
             return true;
         }catch(\Exception $ex){

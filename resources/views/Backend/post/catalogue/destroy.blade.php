@@ -32,7 +32,7 @@
                     <div class="row mb15">
                             <div class="col-lg-6">
                                 <div class="form-row">
-                                    <label for="" class="control-label text-left">Tên ngôn ngữ: <span class="text-danger">(*)</span></label>
+                                    <label for="" class="control-label text-left">Tên nhóm bài viết: <span class="text-danger">(*)</span></label>
                                     <input 
                                     type="text"
                                     name="name"
@@ -49,7 +49,7 @@
                                     <input 
                                     type="text"
                                     name="canonical"
-                                    value="{{ old('canonical', ($postCatalogue->canonical)??'') }}"
+                                    value="{{ old('canonical', ($postCatalogue->canonical)??'') ? config('app.url').old('canonical', ($postCatalogue->canonical)??'').config('apps.general.suffix') : 'https://duong-dan-cua-ban.html' }}"
                                     class="form-control"
                                     placeholder=""
                                     autocomplete="off"
@@ -57,35 +57,6 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row mb15">
-                            <div class="col-lg-6">
-                                <div class="form-row">
-                                    <label for="" class="control-label text-left">Ảnh đại diện: </label>
-                                    <input 
-                                    type="text"
-                                    name="image"
-                                    value="{{ old('image', ($postCatalogue->image)??'') }}"
-                                    class="form-control"
-                                    placeholder=""
-                                    autocomplete="off"
-                                    >
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="form-row">
-                                    <label for="" class="control-label text-left">Ghi chú:</label>
-                                    <input 
-                                    type="text"
-                                    name="description"
-                                    value="{{ old('description', ($postCatalogue->description)??'') }}"
-                                    class="form-control"
-                                    placeholder=""
-                                    autocomplete="off"
-                                    >
-                                </div>
-                            </div>
-                        </div>
-                        
                     </div>
                 </div>
             </div>

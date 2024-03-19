@@ -32,7 +32,7 @@
             <div class="col-lg-12">
                 <div class="form-row">
                     <span class="image img-cover image-target">
-                        <img src="{{ old('image', ($postCatalogue->image)) ?? 'Backend/img/not-found.png' }}" alt="">
+                        <img src="{{ (old('image', $postCatalogue->image ??'Backend/img/not-found.png')) ?? 'Backend/img/not-found.png' }}" alt="">
                     </span>
                     <input type="hidden" name="image" value="{{ old('image', ($postCatalogue->image)??'') }}">
                 </div>
