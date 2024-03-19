@@ -9,6 +9,6 @@ namespace App\Repositories\Interfaces;
 interface ProvinceRepositoryInterface
 {
     public function all();
-    public function findById(array $column=['*'], array $relation =[],int $id);//để tìm ra huyện (c2)
+    public function findById(int $id, array $column=['*'], array $relation =[]);//để tìm ra chính nó (tìm ra huyện) dựa vào khóa ngoại của nó (c2)
 
 }

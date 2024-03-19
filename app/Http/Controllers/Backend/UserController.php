@@ -10,16 +10,24 @@ use App\Services\Interfaces\UserServiceInterface as UserService;
 use App\Repositories\Interfaces\ProvinceRepositoryInterface as ProvinceRepository;
 //chèn thêm thư viện tự tạo request để kiểm tra dữ liệu đầu vào khi thêm user
 use App\Http\Requests\StoreUserRequest;
+//chèn thêm viện userRepositoryInterface để lấy function findById để truy xuất dữ liệu của id vừa nhập
+use App\Repositories\Interfaces\UserRepositoryInterface as UserRepository;
+//chèn thêm thư viện tự tạo request để kiểm tra dữ liệu đầu vào khi edit user
+use App\Http\Requests\UpdateUserRequest;
+
 
 class UserController extends Controller
 {
     protected $userService;
     protected $provinceRepository;
+    protected $userRepository;
 
-    public function __construct(UserService $userService, ProvinceRepository $provinceRepository){
+    public function __construct(UserService $userService, ProvinceRepository $provinceRepository, UserRepository $userRepository){
         $this->userService=$userService;//định nghĩa  $this->userService=$userService để biến này nó có thể trỏ tới các phương tức của UserService
         $this->provinceRepository=$provinceRepository;
+        $this->userRepository=$userRepository;
     }
+    //giao diện tổng
     public function index(){
         //$users=User::paginate(15);//từ khóa tìm kiếm eloquent
 
@@ -30,7 +38,7 @@ class UserController extends Controller
         $template='Backend.user.index';
 
         //chèn thêm mảng 'seo' vào biến config để mảng 'seo' này lấy toàn bộ giá trị của folder config/apps/user.php
-        $config['seo']=config('apps.user');
+        $config['seo']=config('apps.user.index');
 
         //Đổ dữ liệu User từ DB vào form theo mô hình service và repository
         $users = $this->userService->paginate();
@@ -39,12 +47,14 @@ class UserController extends Controller
     }
 
     //giao diện thêm user
-    public function create(){   
-        $template='Backend.user.create';
+    public function store(){   
+        $template='Backend.user.store';
 
-        $config=$this->configCreate();
+        $config=$this->configCUD();
 
-        $config['seo']=config('apps.user');
+        $config['seo']=config('apps.user.create');
+
+        $config['method']='create';
 
         // //test nhanh việc lấy được dữ liệu hay không?
         // $location=[
@@ -60,12 +70,62 @@ class UserController extends Controller
     }
 
     //xử lý thêm user
-    public function store(StoreUserRequest $request){
+    public function create(StoreUserRequest $request){
         if($this->userService->createUser($request)){
             return redirect()->route('user.index')->with('success','Thêm mới thành viên thành công');
         }
            return redirect()->route('user.index')->with('error','Thêm mới thành viên thất bại. Hãy thử lại');
         
+    }
+    //giao diện sửa user
+    public function edit($id){
+        //echo $id;
+        $template='Backend.user.store';
+
+        $config=$this->configCUD();
+
+        $config['seo']=config('apps.user.edit');
+
+        $config['method']='edit';//kiểm tra metho để thay đổi giao diện cho phù hợp
+
+        $provinces=$this->provinceRepository->all();
+        //dd($provinces);
+
+        //truy vấn thông tin
+        $user=$this->userRepository->findById($id);
+        //dd($user); die();
+
+        return view('Backend.dashboard.layout', compact('template','config','provinces','user'));
+    }
+    //xử lý sửa user
+    public function update($id, UpdateUserRequest $request){
+        //echo $id;
+        if($this->userService->updateUser($id, $request)){
+            return redirect()->route('user.index')->with('success','Cập nhật thành viên thành công');
+        }
+           return redirect()->route('user.index')->with('error','Cập nhật thành viên thất bại. Hãy thử lại');
+    }
+    //giao diện xóa user
+    public function destroy($id){
+        $template='Backend.user.destroy';
+
+        $config=$this->configCUD();
+
+        $config['seo']=config('apps.user.delete');
+
+        //truy vấn thông tin
+        $user=$this->userRepository->findById($id);
+        //dd($user); die();
+
+        return view('Backend.dashboard.layout', compact('template','config','user'));
+    }
+    //xử lý xóa user
+    public function delete($id){
+        //echo $id;
+        if($this->userService->deleteUser($id)){
+            return redirect()->route('user.index')->with('success','Xóa thành viên thành công');
+        }
+           return redirect()->route('user.index')->with('error','Xóa thành viên thất bại. Hãy thử lại');
     }
     private function configIndex(){
         return[
@@ -78,7 +138,7 @@ class UserController extends Controller
         ];
     }
 
-    private function configCreate(){
+    private function configCUD(){
         return[
             'js'=>[
                 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
