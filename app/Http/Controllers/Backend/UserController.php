@@ -50,7 +50,9 @@ class UserController extends Controller
         //Đổ dữ liệu User từ DB vào form theo mô hình service và repository
         $users = $this->userService->paginate($request);//$request để tiến hành chức năng tìm kiếm
 
-        return view('Backend.dashboard.layout', compact('template','config','users'));
+        $userCatalogues=$this->userCatalogueRepository->all();
+
+        return view('Backend.dashboard.layout', compact('template','config','users','userCatalogues'));
     }
 
     //giao diện thêm user

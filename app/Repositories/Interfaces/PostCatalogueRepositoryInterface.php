@@ -9,7 +9,7 @@ namespace App\Repositories\Interfaces;
 interface PostCatalogueRepositoryInterface
 {
     public function all();
-    public function pagination(array $column=['*'],array $condition=[],array $join=[],array $extend=[],int $perpage=1, array $relations=[]);
+    public function pagination(array $column=['*'],array $condition=[],array $join=[],array $extend=[],int $perpage=1, array $relations=[], array $orderBy=[]);
     public function create(array $payload =[]);
     public function findById(int $id, array $column=['*'], array $relation =[]);
     public function update(int $id=0, array $payload=[]);
@@ -17,5 +17,6 @@ interface PostCatalogueRepositoryInterface
     public function forceDelete(int $id=0);
     public function updateByWhereIn(string $whereInField='', array $whereIn=[], array $payload=[]);//dùng khi ở toolbox thay đổi hàng loạt trạng thái user
     public function deleteByWhereIn(string $whereInField = '', array $whereIn = []);
-    public function createLanguagePivot($model, array $payload=[]);
+    public function createLanguagePivot($model, array $payload=[]);//xử lý logic thêm 2 bảng
+    public function getPostCatalogueById(int $id=0, $language_id=0);//xử lý hiện thị dữ liệu từ 2 bảng
 }

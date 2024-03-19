@@ -17,7 +17,7 @@ class PostCatalogueRepository extends BaseRepository implements PostCatalogueRep
     public function __construct(PostCatalogue $model){
         $this->model=$model;//chúng ta định nghĩa $this->model=User để đưa nó qua lớp kế thừa BaseRepository để lúc này phương thức create() của nó sẽ thành userRepository->create() ở lớp UserService để từ lớp UserService sẽ gọi nó lên controller để thực hiện việc thêm dữ liệu 
     }
-    public function pagination(array $column = ['*'], array $condition = [], array $join = [], array $extend = [], int $perpage = 0, array $relations=[]) {
+    public function pagination(array $column = ['*'], array $condition = [], array $join = [], array $extend = [], int $perpage = 0, array $relations=[], array $orderBy=[]) {
         $query = $this->model->select($column)->where(function ($query) use ($condition) {
             if (isset($condition['keyword']) && !empty($condition['keyword'])) {
                 $query->where(function ($query) use ($condition) {
@@ -37,10 +37,36 @@ class PostCatalogueRepository extends BaseRepository implements PostCatalogueRep
                 $query->withCount($relation);
             }
         }
-        if (!empty($join)) {
-            $query->join(...$join);
+        if(isset($join)&&is_array($join)&&count($join)){
+            foreach($join as $key =>$val){
+                $query->join($val[0],$val[1],$val[2],$val[3]);
+            }
+        }
+        if(isset($orderBy)&&!empty($orderBy)){
+            $query->orderBy($orderBy[0], $orderBy[1]);
         }
         return $query->paginate($perpage)->withQueryString()->withPath(env('APP_URL') . $extend['path']);
     }    
 
+    public function getPostCatalogueById(int $id=0, $language_id=0){
+        return $this->model->select([
+            'post_catalogues.id',
+            'post_catalogues.parent_id',
+            'post_catalogues.image',
+            'post_catalogues.icon',
+            'post_catalogues.album',
+            'post_catalogues.publish',
+            'post_catalogues.follow',
+            'tb2.name',
+            'tb2.description',
+            'tb2.content',
+            'tb2.meta_title',
+            'tb2.meta_keyword',
+            'tb2.meta_description',
+            'tb2.canonical',
+        ])
+        ->join('post_catalogue_language as tb2','tb2.post_catalogue_id','=','post_catalogues.id')
+        ->where('tb2.language_id','=',$language_id)
+        ->findOrFail($id);
+    }
 }

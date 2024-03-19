@@ -49,8 +49,20 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
         }
         //dd($condition);
         $perpage=$request->integer('perpage', 20);
-        $postCatalogues=$this->postCatalogueRepository->pagination(['id','name','canonical','publish','description','image'], $condition,[], ['path'=> 'language/index'], $perpage,[]);
-        //dd($userCatalogues);
+        $postCatalogues=$this->postCatalogueRepository->pagination(
+            $this->paginateSelect(),
+            $condition,
+            [
+                ['post_catalogue_language as tb2','tb2.post_catalogue_id','=','post_catalogues.id']
+            ], 
+            ['path'=> 'post/catalogue/index'], 
+            $perpage,
+            [],
+            [
+                'post_catalogues.lft', 'ASC'
+            ]
+        );
+        //dd($postCatalogues);
         return $postCatalogues;
     }
     public function createPostCatalogue($request){
@@ -93,10 +105,29 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
     public function updatePostCatalogue($id, $request){
         DB::beginTransaction();
         try{
-            $payload = $request->except('_token','send');//lấy tất cả ngoại trừ hai trường này thay vì dùng input là lấy tất cả
+            $postCatalogue=$this->postCatalogueRepository->findById($id);
+            //dd($postCatalogue);
+            $payload = $request->only($this->payload());//lấy tất cả ngoại trừ hai trường này thay vì dùng input là lấy tất cả
             //dd($payload);
+            $flag=$this->postCatalogueRepository->update($id,$payload);
+            if($flag==TRUE){
+                $payloadLanguage = $request->only($this->payloadLanguage());
+                //dd($payloadLanguage);
+                //dd($this->currentLanguage());
+                $payloadLanguage['language_id']=$this->currentLanguage();
+                $payloadLanguage['post_catalogue_id']=$postCatalogue->id;
+                //dd($payloadLanguage);
+                //: Loại bỏ mối quan hệ giữa mục hiện tại và ngôn ngữ của nó.
+                $postCatalogue->languages()->detach([$payloadLanguage['language_id'],$id]);
+                // Tạo lại mối quan hệ giữa mục và ngôn ngữ dựa trên dữ liệu trong $payloadLanguage
+                $reponse=$this->postCatalogueRepository->createLanguagePivot($postCatalogue,$payloadLanguage);
+                $this->nestedset->Get();//gọi Get để lấy dữ liệu
+                $this->nestedset->Recursive(0, $this->nestedset->Set());//gọi Recursive để tính toán lại các giá trị của từng node
+                $this->nestedset->Action();//gọi đến Action để cập nhật lại các giá trị lft rgt
+            }
+            
 
-            $postCatalogue=$this->postCatalogueRepository->update($id, $payload);
+            //$postCatalogue=$this->postCatalogueRepository->update($id, $payload);
             //echo 1; die();
             //dd($user);
 
@@ -196,7 +227,18 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
     //         return false;
     //     }
     // }
-
+    
+    private function paginateSelect(){
+        return[
+            'post_catalogues.id',
+            'post_catalogues.publish',
+            'post_catalogues.image',
+            'post_catalogues.level',
+            'post_catalogues.order',
+            'tb2.name',
+            'tb2.canonical'
+        ];
+    }
     private function payload(){
         return [
             'parent_id',

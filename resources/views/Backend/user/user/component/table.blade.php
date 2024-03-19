@@ -24,7 +24,7 @@
             </td>
             <td>
                 <span class="image img-cover"><img
-                        src="{{ $user->image }}"
+                        src="{{ old('image', $user->image) ?? 'Backend/img/not-found.png' }}"
                         alt=""></span>
             </td>
             <td>

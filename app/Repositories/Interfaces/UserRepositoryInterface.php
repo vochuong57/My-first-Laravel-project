@@ -8,7 +8,7 @@ namespace App\Repositories\Interfaces;
  */
 interface UserRepositoryInterface
 {
-    public function pagination(array $column=['*'],array $condition=[],array $join=[],array $extend=[],int $perpage=1, array $relations=[]);
+    public function pagination(array $column=['*'],array $condition=[],array $join=[],array $extend=[],int $perpage=1, array $relations=[], array $orderBy=[]);
     public function create(array $payload =[]);
     public function findById(int $id, array $column=['*'], array $relation =[]);
     public function update(int $id=0, array $payload=[]);

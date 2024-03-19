@@ -32,7 +32,8 @@ class StorePostCatalogueRequest extends FormRequest
             'name.required'=>'Bạn chưa nhập họ tên',
             'name.string'=>'Tên phải là dạng ký tự',
             'name.regex'=>'Tên không được chứa ký tự số',
-            'canonical.required'=>'Bạn chưa nhập vào ô đường dẫn'
+            'canonical.required'=>'Bạn chưa nhập vào ô đường dẫn',
+            'canonical.unique'=>'Đường dẫn đã tồn tại, hãy chọn đường dẫn khác'
         ];
     }
 }
