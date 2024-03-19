@@ -17,6 +17,8 @@ class LoginMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+
+        //dd(Auth::id());
         if(Auth::id()>0){
             return redirect()->route('dashboard.index');
         }
