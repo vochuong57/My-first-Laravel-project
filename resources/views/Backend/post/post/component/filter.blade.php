@@ -1,4 +1,4 @@
-<form action="{{ route('post.catalogue.index') }}">
+<form action="{{ route('post.index') }}">
 <div class="filter-wrapper">
     <div class="uk-flex uk-flex-middle uk-flex-space-between">
         <div class="perpage">
@@ -31,7 +31,7 @@
                         </span>
                     </div>
                 </div>
-                <a href="{{ route('post.catalogue.store') }}" class="btn btn-danger ml10"><i class="fa fa-plus mr5"></i>{{ config('apps.postCatalogue.create.title') }}</a>
+                <a href="{{ route('post.store') }}" class="btn btn-danger ml10"><i class="fa fa-plus mr5"></i>{{ config('apps.post.create.title') }}t</a>
             </div>
         </div>
     </div>

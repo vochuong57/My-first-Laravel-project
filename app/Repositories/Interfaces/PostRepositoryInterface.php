@@ -3,10 +3,10 @@
 namespace App\Repositories\Interfaces;
 
 /**
- * Interface PostCatalogueServiceInterface
+ * Interface PostServiceInterface
  * @package App\Services\Interfaces
  */
-interface PostCatalogueRepositoryInterface
+interface PostRepositoryInterface
 {
     public function all();
     public function pagination(
@@ -26,5 +26,5 @@ interface PostCatalogueRepositoryInterface
     public function updateByWhereIn(string $whereInField='', array $whereIn=[], array $payload=[]);//dùng khi ở toolbox thay đổi hàng loạt trạng thái user
     public function deleteByWhereIn(string $whereInField = '', array $whereIn = []);
     public function createPivot($model, array $payload=[], string $relation='');//xử lý logic thêm 2 bảng
-    public function getPostCatalogueById(int $id=0, $language_id=0);//xử lý hiện thị dữ liệu từ 2 bảng
+    public function getPostById(int $id=0, $language_id=0);//xử lý hiện thị dữ liệu từ 2 bảng
 }

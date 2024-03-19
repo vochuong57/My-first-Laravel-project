@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('post_catalogue_id')->unsigned();
-            $table->foreign('post_catalogue_id')->references('id')->on('post_catalogues')->onDelete('cascade');
+            $table->integer('post_catalogue_id')->default(0);
             $table->string('image')->nullable();
             $table->string('icon')->nullable();
             $table->text('album')->nullable();
             $table->tinyInteger('publish')->default(1);
             $table->integer('order')->default(0);
+            $table->tinyInteger('follow')->default(0);
             $table->bigInteger('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamp('deleted_at')->nullable();
