@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;//dùng để kiểm tra khi logout
+use Illuminate\Http\Request;//dùng để xử lí khi logout
 //thêm thư viện hiện ra thông báo lỗi bằng tiếng việt (tự làm)
 use App\Http\Requests\AuthRequest;
 //thêm thư viện kiểm tra đăng nhập
