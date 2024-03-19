@@ -6,6 +6,7 @@ use App\Repositories\Interfaces\PostRepositoryInterface;
 //chèn thêm thư viện tự tạo để lấy thông tin user từ DB
 use App\Models\Post;
 use App\Repositories\BaseRepository;
+use SebastianBergmann\CodeCoverage\Report\Html\CustomCssFile;
 
 /**
  * Class PostCatalogueService
@@ -26,56 +27,22 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
         array $join=[],
         array $relations=[],
         array $rawQuery = []
-        ) {
-        $query = $this->model->select($column)->where(function ($query) use ($condition) {
-            if (isset($condition['keyword']) && !empty($condition['keyword'])) {
-                $query->where(function ($query) use ($condition) {
-                    $query->where('name', 'LIKE', '%' . $condition['keyword'] . '%')
-                        ->orWhere('canonical', 'LIKE', '%' . $condition['keyword'] . '%');
-                       
-                });
-            }
-            
-            // Thêm điều kiện kiểm tra publish nếu tồn tại
-            if (isset($condition['publish'])) {
-                $query->where('publish', '=', $condition['publish']);
-            }   
-
-            if(isset($condition['where']) && count($condition['where'])){
-                foreach($condition['where'] as $key => $val){
-                    $query->where($val[0], $val[1], $val[2]);
-                }
-            }
-
-            return $query;
-        });
-
-        if(isset($rawQuery['whereRaw']) && count($rawQuery['whereRaw'])){
-            foreach($rawQuery['whereRaw'] as $key => $val){
-                $query->whereRaw($val[0], $val[1]);
-            }
-        }
-
-        if(isset($relations) && !empty($relations)) {
-            foreach($relations as $relation) {
-                $query->withCount($relation);
-            }
-        }
-        if(isset($join)&&is_array($join)&&count($join)){
-            foreach($join as $key =>$val){
-                $query->join($val[0],$val[1],$val[2],$val[3]);
-            }
-        }
-        if(isset($extend['groupBy']) && !empty($extend['groupBy'])){
-            $query->groupBy($extend['groupBy']);
-        }
-        if(isset($orderBy)&&!empty($orderBy)){
-            $query->orderBy($orderBy[0], $orderBy[1]);
-        }
+        ) 
+    {
+        $query = $this->model->select($column);
+        
+        return $query
+        ->Keyword($condition['keyword'] ?? null)
+        ->Publish($condition['publish'] ?? null)
+        ->CustomWhere($condition['where'] ?? null)
+        ->RelationCount($relations ?? null)
+        ->CustomWhereRaw($rawQuery['whereRaw'] ?? null)
+        ->CustomJoin($join ?? null)
+        ->CustomGroupBy($extend['groupBy'] ?? null)
+        ->CustomOrderBy($orderBy ?? null)
+        ->paginate($perpage)->withQueryString()->withPath(env('APP_URL') . $extend['path']);
 
         //echo $query->toSql(); die();
-
-        return $query->paginate($perpage)->withQueryString()->withPath(env('APP_URL') . $extend['path']);
     }    
 
     public function getPostById(int $id=0, $language_id=0){
