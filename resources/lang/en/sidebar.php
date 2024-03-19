@@ -3,31 +3,31 @@
         'module'=>[
             [
                 'title'=>'User Group',
-                'icon'=>'fa fa-file',
-                'name'=>['post'],
+                'icon'=>'fa fa-user',
+                'name'=>['user'],
                 'subModule'=>[
                     [
                         'title'=>'User Group',
-                        'route'=>'post/catalogue/index'
+                        'route'=>'user/catalogue/index'
                     ],
                     [
                         'title'=>'User',
-                        'route'=>'post/index'
+                        'route'=>'user/index'
                     ]
                 ]
             ],
             [
                 'title'=>'Article',
-                'icon'=>'fa fa-user',
-                'name'=>['user'],
+                'icon'=>'fa fa-file',
+                'name'=>['post'],
                 'subModule'=>[
                     [
                         'title'=>'Article Group',
-                        'route'=>'user/catalogue/index'
+                        'route'=>'post/catalogue/index'
                     ],
                     [
                         'title'=>'Article',
-                        'route'=>'user/index'
+                        'route'=>'post/index'
                     ]
                 ]
             ],

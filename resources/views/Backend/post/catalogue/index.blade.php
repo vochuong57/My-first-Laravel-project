@@ -1,5 +1,5 @@
 
-@include('Backend.dashboard.component.breadcrumb',['title' =>$config['seo']['title']])
+@include('Backend.dashboard.component.breadcrumb',['title' =>$config['seo']['index']['title']])
 
 
 <div class="row mt20">
@@ -7,8 +7,8 @@
     <div class="col-lg-12">
         <div class="ibox float-e-margins">
             <div class="ibox-title">
-                <h5>{{ $config['seo']['table'] }} </h5>
-                @include('Backend.dashboard.component.toolbox', ['content'=>'nhóm bài viết'])
+                <h5>{{ __('messages.table_brand') }} </h5>
+                @include('Backend.dashboard.component.toolbox', ['content'=>(__('messages.toolboxDestroy'))])
             </div>
             <div class="ibox-content">
                 <!-- tìm kiếm user -->

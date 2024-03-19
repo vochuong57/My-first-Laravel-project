@@ -19,7 +19,7 @@
             <div class="col-lg-9">
                 <div class="ibox">
                     <div class="ibox-title">
-                        <h5>Thông tin chung</h5>
+                        <h5>{{ __('messages.general') }}</h5>
                     </div>
                     <div class="ibox-content">
                         @include('Backend.post.catalogue.component.general')
@@ -28,7 +28,7 @@
                 @include('Backend.dashboard.component.album')
                 <div class="ibox">
                     <div class="ibox-title">
-                        <h5>Cấu hình SEO</h5>
+                        <h5>{{ __('messages.seo') }}</h5>
                     </div>
                     <div class="ibox-content">
                         @include('Backend.post.catalogue.component.seo')
