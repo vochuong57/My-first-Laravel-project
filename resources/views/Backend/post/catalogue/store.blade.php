@@ -25,6 +25,7 @@
                         @include('Backend.post.catalogue.component.general')
                     </div>
                 </div>
+                @include('Backend.dashboard.component.album')
                 <div class="ibox">
                     <div class="ibox-title">
                         <h5>Cấu hình SEO</h5>

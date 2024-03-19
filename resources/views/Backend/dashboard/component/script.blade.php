@@ -3,11 +3,12 @@
     <script src= "Backend/js/inspinia.js"></script>
     <script src="Backend/js/plugins/metisMenu/jquery.metisMenu.js"></script>
     <script src="Backend/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+    <script src="Backend/plugins/jquery-ui.min.js"></script>
     <!-- file js này tự tạo -->
     <script src="Backend/libary/libary.js"></script>
 
-    <!-- jQuery UI -->
-    <script src="Backend/js/plugins/jquery-ui/jquery-ui.min.js"></script>
+    <!-- jQuery UI
+    <script src="Backend/js/plugins/jquery-ui/jquery-ui.min.js"></script> -->
 
     <!-- biến config được lấy ra từ DashboardController, UserController... -->
     @if(isset($config['js'])&& is_array($config['js']))

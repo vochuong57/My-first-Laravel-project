@@ -10,6 +10,7 @@
     <link href="Backend/font-awesome/css/font-awesome.css" rel="stylesheet">
 
     <link href="Backend/css/animate.css" rel="stylesheet">
+    <link href="Backend/plugins/jquery-ui.css" rel="stylesheet">
     @if(isset($config['css'])&& is_array($config['css']))
         @foreach($config['css'] as $key => $val)
         {!! '<link href="'.$val.'" rel="stylesheet">' !!}
