@@ -8,7 +8,7 @@
         <div class="ibox float-e-margins">
             <div class="ibox-title">
                 <h5>{{ $config['seo']['table'] }} </h5>
-                @include('Backend.user.user.component.toolbox')
+                @include('Backend.dashboard.component.toolbox', ['model'=>'User', 'content'=>'người dùng'])
             </div>
             <div class="ibox-content">
                 <!-- tìm kiếm user -->

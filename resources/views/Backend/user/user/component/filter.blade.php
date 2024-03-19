@@ -14,11 +14,10 @@
         <div class="action">
             <div class="uk-flex uk-flex-middle">
                 @php
-                    $publishArray=['Chọn tình trạng', 'UnPublish', 'Publish'];
                     $publish = request('publish') ?: old('publish');
                 @endphp
                 <select name="publish" class="form-control ml10 setupSelect2">
-                    @foreach($publishArray as $key => $val)
+                    @foreach(config('apps.general.publish') as $key => $val)
                         <option {{ ($publish == $key) ? 'selected' : '' }} value="{{ $key }}">{{ $val }}</option>
                     @endforeach
                 </select>

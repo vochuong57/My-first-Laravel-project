@@ -18,6 +18,10 @@
     <link href="Backend/css/style.css" rel="stylesheet">
     <link href="Backend/css/customize.css" rel="stylesheet">
     <script src="Backend/js/jquery-3.1.1.min.js"></script>
+    <!-- SET UP CKEDITOR4 -->
+    <script>
+        var BASE_URL = '{{ env('APP_URL') }}'
+    </script>
 
 
 

@@ -11,7 +11,7 @@ use App\Http\Requests\StoreLanguageRequest;
 //chèn thêm viện userRepositoryInterface để lấy function findById để truy xuất dữ liệu của id vừa nhập
 use App\Repositories\Interfaces\LanguageRepositoryInterface as LanguageRepository;
 //chèn thêm thư viện tự tạo request để kiểm tra dữ liệu đầu vào khi edit user
-use App\Http\Requests\UpdateUserCatalogueRequest;
+use App\Http\Requests\UpdateLanguageRequest;
 //use App\Models\User;
 
 
@@ -93,7 +93,7 @@ class LanguageController extends Controller
         return view('Backend.dashboard.layout', compact('template','config','language'));
     }
     //xử lý sửa user
-    public function update($id, UpdateUserCatalogueRequest $request){
+    public function update($id, UpdateLanguageRequest $request){
         //echo $id; die();
         //dd($request);
         if($this->languageService->updateLanguage($id, $request)){
@@ -141,7 +141,7 @@ class LanguageController extends Controller
             'js'=>[
                 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
                 'Backend/libary/location.js',
-                'Backend/plugin/ckfinder/ckfinder.js',
+                'Backend/plugins/ckfinder/ckfinder.js',
                 'Backend/libary/finder.js'
             ],
             'css'=>[

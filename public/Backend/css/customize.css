@@ -120,3 +120,27 @@ table strong{
 .select2-container--default{
     margin-right: 10px;
 }
+/* CSS CHO SEO POST-CATALOGUE */
+.meta-title{
+    font-size: 20px;
+    color: #1a0dab;
+}
+.canonical{
+    color: green;
+    margin-bottom: 8px;
+}
+.meta-description{
+    font-size: 14px;
+}
+.seo-wrapper{
+    margin-top: 30px;
+}
+.seo-wrapper textarea{
+    height: 200px;
+}
+.notice{
+    font-size: 11px;
+    font-style: italic;
+    display: block;
+    margin-bottom: 10px;
+}

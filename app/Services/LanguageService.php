@@ -40,7 +40,7 @@ class LanguageService implements LanguageServiceInterface
         }
         //dd($condition);
         $perpage=$request->integer('perpage', 20);
-        $languages=$this->languageRepository->pagination(['id','name','canonical','publish','description'], $condition,[], ['path'=> 'language/index'], $perpage,[]);
+        $languages=$this->languageRepository->pagination(['id','name','canonical','publish','description','image'], $condition,[], ['path'=> 'language/index'], $perpage,[]);
         //dd($userCatalogues);
         return $languages;
     }

@@ -24,7 +24,7 @@
             </td>
             <td>
                 <span class="image img-cover"><img
-                        src="https://www.tnmt.edu.vn/wp-content/uploads/2023/11/hinh-nen-avatar-ngau-1.jpg"
+                        src="{{ $user->image }}"
                         alt=""></span>
             </td>
             <td>

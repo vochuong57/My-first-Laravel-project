@@ -141,7 +141,7 @@ class UserCatalogueController extends Controller
             'js'=>[
                 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
                 'Backend/libary/location.js',
-                'Backend/plugin/ckfinder/ckfinder.js',
+                'Backend/plugins/ckfinder/ckfinder.js',
                 'Backend/libary/finder.js'
             ],
             'css'=>[
