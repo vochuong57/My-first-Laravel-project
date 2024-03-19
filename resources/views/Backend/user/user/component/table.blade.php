@@ -23,7 +23,7 @@
                 <input type="checkbox" value="{{ $user->id }}" name="" class="input-checkbox checkBoxItem">
             </td>
             <td>
-                <span class="image img-cover"><img
+                <span class="imageUser img-cover"><img
                         src="{{ old('image', $user->image) ?? 'Backend/img/not-found.png' }}"
                         alt=""></span>
             </td>
@@ -43,7 +43,7 @@
                 <div class="address-item name">{{ $user->user_catalogues->name }}</div>
             </td>
             <td class="text-center js-switch-{{ $user->id }}">
-                <input type="checkbox" class="js-switch status" value="{{ $user->publish }}" data-field="publish" data-model="User" data-modelId="{{ $user->id }}" {{ ($user->publish==2)?'checked':'' }} >
+                <input type="checkbox" class="js-switch status" value="{{ $user->publish }}" data-field="publish" data-model="{{ $config['model'] }}" data-modelId="{{ $user->id }}" {{ ($user->publish==2)?'checked':'' }} >
             </td>
             <td class="text-center">
                 <a href="{{ route('user.edit', $user->id) }}" class="btn btn-success"><i class="fa fa-edit"></i></a>

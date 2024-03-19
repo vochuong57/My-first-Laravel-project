@@ -100,7 +100,7 @@ class PostController extends Controller
         //truy vấn thông tin
         $post=$this->postRepository->getPostById($id,$this->language);
         
-        //dd($postCatalogue);
+        //dd($post->post_catalogues);
 
         $dropdown= $this->nestedset->Dropdown();
 
@@ -152,7 +152,8 @@ class PostController extends Controller
             'css'=>[
                 'Backend/css/plugins/switchery/switchery.css',
                 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css',
-            ]
+            ],
+            'model'=>'Post'
         ];
     }
 

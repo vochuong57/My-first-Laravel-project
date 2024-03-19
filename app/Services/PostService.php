@@ -52,8 +52,8 @@ class PostService extends BaseService implements PostServiceInterface
             ['posts.id', 'DESC'],
             [
                 ['post_language as tb2','tb2.post_id','=','posts.id']
-            ]
-  
+            ],
+            ['post_catalogues']
         );
         //dd($posts);
         return $posts;
@@ -109,18 +109,24 @@ class PostService extends BaseService implements PostServiceInterface
             }
             //dd($payload);
             $flag=$this->postRepository->update($id,$payload);
+            //dd($flag);
             if($flag==TRUE){
                 $payloadLanguage = $request->only($this->payloadLanguage());
                 //dd($payloadLanguage);
                 //dd($this->currentLanguage());
+                $payloadLanguage['canonical']=Str::slug($payloadLanguage['canonical']);
                 $payloadLanguage['language_id']=$this->currentLanguage();
-                $payloadLanguage['post_catalogue_id']=$post->id;
+                $payloadLanguage['post_id']=$post->id;
                 //dd($payloadLanguage);
                 //: Loại bỏ mối quan hệ giữa mục hiện tại và ngôn ngữ của nó.
                 $post->languages()->detach([$payloadLanguage['language_id'],$id]);
+                //dd($post);
                 // Tạo lại mối quan hệ giữa mục và ngôn ngữ dựa trên dữ liệu trong $payloadLanguage
                 $reponse=$this->postRepository->createPivot($post,$payloadLanguage,'languages');
-                
+                //dd($reponse);
+                $catalogue=$this->catalogue($request);
+                //dd($catalogue);
+                $post->post_catalogues()->sync($catalogue);
             }
             
 
@@ -229,7 +235,6 @@ class PostService extends BaseService implements PostServiceInterface
             'posts.id',
             'posts.publish',
             'posts.image',
-            'posts.level',
             'posts.order',
             'tb2.name',
             'tb2.canonical'
@@ -253,7 +258,7 @@ class PostService extends BaseService implements PostServiceInterface
             'meta_title',
             'meta_keyword',
             'meta_description',
-            'canonical'
+            'canonical',
         ];
     }
 

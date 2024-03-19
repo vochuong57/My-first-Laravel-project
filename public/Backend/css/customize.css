@@ -23,7 +23,7 @@ h5{
     font-weight: normal;
 }
 /* user */
-.table .image{
+.table .imageUser{
     height: 73px;
     display: block;
 }
@@ -31,6 +31,7 @@ h5{
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
 }
 table strong{
     min-width: 88px;
@@ -252,4 +253,30 @@ input[name=canonical]{
 }
 .hidden{
     display:none;
+}
+/* CSS CHO TABLE POST */
+.image-post{
+    width: 75px;
+    height: 45px;
+}
+.maintitle, a{
+    color: #2962ff;
+}
+.maintitle{
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 600;
+}
+.catalogue{
+    font-size: 10px;
+}
+.catalogue span{
+    font-weight: 600;
+}
+.catalogue a{
+    color: #333;
+    margin-right: 10px;
 }

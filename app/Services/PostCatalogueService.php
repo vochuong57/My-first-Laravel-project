@@ -122,6 +122,7 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
                 $payloadLanguage = $request->only($this->payloadLanguage());
                 //dd($payloadLanguage);
                 //dd($this->currentLanguage());
+                $payloadLanguage['canonical']=Str::slug($payloadLanguage['canonical']);
                 $payloadLanguage['language_id']=$this->currentLanguage();
                 $payloadLanguage['post_catalogue_id']=$postCatalogue->id;
                 //dd($payloadLanguage);
