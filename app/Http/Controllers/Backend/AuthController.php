@@ -8,11 +8,15 @@ use Illuminate\Http\Request;//dùng để xử lí khi logout
 use App\Http\Requests\AuthRequest;
 //thêm thư viện kiểm tra đăng nhập
 use Illuminate\Support\Facades\Auth;
+use App\Repositories\Interfaces\UserRepositoryInterface as UserRepository;
 
 class AuthController extends Controller
 {
-    public function __construct(){
-        
+
+    protected $userRepository;
+
+    public function __construct(UserRepository $userRepository){
+        $this->userRepository=$userRepository;
     }
 
     public function index(){//giao diện
@@ -25,7 +29,17 @@ class AuthController extends Controller
 
     public function login(AuthRequest $request){//tiến hành kiểm tra validate
         $credentials=['email'=>$request->input('email'), 'password'=>$request->input('password')];//sau khi pass validate tiến hành xác thực tài khoản. Tìm authentication -> Login Throttling
-        if(Auth::attempt($credentials)){
+        
+        $email = $request->input('email');
+        $condition=[
+            ['email', '=', $email]
+        ];
+        $user=$this->userRepository->findByCondition($condition);
+        //dd($user);
+        if($user->publish == 1){
+            return redirect()->route('auth.admin')->with('error','Tài khoản này đã bị cấm');
+        }
+        else if(Auth::attempt($credentials)){
             return redirect()->route('dashboard.index')->with('success','Đăng nhập thành công');
         }
         else{
