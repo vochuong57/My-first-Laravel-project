@@ -9,6 +9,12 @@
             <!-- <th>Số thành viên</th> -->
             <!-- <th>Canonical</th> -->
             <!-- <th>Ghi chú</th> -->
+            @foreach($languages as $language)
+                @if(session('app_locale') == $language->canonical) 
+                    @continue 
+                @endif
+                <th style="width: 100px;" class="text-center"><span class="image img-scaledown language-flag"><img src="{{ $language->image }}" alt=""></span></th>
+            @endforeach
             <th class="text-center" style="width: 100px">{{ __('messages.tablePostCatalogue_status') }}</th>
             <th class="text-center" style="width: 100px">{{ __('messages.tablePostCatalogue_action') }}</th>
         </tr>
@@ -29,6 +35,17 @@
             <td>
                 <div class="info-item name">{{ str_repeat('|----',($postCatalogue->level>0?($postCatalogue->level-1):0)).$postCatalogue->name }}</div>
             </td>
+            @foreach($languages as $language)
+                @if(session('app_locale') == $language->canonical) 
+                    @continue 
+                @endif
+                <td style="width: 100px;" class="text-center">
+                    <a href="{{ route('language.translate', ['id' => $postCatalogue->id, 'languageId' => $language->id, 'model' => 'PostCatalogue']) }}">Chưa dịch</a>
+                </td>
+                @php
+                    //echo $language->canonical;
+                @endphp
+            @endforeach
             <!-- <td>
                 <?php //{{ $userCatalogue->users_count }} ?>
             </td> -->

@@ -160,6 +160,7 @@ class LanguageController extends Controller
         ];
     }
 
+    //Dịch hệ thống
     public function swithBackendLanguage($id){
         //echo $id; die();
         $language = $this->languageRepository->findById($id);
@@ -168,5 +169,18 @@ class LanguageController extends Controller
             \App::setLocale($language->canonical);
         }
         return redirect()->back();
+    }
+
+    public function translate($id = 0, $LanguageId = 0, $model = ''){
+        //echo $id;
+        $template='Backend.language.translate';
+
+        $config=$this->configCUD();
+
+        $config['seo']=__('messages.language.delete');
+
+        $this->authorize('modules', 'language.translate');//phân quyền
+
+        return view('Backend.dashboard.layout', compact('template','config'));
     }
 }
