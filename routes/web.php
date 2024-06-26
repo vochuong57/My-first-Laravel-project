@@ -100,6 +100,8 @@ Route::group(['middleware' => ['admin','locale']], function (){
         Route::post('{id}/delete',[LanguageController::class, 'delete'])->name('language.delete')->where(['id'=>'[0-9]+']);//Thực thi xử lý xóa user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
 
         Route::get('{id}/switch',[LanguageController::class, 'swithBackendLanguage'])->name('language.switch')->where(['id'=>'[0-9]+']);//hiển thị form user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+    
+        Route::get('{id}/{languageId}/{model}/translate',[LanguageController::class, 'translate'])->name('language.translate')->where(['id'=>'[0-9]+', 'languageId'=>'[0-9]+']);//thực thi xử lý thêm user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
     });
 
 

@@ -36,7 +36,7 @@ class PostCatalogueController extends Controller
     }
     //giao diện tổng
     public function index(Request $request){//Request $request để tiến hành chức năng tìm kiếm
-        //$users=User::paginate(20);//từ khóa tìm kiếm eloquent
+        //dd(session('app_locale'));
 
         //echo 123; die();
 
