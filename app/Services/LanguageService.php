@@ -40,14 +40,14 @@ class LanguageService implements LanguageServiceInterface
         }
         //dd($condition);
         $perpage=$request->integer('perpage', 20);
-        $languages=$this->languageRepository->pagination(
+        $languagesIndex=$this->languageRepository->pagination(
             $this->paginateSelect(),
             $condition,
             $perpage,
             ['path'=> 'language/index']
         );
         //dd($userCatalogues);
-        return $languages;
+        return $languagesIndex;
     }
     public function createLanguage($request){
         DB::beginTransaction();

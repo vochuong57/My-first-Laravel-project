@@ -176,7 +176,7 @@ table strong{
     border-right: 0;
     font-size: 14px;
 }
-input[name=canonical]{
+.seo-canonical{
     color: #1a0dab;
     font-weight: 600;
 }
@@ -289,6 +289,7 @@ input[name=canonical]{
 .language-item.active{
     background: #2962ff;
 }
+/* CSS CHO LANGUAGE-FLAG DASHBOARD/TABLE */
 .language-flag{
     width: 50px;
     height: 16px !important;

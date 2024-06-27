@@ -40,12 +40,12 @@ class LanguageController extends Controller
         $config['seo']=__('messages.language');
 
         //Đổ dữ liệu User từ DB vào form theo mô hình service và repository
-        $languages = $this->languageService->paginate($request);//$request để tiến hành chức năng tìm kiếm
+        $languagesIndex = $this->languageService->paginate($request);//$request để tiến hành chức năng tìm kiếm
         //dd($userCatalogues);
 
         $this->authorize('modules', 'language.index');//phân quyền
 
-        return view('Backend.dashboard.layout', compact('template','config','languages'));
+        return view('Backend.dashboard.layout', compact('template','config','languagesIndex'));
     }
 
     //giao diện thêm user
@@ -152,7 +152,9 @@ class LanguageController extends Controller
                 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
                 'Backend/libary/location.js',
                 'Backend/plugins/ckfinder/ckfinder.js',
-                'Backend/libary/finder.js'
+                'Backend/libary/finder.js',
+                'Backend/plugins/ckeditor/ckeditor.js',
+                'Backend/libary/seo.js',
             ],
             'css'=>[
                 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css',
@@ -173,6 +175,28 @@ class LanguageController extends Controller
 
     public function translate($id = 0, $LanguageId = 0, $model = ''){
         //echo $id;
+
+        //echo $LanguageId;
+
+        $repositoryInstance = $this->repositoryInstance($model);
+
+        // dd($repositoryInstance);
+
+        $methodName = 'get'.$model.'ById';
+
+        $languageInstance = $this->repositoryInstance('Language');
+
+        $currentLanguage = $languageInstance->findByCondition([
+            ['canonical', '=', session('app_locale')]
+        ]);
+
+        // KQ: Ta sẽ lấy được thông tin dữ liệu của post hoặc catalogue truyền vào file giao diện translate.blade.php
+        $object = $repositoryInstance->{$methodName}($id, $currentLanguage->id);
+        // dd($object);
+
+        $objectTranslate = $repositoryInstance->{$methodName}($id, $LanguageId);
+        // dd($objectTranslate);
+
         $template='Backend.language.translate';
 
         $config=$this->configCUD();
@@ -181,6 +205,15 @@ class LanguageController extends Controller
 
         $this->authorize('modules', 'language.translate');//phân quyền
 
-        return view('Backend.dashboard.layout', compact('template','config'));
+        return view('Backend.dashboard.layout', compact('template','config', 'object', 'objectTranslate'));
+    }
+
+    // Lấy ra ra đúng repository tương ứng theo model
+    private function repositoryInstance($model){
+        $repositoryInterfaceNamespace='\App\Repositories\\'.ucfirst($model).'Repository';
+        if(class_exists($repositoryInterfaceNamespace)){
+            $repositoryInstance=app($repositoryInterfaceNamespace);
+        }
+        return $repositoryInstance ?? null;
     }
 }
