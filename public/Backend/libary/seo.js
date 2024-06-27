@@ -14,8 +14,11 @@
         //tính độ rộng của .baseUrl 161.984375
         //console.log($('.baseUrl').outerWidth())
 
-        $('input[name=canonical]').css({
-            'padding-left': parseInt($('.baseUrl').outerWidth())
+        $('.seo-canonical').each(function(){
+            let _this = $(this)
+            _this.css({
+                'padding-left': parseInt($('.baseUrl').outerWidth()) + 10
+            })
         })
 
         $('input[name=canonical]').on('keyup', function(){
