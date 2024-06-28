@@ -1,14 +1,6 @@
 @include('Backend.dashboard.component.breadcrumb', ['title' =>$config['seo']['title']])
-<!-- từ khóa tìm kiếm/validation/Displaying the Validation Errors -->
-@if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
+@include('Backend.dashboard.component.formError')
+
 <form action="{{route('language.storeTranslate')}}" method="post" class="box">
     @csrf
     <input type="hidden" name="option[id]" value="{{ $option['id'] }}">
@@ -18,9 +10,11 @@
         <div class="row">
             <div class="col-lg-6">
                 @include('Backend.dashboard.component.content',['model' => ($object) ?? null, 'disabled' => 1])
+                @include('Backend.dashboard.component.seo',['model' => ($object) ?? null, 'disabled' => 1])
             </div>
             <div class="col-lg-6">
-                @include('Backend.dashboard.component.translate',['model' => ($objectTranslate) ?? null])
+                @include('Backend.dashboard.component.translateContent',['model' => ($objectTranslate) ?? null])
+                @include('Backend.dashboard.component.translateSeo',['model' => ($objectTranslate) ?? null])
             </div>
         </div>
         

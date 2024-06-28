@@ -8,8 +8,8 @@
                 <div class="form-row">
                     <label for="" class="control-label text-left">Tiêu đề bài viết: <span
                             class="text-danger">(*)</span></label>
-                    <input type="text" name="name" value="{{ old('name', ($model->name)??'') }}" class="form-control"
-                        placeholder="" autocomplete="off" {{(isset($disabled)) ? 'disabled' : ''}}>
+                    <input type="text" name="translate_name" value="{{ old('translate_name', ($model->name)??'') }}" class="form-control"
+                        placeholder="" autocomplete="off">
                 </div>
             </div>
         </div>
@@ -17,9 +17,9 @@
             <div class="col-lg-12">
                 <div class="form-row">
                     <label for="" class="control-label text-left">Mô tả ngắn: </label>
-                    <textarea type="text" placeholder="" autocomplete="off" name="description"
-                        class="form-control ck-editor" id="description" data-height="150" {{(isset($disabled)) ? 'disabled' : ''}}>
-            {{ old('description', ($model->description)??'') }}
+                    <textarea type="text" placeholder="" autocomplete="off" name="translate_description"
+                        class="form-control ck-editor" id="description_1" data-height="150">
+            {{ old('translate_description', ($model->description)??'') }}
             </textarea>
                 </div>
             </div>
@@ -31,9 +31,9 @@
                         <label for="" class="control-label text-left">Nội dung: </label>
                         <a href="" class="multipleUploadImageCkeditor" data-target="ckContent">Upload nhiều hình ảnh</a>
                     </div>
-                    <textarea type="text" placeholder="" autocomplete="off" name="content"
-                        class="form-control ck-editor" id="ckContent" data-height="500" {{(isset($disabled)) ? 'disabled' : ''}}>
-            {{ old('content', ($model->content)??'') }}
+                    <textarea type="text" placeholder="" autocomplete="off" name="translate_content"
+                        class="form-control ck-editor" id="ckContent_1" data-height="500">
+            {{ old('translate_content', ($model->content)??'') }}
             </textarea>
                 </div>
             </div>
