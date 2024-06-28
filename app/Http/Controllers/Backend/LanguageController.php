@@ -13,6 +13,7 @@ use App\Repositories\Interfaces\LanguageRepositoryInterface as LanguageRepositor
 //chèn thêm thư viện tự tạo request để kiểm tra dữ liệu đầu vào khi edit user
 use App\Http\Requests\UpdateLanguageRequest;
 //use App\Models\User;
+use App\Http\Requests\TranslateRequest;
 
 
 class LanguageController extends Controller
@@ -173,6 +174,7 @@ class LanguageController extends Controller
         return redirect()->back();
     }
 
+    // Đổ dữ liệu vào giao diện cho translate
     public function translate($id = 0, $LanguageId = 0, $model = ''){
         //echo $id;
 
@@ -197,6 +199,13 @@ class LanguageController extends Controller
         $objectTranslate = $repositoryInstance->{$methodName}($id, $LanguageId);
         // dd($objectTranslate);
 
+        // Dùng để đưa những dữ liệu này vào request cho phương thức xử lý cập nhật bản dịch
+        $option=[
+            'id' => $id,
+            'languageId' => $LanguageId,
+            'model' => $model
+        ];
+
         $template='Backend.language.translate';
 
         $config=$this->configCUD();
@@ -205,7 +214,7 @@ class LanguageController extends Controller
 
         $this->authorize('modules', 'language.translate');//phân quyền
 
-        return view('Backend.dashboard.layout', compact('template','config', 'object', 'objectTranslate'));
+        return view('Backend.dashboard.layout', compact('template','config', 'object', 'objectTranslate', 'option'));
     }
 
     // Lấy ra ra đúng repository tương ứng theo model
@@ -215,5 +224,14 @@ class LanguageController extends Controller
             $repositoryInstance=app($repositoryInterfaceNamespace);
         }
         return $repositoryInstance ?? null;
+    }
+
+    // Xử lý cập nhật bản dịch
+    public function storeTranslate(TranslateRequest $request){
+        $option = $request->input('option');
+        if($this->languageService->saveTranslate($option, $request)){
+            return redirect()->back()->with('success', 'Cập nhật bản dịch thành công');
+        }
+           return redirect()->back()->with('error', 'Cập nhật bản dịch thất bại');
     }
 }

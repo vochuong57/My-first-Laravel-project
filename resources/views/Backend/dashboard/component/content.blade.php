@@ -8,8 +8,8 @@
                 <div class="form-row">
                     <label for="" class="control-label text-left">Tiêu đề bài viết: <span
                             class="text-danger">(*)</span></label>
-                    <input type="text" name="name" value="{{ old('name', ($object->name)??'') }}" class="form-control"
-                        placeholder="" autocomplete="off">
+                    <input type="text" name="name" value="{{ old('name', ($model->name)??'') }}" class="form-control"
+                        placeholder="" autocomplete="off" {{(isset($disabled)) ? 'disabled' : ''}}>
                 </div>
             </div>
         </div>
@@ -18,8 +18,8 @@
                 <div class="form-row">
                     <label for="" class="control-label text-left">Mô tả ngắn: </label>
                     <textarea type="text" placeholder="" autocomplete="off" name="description"
-                        class="form-control ck-editor" id="description" data-height="150">
-            {{ old('description', ($object->description)??'') }}
+                        class="form-control ck-editor" id="description" data-height="150" {{(isset($disabled)) ? 'disabled' : ''}}>
+            {{ old('description', ($model->description)??'') }}
             </textarea>
                 </div>
             </div>
@@ -32,8 +32,8 @@
                         <a href="" class="multipleUploadImageCkeditor" data-target="ckContent">Upload nhiều hình ảnh</a>
                     </div>
                     <textarea type="text" placeholder="" autocomplete="off" name="content"
-                        class="form-control ck-editor" id="ckContent" data-height="500">
-            {{ old('content', ($object->content)??'') }}
+                        class="form-control ck-editor" id="ckContent" data-height="500" {{(isset($disabled)) ? 'disabled' : ''}}>
+            {{ old('content', ($model->content)??'') }}
             </textarea>
                 </div>
             </div>
@@ -47,13 +47,13 @@
     <div class="ibox-content">
         <div class="seo-container">
             <div class="meta-title">
-                {{ old('meta_title', ($object->meta_title) ?? __('messages.seo_title')) }}
+                {{ old('meta_title', ($model->meta_title) ?? __('messages.seo_title')) }}
             </div>
             <div class="canonical">
-                {{ old('canonical', ($object->canonical)??'') ? config('app.url').old('canonical', ($object->canonical)??'').config('apps.general.suffix') : __('messages.seo_canonical') }}
+                {{ old('canonical', ($model->canonical)??'') ? config('app.url').old('canonical', ($model->canonical)??'').config('apps.general.suffix') : __('messages.seo_canonical') }}
             </div>
             <div class="meta-description">
-                {{ old('meta_description', ($object->meta_description) ?? __('messages.seo_description')) }}
+                {{ old('meta_description', ($model->meta_description) ?? __('messages.seo_description')) }}
             </div>
         </div>
         <div class="seo-wrapper">
@@ -67,8 +67,10 @@
                             </div>
                         </label>
                         <input type="text" name="meta_title"
-                            value="{{ old('meta_title', ($object->meta_title) ?? '') }}" class="form-control"
-                            placeholder="" autocomplete="off">
+                            value="{{ old('meta_title', ($model->meta_title) ?? '') }}" class="form-control"
+                            placeholder="" autocomplete="off"
+                            {{(isset($disabled)) ? 'disabled' : ''}}
+                        >
                     </div>
                 </div>
             </div>
@@ -79,8 +81,10 @@
                             <span>{{ __('messages.seo_meta_keyword') }}</span>
                         </label>
                         <input type="text" name="meta_keyword"
-                            value="{{ old('meta_keyword', ($object->meta_keyword)??'') }}" class="form-control"
-                            placeholder="" autocomplete="off">
+                            value="{{ old('meta_keyword', ($model->meta_keyword)??'') }}" class="form-control"
+                            placeholder="" autocomplete="off"
+                            {{(isset($disabled)) ? 'disabled' : ''}}    
+                        >
                     </div>
                 </div>
             </div>
@@ -94,7 +98,7 @@
                             </div>
                         </label>
                         <textarea type="text" name="meta_description" placeholder="" class="form-control"
-                            autocomplete="off">{{ old('meta_description', ($object->meta_description)??'') }}</textarea>
+                            autocomplete="off" {{(isset($disabled)) ? 'disabled' : ''}}>{{ old('meta_description', ($model->meta_description)??'') }}</textarea>
                     </div>
                 </div>
             </div>
@@ -109,8 +113,8 @@
                         </label>
                         <div class="input-wrapper">
                             <input type="text" name="canonical"
-                                value="{{ old('canonical', ($object->canonical)??'') }}" class="form-control seo-canonical"
-                                placeholder="" autocomplete="off">
+                                value="{{ old('canonical', ($model->canonical)??'') }}" class="form-control seo-canonical"
+                                placeholder="" autocomplete="off" {{(isset($disabled)) ? 'disabled' : ''}}>
                             <span class="baseUrl">{{ config('app.url') }}</span>
                         </div>
 

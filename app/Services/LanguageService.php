@@ -159,6 +159,7 @@ class LanguageService implements LanguageServiceInterface
         ];
     }
     
+    //Cập nhật trạng thái của ngôn ngữ đang chọn
     public function switch($id){
         DB::beginTransaction();
         try{
@@ -176,5 +177,49 @@ class LanguageService implements LanguageServiceInterface
             return false;
         }
         
+    }
+
+    // Cập nhật bản dịch module
+    public function saveTranslate($option, $request){
+        DB::beginTransaction();
+        try{
+            $payload=[
+                'name' => $request->input('translate_name'),
+                'description' => $request->input('translate_description'),
+                'content' => $request->input('translate_content'),
+                'meta_title' => $request->input('translate_meta_title'),
+                'meta_keyword' => $request->input('translate_meta_keyword'),
+                'meta_description' => $request->input('translate_meta_description'),
+                'canonical' => $request->input('translate_canonical'),
+                $this->coverModelToField($option['model']) => $option['id'],
+                'language_id' => $option['languageId'],
+            ];
+
+            // dd($payload);
+
+            // Lấy ra đúng repository tương ứng theo từng Model
+            $repositoryInterfaceNamespace='\App\Repositories\\'.ucfirst($option['model']).'Repository';
+            // echo $repositoryInterfaceNamespace; die();
+            if(class_exists($repositoryInterfaceNamespace)){
+                $repositoryInstance=app($repositoryInterfaceNamespace);
+            }
+
+            $model = $repositoryInstance->findById($option['id']);
+            // dd($model);
+            $model->languages()->detach([$option['languageId'], $model->id]);
+            $repositoryInstance->createPivot($model, $payload, 'languages');
+
+            DB::commit();
+            return true;
+        }catch(\Exception $ex){
+            DB::rollBack();
+            echo $ex->getMessage();//die();
+            return false;
+        }
+    }
+
+    private function coverModelToField($model){
+        $temp = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $model));
+        return $temp.'_id';
     }
 }
