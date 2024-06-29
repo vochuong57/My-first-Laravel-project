@@ -65,7 +65,7 @@
                 </label>
                 <div class="input-wrapper">
                     <input type="text" name="canonical" value="{{ old('canonical', ($post->canonical)??'') }}"
-                        class="form-control" placeholder="" autocomplete="off">
+                        class="form-control seo-canonical" placeholder="" autocomplete="off">
                         <span class="baseUrl">{{ config('app.url') }}</span>
                 </div>
                 

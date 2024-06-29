@@ -28,19 +28,17 @@ use App\Repositories\Interfaces\PostLanguageRepositoryInterface as PostLanguageR
 class PostService extends BaseService implements PostServiceInterface
 {
     protected $postRepository;
-    protected $language;
     protected $routerRepository;
     protected $postLanguageRepository;
     protected $controllerName = 'PostController';
 
     public function __construct(PostRepository $postRepository, RouterRepository $routerRepository, PostLanguageRepository $postLanguageRepository){
         $this->postRepository=$postRepository;
-        $this->language=$this->currentLanguage();
         $this->routerRepository=$routerRepository;
         $this->postLanguageRepository=$postLanguageRepository;
     }
 
-    public function paginate($request){//$request để tiến hành chức năng tìm kiếm
+    public function paginate($request, $languageId){//$request để tiến hành chức năng tìm kiếm
         //dd($request);
         //echo 123; die();
         $condition['keyword']=addslashes($request->input('keyword'));
@@ -50,7 +48,7 @@ class PostService extends BaseService implements PostServiceInterface
             $condition['publish'] = null;
         }
         $condition['where']=[
-            ['tb2.language_id', '=', $this->language],
+            ['tb2.language_id', '=', $languageId],
         ];
         //dd($condition);
         $perpage=$request->integer('perpage', 20);
@@ -71,13 +69,13 @@ class PostService extends BaseService implements PostServiceInterface
         
         return $posts;
     }
-    public function createPost($request){
+    public function createPost($request, $languageId){
         DB::beginTransaction();
         try{
             $post = $this->createTablePost($request);
             
             if($post->id>0){
-                $this->updateLanguageForPost($request, $post);
+                $this->updateLanguageForPost($request, $post, $languageId);
                 $this->createRouter($request, $post, $this->controllerName);
                 
                 //xử lí add dữ liệu vào post_catalogue_post
@@ -94,14 +92,14 @@ class PostService extends BaseService implements PostServiceInterface
         }
     }
 
-    public function updatePost($id, $request){
+    public function updatePost($id, $request, $languageId){
         DB::beginTransaction();
         try{
             $post=$this->postRepository->findById($id);
             $flag=$this->updateTablePost($request, $id);
             //dd($flag);
             if($flag==TRUE){
-                $this->updateLanguageForPost($request, $post);
+                $this->updateLanguageForPost($request, $post, $languageId);
                 $this->updateRouter($request, $post, $this->controllerName);
 
                 $catalogue=$this->mergeCatalogue($request);
@@ -117,22 +115,34 @@ class PostService extends BaseService implements PostServiceInterface
         }
     }
    
-    public function deletePost($id){
+    public function deletePost($id, $languageId){
         DB::beginTransaction();
         try{
-            $post=$this->postRepository->delete($id);
-            $conditionByRouter=[
-                ['module_id', '=', $id]
-            ];
-            $router=$this->routerRepository->findByCondition($conditionByRouter);
-            //dd($router->id);
-            $this->routerRepository->forceDelete($router->id);//router chỉ hiện những cái canonical đang tồn tại sẽ không có xóa mềm
             //echo '123'; die();
+            //Đầu tiền xóa đi bản dịch đó khỏi post_language
             $where=[
+                ['post_id', '=', $id],
+                ['language_id', '=', $languageId]
+            ];
+            $this->postLanguageRepository->deleteByWhere($where);
+
+            //Sau khi xóa xong thì nó tiếp tục kiểm tra xem thử là còn cái post_id đó trong post_language không
+            $condition=[
                 ['post_id', '=', $id]
             ];
-            $payload=['canonical'=>null];
-            $this->postLanguageRepository->updateByWhere($where,$payload);
+            $flag = $this->postLanguageRepository->findByCondition($condition);
+
+            //Nếu không tìm thấy nữa thì ta mới tiến hành xóa đi post và router
+            if(!$flag){
+                $post=$this->postRepository->forceDelete($id);
+
+                $conditionByRouter=[
+                    ['module_id', '=', $id]
+                ];
+                $router=$this->routerRepository->findByCondition($conditionByRouter);
+                //dd($router->id);
+                $this->routerRepository->forceDelete($router->id);//router chỉ hiện những cái canonical đang tồn tại sẽ không có xóa mềm
+            }
             DB::commit();
             return true;
         }catch(\Exception $ex){
@@ -225,10 +235,6 @@ class PostService extends BaseService implements PostServiceInterface
         ];
     }
 
-    public function currentLanguage(){
-        return 1;
-    }
-
     //merge dữ liệu từ hai mảng khác nhau vào chung một bảng
     private function mergeCatalogue($request){
         $catalogueInput = $request->input('catalogue');
@@ -282,19 +288,20 @@ class PostService extends BaseService implements PostServiceInterface
         $flag=$this->postRepository->update($id,$payload);
         return $flag;
     }
-    private function updateLanguageForPost($request, $post){
-        $payloadLanguage=$this->formatLanguagePayload($request, $post);
-        $post->languages()->detach([$this->language, $post->id]);
+    //Cho bảng post_language
+    private function updateLanguageForPost($request, $post, $languageId){
+        $payloadLanguage=$this->formatLanguagePayload($request, $post, $languageId);
+        $post->languages()->detach([$languageId, $post->id]);
         $language = $this->postRepository->createPivot($post,$payloadLanguage,'languages');
         //dd($language); die();
         return $language;
     }
-    private function formatLanguagePayload($request, $post){
+    private function formatLanguagePayload($request, $post, $languageId){
         $payloadLanguage = $request->only($this->payloadLanguage());
         //dd($payloadLanguage);
         //dd($this->currentLanguage());
         $payloadLanguage['canonical']=Str::slug($payloadLanguage['canonical']);
-        $payloadLanguage['language_id']=$this->currentLanguage();
+        $payloadLanguage['language_id']=$languageId;
         $payloadLanguage['post_id']=$post->id;
         //dd($payloadLanguage);
         return $payloadLanguage;
