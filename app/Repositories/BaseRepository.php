@@ -107,6 +107,14 @@ class BaseRepository implements BaseRepositoryInterface
     public function deleteByWhereIn(string $whereInField = '', array $whereIn = []) {
         return $this->model->whereIn($whereInField, $whereIn)->forceDelete();
     }
+    public function deleteByWhere(array $condition=[]){
+        $query = $this->model->newQuery();
+        foreach($condition as $key => $val){
+            $query->where($val[0], $val[1], $val[2]);
+        }
+        //echo $query->toSql(); die();
+        return $query->forceDelete();
+    }
     
     public function createPivot($model, array $payload=[], string $relation=''){
         return $model->{$relation}()->attach($model->id, $payload);

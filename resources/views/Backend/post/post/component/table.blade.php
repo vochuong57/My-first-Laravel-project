@@ -6,6 +6,7 @@
             </th>
             <!-- <th style="width: 90px">Ảnh</th> -->
             <th>Tiêu đề</th>
+            @include('Backend.dashboard.component.languageTh')
             <th style="width: 80px" class="text-center">vị trí</th>
             <!-- <th>Canonical</th> -->
             <!-- <th>Ghi chú</th> -->
@@ -49,6 +50,7 @@
                     </div>
                 </div>
             </td>
+            @include('Backend.dashboard.component.languageTd', ['model' => $post, 'modeling' => 'Post'])
             <td>
                 <input type="text" name="order" value="{{ $post->order }}" class="form-control sort-order text-right" data-id="{{ $post->id }}" data-model="{{ $config['model'] }}">
             </td>

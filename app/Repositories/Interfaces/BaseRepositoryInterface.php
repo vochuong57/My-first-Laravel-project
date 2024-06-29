@@ -29,5 +29,6 @@ interface BaseRepositoryInterface
     public function delete(int $id=0);
     public function forceDelete(int $id=0);
     public function deleteByWhereIn(string $whereInField = '', array $whereIn = []);
+    public function deleteByWhere(array $condition=[]);
     public function createPivot($model, array $payload=[], string $relation ='');
 }

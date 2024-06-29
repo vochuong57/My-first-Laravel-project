@@ -14,7 +14,7 @@ use App\Repositories\Interfaces\PostRepositoryInterface as PostRepository;
 use App\Http\Requests\UpdatePostRequest;
 //use App\Models\User;
 use App\Classes\Nestedsetbie;
-
+use App\Models\Language;
 
 class PostController extends Controller
 {
@@ -23,16 +23,37 @@ class PostController extends Controller
     protected $nestedset;
     protected $language;//được lấy từ extends Controller
 
-    public function __construct(PostService $postService, PostRepository $postRepository){
-        $this->postService=$postService;//định nghĩa  $this->userService=$userCatalogueService để biến này nó có thể trỏ tới các phương tức của UserCatalogueService
-        $this->postRepository=$postRepository;
+    public function __construct(PostService $postService, PostRepository $postRepository)
+    {
+        $this->postService = $postService; // định nghĩa $this->userService=$userCatalogueService để biến này nó có thể trỏ tới các phương tức của UserCatalogueService
+        $this->postRepository = $postRepository;
+
+        $this->middleware(function($request, $next) {
+            try {
+                $locale = app()->getLocale(); // vn cn en
+                $language = Language::where('canonical', $locale)->first();
+
+                if (!$language) {
+                    throw new \Exception('Vui lòng chọn ngôn ngữ trước khi truy cập bài viết.');
+                }
+
+                $this->language = $language->id;
+                $this->initialize();
+            } catch (\Exception $e) {
+                return redirect()->route('dashboard.index')->with('error', $e->getMessage());
+            }
+            return $next($request);
+        });
+    }
+
+    private function initialize(){
         $this->nestedset=new Nestedsetbie([
             'table'=>'post_catalogues',
             'foreignkey'=>'post_catalogue_id',
-            'language_id'=>1,
+            'language_id'=>$this->language,
         ]);
-        $this->language=$this->currentLanguage();
     }
+
     //giao diện tổng
     public function index(Request $request){//Request $request để tiến hành chức năng tìm kiếm
         //$users=User::paginate(20);//từ khóa tìm kiếm eloquent
@@ -49,7 +70,7 @@ class PostController extends Controller
         $config['seo']=config('apps.post.index');
 
         //Đổ dữ liệu User từ DB vào form theo mô hình service và repository
-        $posts = $this->postService->paginate($request);//$request để tiến hành chức năng tìm kiếm
+        $posts = $this->postService->paginate($request, $this->language);//$request để tiến hành chức năng tìm kiếm
         //dd($posts);
 
         $dropdown= $this->nestedset->Dropdown();
@@ -90,7 +111,7 @@ class PostController extends Controller
 
     //xử lý thêm user
     public function create(StorePostRequest $request){
-        if($this->postService->createPost($request)){
+        if($this->postService->createPost($request, $this->language)){
             return redirect()->route('post.index')->with('success','Thêm mới bào viết thành công');
         }
            return redirect()->route('post.index')->with('error','Thêm mới bài viết thất bại. Hãy thử lại');
@@ -109,6 +130,10 @@ class PostController extends Controller
 
         //truy vấn thông tin
         $post=$this->postRepository->getPostById($id,$this->language);
+
+        if(!$post){
+            return redirect()->route('post.index')->with('error', 'Bài viết này chưa có bản dịch của ngôn ngữ được chọn');
+        }
         
         //dd($post->post_catalogues);
 
@@ -124,7 +149,7 @@ class PostController extends Controller
     public function update($id, UpdatePostRequest $request){
         //echo $id; die();
         //dd($request);
-        if($this->postService->updatePost($id, $request)){
+        if($this->postService->updatePost($id, $request, $this->language)){
             return redirect()->route('post.index')->with('success','Cập nhật bài viết thành công');
         }
            return redirect()->route('post.index')->with('error','Cập nhật bài viết thất bại. Hãy thử lại');
@@ -152,7 +177,7 @@ class PostController extends Controller
     public function delete($id){
         //echo $id;
         //echo 123; die();
-        if($this->postService->deletePost($id)){
+        if($this->postService->deletePost($id, $this->language)){
             return redirect()->route('post.index')->with('success','Xóa bài viết thành công');
         }
            return redirect()->route('post.index')->with('error','Xóa bài viết thất bại. Hãy thử lại');

@@ -15,6 +15,7 @@ use App\Http\Requests\UpdatePostCatalogueRequest;
 //use App\Models\User;
 use App\Classes\Nestedsetbie;
 use App\Http\Requests\DeletePostCatalogueRequest;
+use App\Models\Language;
 
 
 class PostCatalogueController extends Controller
@@ -27,13 +28,33 @@ class PostCatalogueController extends Controller
     public function __construct(PostCatalogueService $postCatalogueService, PostCatalogueRepository $postCatalogueRepository){
         $this->postCatalogueService=$postCatalogueService;//định nghĩa  $this->userService=$userCatalogueService để biến này nó có thể trỏ tới các phương tức của UserCatalogueService
         $this->postCatalogueRepository=$postCatalogueRepository;
+        
+        $this->middleware(function($request, $next) {
+            try {
+                $locale = app()->getLocale(); // vn cn en
+                $language = Language::where('canonical', $locale)->first();
+
+                if (!$language) {
+                    throw new \Exception('Vui lòng chọn ngôn ngữ trước khi truy cập nhóm bài viết.');
+                }
+
+                $this->language = $language->id;
+                $this->initialize();
+            } catch (\Exception $e) {
+                return redirect()->route('dashboard.index')->with('error', $e->getMessage());
+            }
+            return $next($request);
+        });
+    }
+
+    private function initialize(){
         $this->nestedset=new Nestedsetbie([
             'table'=>'post_catalogues',
             'foreignkey'=>'post_catalogue_id',
-            'language_id'=>1,
+            'language_id'=>$this->language,
         ]);
-        $this->language=$this->currentLanguage();
     }
+
     //giao diện tổng
     public function index(Request $request){//Request $request để tiến hành chức năng tìm kiếm
         //dd(session('app_locale'));
@@ -50,7 +71,7 @@ class PostCatalogueController extends Controller
         $config['seo']=__('messages.postCatalogue');
         //dd($config['seo']);
         //Đổ dữ liệu User từ DB vào form theo mô hình service và repository
-        $postCatalogues = $this->postCatalogueService->paginate($request);//$request để tiến hành chức năng tìm kiếm
+        $postCatalogues = $this->postCatalogueService->paginate($request, $this->language);//$request để tiến hành chức năng tìm kiếm
         //dd($userCatalogues);
 
         $this->authorize('modules', 'post.catalogue.index');//phân quyền
@@ -87,7 +108,7 @@ class PostCatalogueController extends Controller
 
     //xử lý thêm user
     public function create(StorePostCatalogueRequest $request){
-        if($this->postCatalogueService->createPostCatalogue($request)){
+        if($this->postCatalogueService->createPostCatalogue($request, $this->language)){
             return redirect()->route('post.catalogue.index')->with('success','Thêm mới nhóm bào viết thành công');
         }
            return redirect()->route('post.catalogue.index')->with('error','Thêm mới nhóm bài viết thất bại. Hãy thử lại');
@@ -106,6 +127,10 @@ class PostCatalogueController extends Controller
 
         //truy vấn thông tin
         $postCatalogue=$this->postCatalogueRepository->getPostCatalogueById($id,$this->language);
+
+        if(!$postCatalogue){
+            return redirect()->route('post.catalogue.index')->with('error', 'Nhóm bài viết này chưa có bản dịch của ngôn ngữ được chọn');
+        }
         
         //dd($postCatalogue);
 
@@ -121,7 +146,7 @@ class PostCatalogueController extends Controller
     public function update($id, UpdatePostCatalogueRequest $request){
         //echo $id; die();
         //dd($request);
-        if($this->postCatalogueService->updatePostCatalogue($id, $request)){
+        if($this->postCatalogueService->updatePostCatalogue($id, $request, $this->language)){
             return redirect()->route('post.catalogue.index')->with('success','Cập nhật nhóm bài viết thành công');
         }
            return redirect()->route('post.catalogue.index')->with('error','Cập nhật nhóm bài viết thất bại. Hãy thử lại');
@@ -149,7 +174,7 @@ class PostCatalogueController extends Controller
     public function delete($id, DeletePostCatalogueRequest $request){
         //echo $id;
         //echo 123; die();
-        if($this->postCatalogueService->deletePostCatalogue($id)){
+        if($this->postCatalogueService->deletePostCatalogue($id, $this->language)){
             return redirect()->route('post.catalogue.index')->with('success','Xóa nhóm bài viết thành công');
         }
            return redirect()->route('post.catalogue.index')->with('error','Xóa nhóm bài viết thất bại. Hãy thử lại');

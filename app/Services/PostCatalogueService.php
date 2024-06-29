@@ -47,7 +47,7 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
         $this->postCatalogueLanguageRepository=$postCatalogueLanguageRepository;
     }
 
-    public function paginate($request){//$request để tiến hành chức năng tìm kiếm
+    public function paginate($request, $languageId){//$request để tiến hành chức năng tìm kiếm
         //dd($request);
         //echo 123; die();
         $condition['keyword']=addslashes($request->input('keyword'));
@@ -57,7 +57,7 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
             $condition['publish'] = null;
         }
         $condition['where']=[
-            ['tb2.language_id', '=', $this->language],
+            ['tb2.language_id', '=', $languageId],
         ];
         //dd($condition);
         $perpage=$request->integer('perpage', 20);
@@ -77,12 +77,12 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
         //dd($postCatalogues);
         return $postCatalogues;
     }
-    public function createPostCatalogue($request){
+    public function createPostCatalogue($request, $languageId){
         DB::beginTransaction();
         try{
             $postCatalogue = $this->createCatalogue($request);
             if($postCatalogue->id>0){
-                $this->updateLanguageForCatalogue($request, $postCatalogue);
+                $this->updateLanguageForCatalogue($request, $postCatalogue, $languageId);
                 $this->createRouter($request, $postCatalogue, $this->controllerName);
                 $this->nestedset();
             }
@@ -95,13 +95,13 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
         }
     }
 
-    public function updatePostCatalogue($id, $request){
+    public function updatePostCatalogue($id, $request, $languageId){
         DB::beginTransaction();
         try{
             $postCatalogue=$this->postCatalogueRepository->findById($id);
             $flag = $this->updateCatalogue($request, $id);
             if($flag==TRUE){
-                $this->updateLanguageForCatalogue($request, $postCatalogue);
+                $this->updateLanguageForCatalogue($request, $postCatalogue, $languageId);
                 $this->updateRouter($request, $postCatalogue, $this->controllerName);
                 $this->nestedset();
             }
@@ -114,24 +114,34 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
         }
     }
    
-    public function deletePostCatalogue($id){
+    public function deletePostCatalogue($id, $languageId){
         DB::beginTransaction();
         try{
-            $postCatalogue=$this->postCatalogueRepository->delete($id);
-            $conditionByRouter=[
-                ['module_id', '=', $id]
-            ];
-            $router=$this->routerRepository->findByCondition($conditionByRouter);
-            //dd($router->id);
-            $this->routerRepository->forceDelete($router->id);//router chỉ hiện những cái canonical đang tồn tại sẽ không có xóa mềm
             //echo '123'; die();
+            //Đầu tiền xóa đi bản dịch đó khỏi post_catalogue_language
             $where=[
+                ['post_catalogue_id', '=', $id],
+                ['language_id', '=', $languageId]
+            ];
+            $this->postCatalogueLanguageRepository->deleteByWhere($where);
+
+            //Sau khi xóa xong thì nó tiếp tục kiểm tra xem thử là còn cái post_id đó trong post_catalogue_language không
+            $condition=[
                 ['post_catalogue_id', '=', $id]
             ];
-            $payload=['canonical'=>null];
-            $this->postCatalogueLanguageRepository->updateByWhere($where,$payload);
-            //echo 123; die();
-            $this->nestedset();
+            $flag = $this->postCatalogueLanguageRepository->findByCondition($condition);
+
+            //Nếu không tìm thấy nữa thì ta mới tiến hành xóa đi post và router
+            if(!$flag){
+                $post=$this->postCatalogueRepository->forceDelete($id);
+
+                $conditionByRouter=[
+                    ['module_id', '=', $id]
+                ];
+                $router=$this->routerRepository->findByCondition($conditionByRouter);
+                //dd($router->id);
+                $this->routerRepository->forceDelete($router->id);//router chỉ hiện những cái canonical đang tồn tại sẽ không có xóa mềm
+            }
             DB::commit();
             return true;
         }catch(\Exception $ex){
@@ -248,19 +258,19 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
         $flag=$this->postCatalogueRepository->update($id,$payload);
         return $flag;
     }
-    private function updateLanguageForCatalogue($request, $postCatalogue){
-        $payloadLanguage=$this->formatLanguagePayload($request, $postCatalogue);
-        $postCatalogue->languages()->detach([$this->language, $postCatalogue->id]);
+    private function updateLanguageForCatalogue($request, $postCatalogue, $languageId){
+        $payloadLanguage=$this->formatLanguagePayload($request, $postCatalogue, $languageId);
+        $postCatalogue->languages()->detach([$languageId, $postCatalogue->id]);
         $language = $this->postCatalogueRepository->createPivot($postCatalogue,$payloadLanguage,'languages');
         //dd($language); die();
         return $language;
     }
-    private function formatLanguagePayload($request, $postCatalogue){
+    private function formatLanguagePayload($request, $postCatalogue, $languageId){
         $payloadLanguage = $request->only($this->payloadLanguage());
         //dd($payloadLanguage);
         //dd($this->currentLanguage());
         $payloadLanguage['canonical']=Str::slug($payloadLanguage['canonical']);
-        $payloadLanguage['language_id']=$this->currentLanguage();
+        $payloadLanguage['language_id']=$languageId;
         $payloadLanguage['post_catalogue_id']=$postCatalogue->id;
         //dd($payloadLanguage);
         return $payloadLanguage;
