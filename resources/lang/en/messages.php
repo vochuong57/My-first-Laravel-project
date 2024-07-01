@@ -225,9 +225,14 @@ return[
     'tableGenerate_action'=>'Action',
 
     //store
-    'note_generate' => '- Enter the general information of the language',
-    'generate_title' => 'Language Name:',
+    'note_generate' => '- Enter the general information of the Module',
+    'generate_title' => 'Module Name:',
     'generate_avatar' => 'Avatar:',
     'generate_note' => 'Note:',
+    'generate_schema1' => 'Schema:',
+    'generate_schema2' => 'Schema 2:',
+    'generate_moduleType' => 'Module Type:',
+    'generate_schema' => 'Schema Information',
+    'generate_note_schema' => 'Enter Schema Information',
 
 ];

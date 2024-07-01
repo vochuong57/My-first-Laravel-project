@@ -23,7 +23,7 @@
                     </div>
                     <div class="ibox-content">
                         <div class="row mb15">
-                            <div class="col-lg-6">
+                            <div class="col-lg-12">
                                 <div class="form-row">
                                     <label for="" class="control-label text-left">{{ __('messages.generate_title') }} <span class="text-danger">(*)</span></label>
                                     <input 
@@ -34,6 +34,51 @@
                                     placeholder=""
                                     autocomplete="off"
                                     >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb15">
+                            <div class="col-lg-6">
+                                <div class="form-row">
+                                    <label for="" class="control-label text-left">{{ __('messages.generate_moduleType') }} <span class="text-danger">(*)</span></label>
+                                    <select name="module_type" id="" class="form-control setupSelect2">
+                                        <option value="0">Chọn loại Module</option>
+                                        <option value="1">Module danh mục</option>
+                                        <option value="2">Module chi tiết</option>
+                                        <option value="3">Module khác</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-5">
+                <div class="panel-head">
+                    <div class="panel-title">{{ __('messages.generate_schema') }}</div>
+                    <div class="panel-description">
+                        <p>{{ __('messages.generate_note_schema') }}</p>
+                        <p>{{ __('messages.note_1') }} <span class="text-danger">(*)</span> {{ __('messages.note_2') }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5>{{ __('messages.generate_schema') }}</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row mb15">
+                            <div class="col-lg-12">
+                                <div class="form-row">
+                                    <label for="" class="control-label text-left">{{ __('messages.generate_schema1') }} <span class="text-danger">(*)</span></label>
+                                    <textarea 
+                                    name="schema"
+                                    value=""
+                                    class="form-control schema"
+                                    >{{ old('schema', ($generate->schema)??'') }}</textarea>
                                 </div>
                             </div>
                         </div>
