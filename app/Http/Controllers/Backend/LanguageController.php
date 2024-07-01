@@ -210,7 +210,7 @@ class LanguageController extends Controller
 
         $config=$this->configCUD();
 
-        $config['seo']=__('messages.language.delete');
+        $config['seo']=__('messages.translate.index');
 
         $this->authorize('modules', 'language.translate');//phân quyền
 

@@ -44,6 +44,10 @@
                         'title'=>'语言',
                         'route'=>'language/index'
                     ],
+                    [
+                        'title' => '模块管理',
+                        'route' => 'generate/index'
+                    ]                    
                 ]
             ]
         ]

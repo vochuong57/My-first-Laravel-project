@@ -37,6 +37,10 @@ class AppServiceProvider extends ServiceProvider
         //phân quyền
         'App\Services\Interfaces\PermissionServiceInterface' => 'App\Services\PermissionService',
         'App\Repositories\Interfaces\PermissionRepositoryInterface' => 'App\Repositories\PermissionRepository',
+
+        //quản lý Module
+        'App\Services\Interfaces\GenerateServiceInterface' => 'App\Services\GenerateService',
+        'App\Repositories\Interfaces\GenerateRepositoryInterface' => 'App\Repositories\GenerateRepository',
     ];
     /**
      * Register any application services.

@@ -199,4 +199,42 @@ return[
     'destroy_panel_description_language_1'=>'- Bạn đang muốn xóa ngôn ngữ có tên là:',
     'destroy_panel_description_language_2'=>'khôi phục ngôn ngữ sau khi xóa.',
     
+    //translate
+    'translate' => [
+        'index'=>[
+            'title'=> 'Quản lý dịch thuật',
+            'btnTitle' => 'Cập nhật'
+        ]
+    ],
+
+    //generate
+    'generate' => [
+        'index'=>[
+            'title'=> 'Quản lý module',
+        ],
+        'create'=>[
+            'title'=>'Thêm mới module',
+            'btnTitle'=>'Thêm mới'
+        ],
+        'edit'=>[
+            'title'=>'Cập nhật module',
+            'btnTitle'=>'Cập nhật'
+        ],
+        'delete'=>[
+            'title'=>'Xóa module',
+            'btnDelete'=>'Xóa dữ liệu'
+        ],
+    ],
+
+    //table
+    'tableGenerate_brand'=>'Danh sách Module',
+    'tableGenerate_image'=>'Ảnh',
+    'tableGenerate_name'=>'Tên Module',
+    'tableGenerate_action'=>'Thao tác',
+
+    //store
+    'note_generate' => '- Nhập thông tin chung của ngôn ngữ',
+    'generate_title' => 'Tên ngôn ngữ:',
+    'generate_avatar' => 'Ảnh đại diện:',
+    'generate_note' => 'Ghi chú:',
 ];

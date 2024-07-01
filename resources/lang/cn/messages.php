@@ -192,4 +192,43 @@ return [
     'destroy_panel_description_language_1' => '- 您即将删除名为的语言:',
     'destroy_panel_description_language_2' => '删除后恢复语言。',
 
+    //translate
+    'translate' => [
+        'index'=>[
+            'title'=> '翻译管理',
+            'btnTitle' => '更新'
+        ],
+    ],
+
+    //generate
+    'generate' => [
+        'index'=>[
+            'title'=> '模块管理',
+        ],
+        'create'=>[
+            'title'=>'新增模块',
+            'btnTitle'=>'新增'
+        ],
+        'edit'=>[
+            'title'=>'更新模块',
+            'btnTitle'=>'更新'
+        ],
+        'delete'=>[
+            'title'=>'删除模块',
+            'btnDelete'=>'删除数据'
+        ],
+    ],
+
+    //table
+    'tableGenerate_brand'=>'模块列表',
+    'tableGenerate_image'=>'图片',
+    'tableGenerate_name'=>'模块名称',
+    'tableGenerate_action'=>'操作',
+
+    //store
+    'note_generate' => '- 输入语言的常规信息',
+    'generate_title' => '语言名称:',
+    'generate_avatar' => '头像:',
+    'generate_note' => '备注:',
+
 ];
