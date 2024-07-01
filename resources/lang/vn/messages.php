@@ -233,8 +233,13 @@ return[
     'tableGenerate_action'=>'Thao tác',
 
     //store
-    'note_generate' => '- Nhập thông tin chung của ngôn ngữ',
-    'generate_title' => 'Tên ngôn ngữ:',
+    'note_generate' => '- Nhập thông tin chung của Module',
+    'generate_title' => 'Tên Module:',
     'generate_avatar' => 'Ảnh đại diện:',
     'generate_note' => 'Ghi chú:',
+    'generate_schema1' => 'Schema:',
+    'generate_schema2' => 'Schema 2:',
+    'generate_moduleType' => 'Loại Module:',
+    'generate_schema' => 'Thông tin Schema',
+    'generate_note_schema' => 'Nhập thông tin Schema',
 ];

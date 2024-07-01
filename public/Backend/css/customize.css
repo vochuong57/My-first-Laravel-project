@@ -295,3 +295,7 @@ table strong{
     height: 16px !important;
     display: inline-block !important;
 }
+/* CSS CHO SCHEMA GENERATE/STORE */
+.schema{
+    height: 350px !important;
+}

@@ -1,10 +1,9 @@
 <table class="table table-striped table-bordered">
     <thead>
         <tr>
-            <th>
+            <th style="width: 50px;">
                 <input type="checkbox" value="" name="" id="checkAll" class="input-checkbox">
             </th>
-            <th style="width: 90px">{{ __('messages.tableGenerate_image') }}</th>
             <th>{{ __('messages.tableGenerate_name') }}</th>
             <th class="text-center">{{ __('messages.tableGenerate_action') }}</th>
         </tr>
@@ -16,11 +15,6 @@
         <tr class="rowdel-{{ $generate->id }}">
             <td>
                 <input type="checkbox" value="{{ $generate->id }}" name="" class="input-checkbox checkBoxItem">
-            </td>
-            <td>
-                <span class="image img-cover"><img
-                        src="{{ old('image', $generate->image) ?? 'Backend/img/not-found.png' }}"
-                        alt=""></span>
             </td>
             <td>
                 <div class="info-item name">{{ $generate->name }}</div>

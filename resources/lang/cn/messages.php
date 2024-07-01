@@ -226,9 +226,14 @@ return [
     'tableGenerate_action'=>'操作',
 
     //store
-    'note_generate' => '- 输入语言的常规信息',
-    'generate_title' => '语言名称:',
+    'note_generate' => '- 输入模块的常规信息',
+    'generate_title' => '模块名称:',
     'generate_avatar' => '头像:',
     'generate_note' => '备注:',
+    'generate_schema1' => '架构:',
+    'generate_schema2' => '架构 2:',
+    'generate_moduleType' => '模块类型:',
+    'generate_schema' => '架构信息',
+    'generate_note_schema' => '输入架构信息',
 
 ];
