@@ -44,6 +44,10 @@
                         'title'=>'Language',
                         'route'=>'language/index'
                     ],
+                    [
+                        'title' => 'Module Management',
+                        'route' => 'generate/index'
+                    ],                    
                 ]
             ]
         ]

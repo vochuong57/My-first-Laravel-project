@@ -38,11 +38,15 @@
             [
                 'title'=>'Cấu hình chung',
                 'icon'=>'fa fa-file',
-                'name'=>['language'],
+                'name'=>['language', 'generate'],
                 'subModule'=>[
                     [
                         'title'=>'QL Ngôn Ngữ',
                         'route'=>'language/index'
+                    ],
+                    [
+                        'title'=>'QL Module',
+                        'route'=>'generate/index'
                     ],
                 ]
             ]

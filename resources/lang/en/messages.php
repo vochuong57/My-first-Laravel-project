@@ -191,4 +191,43 @@ return[
     'destroy_panel_description_language_1' => '- You are about to delete the language named:',
     'destroy_panel_description_language_2' => 'restore the language after deletion.',
 
+    //translate
+    'translate' => [
+        'index'=>[
+            'title'=> 'Translation Management',
+            'btnTitle' => 'Update'
+        ],
+    ],
+
+    //generate
+    'generate' => [
+        'index'=>[
+            'title'=> 'Module Management',
+        ],
+        'create'=>[
+            'title'=>'Add New Module',
+            'btnTitle'=>'Add New'
+        ],
+        'edit'=>[
+            'title'=>'Update Module',
+            'btnTitle'=>'Update'
+        ],
+        'delete'=>[
+            'title'=>'Delete Module',
+            'btnDelete'=>'Delete Data'
+        ],
+    ],
+
+    //table
+    'tableGenerate_brand'=>'Module List',
+    'tableGenerate_image'=>'Image',
+    'tableGenerate_name'=>'Module Name',
+    'tableGenerate_action'=>'Action',
+
+    //store
+    'note_generate' => '- Enter the general information of the language',
+    'generate_title' => 'Language Name:',
+    'generate_avatar' => 'Avatar:',
+    'generate_note' => 'Note:',
+
 ];
