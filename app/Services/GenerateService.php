@@ -52,8 +52,8 @@ class GenerateService implements GenerateServiceInterface
     public function createGenerate($request){
         DB::beginTransaction();
         try{
-            $database = $this->makeDatabase($request);
-            // $this->makeController();
+            // $database = $this->makeDatabase($request);
+            $controller = $this->makeController($request);
             // $this->makeModel();
             // $this->makeRepository();
             // $this->makeService();
@@ -119,6 +119,8 @@ class GenerateService implements GenerateServiceInterface
             'id','name','schema'
         ];
     }
+
+    //-----------------------------------------------MAKE DATABASE--------------------------------------------------
 
     // Tạo file migration và Database
     private function makeDatabase($request){
@@ -240,5 +242,70 @@ Schema::create('{$pivotTableName}', function (Blueprint \$table) {
 
 SCHEMA;
         return $pivotSchema;
+    }
+
+    //-----------------------------------------------MAKE CONTROLLER--------------------------------------------------
+
+    private function makeController($request){
+        $payload = $request->only('name', 'module_type');
+
+        switch ($payload['module_type']){
+            case 1:
+                $this->createTemplateController($payload['name'], 'TemplateCatalogueController');
+                break;
+            case 2:
+                $this->createTemplateController($payload['name'], 'TemplateController');
+                break;
+            default:
+                $this->createSingleController();
+        }
+    }
+
+    private function createTemplateController($name, $controllerFile){
+        try{
+            //ProductCatalogue
+
+            // Tạo TÊN FILE controller từ tên module
+            $controllerFileName = $name.'Controller.php';
+            // echo $controllerFileName; die();
+
+            // Tạo ĐƯỜNG DẪN tới file TemplateCatalogueController || TemplateController để lấy nội dung dựng
+            $templateControllerPath = base_path('app/Templates/'.$controllerFile.'.php');
+            // echo $templateControllerPath; die();
+
+            // Đọc NỘI DUNG từ đường dẫn TemplateCatalogueController || TemplateController
+            $controllerContent = file_get_contents($templateControllerPath);
+            // echo $controllerContent; die();
+
+            // Chuẩn bị các biến để đổ vào nội dung TemplateCatalogueController || TemplateController
+            $replace=[
+                'ModuleTemplate' => $name,
+                'moduleTemplate' => lcfirst($name),
+                'tableNames' => $this->coverModuleNameToTableName($name).'s',
+                'foreignKey' => $this->coverModuleNameToTableName($name).'_id',
+                'moduleView' => str_replace('_', '.', $this->coverModuleNameToTableName($name))
+            ];
+            //dd($replace);
+
+            // Tiến hành THAY THẾ các biến ban đầu của TemplateCatalogueController || TemplateController thành các biến đã được chuẩn bị
+            $controllerContent = str_replace('{ModuleTemplate}', $replace['ModuleTemplate'], $controllerContent);
+            $controllerContent = str_replace('{moduleTemplate}', $replace['moduleTemplate'], $controllerContent);
+            $controllerContent = str_replace('{tableNames}', $replace['tableNames'], $controllerContent);
+            $controllerContent = str_replace('{foreignKey}', $replace['foreignKey'], $controllerContent);
+            $controllerContent = str_replace('{moduleView}', $replace['moduleView'], $controllerContent);
+            // echo $controllerContent; die();
+
+            // Tạo ĐƯỜNG DẪN tới folder Backend
+            $controllerPath = base_path('app/Http/Controllers/Backend/'.$controllerFileName);
+            // echo $controllerPath; die();
+
+            // TIẾN HÀNH tạo file ModuleCatalogueController || ModuleController
+            FILE::put($controllerPath, $controllerContent);//kq: ModuleCatalogueController.php || ModuleController.php
+            die();
+            return true;
+        }catch(\Exception $ex){
+            echo $ex->getMessage();//die();
+            return false;
+        }
     }
 }
