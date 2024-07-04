@@ -53,8 +53,8 @@ class GenerateService implements GenerateServiceInterface
         DB::beginTransaction();
         try{
             // $database = $this->makeDatabase($request);
-            $controller = $this->makeController($request);
-            // $this->makeModel();
+            // $controller = $this->makeController($request);
+            $model = $this->makeModel($request);
             // $this->makeRepository();
             // $this->makeService();
             // $this->makeProvider();
@@ -301,7 +301,94 @@ SCHEMA;
 
             // TIẾN HÀNH tạo file ModuleCatalogueController || ModuleController
             FILE::put($controllerPath, $controllerContent);//kq: ModuleCatalogueController.php || ModuleController.php
-            die();
+            // die();
+            return true;
+        }catch(\Exception $ex){
+            echo $ex->getMessage();//die();
+            return false;
+        }
+    }
+
+    //-----------------------------------------------MAKE MODEL--------------------------------------------------
+
+    private function makeModel($request){
+        try{
+            $payload = $request->only('name', 'module_type');
+
+            if($payload['module_type'] == 1){
+                $this->createTemplateModel($payload['name'], 'TemplateCatalogueModel');
+            }else if($payload['module_type'] == 2){
+                $this->createTemplateModel($payload['name'], 'TemplateModel');
+            }else{
+                $this->createSingleModel();
+            }
+        }catch(\Exception $ex){
+            echo $ex->getMessage();//die();
+            return false;
+        }
+    }
+
+    private function createTemplateModel($name, $modelFile){
+        try{
+            //ProductCatalogue
+
+            // Tạo TÊN FILE model từ tên module
+            $modelFileName = $name.'.php';
+            // echo $modelFileName; die();
+
+            // Tạo ĐƯỜNG DẪN tới file TemplateCatalogueModel || TemplateModel để lấy nội dung dựng
+            $templateModelPath = base_path('app/Templates/'.$modelFile.'.php');
+            // echo $templateModelPath; die();
+
+            // Đọc NỘI DUNG từ đường dẫn TemplateCatalogueModel || TemplateModel
+            $modelContent = file_get_contents($templateModelPath);
+            // echo $modelContent; die();
+
+            // Chuẩn bị các biến để đổ vào nội dung TemplateCatalogueModel || TemplateModel
+            $replace=[
+                'ModuleTemplate' => $name,
+                'moduleTemplate' => lcfirst($name),
+                'tableNames' => $this->coverModuleNameToTableName($name).'s',
+                'moduleKey' => $this->coverModuleNameToTableName($name).'_id',
+                'foreignKey' => $this->coverModuleNameToTableName($name).'_catalogue_id',
+                'pivotTable' => $this->coverModuleNameToTableName($name).'_language',
+                'pivotModel' => $name.'Language',
+
+                'relation' => explode('_', $this->coverModuleNameToTableName($name))[0],
+                'relationCatalogue' => $this->coverModuleNameToTableName($name).'_catalogue',
+
+                'relationModel' => ucfirst(explode('_', $this->coverModuleNameToTableName($name))[0]),
+                'relationModelCatalogue' => $name.'Catalogue',
+
+                'relationTable1' => $this->coverModuleNameToTableName($name).'_'.explode('_', $this->coverModuleNameToTableName($name))[0],
+                'relationTable2' => $this->coverModuleNameToTableName($name).'_catalogue_'.explode('_', $this->coverModuleNameToTableName($name))[0],
+            ];
+            // dd($replace['relationModel']); die();
+
+            // Tiến hành THAY THẾ các biến ban đầu của TemplateCatalogueModel || TemplateModel thành các biến đã được chuẩn bị
+            foreach($replace as $key => $val){
+                $modelContent = str_replace('{'.$key.'}', $replace[$key], $modelContent);
+            }
+            // echo $modelContent; die();
+
+            // Tạo ĐƯỜNG DẪN tới folder Models
+            $modelPath = base_path('app/Models/'.$modelFileName);
+            // echo $modelPath; die();
+
+            // TIẾN HÀNH tạo file ModuleCatalogueModel || ModuleModel
+            FILE::put($modelPath, $modelContent);//kq: ModuleCatalogueModel.php || ModuleModel.php
+
+            // Tạo file ModelLanguage
+            $modelPivotFileName = $name.'Language.php';
+            $templateModelPivotPath = base_path('app/Templates/TemplateModelLanguage.php');
+            $modelPivotContent = file_get_contents($templateModelPivotPath);
+            foreach($replace as $key => $val){
+                $modelPivotContent = str_replace('{'.$key.'}', $replace[$key], $modelPivotContent);
+            }
+            $modelPivotPath = base_path('app/Models/'.$modelPivotFileName);
+            FILE::PUT($modelPivotPath, $modelPivotContent);
+
+            // die();
             return true;
         }catch(\Exception $ex){
             echo $ex->getMessage();//die();
