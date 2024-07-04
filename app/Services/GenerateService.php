@@ -54,8 +54,8 @@ class GenerateService implements GenerateServiceInterface
         try{
             // $database = $this->makeDatabase($request);
             // $controller = $this->makeController($request);
-            $model = $this->makeModel($request);
-            // $this->makeRepository();
+            // $model = $this->makeModel($request);
+            $repository = $this->makeRepository($request);
             // $this->makeService();
             // $this->makeProvider();
             // $this->makeRequest();
@@ -270,7 +270,7 @@ SCHEMA;
             // echo $controllerFileName; die();
 
             // Tạo ĐƯỜNG DẪN tới file TemplateCatalogueController || TemplateController để lấy nội dung dựng
-            $templateControllerPath = base_path('app/Templates/'.$controllerFile.'.php');
+            $templateControllerPath = base_path('app/Templates/Controller/'.$controllerFile.'.php');
             // echo $templateControllerPath; die();
 
             // Đọc NỘI DUNG từ đường dẫn TemplateCatalogueController || TemplateController
@@ -337,7 +337,7 @@ SCHEMA;
             // echo $modelFileName; die();
 
             // Tạo ĐƯỜNG DẪN tới file TemplateCatalogueModel || TemplateModel để lấy nội dung dựng
-            $templateModelPath = base_path('app/Templates/'.$modelFile.'.php');
+            $templateModelPath = base_path('app/Templates/Model/'.$modelFile.'.php');
             // echo $templateModelPath; die();
 
             // Đọc NỘI DUNG từ đường dẫn TemplateCatalogueModel || TemplateModel
@@ -380,13 +380,107 @@ SCHEMA;
 
             // Tạo file ModelLanguage
             $modelPivotFileName = $name.'Language.php';
-            $templateModelPivotPath = base_path('app/Templates/TemplateModelLanguage.php');
+            $templateModelPivotPath = base_path('app/Templates/Model/TemplateModelLanguage.php');
             $modelPivotContent = file_get_contents($templateModelPivotPath);
             foreach($replace as $key => $val){
                 $modelPivotContent = str_replace('{'.$key.'}', $replace[$key], $modelPivotContent);
             }
             $modelPivotPath = base_path('app/Models/'.$modelPivotFileName);
             FILE::PUT($modelPivotPath, $modelPivotContent);
+
+            // die();
+            return true;
+        }catch(\Exception $ex){
+            echo $ex->getMessage();//die();
+            return false;
+        }
+    }
+
+    //-----------------------------------------------MAKE REPOSITORY--------------------------------------------------
+
+    private function makeRepository($request){
+        $payload = $request->only('name', 'module_type');
+
+        switch ($payload['module_type']){
+            case 1:
+                $this->createTemplateRepository($payload['name'], 'TemplateCatalogueRepository');
+                break;
+            case 2:
+                $this->createTemplateRepository($payload['name'], 'TemplateRepository');
+                break;
+            default:
+                $this->createSingleRepository();
+        }
+    }
+
+    private function createTemplateRepository($name, $repositoryFile){
+        try{
+            //ProductCatalogue
+
+            // Tạo TÊN FILE repository từ tên module
+            $repositoryFileName = $name.'Repository.php';
+            // echo $repositoryFileName; die();
+
+            // Tạo ĐƯỜNG DẪN tới file TemplateCatalogueRepository || TemplateRepository để lấy nội dung dựng
+            $templateRepositoryPath = base_path('app/Templates/Repository/'.$repositoryFile.'.php');
+            // echo $templateRepositoryPath; die();
+
+            // Đọc NỘI DUNG từ đường dẫn TemplateCatalogueRepository || TemplateRepository
+            $repositoryContent = file_get_contents($templateRepositoryPath);
+            // echo $repositoryContent; die();
+
+            // Chuẩn bị các biến để đổ vào nội dung TemplateCatalogueRepository || TemplateRepository
+            $replace=[
+                'ModuleTemplate' => $name,
+                'tableNames' => $this->coverModuleNameToTableName($name).'s',
+                'moduleKey' => $this->coverModuleNameToTableName($name).'_id',
+                'pivotTable' => $this->coverModuleNameToTableName($name).'_language',
+                'relationCatalogue' => $this->coverModuleNameToTableName($name).'_catalogue',
+            ];
+            // dd($replace['relationModel']); die();
+
+            // Tiến hành THAY THẾ các biến ban đầu của TemplateCatalogueRepository || TemplateRepository thành các biến đã được chuẩn bị
+            foreach($replace as $key => $val){
+                $repositoryContent = str_replace('{'.$key.'}', $replace[$key], $repositoryContent);
+            }
+            // echo $repositoryContent; die();
+
+            // Tạo ĐƯỜNG DẪN tới folder Repositorys
+            $repositoryPath = base_path('app/Repositories/'.$repositoryFileName);
+            // echo $repositoryPath; die();
+
+            // TIẾN HÀNH tạo file ModuleCatalogueRepository || ModuleRepository
+            FILE::put($repositoryPath, $repositoryContent);//kq: ModuleCatalogueRepository.php || ModuleRepository.php
+
+            // Tạo file RepositoryInterface
+            $repositoryInterfaceFileName = $name.'RepositoryInterface.php';
+            $templateRepositoryInterfacePath = base_path('app/Templates/Repository/TemplateRepositoryInterface.php');
+            $repositoryInterfaceContent = file_get_contents($templateRepositoryInterfacePath);
+            foreach($replace as $key => $val){
+                $repositoryInterfaceContent = str_replace('{'.$key.'}', $replace[$key], $repositoryInterfaceContent);
+            }
+            $repositoryInterfacePath = base_path('app/Repositories/Interfaces/'.$repositoryInterfaceFileName);
+            FILE::PUT($repositoryInterfacePath, $repositoryInterfaceContent);
+
+            // Tạo file LanguageRepository
+            $repositoryPivotFileName = $name.'LanguageRepository.php';
+            $templateRepositoryPivotPath = base_path('app/Templates/Repository/TemplateLanguageRepository.php');
+            $repositoryPivotContent = file_get_contents($templateRepositoryPivotPath);
+            foreach($replace as $key => $val){
+                $repositoryPivotContent = str_replace('{'.$key.'}', $replace[$key], $repositoryPivotContent);
+            }
+            $repositoryPivotPath = base_path('app/Repositories/'.$repositoryPivotFileName);
+            FILE::PUT($repositoryPivotPath, $repositoryPivotContent);
+
+            // Tạo file LanguageRepositoryInterface
+            $repositoryPivotInterfaceFileName = $name.'LanguageRepositoryInterface.php';
+            $templateRepositoryPivotInterfacePath = base_path('app/Templates/Repository/TemplateLanguageRepositoryInterface.php');
+            $repositoryPivotInterfaceContent = file_get_contents($templateRepositoryPivotInterfacePath);
+            foreach($replace as $key => $val){
+                $repositoryPivotInterfaceContent = str_replace('{'.$key.'}', $replace[$key], $repositoryPivotInterfaceContent);
+            }
+            $repositoryPivotInterfacePath = base_path('app/Repositories/Interfaces/'.$repositoryPivotInterfaceFileName);
+            FILE::PUT($repositoryPivotInterfacePath, $repositoryPivotInterfaceContent);
 
             // die();
             return true;

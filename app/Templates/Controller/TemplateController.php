@@ -139,9 +139,11 @@ class {ModuleTemplate}Controller extends Controller
 
         $dropdown= $this->nestedset->Dropdown();
 
+        $album = json_decode(${moduleTemplate}->album);
+
         $this->authorize('modules', '{moduleTemplate}.edit');//phân quyền
 
-        return view('Backend.dashboard.layout', compact('template','config','{moduleTemplate}','dropdown'));
+        return view('Backend.dashboard.layout', compact('template','config','{moduleTemplate}','dropdown','album'));
     }
     //xử lý sửa user
     public function update($id, Update{ModuleTemplate}Request $request){
