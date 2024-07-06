@@ -55,8 +55,8 @@ class GenerateService implements GenerateServiceInterface
             // $database = $this->makeDatabase($request);
             // $controller = $this->makeController($request);
             // $model = $this->makeModel($request);
-            $repository = $this->makeRepository($request);
-            // $this->makeService();
+            // $repository = $this->makeRepository($request);
+            $service = $this->makeService($request);
             // $this->makeProvider();
             // $this->makeRequest();
             // $this->makeView();
@@ -483,6 +483,86 @@ SCHEMA;
             FILE::PUT($repositoryPivotInterfacePath, $repositoryPivotInterfaceContent);
 
             // die();
+            return true;
+        }catch(\Exception $ex){
+            echo $ex->getMessage();//die();
+            return false;
+        }
+    }
+
+    //-----------------------------------------------MAKE SERVICE--------------------------------------------------
+
+    private function makeService($request){
+        $payload = $request->only('name', 'module_type');
+
+        switch ($payload['module_type']){
+            case 1:
+                $this->createTemplateService($payload['name'], 'TemplateCatalogueService');
+                break;
+            case 2:
+                $this->createTemplateService($payload['name'], 'TemplateService');
+                break;
+            default:
+                $this->createSingleService();
+        }
+    }
+
+    private function createTemplateService($name, $serviceFile){
+        try{
+            //ProductCatalogue
+
+            // Tạo TÊN FILE service từ tên module
+            $serviceFileName = $name.'Service.php';
+            // echo $serviceFileName; die();
+
+            // Tạo ĐƯỜNG DẪN tới file TemplateCatalogueService || TemplateService để lấy nội dung dựng
+            $templateServicePath = base_path('app/Templates/Service/'.$serviceFile.'.php');
+            // echo $templateServicePath; die();
+
+            // Đọc NỘI DUNG từ đường dẫn TemplateCatalogueService || TemplateService
+            $serviceContent = file_get_contents($templateServicePath);
+            // echo $serviceContent; die();
+
+            // Chuẩn bị các biến để đổ vào nội dung TemplateCatalogueService || TemplateService
+            $replace=[
+                'ModuleTemplate' => $name,
+                'moduleTemplate' => lcfirst($name),
+                'tableNames' => $this->coverModuleNameToTableName($name).'s',
+                'moduleKey' => $this->coverModuleNameToTableName($name).'_id',
+                'foreignKey' => $this->coverModuleNameToTableName($name).'_catalogue_id',
+                'pivotTable' => $this->coverModuleNameToTableName($name).'_language',
+
+                'relation' => explode('_', $this->coverModuleNameToTableName($name))[0],
+                'relationCatalogue' => $this->coverModuleNameToTableName($name).'_catalogue',
+
+                'relationTable2' => $this->coverModuleNameToTableName($name).'_catalogue_'.explode('_', $this->coverModuleNameToTableName($name))[0],
+            ];
+            // dd($replace['relationModel']); die();
+
+            // Tiến hành THAY THẾ các biến ban đầu của TemplateCatalogueService || TemplateService thành các biến đã được chuẩn bị
+            foreach($replace as $key => $val){
+                $serviceContent = str_replace('{'.$key.'}', $replace[$key], $serviceContent);
+            }
+            // echo $serviceContent; die();
+
+            // Tạo ĐƯỜNG DẪN tới folder Services
+            $servicePath = base_path('app/Services/'.$serviceFileName);
+            // echo $servicePath; die();
+
+            // TIẾN HÀNH tạo file ModuleCatalogueService || ModuleService
+            FILE::put($servicePath, $serviceContent);//kq: ModuleCatalogueService.php || ModuleService.php
+
+            // Tạo file ServiceInterface
+            $serviceInterfaceFileName = $name.'ServiceInterface.php';
+            $templateServiceInterfacePath = base_path('app/Templates/Service/TemplateServiceInterface.php');
+            $serviceInterfaceContent = file_get_contents($templateServiceInterfacePath);
+            foreach($replace as $key => $val){
+                $serviceInterfaceContent = str_replace('{'.$key.'}', $replace[$key], $serviceInterfaceContent);
+            }
+            $serviceInterfacePath = base_path('app/Services/Interfaces/'.$serviceInterfaceFileName);
+            FILE::PUT($serviceInterfacePath, $serviceInterfaceContent);
+
+            die();
             return true;
         }catch(\Exception $ex){
             echo $ex->getMessage();//die();

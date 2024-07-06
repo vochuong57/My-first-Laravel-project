@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Classes\Nestedsetbie;
 use App\Repositories\Interfaces\RouterRepositoryInterface as RouterRepository;
 use Illuminate\Support\Str;
+use App\Models\Language;
+
 
 /**
  * Class UserService
@@ -26,20 +28,20 @@ class BaseService implements BaseServiceInterface
     protected $nestedset;
     protected $routerRepository;
     public function __construct(RouterRepository $routerRepository){
-        $this->nestedset=new Nestedsetbie([
-            'table'=>'post_catalogues',
-            'foreignkey'=>'post_catalogue_id',
-            'language_id'=>$this->currentLanguage(),
-        ]);
         $this->routerRepository=$routerRepository;
     }
 
     public function currentLanguage(){
-        return 1;
+        $locale = app()->getLocale(); // vn cn en
+        $language = Language::where('canonical', $locale)->first();
+
+        return $language->id;
     }
+
     public function formatAlbum($request){
         return ($request->input('album') && !empty($request->input('album'))) ? json_encode($request->input('album')) : null;
     }
+    
     public function nestedset(){
         $this->nestedset->Get();//gọi Get để lấy dữ liệu
         $this->nestedset->Recursive(0, $this->nestedset->Set());//gọi Recursive để tính toán lại các giá trị của từng node
