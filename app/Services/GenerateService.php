@@ -56,8 +56,8 @@ class GenerateService implements GenerateServiceInterface
             // $controller = $this->makeController($request);
             // $model = $this->makeModel($request);
             // $repository = $this->makeRepository($request);
-            $service = $this->makeService($request);
-            // $this->makeProvider();
+            // $service = $this->makeService($request);
+            $provider = $this->makeProvider($request);
             // $this->makeRequest();
             // $this->makeView();
             // $this->makeRoute();
@@ -568,5 +568,44 @@ SCHEMA;
             echo $ex->getMessage();//die();
             return false;
         }
+    }
+
+    //-----------------------------------------------MAKE PROVIDER--------------------------------------------------
+
+    private function makeProvider($request){
+        $name = $request->input('name');
+
+        $moduleType = $request->input('module_type');
+
+        $provider = [
+            'serviceProviderPath' => base_path('app/Providers/AppServiceProvider.php'),
+            'repositoryProviderPath' => base_path('app/Providers/AppRepositoryProvider.php'),
+        ];
+
+        if($moduleType != 3){
+            foreach($provider as $key => $val){
+                $content = file_get_contents($val);
+                // dd($content);
+    
+                if ($key == 'serviceProviderPath') {
+                    $insertLine = "'App\\Services\\Interfaces\\{$name}ServiceInterface' => 'App\\Services\\{$name}Service',";
+                } else {
+                    $insertLine = "'App\\Repositories\\Interfaces\\{$name}RepositoryInterface' => 'App\\Repositories\\{$name}Repository',\n\n" .
+                                  "        'App\\Repositories\\Interfaces\\{$name}LanguageRepositoryInterface' => 'App\\Repositories\\{$name}LanguageRepository',";
+                }
+    
+                $position = strpos($content, '];');
+                // dd($position);
+    
+                if($position != false){
+                    $newContent = substr_replace($content, "\n"."        ".$insertLine."\n"."    ", $position, 0);
+                }
+    
+                File::put($val, $newContent);
+                
+            }
+        }
+        
+        die();
     }
 }
