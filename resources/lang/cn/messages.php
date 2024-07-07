@@ -235,5 +235,6 @@ return [
     'generate_moduleType' => '模块类型:',
     'generate_schema' => '架构信息',
     'generate_note_schema' => '输入架构信息',
-
+    'generate_sidebar_module' => '功能名称:',
+    'generate_path' => '路径:',
 ];

@@ -242,4 +242,6 @@ return[
     'generate_moduleType' => 'Loại Module:',
     'generate_schema' => 'Thông tin Schema',
     'generate_note_schema' => 'Nhập thông tin Schema',
+    'generate_sidebar_module' => 'Tên chức năng:',
+    'generate_path' => 'Đường dẫn:',
 ];

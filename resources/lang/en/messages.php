@@ -234,5 +234,6 @@ return[
     'generate_moduleType' => 'Module Type:',
     'generate_schema' => 'Schema Information',
     'generate_note_schema' => 'Enter Schema Information',
-
+    'generate_sidebar_module' => 'Function Name:',
+    'generate_path' => 'Path:',
 ];
