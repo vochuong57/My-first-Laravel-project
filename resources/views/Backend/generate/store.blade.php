@@ -23,13 +23,26 @@
                     </div>
                     <div class="ibox-content">
                         <div class="row mb15">
-                            <div class="col-lg-12">
+                            <div class="col-lg-6">
                                 <div class="form-row">
                                     <label for="" class="control-label text-left">{{ __('messages.generate_title') }} <span class="text-danger">(*)</span></label>
                                     <input 
                                     type="text"
                                     name="name"
                                     value="{{ old('name', ($generate->name)??'') }}"
+                                    class="form-control"
+                                    placeholder=""
+                                    autocomplete="off"
+                                    >
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-row">
+                                    <label for="" class="control-label text-left">{{ __('messages.generate_sidebar_module') }} <span class="text-danger">(*)</span></label>
+                                    <input 
+                                    type="text"
+                                    name="sidebar_module"
+                                    value="{{ old('sidebar_module', ($generate->sidebar_module)??'') }}"
                                     class="form-control"
                                     placeholder=""
                                     autocomplete="off"
@@ -47,6 +60,19 @@
                                         <option value="2">Module chi tiết</option>
                                         <option value="3">Module khác</option>
                                     </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-row">
+                                    <label for="" class="control-label text-left">{{ __('messages.generate_path') }} <span class="text-danger">(*)</span></label>
+                                    <input 
+                                    type="text"
+                                    name="path"
+                                    value="{{ old('path', ($generate->path)??'') }}"
+                                    class="form-control"
+                                    placeholder=""
+                                    autocomplete="off"
+                                    >
                                 </div>
                             </div>
                         </div>

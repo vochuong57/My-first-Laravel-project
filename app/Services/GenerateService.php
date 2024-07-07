@@ -57,8 +57,8 @@ class GenerateService implements GenerateServiceInterface
             // $model = $this->makeModel($request);
             // $repository = $this->makeRepository($request);
             // $service = $this->makeService($request);
-            $provider = $this->makeProvider($request);
-            // $this->makeRequest();
+            // $provider = $this->makeProvider($request);
+            $makeRequest = $this->makeRequest($request);
             // $this->makeView();
             // $this->makeRoute();
             // $this->makeRule();
@@ -562,7 +562,7 @@ SCHEMA;
             $serviceInterfacePath = base_path('app/Services/Interfaces/'.$serviceInterfaceFileName);
             FILE::PUT($serviceInterfacePath, $serviceInterfaceContent);
 
-            die();
+            // die();
             return true;
         }catch(\Exception $ex){
             echo $ex->getMessage();//die();
@@ -573,39 +573,93 @@ SCHEMA;
     //-----------------------------------------------MAKE PROVIDER--------------------------------------------------
 
     private function makeProvider($request){
-        $name = $request->input('name');
+        try{
+            $name = $request->input('name');
 
-        $moduleType = $request->input('module_type');
+            $moduleType = $request->input('module_type');
 
-        $provider = [
-            'serviceProviderPath' => base_path('app/Providers/AppServiceProvider.php'),
-            'repositoryProviderPath' => base_path('app/Providers/AppRepositoryProvider.php'),
-        ];
+            $provider = [
+                'serviceProviderPath' => base_path('app/Providers/AppServiceProvider.php'),
+                'repositoryProviderPath' => base_path('app/Providers/AppRepositoryProvider.php'),
+            ];
 
-        if($moduleType != 3){
-            foreach($provider as $key => $val){
-                $content = file_get_contents($val);
-                // dd($content);
-    
-                if ($key == 'serviceProviderPath') {
-                    $insertLine = "'App\\Services\\Interfaces\\{$name}ServiceInterface' => 'App\\Services\\{$name}Service',";
-                } else {
-                    $insertLine = "'App\\Repositories\\Interfaces\\{$name}RepositoryInterface' => 'App\\Repositories\\{$name}Repository',\n\n" .
-                                  "        'App\\Repositories\\Interfaces\\{$name}LanguageRepositoryInterface' => 'App\\Repositories\\{$name}LanguageRepository',";
-                }
-    
-                $position = strpos($content, '];');
-                // dd($position);
-    
-                if($position != false){
-                    $newContent = substr_replace($content, "\n"."        ".$insertLine."\n"."    ", $position, 0);
-                }
-    
-                File::put($val, $newContent);
-                
-            }
-        }
+            if($moduleType != 3){
+                foreach($provider as $key => $val){
+                    $content = file_get_contents($val);
+                    // dd($content);
         
-        die();
+                    if ($key == 'serviceProviderPath') {
+                        $insertLine = "'App\\Services\\Interfaces\\{$name}ServiceInterface' => 'App\\Services\\{$name}Service',";
+                    } else {
+                        $insertLine = "'App\\Repositories\\Interfaces\\{$name}RepositoryInterface' => 'App\\Repositories\\{$name}Repository',\n\n" .
+                                    "        'App\\Repositories\\Interfaces\\{$name}LanguageRepositoryInterface' => 'App\\Repositories\\{$name}LanguageRepository',";
+                    }
+        
+                    $position = strpos($content, '];');
+                    // dd($position);
+        
+                    if($position != false){
+                        $newContent = substr_replace($content, "\n"."        ".$insertLine."\n"."    ", $position, 0);
+                    }
+        
+                    File::put($val, $newContent);
+                    
+                }
+            }
+            
+            // die();
+            return true;
+        }catch(\Exception $ex){
+            echo $ex->getMessage();//die();
+            return false;
+        }
+    }
+
+    //-----------------------------------------------MAKE REQUEST--------------------------------------------------
+
+    private function makeRequest($request){
+        try{
+            $name = $request->input('name');
+
+            // 3 File Request cần tạo
+            $requestArray = ['Store'.$name.'Request', 'Update'.$name.'Request', 'Delete'.$name.'Request'];
+
+            // 3 File Template cần dùng
+            $requestTemplate = ['TemplateStoreRequest', 'TemplateUpdateRequest', 'TemplateDeleteRequest'];
+
+            // Kiểm tra nếu loại module được chọn là danh mục thì không nhận giá trị thứ 2 của requestArray và requestTemplate
+            if($request->input('module_type') != 1){
+                unset($requestArray[2]);
+                unset($requestTemplate[2]);
+            }
+            //dd($requestArray);
+
+            foreach($requestTemplate as $key => $val){
+                // Lấy đường dẫn từ file template
+                $templateRequestPath = base_path('app/Templates/Request/'.$val.'.php');
+                // dd($templateRequestPath);
+
+                // Lấy nội dung bên trong file Template lưu vào biến $requestContent;
+                $requestContent = file_get_contents($templateRequestPath);
+                // dd($requestContent);
+
+                // Thực hiện thay đổi str
+                $requestContent = str_replace('{ModuleTemplate}', $name, $requestContent);
+                $requestContent = str_replace('{moduleTemplate}', lcfirst($name), $requestContent);
+                // dd($requestContent);
+
+                // Tạo ĐƯỜNG DẪN tới folder Requests
+                $requestPath = base_path('app/Http/Requests/'.$requestArray[$key].'.php');
+                // dd($requestPath);
+
+                // TIẾN HÀNH tạo file
+                FILE::put($requestPath, $requestContent);
+            }
+            // die();
+            return true;
+        }catch(\Exception $ex){
+            echo $ex->getMessage();//die();
+            return false;
+        }
     }
 }
