@@ -58,8 +58,8 @@ class GenerateService implements GenerateServiceInterface
             // $repository = $this->makeRepository($request);
             // $service = $this->makeService($request);
             // $provider = $this->makeProvider($request);
-            $makeRequest = $this->makeRequest($request);
-            // $this->makeView();
+            // $makeRequest = $this->makeRequest($request);
+            $view = $this->makeView($request);
             // $this->makeRoute();
             // $this->makeRule();
             // $this->makeLang();
@@ -76,7 +76,7 @@ class GenerateService implements GenerateServiceInterface
             return true;
         }catch(\Exception $ex){
             DB::rollBack();
-            echo $ex->getMessage();//die();
+            echo $ex->getMessage();die();
             return false;
         }
     }
@@ -95,7 +95,7 @@ class GenerateService implements GenerateServiceInterface
             return true;
         }catch(\Exception $ex){
             DB::rollBack();
-            echo $ex->getMessage();//die();
+            echo $ex->getMessage();die();
             return false;
         }
     }
@@ -109,7 +109,7 @@ class GenerateService implements GenerateServiceInterface
             return true;
         }catch(\Exception $ex){
             DB::rollBack();
-            echo $ex->getMessage();//die();
+            echo $ex->getMessage();die();
             return false;
         }
     }
@@ -178,7 +178,7 @@ class GenerateService implements GenerateServiceInterface
             return true;
         }catch(\Exception $ex){
             DB::rollBack();
-            echo $ex->getMessage();//die();
+            echo $ex->getMessage();die();
             return false;
         }
     }
@@ -304,7 +304,7 @@ SCHEMA;
             // die();
             return true;
         }catch(\Exception $ex){
-            echo $ex->getMessage();//die();
+            echo $ex->getMessage();die();
             return false;
         }
     }
@@ -323,7 +323,7 @@ SCHEMA;
                 $this->createSingleModel();
             }
         }catch(\Exception $ex){
-            echo $ex->getMessage();//die();
+            echo $ex->getMessage();die();
             return false;
         }
     }
@@ -391,7 +391,7 @@ SCHEMA;
             // die();
             return true;
         }catch(\Exception $ex){
-            echo $ex->getMessage();//die();
+            echo $ex->getMessage();die();
             return false;
         }
     }
@@ -485,7 +485,7 @@ SCHEMA;
             // die();
             return true;
         }catch(\Exception $ex){
-            echo $ex->getMessage();//die();
+            echo $ex->getMessage();die();
             return false;
         }
     }
@@ -565,7 +565,7 @@ SCHEMA;
             // die();
             return true;
         }catch(\Exception $ex){
-            echo $ex->getMessage();//die();
+            echo $ex->getMessage();die();
             return false;
         }
     }
@@ -610,7 +610,7 @@ SCHEMA;
             // die();
             return true;
         }catch(\Exception $ex){
-            echo $ex->getMessage();//die();
+            echo $ex->getMessage();die();
             return false;
         }
     }
@@ -658,7 +658,121 @@ SCHEMA;
             // die();
             return true;
         }catch(\Exception $ex){
-            echo $ex->getMessage();//die();
+            echo $ex->getMessage();die();
+            return false;
+        }
+    }
+
+    //-----------------------------------------------MAKE VIEW--------------------------------------------------
+
+    private function makeView($request){
+
+        try{
+            $name = $request->input('name');
+            $module = $this->coverModuleNameToTableName($name);
+            // echo $module; die();
+            $extractModule = explode('_', $module);
+            // dd($extractModule);
+
+            // Tạo đường dẫn Folder cha
+            $basePath = resource_path("views/Backend/{$extractModule[0]}");
+
+            // Tạo đường dẫn Folder con
+            if(count($extractModule) == 2){
+                $folderPath = "$basePath/{$extractModule[1]}";
+            }else{
+                $folderPath = "$basePath/{$extractModule[0]}";
+            }
+
+            // Tạo Folder component
+            $componentPath = "$folderPath/component";
+            // echo $folderPath; die();
+            // echo $componentPath; die();
+
+            if(!FILE::exists($folderPath)){
+                FILE::makeDirectory($folderPath, 0755, true); // Tạo Folder module
+            }
+            // die();
+            if(!FILE::exists($componentPath)){
+                FILE::makeDirectory($componentPath, 0755, true); // Tạo Folder component
+            }
+            // die();
+            // Tạo đường dẫn tới Templates/View/x1
+            $templateSourcePath = base_path('app/Templates/View/'.((count($extractModule) == 2) ? 'catalogue' : 'detail'));
+            // echo $templateSourcePath; die();
+
+            // 3 FILE Templates cần dùng x2.php
+            $fileArray = ['store.blade.php', 'index.blade.php', 'destroy.blade.php'];
+
+            foreach($fileArray as $Key => $val){
+                // Tạo đường dẫn tới Templates/View/x1/x2.php
+                $templateSourceFile = $templateSourcePath.'/'.$val;
+                // echo $templateSourceFile; die();
+
+                // Tạo đường dẫn tới folder views tương ứng
+                $sourceFile = $folderPath.'/'.$val;
+                // echo $sourceFile; die();
+
+                // Lấy nội dung bên trong file Template lưu vào biến $content;
+                $content = file_get_contents($templateSourceFile);
+                // dd($content);
+
+                // Thực hiện thay đổi str
+                $replace = [
+                    'view' => (count($extractModule) == 2) ? "{$extractModule[0]}.{$extractModule[1]}" : $extractModule[0],
+                    'moduleTemplate' => lcfirst($name),
+                    'ModuleTemplate' => $name,
+                ];
+
+                // Tiến hành THAY THẾ các biến ban đầu của TemplateCatalogue || TemplateDetail thành các biến đã được chuẩn bị
+                foreach($replace as $key => $val){
+                    $content = str_replace('{'.$key.'}', $replace[$key], $content);
+                }
+
+                // Tiến hành TẠO FILE store, index, destroy
+                if(!FILE::exists($sourceFile)){
+                    FILE::put($sourceFile, $content);
+                }
+            }
+            
+            // 5 FILES Templates component cần dùng x2.php
+            $componentArray = ['aside.blade.php', 'filter.blade.php', 'general.blade.php', 'seo.blade.php', 'table.blade.php'];
+
+            foreach($componentArray as $key => $val){
+                // Tạo đường dẫn tới Templates/View/x1/component/x2.php
+                $templateSourceFile = $templateSourcePath.'/component/'.$val;
+                // echo $templateSourceFile; die();
+
+                // Tạo đường dẫn tới folder component tương ứng
+                $sourceFile = $folderPath.'/component/'.$val;
+                // echo $sourceFile; die();
+
+                // Lấy nội dung bên trong file Template lưu vào biến $content;
+                $content = file_get_contents($templateSourceFile);
+                // dd($content);
+
+                // Thực hiện thay đổi str
+                $replace = [
+                    'view' => (count($extractModule) == 2) ? "{$extractModule[0]}.{$extractModule[1]}" : $extractModule[0],
+                    'moduleTemplate' => lcfirst($name),
+                    'ModuleTemplate' => $name,
+                ];
+
+                // Tiến hành THAY THẾ các biến ban đầu của TemplateCatalogue || TemplateDetail thành các biến đã được chuẩn bị
+                foreach($replace as $key => $val){
+                    $content = str_replace('{'.$key.'}', $replace[$key], $content);
+                }
+
+                // Tiến hành TẠO FILE aside, filter, general, seo, table
+                if(!FILE::exists($sourceFile)){
+                    FILE::put($sourceFile, $content);
+                }
+            }
+
+            // die();
+            return true;
+        }catch(\Exception $ex){
+            echo $ex->getMessage();die();
             return false;
         }
     }
