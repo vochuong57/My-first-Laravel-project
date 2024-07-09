@@ -60,8 +60,10 @@ class GenerateService implements GenerateServiceInterface
             // $provider = $this->makeProvider($request);
             // $makeRequest = $this->makeRequest($request);
             // $view = $this->makeView($request);
-            $route = $this->makeRoute($request);
-            // $this->makeRule();
+            // $route = $this->makeRoute($request);
+            if($request->input('module_type') == 1){
+                $rule = $this->makeRule($request);
+            }
             // $this->makeLang();
 
             $payload = $request->except('_token','send');//lấy tất cả ngoại trừ hai trường này thay vì dùng input là lấy tất cả
@@ -145,7 +147,7 @@ class GenerateService implements GenerateServiceInterface
             // TIẾN HÀNH tạo file migrations
             FILE::put($migrationPath, $migrationTemplate);//kq: module_catalogues || modules
     
-            if($payload['module_type'] !== 3){//Nếu chọn vào module khác thì sẽ ra thêm bảng mudule_catalogue_language || module_language
+            if($payload['module_type'] !== 3){//Nếu không chọn vào module khác thì sẽ ra thêm bảng mudule_catalogue_language || module_language
                 $foreignKey = $this->coverModuleNameToTableName($payload['name']).'_id';
                 //echo $foreignKey; die();
     
@@ -824,7 +826,33 @@ SCHEMA;
 
             FILE::put($routePath, $content);
 
-            die();
+            // die();
+            return true;
+        }catch(\Exception $ex){
+            echo $ex->getMessage();die();
+            return false;
+        }
+    }
+
+    //-----------------------------------------------MAKE RULE--------------------------------------------------
+
+    private function makeRule($request){
+        try{
+            $name = $request->input('name');
+
+            $templateSourceFile = base_path('app/Templates/Rule/TemplateRuleCatalogueChildrenRule.php');
+            $content = file_get_contents($templateSourceFile);
+            // dd($content);
+
+            $content=str_replace('{ModuleTemplate}', $name, $content);
+            // dd($content);
+
+            $sourceFile = base_path('app/Rules/'.'Check'.$name.'ChildrenRule.php');
+            // echo $sourceFile; die();
+
+            FILE::put($sourceFile, $content);
+
+            // die();
             return true;
         }catch(\Exception $ex){
             echo $ex->getMessage();die();
