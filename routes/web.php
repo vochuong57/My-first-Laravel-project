@@ -17,6 +17,7 @@ use App\Http\Controllers\Backend\PostCatalogueController;
 use App\Http\Controllers\Backend\PostController;
 use App\Http\Controllers\Backend\PermissionController;
 use App\Http\Controllers\Backend\GenerateController;
+//@@useController@@
 
 
 //thư viện AJAX
@@ -162,6 +163,8 @@ Route::group(['middleware' => ['admin','locale']], function (){
         Route::get('{id}/destroy',[GenerateController::class, 'destroy'])->name('generate.destroy')->where(['id'=>'[0-9]+']);//hiển thị form xóa user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
         Route::post('{id}/delete',[GenerateController::class, 'delete'])->name('generate.delete')->where(['id'=>'[0-9]+']);//Thực thi xử lý xóa user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
     });
+
+    //@@new-module@@
 
 });
 

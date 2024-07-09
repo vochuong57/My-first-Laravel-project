@@ -59,8 +59,8 @@ class GenerateService implements GenerateServiceInterface
             // $service = $this->makeService($request);
             // $provider = $this->makeProvider($request);
             // $makeRequest = $this->makeRequest($request);
-            $view = $this->makeView($request);
-            // $this->makeRoute();
+            // $view = $this->makeView($request);
+            $route = $this->makeRoute($request);
             // $this->makeRule();
             // $this->makeLang();
 
@@ -770,6 +770,61 @@ SCHEMA;
             }
 
             // die();
+            return true;
+        }catch(\Exception $ex){
+            echo $ex->getMessage();die();
+            return false;
+        }
+    }
+
+    //-----------------------------------------------MAKE ROUTE--------------------------------------------------
+
+    private function makeRoute($request){
+        try{
+            $name = $request->input('name');
+            $module = $this->coverModuleNameToTableName($name);
+            // echo $module; die();
+            $extractModule = explode('_', $module);
+            // dd($extractModule);
+
+            $routePath = base_path('routes/web.php');
+
+            $content = file_get_contents($routePath);
+            // dd($content);
+
+            $routeUrl = (count($extractModule) == 2) ? "{$extractModule[0]}/{$extractModule[1]}" : $extractModule[0];
+
+            $routeName = (count($extractModule) == 2) ? "{$extractModule[0]}.{$extractModule[1]}" : $extractModule[0];
+
+            $routeGroup = <<<ROUTE
+            Route::group(['prefix'=>'{$routeUrl}'], function(){
+                    Route::get('index',[{$name}Controller::class, 'index'])->name('{$routeName}.index');//hiển thị form user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+
+                    Route::get('store',[{$name}Controller::class, 'store'])->name('{$routeName}.store');//hiển thị form thêm user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+                    Route::post('create',[{$name}Controller::class, 'create'])->name('{$routeName}.create');//thực thi xử lý thêm user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+
+                    Route::get('{id}/edit',[{$name}Controller::class, 'edit'])->name('{$routeName}.edit')->where(['id'=>'[0-9]+']);//hiển thị form cập nhật user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+                    Route::post('{id}/update',[{$name}Controller::class, 'update'])->name('{$routeName}.update')->where(['id'=>'[0-9]+']);//Thực thi xử lý cập nhật user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+
+                    Route::get('{id}/destroy',[{$name}Controller::class, 'destroy'])->name('{$routeName}.destroy')->where(['id'=>'[0-9]+']);//hiển thị form xóa user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+                    Route::post('{id}/delete',[{$name}Controller::class, 'delete'])->name('{$routeName}.delete')->where(['id'=>'[0-9]+']);//Thực thi xử lý xóa user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+                });
+
+                //@@new-module@@
+            ROUTE;
+            // dd($routeGroup);
+
+            $useController = <<<ROUTE
+            use App\\Http\\Controllers\\Backend\\{$name}Controller;
+            //@@useController@@
+            ROUTE;
+
+            $content = str_replace('//@@new-module@@', $routeGroup, $content);
+            $content = str_replace('//@@useController@@', $useController, $content);
+
+            FILE::put($routePath, $content);
+
+            die();
             return true;
         }catch(\Exception $ex){
             echo $ex->getMessage();die();
