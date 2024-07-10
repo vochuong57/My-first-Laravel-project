@@ -287,6 +287,9 @@ class {ModuleTemplate}Service extends BaseService implements {ModuleTemplate}Ser
         //vì chúng ta có khóa ngoại khi thêm bảng này mà khóa ngoại này là user_id thì đó là tài khoản đã đăng nhập thì
         $payload['user_id']=Auth::id();
         $payload['album']=$this->formatAlbum($request);
+        if($payload['publish'] == null || $payload['publish'] == 0){
+            $payload['publish'] = 1;
+        }
         //dd($payload);
         ${moduleTemplate}=$this->{moduleTemplate}Repository->create($payload);
         //dd($language);

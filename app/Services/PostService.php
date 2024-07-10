@@ -287,6 +287,9 @@ class PostService extends BaseService implements PostServiceInterface
         //vì chúng ta có khóa ngoại khi thêm bảng này mà khóa ngoại này là user_id thì đó là tài khoản đã đăng nhập thì
         $payload['user_id']=Auth::id();
         $payload['album']=$this->formatAlbum($request);
+        if($payload['publish'] == null || $payload['publish'] == 0){
+            $payload['publish'] = 1;
+        }
         //dd($payload);
         $post=$this->postRepository->create($payload);
         //dd($language);

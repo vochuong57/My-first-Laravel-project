@@ -6,7 +6,7 @@
         <div class="row mb15">
             <div class="col-lg-12">
                 <div class="form-row">
-                    <span class="text-danger notice">*Chọn root nếu không có danh mục cha</span>
+                    <span class="text-danger notice">*Chọn danh mục cha</span>
                     <select name="{moduleTemplate}_catalogue_id" class="form-control setupSelect2" id="">
                         @foreach($dropdown as $key => $val)
                         <option

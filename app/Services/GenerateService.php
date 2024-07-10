@@ -52,7 +52,7 @@ class GenerateService implements GenerateServiceInterface
     public function createGenerate($request){
         DB::beginTransaction();
         try{
-            // $database = $this->makeDatabase($request);
+            $database = $this->makeDatabase($request);
             // $controller = $this->makeController($request);
             // $model = $this->makeModel($request);
             // $repository = $this->makeRepository($request);
@@ -61,9 +61,9 @@ class GenerateService implements GenerateServiceInterface
             // $makeRequest = $this->makeRequest($request);
             // $view = $this->makeView($request);
             // $route = $this->makeRoute($request);
-            if($request->input('module_type') == 1){
-                $rule = $this->makeRule($request);
-            }
+            // if($request->input('module_type') == 1){
+            //     $rule = $this->makeRule($request);
+            // }
             // $this->makeLang();
 
             $payload = $request->except('_token','send');//lấy tất cả ngoại trừ hai trường này thay vì dùng input là lấy tất cả
@@ -147,7 +147,8 @@ class GenerateService implements GenerateServiceInterface
             // TIẾN HÀNH tạo file migrations
             FILE::put($migrationPath, $migrationTemplate);//kq: module_catalogues || modules
     
-            if($payload['module_type'] !== 3){//Nếu không chọn vào module khác thì sẽ ra thêm bảng mudule_catalogue_language || module_language
+            //Nếu không chọn vào module khác thì sẽ ra thêm bảng mudule_catalogue_language || module_language
+            if($payload['module_type'] !== 3){
                 $foreignKey = $this->coverModuleNameToTableName($payload['name']).'_id';
                 //echo $foreignKey; die();
     
@@ -174,9 +175,35 @@ class GenerateService implements GenerateServiceInterface
                 // TIẾN HÀNH tạo file pivotMigrations
                 FILE::put($migrationPivotPath, $migrationPivotTemplate);//kq: module_catalogue_language || module_language
             }
+
+            //Nếu chọn vào module chi tiết thì sẽ ra thêm bảng mudule_catalogue_module
+            if($payload['module_type'] == 2){
+               
+                $module = $this->coverModuleNameToTableName($payload['name']);
+                //echo $module; die();
     
+                // Tạo NỘI DUNG cho file migrations
+                $migrationRelationTemplate = $this->createMigrationFile([
+                    'schema' => $this->relationSchema($module),
+                    'name' => $module.'_catalogue_'.$module,
+                ]);
+                // dd($migrationRelationTemplate);
+        
+                // Tạo TÊN FILE migrations từ tên module
+                $migrationRelationFileName = date('Y_m_d_His', time() + 20).'_create_'.$module.'_catalogue_'.$module.'_table.php';
+                // echo $migrationRelationFileName; die();
+    
+                // Tạo ĐƯỜNG DẪN tói folder migrations
+                $migrationRelationPath = database_path('migrations/'.$migrationRelationFileName);
+                // echo $migrationRelationPath; die();
+    
+                // TIẾN HÀNH tạo file relationMigrations
+                FILE::put($migrationRelationPath, $migrationRelationTemplate);//kq: module_catalogue_language || module_language
+            }
+            
             // Tạo cơ sở dữ liệu
             ARTISAN::call('migrate');
+            die();
             return true;
         }catch(\Exception $ex){
             DB::rollBack();
@@ -227,23 +254,39 @@ MIGRATION;
         //Tạo template
         $pivotSchema = <<<SCHEMA
 Schema::create('{$pivotTableName}', function (Blueprint \$table) {
-    \$table->bigInteger('{$foreignKey}')->unsigned();
-    \$table->foreign('{$foreignKey}')->references('id')->on('{$tableNames}')->onDelete('cascade');
-    \$table->bigInteger('language_id')->unsigned();
-    \$table->foreign('language_id')->references('id')->on('languages')->onDelete('cascade');
-    \$table->string('name');
-    \$table->text('description')->nullable();
-    \$table->string('canonical')->nullable()->unique();
-    \$table->longText('content')->nullable();
-    \$table->string('meta_title')->nullable();
-    \$table->string('meta_keyword')->nullable();
-    \$table->text('meta_description')->nullable();
-    \$table->timestamp('deleted_at')->nullable();
-    \$table->timestamps();
-});
+        \$table->bigInteger('{$foreignKey}')->unsigned();
+        \$table->foreign('{$foreignKey}')->references('id')->on('{$tableNames}')->onDelete('cascade');
+        \$table->bigInteger('language_id')->unsigned();
+        \$table->foreign('language_id')->references('id')->on('languages')->onDelete('cascade');
+        \$table->string('name');
+        \$table->text('description')->nullable();
+        \$table->string('canonical')->nullable()->unique();
+        \$table->longText('content')->nullable();
+        \$table->string('meta_title')->nullable();
+        \$table->string('meta_keyword')->nullable();
+        \$table->text('meta_description')->nullable();
+        \$table->timestamp('deleted_at')->nullable();
+        \$table->timestamps();
+    });
 
 SCHEMA;
         return $pivotSchema;
+    }
+
+    private function relationSchema($module = ''){
+        //Tạo template
+        $relationSchema = <<<SCHEMA
+Schema::create('{$module}_catalogue_{$module}', function (Blueprint \$table) {
+        \$table->unsignedBigInteger('{$module}_catalogue_id');
+        \$table->foreign('{$module}_catalogue_id')->references('id')->on('{$module}_catalogues')->onDelete('cascade');
+        \$table->unsignedBigInteger('{$module}_id');
+        \$table->foreign('{$module}_id')->references('id')->on('{$module}s')->onDelete('cascade');
+        \$table->timestamp('deleted_at')->nullable();
+        \$table->timestamps();
+    });
+
+SCHEMA;
+        return $relationSchema;
     }
 
     //-----------------------------------------------MAKE CONTROLLER--------------------------------------------------
