@@ -20,7 +20,7 @@
         @foreach(${moduleTemplate}s as ${moduleTemplate})
         <tr class="rowdel-{{ ${moduleTemplate}->id }}">
             <td>
-                <input type="checkbox" value="{{ ${moduleTemplate}->id }}" name="" class="input-checkbox checkBoxItem">
+                <input type="checkbox" value="{{ ${moduleTemplate}->id }}" data-languageId = "{{ ${moduleTemplate}->language_id }}" name="" class="input-checkbox checkBoxItem">
             </td>
             <!-- <td>
                 <span class="image img-cover"><img

@@ -192,8 +192,20 @@ class PostService extends BaseService implements PostServiceInterface
     public function deleteAll($post=[]){
         DB::beginTransaction();
         try{
-            $posts=$this->postRepository->deleteByWhereIn('id',$post['id']);
+            $postLanguage=$this->postLanguageRepository->deleteByWhereIn('post_id',$post['id'],$post['languageId']);
             //echo 1; die();
+
+            // Sau khi xóa xong thì nó tiếp tục kiểm tra xem thử là còn cái post_id đó trong post_language không
+            foreach($post['id'] as $id){
+                $condition=[
+                    ['post_id', '=', $id]
+                ];
+                $flag = $this->postLanguageRepository->findByCondition($condition);
+                // Nếu không tìm thấy nữa thì ta mới tiến hành xóa đi post
+                if(!$flag){
+                    $post=$this->postRepository->forceDelete($id);
+                }
+            }
             DB::commit();
             return true;
         }catch(\Exception $ex){
@@ -210,7 +222,8 @@ class PostService extends BaseService implements PostServiceInterface
             'posts.image',
             'posts.order',
             'tb2.name',
-            'tb2.canonical'
+            'tb2.canonical',
+            'tb2.language_id',
         ];
     }
     private function payload(){

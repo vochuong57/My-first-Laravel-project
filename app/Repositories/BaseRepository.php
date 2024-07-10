@@ -104,8 +104,14 @@ class BaseRepository implements BaseRepositoryInterface
         return $this->findById($id)->forceDelete();
     }
     //Phương thức xóa WhereIn (DELETE/FORCEDELTE)
-    public function deleteByWhereIn(string $whereInField = '', array $whereIn = []) {
-        return $this->model->whereIn($whereInField, $whereIn)->forceDelete();
+    public function deleteByWhereIn(string $whereInField = '', array $whereIn = [], int $languageId = null) {
+        $query = $this->model->whereIn($whereInField, $whereIn);
+    
+        if ($languageId !== null) {
+            $query->where('language_id', $languageId);
+        }
+    
+        return $query->forceDelete();
     }
     public function deleteByWhere(array $condition=[]){
         $query = $this->model->newQuery();

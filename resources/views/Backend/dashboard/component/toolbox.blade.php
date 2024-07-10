@@ -10,8 +10,10 @@
         </li>
         <li><a href="#" class="changeStatusAll" data-field="publish" data-model="{{ $config['model'] }}" data-value="1">Unpublish {{ __('messages.toolbox_name') }}</a>
         </li>
-        <li><a href="#" class="deleteAll" data-model="{{ $config['model'] }}" onclick="return confirmDelete();" id="deleteAllLink">Delete {{ __('messages.toolbox_name') }}</a>
-        </li>
+        @if (strpos($template, 'catalogue') === false)
+            <li><a href="#" class="deleteAll" data-model="{{ $config['model'] }}" onclick="return confirmDelete();" id="deleteAllLink">Delete {{ __('messages.toolbox_name') }}</a></li>
+        @endif
+
     </ul>
     <a class="close-link">
         <i class="fa fa-times"></i>
@@ -19,7 +21,7 @@
 </div>
 <script>
     function confirmDelete() {
-        let result = confirm('{{ $content }}');
+        let result = confirm('Bạn có chắc chắn muốn xóa những {{ $content }} này?');
         if (result) {
             document.getElementById('deleteAllLink').classList.add('deleteAll');
             return true; // Nếu người dùng nhấn OK, tiếp tục thực hiện AJAX bằng cách thêm class deleteAll
