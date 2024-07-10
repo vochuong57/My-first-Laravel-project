@@ -48,8 +48,8 @@ class {ModuleTemplate}Controller extends Controller
 
     private function initialize(){
         $this->nestedset=new Nestedsetbie([
-            'table'=>'{tableNames}',
-            'foreignkey'=>'{foreignKey}',
+            'table'=>'{moduleTemplate}_catalogues',
+            'foreignkey'=>'{moduleTemplate}_catalogue_id',
             'language_id'=>$this->language,
         ]);
     }
@@ -67,7 +67,7 @@ class {ModuleTemplate}Controller extends Controller
         $template='Backend.{moduleTemplate}.{moduleTemplate}.index';
 
         //chèn thêm mảng 'seo' vào biến config để mảng 'seo' này lấy toàn bộ giá trị của folder config/apps/user.php
-        $config['seo']=config('apps.{moduleTemplate}.index');
+        $config['seo']=__('messages.{moduleTemplate}');
 
         //Đổ dữ liệu User từ DB vào form theo mô hình service và repository
         ${moduleTemplate}s = $this->{moduleTemplate}Service->paginate($request, $this->language);//$request để tiến hành chức năng tìm kiếm
@@ -88,7 +88,7 @@ class {ModuleTemplate}Controller extends Controller
 
         $config=$this->configCUD();
 
-        $config['seo']=config('apps.{moduleTemplate}.create');
+        $config['seo']=__('messages.{moduleTemplate}.create');
 
         $config['method']='create';
 
@@ -124,7 +124,7 @@ class {ModuleTemplate}Controller extends Controller
 
         $config=$this->configCUD();
 
-        $config['seo']=config('apps.{moduleTemplate}.edit');
+        $config['seo']=__('messages.{moduleTemplate}.edit');
 
         $config['method']='edit';//kiểm tra metho để thay đổi giao diện cho phù hợp
 
@@ -160,7 +160,7 @@ class {ModuleTemplate}Controller extends Controller
 
         $config=$this->configCUD();
 
-        $config['seo']=config('apps.{moduleTemplate}.delete');
+        $config['seo']=__('messages.{moduleTemplate}.delete');
 
         //truy vấn thông tin
         ${moduleTemplate}=$this->{moduleTemplate}Repository->get{ModuleTemplate}ById($id,$this->language);

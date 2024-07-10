@@ -4,14 +4,14 @@
 @php
     $url=($config['method']=='create')?route('{moduleTemplate}.create'):route('{moduleTemplate}.update', ${moduleTemplate}->id)
 @endphp
-<form action="{{ $url }}" method="{moduleTemplate}" class="box">
+<form action="{{ $url }}" method="post" class="box">
     @csrf
     <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
             <div class="col-lg-9">
                 <div class="ibox">
                     <div class="ibox-title">
-                        <h5>Thông tin chung</h5>
+                        <h5>{{ __('messages.general') }}</h5>
                     </div>
                     <div class="ibox-content">
                         @include('Backend.{moduleTemplate}.{moduleTemplate}.component.general')

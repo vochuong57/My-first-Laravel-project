@@ -481,6 +481,7 @@ SCHEMA;
                 'moduleKey' => $this->coverModuleNameToTableName($name).'_id',
                 'pivotTable' => $this->coverModuleNameToTableName($name).'_language',
                 'relationCatalogue' => $this->coverModuleNameToTableName($name).'_catalogue',
+                'foreignKey' => $this->coverModuleNameToTableName($name).'_catalogue_id',
             ];
             // dd($replace['relationModel']); die();
 

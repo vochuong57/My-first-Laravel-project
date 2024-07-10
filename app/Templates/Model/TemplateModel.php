@@ -25,7 +25,7 @@ class {ModuleTemplate} extends Model
         '{foreignKey}'
     ];
 
-    protected $table='posts';
+    protected $table='{tableNames}';
 
     //Chức năng thêm, Sửa cho bảng {pivotTable} khi cho 2 khóa ngoại thay khóa chính
     public function languages(){//function này sẽ đc sử dụng ở lơp base để tiến tiến hành attach dữ liệu từ bảng thứ 2 sẽ khởi tạo cụ thể nó là createLanguagePivot
