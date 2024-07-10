@@ -42,6 +42,10 @@ return[
     'seo_meta_keyword'=>'SEO keywords',
     'seo_meta_description'=>'SEO description',
     'seo_meta_canonical'=>'Canonical URL',
+    // album
+    'album' => 'Photo Album',
+    'pickAlbum' => 'Pick Album',
+    'adviseAlbum' => 'Use the select button or click here to add images',
     // table
     'tablePostCatalogue_brand'=>'List of post groups',
     'tablePostCatalogue_name'=>'Group name',

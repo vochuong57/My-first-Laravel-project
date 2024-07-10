@@ -42,6 +42,10 @@ return [
     'seo_meta_keyword'=>'SEO关键词',
     'seo_meta_description'=>'SEO描述',
     'seo_meta_canonical'=>'规范URL',
+    // album
+    'album' => '相册',
+    'pickAlbum' => '选择相册',
+    'adviseAlbum' => '使用选择按钮或点击此处添加图片',
     // table
     'tablePostCatalogue_brand'=>'文章分组列表',
     'tablePostCatalogue_name'=>'分组名称',
