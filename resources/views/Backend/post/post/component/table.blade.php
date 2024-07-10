@@ -20,7 +20,7 @@
         @foreach($posts as $post)
         <tr class="rowdel-{{ $post->id }}">
             <td>
-                <input type="checkbox" value="{{ $post->id }}" name="" class="input-checkbox checkBoxItem">
+                <input type="checkbox" value="{{ $post->id }}" data-languageId = "{{ $post->language_id }}" name="" class="input-checkbox checkBoxItem">
             </td>
             <!-- <td>
                 <span class="image img-cover"><img

@@ -158,7 +158,7 @@ class {ModuleTemplate}Service extends BaseService implements {ModuleTemplate}Ser
             $payload[$post['field']]=(($post['value']==1)?2:1);
             
             //dd($payload);
-            $post=$this->postRepository->update($post['modelId'], $payload);
+            ${moduleTemplate}=$this->{moduleTemplate}Repository->update($post['modelId'], $payload);
             //echo 1; die();
             //$this->changeUserStatus($post, $payload[$post['field']]);
             DB::commit();
@@ -178,7 +178,7 @@ class {ModuleTemplate}Service extends BaseService implements {ModuleTemplate}Ser
             $payload[$post['field']]=$post['value'];
             
             //dd($payload);
-            $posts=$this->postRepository->updateByWhereIn('id', $post['id'], $payload);
+            ${moduleTemplate}s=$this->{moduleTemplate}Repository->updateByWhereIn('id', $post['id'], $payload);
             //echo 1; die();
             //$this->changeUserStatus($post,$post['value']);
             DB::commit();
@@ -192,8 +192,20 @@ class {ModuleTemplate}Service extends BaseService implements {ModuleTemplate}Ser
     public function deleteAll($post=[]){
         DB::beginTransaction();
         try{
-            $posts=$this->postRepository->deleteByWhereIn('id',$post['id']);
+            ${moduleTemplate}Language=$this->{moduleTemplate}LanguageRepository->deleteByWhereIn('{moduleTemplate}_id',$post['id'],$post['languageId']);
             //echo 1; die();
+
+            // Sau khi xóa xong thì nó tiếp tục kiểm tra xem thử là còn cái {moduleTemplate}_id đó trong {moduleTemplate}_language không
+            foreach($post['id'] as $id){
+                $condition=[
+                    ['{moduleTemplate}_id', '=', $id]
+                ];
+                $flag = $this->{moduleTemplate}LanguageRepository->findByCondition($condition);
+                // Nếu không tìm thấy nữa thì ta mới tiến hành xóa đi {moduleTemplate}s
+                if(!$flag){
+                    ${moduleTemplate}=$this->{moduleTemplate}Repository->forceDelete($id);
+                }
+            }
             DB::commit();
             return true;
         }catch(\Exception $ex){
@@ -210,7 +222,8 @@ class {ModuleTemplate}Service extends BaseService implements {ModuleTemplate}Ser
             '{tableNames}.image',
             '{tableNames}.order',
             'tb2.name',
-            'tb2.canonical'
+            'tb2.canonical',
+            'tb2.language_id',
         ];
     }
     private function payload(){

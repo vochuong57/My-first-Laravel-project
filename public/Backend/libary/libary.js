@@ -156,15 +156,18 @@
                 e.preventDefault();
                 let _this=$(this);
                 let id=[];
+                let languageId;
                 $('.checkBoxItem').each(function(){
                     let checkBox=$(this)
                     if(checkBox.prop('checked')){
                         id.push(checkBox.val())
+                        languageId=checkBox.attr('data-languageId')
                     }
                 })
                 let option={
                     'model': _this.attr('data-model'),
                     'id': id,
+                    'languageId': languageId,
                     '_token': _token
                 }
                 //console.log(option)
