@@ -5,13 +5,13 @@
                 <input type="checkbox" value="" name="" id="checkAll" class="input-checkbox">
             </th>
             <!-- <th style="width: 90px">Ảnh</th> -->
-            <th>Tiêu đề</th>
+            <th>{{ __('messages.table{ModuleTemplate}_name') }}</th>
             @include('Backend.dashboard.component.languageTh')
-            <th style="width: 80px" class="text-center">vị trí</th>
+            <th style="width: 80px" class="text-center">{{ __('messages.table{ModuleTemplate}_pos') }}</th>
             <!-- <th>Canonical</th> -->
             <!-- <th>Ghi chú</th> -->
-            <th class="text-center" style="width: 100px">Tình trạng</th>
-            <th class="text-center" style="width: 100px">Thao tác</th>
+            <th class="text-center" style="width: 100px">{{ __('messages.table{ModuleTemplate}_status') }}</th>
+            <th class="text-center" style="width: 100px">{{ __('messages.table{ModuleTemplate}_action') }}</th>
         </tr>
     </thead>
     <tbody>
@@ -30,7 +30,7 @@
             <td>
                 <div class="uk-flex uk-flex-middle">
                     <div class="image mr5">
-                        <div class="img-cover image-{moduleTemplate}">
+                        <div class="img-cover image-post">
                             <img src="{{ ${moduleTemplate}->image ?? 'Backend/img/not-found.png' }}" alt="">
                         </div>
                     </div>
@@ -40,7 +40,7 @@
                         </div>
 
                         <div class="catalogue">
-                            <span class="text-danger">Nhóm hiển thị</span>
+                            <span class="text-danger">{{ __('messages.table{ModuleTemplate}_displayCatalogue') }}</span>
                             @foreach(${moduleTemplate}->{moduleTemplate}_catalogues as $val) <?php // '->{moduleTemplate}_catalogues' là function {moduleTemplate}_catalogues() của Model/{ModuleTemplate} có LQ theo đường {ModuleTemplate}Repository ?>
                             @foreach($val->{moduleTemplate}_catalogue_language as $cat)
                             <a href="{{ route('{moduleTemplate}.index', ['{moduleTemplate}_catalogue_id'=>$val->id]) }}">{{ $cat->name }}</a>

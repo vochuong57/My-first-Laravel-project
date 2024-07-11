@@ -206,7 +206,7 @@ class LanguageService implements LanguageServiceInterface
 
             $model = $repositoryInstance->findById($option['id']);
             // dd($model);
-            $model->languages()->detach([$option['languageId'], $model->id]);
+            $model->languages()->detach($option['languageId'], $model->id);
             $repositoryInstance->createPivot($model, $payload, 'languages');
 
             DB::commit();

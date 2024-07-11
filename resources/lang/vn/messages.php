@@ -22,6 +22,7 @@ return[
     // aside
     'parent'=>'Chọn danh mục cha',
     'parentNotice'=>'Chọn root nếu không có danh mục cha',
+    'children'=>'Chọn danh mục con nếu có',
     'image'=>'Chọn ảnh đại diện',
     'advance'=>'Cấu hình nâng cao',
     
@@ -47,6 +48,11 @@ return[
     'seo_meta_keyword'=>'Từ khóa SEO',
     'seo_meta_description'=>'Mô tả SEO',
     'seo_meta_canonical'=>'Đường dẫn',
+
+    // album
+    'album'=>'Album Ảnh',
+    'pickAlbum'=>'Chọn Album',
+    'adviseAlbum'=>'Sử dụng nút chọn hình hoặc click vào đây để thêm hình ảnh',
     
     // table
     'tablePostCatalogue_brand'=>'Danh sách nhóm bài viết',

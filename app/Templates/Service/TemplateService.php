@@ -287,6 +287,9 @@ class {ModuleTemplate}Service extends BaseService implements {ModuleTemplate}Ser
         //vì chúng ta có khóa ngoại khi thêm bảng này mà khóa ngoại này là user_id thì đó là tài khoản đã đăng nhập thì
         $payload['user_id']=Auth::id();
         $payload['album']=$this->formatAlbum($request);
+        if($payload['publish'] == null || $payload['publish'] == 0){
+            $payload['publish'] = 1;
+        }
         //dd($payload);
         ${moduleTemplate}=$this->{moduleTemplate}Repository->create($payload);
         //dd($language);
@@ -304,7 +307,7 @@ class {ModuleTemplate}Service extends BaseService implements {ModuleTemplate}Ser
     //Cho bảng {moduleTemplate}_language
     private function updateLanguageFor{ModuleTemplate}($request, ${moduleTemplate}, $languageId){
         $payloadLanguage=$this->formatLanguagePayload($request, ${moduleTemplate}, $languageId);
-        ${moduleTemplate}->languages()->detach([$languageId, ${moduleTemplate}->id]);
+        ${moduleTemplate}->languages()->detach($languageId, ${moduleTemplate}->id);
         $language = $this->{moduleTemplate}Repository->createPivot(${moduleTemplate},$payloadLanguage,'languages');
         //dd($language); die();
         return $language;

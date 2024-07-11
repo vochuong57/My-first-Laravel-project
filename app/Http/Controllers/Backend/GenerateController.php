@@ -76,9 +76,9 @@ class GenerateController extends Controller
     //xử lý thêm user
     public function create(StoreGenerateRequest $request){
         if($this->generateService->createGenerate($request)){
-            return redirect()->route('generate.index')->with('success','Thêm mới ngôn ngữ thành công');
+            return redirect()->route('generate.index')->with('success','Thêm mới module thành công');
         }
-           return redirect()->route('generate.index')->with('error','Thêm mới ngôn ngữ thất bại. Hãy thử lại');
+           return redirect()->route('generate.index')->with('error','Thêm mới module thất bại. Hãy thử lại');
         
     }
     //giao diện sửa user

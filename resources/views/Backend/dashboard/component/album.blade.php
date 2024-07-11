@@ -1,8 +1,8 @@
 <div class="ibox mb25">
     <div class="ibox-title">
         <div class="uk-flex uk-flex-middle uk-flex-space-between">
-            <h5>Album Ảnh</h5>
-            <div class="upload-album"><a href="" class="upload-picture">Chọn Hình</a></div>
+            <h5>{{ __('messages.album') }}</h5>
+            <div class="upload-album"><a href="" class="upload-picture">{{ __('messages.pickAlbum') }}</a></div>
         </div>
     </div>
     @php
@@ -25,7 +25,7 @@
                             </a>
                         </a>
                     </div>
-                    <div class="small-text">Sử dụng nút chọn hình hoặc click vào đây để thêm hình ảnh</div>
+                    <div class="small-text">{{ __('messages.adviseAlbum') }}</div>
                 </div>
                 @endif
                 @if(isset($gallery)&&count($gallery))

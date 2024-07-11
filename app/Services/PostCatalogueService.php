@@ -258,7 +258,7 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
     }
     private function updateLanguageForCatalogue($request, $postCatalogue, $languageId){
         $payloadLanguage=$this->formatLanguagePayload($request, $postCatalogue, $languageId);
-        $postCatalogue->languages()->detach([$languageId, $postCatalogue->id]);
+        $postCatalogue->languages()->detach($languageId, $postCatalogue->id);
         $language = $this->postCatalogueRepository->createPivot($postCatalogue,$payloadLanguage,'languages');
         //dd($language); die();
         return $language;
