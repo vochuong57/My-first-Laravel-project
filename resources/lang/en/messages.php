@@ -20,6 +20,7 @@ return[
     // aside
     'parent'=>'Select parent category',
     'parentNotice'=>'Select root if there is no parent category',
+    'children' => 'Select subcategory if available',
     'image'=>'Choose image',
     'advance'=>'Advanced configuration',
     // fillter

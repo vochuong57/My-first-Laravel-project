@@ -7,7 +7,7 @@
             <!-- <th style="width: 90px">Ảnh</th> -->
             <th>{{ __('messages.table{ModuleTemplate}_name') }}</th>
             @include('Backend.dashboard.component.languageTh')
-            <th style="width: 80px" class="text-center">vị trí</th>
+            <th style="width: 80px" class="text-center">{{ __('messages.table{ModuleTemplate}_pos') }}</th>
             <!-- <th>Canonical</th> -->
             <!-- <th>Ghi chú</th> -->
             <th class="text-center" style="width: 100px">{{ __('messages.table{ModuleTemplate}_status') }}</th>
@@ -30,7 +30,7 @@
             <td>
                 <div class="uk-flex uk-flex-middle">
                     <div class="image mr5">
-                        <div class="img-cover image-{moduleTemplate}">
+                        <div class="img-cover image-post">
                             <img src="{{ ${moduleTemplate}->image ?? 'Backend/img/not-found.png' }}" alt="">
                         </div>
                     </div>

@@ -22,6 +22,7 @@ return[
     // aside
     'parent'=>'Chọn danh mục cha',
     'parentNotice'=>'Chọn root nếu không có danh mục cha',
+    'children'=>'Chọn danh mục con nếu có',
     'image'=>'Chọn ảnh đại diện',
     'advance'=>'Cấu hình nâng cao',
     

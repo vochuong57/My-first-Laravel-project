@@ -20,6 +20,7 @@ return [
     // aside
     'parent'=>'选择父级类别',
     'parentNotice'=>'如果没有父级类别，请选择根类别',
+    'children' => '选择子类别（如果有）',
     'image'=>'选择图片',
     'advance'=>'高级配置',
     // fillter

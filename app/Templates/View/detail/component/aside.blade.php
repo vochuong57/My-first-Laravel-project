@@ -6,7 +6,7 @@
         <div class="row mb15">
             <div class="col-lg-12">
                 <div class="form-row">
-                    <span class="text-danger notice">*{{ __('messages.parentNotice') }}</span>
+                    <span class="text-danger notice">*{{ __('messages.parent') }}</span>
                     <select name="{moduleTemplate}_catalogue_id" class="form-control setupSelect2" id="">
                         @foreach($dropdown as $key => $val)
                         <option
