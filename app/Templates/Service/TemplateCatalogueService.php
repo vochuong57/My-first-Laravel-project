@@ -261,7 +261,7 @@ class {ModuleTemplate}Service extends BaseService implements {ModuleTemplate}Ser
     }
     private function updateLanguageForCatalogue($request, ${moduleTemplate}, $languageId){
         $payloadLanguage=$this->formatLanguagePayload($request, ${moduleTemplate}, $languageId);
-        ${moduleTemplate}->languages()->detach([$languageId, ${moduleTemplate}->id]);
+        ${moduleTemplate}->languages()->detach($languageId, ${moduleTemplate}->id);
         $language = $this->{moduleTemplate}Repository->createPivot(${moduleTemplate},$payloadLanguage,'languages');
         //dd($language); die();
         return $language;
