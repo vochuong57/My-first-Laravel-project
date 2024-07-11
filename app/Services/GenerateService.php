@@ -50,30 +50,20 @@ class GenerateService implements GenerateServiceInterface
         return $generates;
     }
     public function createGenerate($request){
-        DB::beginTransaction();
+        // DB::beginTransaction();
         try{
             $database = $this->makeDatabase($request);
-            // $controller = $this->makeController($request);
-            // $model = $this->makeModel($request);
-            // $repository = $this->makeRepository($request);
-            // $service = $this->makeService($request);
-            // $provider = $this->makeProvider($request);
-            // $makeRequest = $this->makeRequest($request);
-            // $view = $this->makeView($request);
-            // $route = $this->makeRoute($request);
-            // if($request->input('module_type') == 1){
-            //     $rule = $this->makeRule($request);
-            // }
-            // $this->makeLang();
-
-            $payload = $request->except('_token','send');//lấy tất cả ngoại trừ hai trường này thay vì dùng input là lấy tất cả
-            
-            //vì chúng ta có khóa ngoại khi thêm bảng này mà khóa ngoại này là user_id thì đó là tài khoản đã đăng nhập thì
-            $payload['user_id']=Auth::id();
-            //dd($payload);
-            $generate=$this->generateRepository->create($payload);
-            //dd($generate);
-            //echo -1; die();
+            $controller = $this->makeController($request);
+            $model = $this->makeModel($request);
+            $repository = $this->makeRepository($request);
+            $service = $this->makeService($request);
+            $provider = $this->makeProvider($request);
+            $makeRequest = $this->makeRequest($request);
+            $view = $this->makeView($request);
+            $route = $this->makeRoute($request);
+            if($request->input('module_type') == 1){
+                $rule = $this->makeRule($request);
+            }
             DB::commit();
             return true;
         }catch(\Exception $ex){
@@ -203,7 +193,7 @@ class GenerateService implements GenerateServiceInterface
             
             // Tạo cơ sở dữ liệu
             ARTISAN::call('migrate');
-            die();
+            // die();
             return true;
         }catch(\Exception $ex){
             DB::rollBack();
