@@ -83,14 +83,14 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
             $postCatalogue = $this->createCatalogue($request);
             if($postCatalogue->id>0){
                 $this->updateLanguageForCatalogue($request, $postCatalogue, $languageId);
-                $this->createRouter($request, $postCatalogue, $this->controllerName);
+                $this->createRouter($request, $postCatalogue, $this->controllerName, $languageId);
                 $this->nestedset();
             }
             DB::commit();
             return true;
         }catch(\Exception $ex){
             DB::rollBack();
-            echo $ex->getMessage();//die();
+            echo $ex->getMessage();die();
             return false;
         }
     }
@@ -102,7 +102,7 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
             $flag = $this->updateCatalogue($request, $id);
             if($flag==TRUE){
                 $this->updateLanguageForCatalogue($request, $postCatalogue, $languageId);
-                $this->updateRouter($request, $postCatalogue, $this->controllerName);
+                $this->updateRouter($request, $postCatalogue, $this->controllerName, $languageId);
                 $this->nestedset();
             }
             DB::commit();
@@ -125,22 +125,23 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
             ];
             $this->postCatalogueLanguageRepository->deleteByWhere($where);
 
+            //Tiếp theo xóa đi canonical của bản dịch đó khỏi routers
+            $findRouter=[
+                ['module_id', '=', $id],
+                ['language_id', '=', $languageId],
+                ['controller', '=', 'App\Http\Controllers\Frontend\PostCatalogueController'],
+            ];
+            $this->routerRepository->deleteByWhere($findRouter);
+
             //Sau khi xóa xong thì nó tiếp tục kiểm tra xem thử là còn cái post_id đó trong post_catalogue_language không
             $condition=[
                 ['post_catalogue_id', '=', $id]
             ];
             $flag = $this->postCatalogueLanguageRepository->findByCondition($condition);
 
-            //Nếu không tìm thấy nữa thì ta mới tiến hành xóa đi post và router
+            //Nếu không tìm thấy nữa thì ta mới tiến hành xóa đi PostCatalogue
             if(!$flag){
                 $post=$this->postCatalogueRepository->forceDelete($id);
-
-                $conditionByRouter=[
-                    ['module_id', '=', $id]
-                ];
-                $router=$this->routerRepository->findByCondition($conditionByRouter);
-                //dd($router->id);
-                $this->routerRepository->forceDelete($router->id);//router chỉ hiện những cái canonical đang tồn tại sẽ không có xóa mềm
             }
             DB::commit();
             return true;
