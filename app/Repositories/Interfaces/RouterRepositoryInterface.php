@@ -13,4 +13,5 @@ interface RouterRepositoryInterface
     public function update(int $id=0, array $payload=[]);
     public function delete(int $id=0);
     public function forceDelete(int $id=0);
+    public function deleteByWhere(array $condition=[]);
 }

@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Hash;
 //gọi thư viện userRepository để cập nhật trạng thái khi đã chọn thay đổi trạng thái của userCatalogue
 //use App\Repositories\Interfaces\UserRepositoryInterface as UserRepository;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+use App\Repositories\Interfaces\RouterRepositoryInterface as RouterRepository;
 
 /**
  * Class UserService
@@ -22,11 +24,11 @@ use Illuminate\Support\Facades\Auth;
 class LanguageService implements LanguageServiceInterface
 {
     protected $languageRepository;
-    //protected $userRepository;
+    protected $routerRepository;
 
-    public function __construct(LanguageRepository $languageRepository){
+    public function __construct(LanguageRepository $languageRepository, RouterRepository $routerRepository){
         $this->languageRepository=$languageRepository;
-        //$this->userRepository=$userRepository;
+        $this->routerRepository=$routerRepository;
     }
 
     public function paginate($request){//$request để tiến hành chức năng tìm kiếm
@@ -204,10 +206,30 @@ class LanguageService implements LanguageServiceInterface
                 $repositoryInstance=app($repositoryInterfaceNamespace);
             }
 
+            // Lưu mới, cập nhật lại nội dung dịch vào bảng module_language || module_catalogue_language tương ứng
             $model = $repositoryInstance->findById($option['id']);
             // dd($model);
             $model->languages()->detach($option['languageId'], $model->id);
             $repositoryInstance->createPivot($model, $payload, 'languages');
+
+            // Lưu mới, cập nhật lại canonical vừa dịch của module || module_catalogue tương ứng vào bảng routers
+            $controllerName = $option['model'].'Controller';
+
+            $condition=[
+                ['module_id', '=', $model->id],
+                ['language_id', '=', $option['languageId']],
+                ['controller', '=', 'App\Http\Controllers\Frontend\\'.$controllerName.'']
+            ];
+            $this->routerRepository->deleteByWhere($condition);
+
+            $payloadRouter=[
+                'canonical' => Str::slug($request->input('translate_canonical')),
+                'module_id' => $model->id,
+                'language_id' => $option['languageId'],
+                'controller' => 'App\Http\Controllers\Frontend\\'.$controllerName.'',
+            ];
+            // dd($payloadRouter);
+            $this->routerRepository->create($payloadRouter);
 
             DB::commit();
             return true;

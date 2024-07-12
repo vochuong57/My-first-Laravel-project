@@ -48,22 +48,24 @@ class BaseService implements BaseServiceInterface
         $this->nestedset->Action();//gọi đến Action để cập nhật lại các giá trị lft rgt
     }
     
-    public function formatRouterPayload($request, $model, $controllerName){
+    public function formatRouterPayload($request, $model, $controllerName, $languageId){
         $payloadRouter=[
             'canonical' => Str::slug($request->input('canonical')),
             'module_id' => $model->id,
+            'language_id' => $languageId,
             'controller' => 'App\Http\Controllers\Frontend\\'.$controllerName.''
         ];
         return $payloadRouter;
     }
-    public function createRouter($request, $model, $controllerName){
-        $payloadRouter = $this->formatRouterPayload($request, $model, $controllerName);
+    public function createRouter($request, $model, $controllerName, $languageId){
+        $payloadRouter = $this->formatRouterPayload($request, $model, $controllerName, $languageId);
         $this->routerRepository->create($payloadRouter);
     }
-    public function updateRouter($request, $model, $controllerName){
-        $payloadRouter = $this->formatRouterPayload($request, $model, $controllerName);
+    public function updateRouter($request, $model, $controllerName, $languageId){
+        $payloadRouter = $this->formatRouterPayload($request, $model, $controllerName, $languageId);
         $condition=[
             ['module_id', '=', $model->id],
+            ['language_id', '=', $languageId],
             ['controller', '=', 'App\Http\Controllers\Frontend\\'.$controllerName.'']
         ];
         $router = $this->routerRepository->findByCondition($condition);

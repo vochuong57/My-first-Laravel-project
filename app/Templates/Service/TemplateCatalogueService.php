@@ -83,7 +83,7 @@ class {ModuleTemplate}Service extends BaseService implements {ModuleTemplate}Ser
             ${moduleTemplate} = $this->createCatalogue($request);
             if(${moduleTemplate}->id>0){
                 $this->updateLanguageForCatalogue($request, ${moduleTemplate}, $languageId);
-                $this->createRouter($request, ${moduleTemplate}, $this->controllerName);
+                $this->createRouter($request, ${moduleTemplate}, $this->controllerName, $languageId);
                 $this->nestedset();
             }
             DB::commit();
@@ -102,7 +102,7 @@ class {ModuleTemplate}Service extends BaseService implements {ModuleTemplate}Ser
             $flag = $this->updateCatalogue($request, $id);
             if($flag==TRUE){
                 $this->updateLanguageForCatalogue($request, ${moduleTemplate}, $languageId);
-                $this->updateRouter($request, ${moduleTemplate}, $this->controllerName);
+                $this->updateRouter($request, ${moduleTemplate}, $this->controllerName, $languageId);
                 $this->nestedset();
             }
             DB::commit();
@@ -125,22 +125,23 @@ class {ModuleTemplate}Service extends BaseService implements {ModuleTemplate}Ser
             ];
             $this->{moduleTemplate}LanguageRepository->deleteByWhere($where);
 
+            //Tiếp theo xóa đi canonical của bản dịch đó khỏi routers
+            $findRouter=[
+                ['module_id', '=', $id],
+                ['language_id', '=', $languageId],
+                ['controller', '=', 'App\Http\Controllers\Frontend\{ModuleTemplate}Controller'],
+            ];
+            $this->routerRepository->deleteByWhere($findRouter);
+
             //Sau khi xóa xong thì nó tiếp tục kiểm tra xem thử là còn cái {relation}_id đó trong {pivotTable} không
             $condition=[
                 ['{moduleKey}', '=', $id]
             ];
             $flag = $this->{moduleTemplate}LanguageRepository->findByCondition($condition);
 
-            //Nếu không tìm thấy nữa thì ta mới tiến hành xóa đi {relation} và router
+            //Nếu không tìm thấy nữa thì ta mới tiến hành xóa đi {ModuleTemplate}
             if(!$flag){
-                ${relation}=$this->{moduleTemplate}Repository->forceDelete($id);
-
-                $conditionByRouter=[
-                    ['module_id', '=', $id]
-                ];
-                $router=$this->routerRepository->findByCondition($conditionByRouter);
-                //dd($router->id);
-                $this->routerRepository->forceDelete($router->id);//router chỉ hiện những cái canonical đang tồn tại sẽ không có xóa mềm
+                ${moduleTemplate}=$this->{moduleTemplate}Repository->forceDelete($id);
             }
             DB::commit();
             return true;

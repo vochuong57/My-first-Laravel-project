@@ -76,7 +76,7 @@ class PostService extends BaseService implements PostServiceInterface
             
             if($post->id>0){
                 $this->updateLanguageForPost($request, $post, $languageId);
-                $this->createRouter($request, $post, $this->controllerName);
+                $this->createRouter($request, $post, $this->controllerName, $languageId);
                 
                 //xử lí add dữ liệu vào post_catalogue_post
                 $catalogue=$this->mergeCatalogue($request);
@@ -100,7 +100,7 @@ class PostService extends BaseService implements PostServiceInterface
             //dd($flag);
             if($flag==TRUE){
                 $this->updateLanguageForPost($request, $post, $languageId);
-                $this->updateRouter($request, $post, $this->controllerName);
+                $this->updateRouter($request, $post, $this->controllerName, $languageId);
 
                 $catalogue=$this->mergeCatalogue($request);
                 //dd($catalogue);
@@ -126,22 +126,23 @@ class PostService extends BaseService implements PostServiceInterface
             ];
             $this->postLanguageRepository->deleteByWhere($where);
 
+            //Tiếp theo xóa đi canonical của bản dịch đó khỏi routers
+            $findRouter=[
+                ['module_id', '=', $id],
+                ['language_id', '=', $languageId],
+                ['controller', '=', 'App\Http\Controllers\Frontend\PostController'],
+            ];
+            $this->routerRepository->deleteByWhere($findRouter);
+
             //Sau khi xóa xong thì nó tiếp tục kiểm tra xem thử là còn cái post_id đó trong post_language không
             $condition=[
                 ['post_id', '=', $id]
             ];
             $flag = $this->postLanguageRepository->findByCondition($condition);
 
-            //Nếu không tìm thấy nữa thì ta mới tiến hành xóa đi post và router
+            //Nếu không tìm thấy nữa thì ta mới tiến hành xóa đi Post
             if(!$flag){
                 $post=$this->postRepository->forceDelete($id);
-
-                $conditionByRouter=[
-                    ['module_id', '=', $id]
-                ];
-                $router=$this->routerRepository->findByCondition($conditionByRouter);
-                //dd($router->id);
-                $this->routerRepository->forceDelete($router->id);//router chỉ hiện những cái canonical đang tồn tại sẽ không có xóa mềm
             }
             DB::commit();
             return true;
@@ -195,12 +196,24 @@ class PostService extends BaseService implements PostServiceInterface
             $postLanguage=$this->postLanguageRepository->deleteByWhereIn('post_id',$post['id'],$post['languageId']);
             //echo 1; die();
 
-            // Sau khi xóa xong thì nó tiếp tục kiểm tra xem thử là còn cái post_id đó trong post_language không
+            $languageId = $post['languageId'];
+
             foreach($post['id'] as $id){
+
+                // Tiếp tục xóa tiếp canonical ở bảng routers của từng id được chọn 
+                $findRouter=[
+                    ['module_id', '=', $id],
+                    ['language_id', '=', $languageId],
+                    ['controller', '=', 'App\Http\Controllers\Frontend\PostController'],
+                ];
+                $this->routerRepository->deleteByWhere($findRouter);
+
+                // Sau khi xóa xong thì nó tiếp tục kiểm tra xem thử là còn cái post_id đó trong post_language không
                 $condition=[
                     ['post_id', '=', $id]
                 ];
                 $flag = $this->postLanguageRepository->findByCondition($condition);
+
                 // Nếu không tìm thấy nữa thì ta mới tiến hành xóa đi post
                 if(!$flag){
                     $post=$this->postRepository->forceDelete($id);

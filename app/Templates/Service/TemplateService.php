@@ -76,7 +76,7 @@ class {ModuleTemplate}Service extends BaseService implements {ModuleTemplate}Ser
             
             if(${moduleTemplate}->id>0){
                 $this->updateLanguageFor{ModuleTemplate}($request, ${moduleTemplate}, $languageId);
-                $this->createRouter($request, ${moduleTemplate}, $this->controllerName);
+                $this->createRouter($request, ${moduleTemplate}, $this->controllerName, $languageId);
                 
                 //xử lí add dữ liệu vào {relationTable2}
                 $catalogue=$this->mergeCatalogue($request);
@@ -100,7 +100,7 @@ class {ModuleTemplate}Service extends BaseService implements {ModuleTemplate}Ser
             //dd($flag);
             if($flag==TRUE){
                 $this->updateLanguageFor{ModuleTemplate}($request, ${moduleTemplate}, $languageId);
-                $this->updateRouter($request, ${moduleTemplate}, $this->controllerName);
+                $this->updateRouter($request, ${moduleTemplate}, $this->controllerName, $languageId);
 
                 $catalogue=$this->mergeCatalogue($request);
                 //dd($catalogue);
@@ -126,22 +126,23 @@ class {ModuleTemplate}Service extends BaseService implements {ModuleTemplate}Ser
             ];
             $this->{moduleTemplate}LanguageRepository->deleteByWhere($where);
 
+            //Tiếp theo xóa đi canonical của bản dịch đó khỏi routers
+            $findRouter=[
+                ['module_id', '=', $id],
+                ['language_id', '=', $languageId],
+                ['controller', '=', 'App\Http\Controllers\Frontend\{ModuleTemplate}Controller'],
+            ];
+            $this->routerRepository->deleteByWhere($findRouter);
+
             //Sau khi xóa xong thì nó tiếp tục kiểm tra xem thử là còn cái {moduleTemplate}_id đó trong {moduleTemplate}_language không
             $condition=[
                 ['{moduleKey}', '=', $id]
             ];
             $flag = $this->{moduleTemplate}LanguageRepository->findByCondition($condition);
 
-            //Nếu không tìm thấy nữa thì ta mới tiến hành xóa đi {moduleTemplate} và router
+            //Nếu không tìm thấy nữa thì ta mới tiến hành xóa đi {ModuleTemplate}
             if(!$flag){
                 ${moduleTemplate}=$this->{moduleTemplate}Repository->forceDelete($id);
-
-                $conditionByRouter=[
-                    ['module_id', '=', $id]
-                ];
-                $router=$this->routerRepository->findByCondition($conditionByRouter);
-                //dd($router->id);
-                $this->routerRepository->forceDelete($router->id);//router chỉ hiện những cái canonical đang tồn tại sẽ không có xóa mềm
             }
             DB::commit();
             return true;
@@ -195,12 +196,24 @@ class {ModuleTemplate}Service extends BaseService implements {ModuleTemplate}Ser
             ${moduleTemplate}Language=$this->{moduleTemplate}LanguageRepository->deleteByWhereIn('{moduleTemplate}_id',$post['id'],$post['languageId']);
             //echo 1; die();
 
-            // Sau khi xóa xong thì nó tiếp tục kiểm tra xem thử là còn cái {moduleTemplate}_id đó trong {moduleTemplate}_language không
+            $languageId = $post['languageId'];
+            
             foreach($post['id'] as $id){
+
+                // Tiếp tục xóa tiếp canonical ở bảng routers của từng id được chọn 
+                $findRouter=[
+                    ['module_id', '=', $id],
+                    ['language_id', '=', $languageId],
+                    ['controller', '=', 'App\Http\Controllers\Frontend\{ModuleTemplate}Controller'],
+                ];
+                $this->routerRepository->deleteByWhere($findRouter);
+
+                // Sau khi xóa xong thì nó tiếp tục kiểm tra xem thử là còn cái {moduleTemplate}_id đó trong {moduleTemplate}_language không
                 $condition=[
                     ['{moduleTemplate}_id', '=', $id]
                 ];
                 $flag = $this->{moduleTemplate}LanguageRepository->findByCondition($condition);
+                
                 // Nếu không tìm thấy nữa thì ta mới tiến hành xóa đi {moduleTemplate}s
                 if(!$flag){
                     ${moduleTemplate}=$this->{moduleTemplate}Repository->forceDelete($id);
