@@ -36,6 +36,21 @@
                 ]
             ],
             [
+                'title'=>'Quản lý sản phẩm',
+                'icon'=>'fa fa-cube',
+                'name'=>['attribute'],
+                'subModule'=>[
+                    [
+                        'title'=>'QL Nhóm Thuộc Tính',
+                        'route'=>'attribute/catalogue/index'
+                    ],
+                    [
+                        'title'=>'QL Thuộc Tính',
+                        'route'=>'attribute/index'
+                    ],
+                ]
+            ],
+            [
                 'title'=>'Cấu hình chung',
                 'icon'=>'fa fa-file',
                 'name'=>['language', 'generate'],

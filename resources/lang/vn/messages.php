@@ -250,4 +250,56 @@ return[
     'generate_note_schema' => 'Nhập thông tin Schema',
     'generate_sidebar_module' => 'Tên chức năng:',
     'generate_path' => 'Đường dẫn:',
+
+    //ATTRIBUTE CATALOGUE
+    'attributeCatalogue' => [
+        'index'=>[
+            'title'=> 'Quản lý nhóm thuộc tính',
+        ],
+        'create'=>[
+            'title'=>'Thêm mới nhóm thuộc tính',
+            'btnTitle'=>'Thêm mới'
+        ],
+        'edit'=>[
+            'title'=>'Cập nhật nhóm thuộc tính',
+            'btnTitle'=>'Cập nhật'
+        ],
+        'delete'=>[
+            'title'=>'Xóa nhóm thuộc tính',
+            'btnDelete'=>'Xóa dữ liệu'
+        ],
+    ],
+
+    //table
+    'tableAttributeCatalogue_brand'=>'Danh sách nhóm thuộc tính',
+    'tableAttributeCatalogue_name'=>'Tiêu đề',
+    'tableAttributeCatalogue_status'=>'Tình trạng',
+    'tableAttributeCatalogue_action'=>'Thao tác',
+
+    //ATTRIBUTE
+    'attribute' => [
+        'index'=>[
+            'title'=> 'Quản lý thuộc tính',
+        ],
+        'create'=>[
+            'title'=>'Thêm mới thuộc tính',
+            'btnTitle'=>'Thêm mới'
+        ],
+        'edit'=>[
+            'title'=>'Cập nhật thuộc tính',
+            'btnTitle'=>'Cập nhật'
+        ],
+        'delete'=>[
+            'title'=>'Xóa thuộc tính',
+            'btnDelete'=>'Xóa dữ liệu'
+        ],
+    ],
+
+    //table
+    'tableAttribute_brand'=>'Danh sách thuộc tính',
+    'tableAttribute_name'=>'Tiêu đề',
+    'tableAttribute_pos'=>'Vị trí',
+    'tableAttribute_status'=>'Tình trạng',
+    'tableAttribute_action'=>'Thao tác',
+    'tableAttribute_displayCatalogue'=>'Nhóm thuộc tính'
 ];
