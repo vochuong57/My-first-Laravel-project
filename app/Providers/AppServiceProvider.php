@@ -23,6 +23,10 @@ class AppServiceProvider extends ServiceProvider
 
         //quản lý Module
         'App\Services\Interfaces\GenerateServiceInterface' => 'App\Services\GenerateService',
+    
+        'App\Services\Interfaces\AttributeCatalogueServiceInterface' => 'App\Services\AttributeCatalogueService',
+    
+        'App\Services\Interfaces\AttributeServiceInterface' => 'App\Services\AttributeService',
     ];
     /**
      * Register any application services.

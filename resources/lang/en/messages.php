@@ -241,4 +241,57 @@ return[
     'generate_note_schema' => 'Enter Schema Information',
     'generate_sidebar_module' => 'Function Name:',
     'generate_path' => 'Path:',
+
+    // ATTRIBUTE CATALOGUE
+    'attributeCatalogue' => [
+        'index'=>[
+            'title'=> 'Attribute Group Management',
+        ],
+        'create'=>[
+            'title'=>'Add New Attribute Group',
+            'btnTitle'=>'Add New'
+        ],
+        'edit'=>[
+            'title'=>'Update Attribute Group',
+            'btnTitle'=>'Update'
+        ],
+        'delete'=>[
+            'title'=>'Delete Attribute Group',
+            'btnDelete'=>'Delete Data'
+        ],
+    ],
+
+    // table
+    'tableAttributeCatalogue_brand'=>'Attribute Group List',
+    'tableAttributeCatalogue_name'=>'Title',
+    'tableAttributeCatalogue_status'=>'Status',
+    'tableAttributeCatalogue_action'=>'Action',
+
+    // ATTRIBUTE
+    'attribute' => [
+        'index'=>[
+            'title'=> 'Attribute Management',
+        ],
+        'create'=>[
+            'title'=>'Add New Attribute',
+            'btnTitle'=>'Add New'
+        ],
+        'edit'=>[
+            'title'=>'Update Attribute',
+            'btnTitle'=>'Update'
+        ],
+        'delete'=>[
+            'title'=>'Delete Attribute',
+            'btnDelete'=>'Delete Data'
+        ],
+    ],
+
+    // table
+    'tableAttribute_brand'=>'Attribute List',
+    'tableAttribute_name'=>'Title',
+    'tableAttribute_pos'=>'Position',
+    'tableAttribute_status'=>'Status',
+    'tableAttribute_action'=>'Action',
+    'tableAttribute_displayCatalogue' => 'Attribute Group',
+
 ];

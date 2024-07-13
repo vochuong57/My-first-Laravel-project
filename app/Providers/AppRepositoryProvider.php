@@ -36,6 +36,14 @@ class AppRepositoryProvider extends ServiceProvider
 
         //quản lý Module
         'App\Repositories\Interfaces\GenerateRepositoryInterface' => 'App\Repositories\GenerateRepository',
+    
+        'App\Repositories\Interfaces\AttributeCatalogueRepositoryInterface' => 'App\Repositories\AttributeCatalogueRepository',
+
+        'App\Repositories\Interfaces\AttributeCatalogueLanguageRepositoryInterface' => 'App\Repositories\AttributeCatalogueLanguageRepository',
+    
+        'App\Repositories\Interfaces\AttributeRepositoryInterface' => 'App\Repositories\AttributeRepository',
+
+        'App\Repositories\Interfaces\AttributeLanguageRepositoryInterface' => 'App\Repositories\AttributeLanguageRepository',
     ];
     public function register(): void
     {

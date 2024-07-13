@@ -36,6 +36,21 @@
                 ]
             ],
             [
+                'title' => 'Product Management',
+                'icon' => 'fa fa-cube',
+                'name' => ['attribute'],
+                'subModule' => [
+                    [
+                        'title' => 'Attribute Group Management',
+                        'route' => 'attribute/catalogue/index'
+                    ],
+                    [
+                        'title' => 'Attribute Management',
+                        'route' => 'attribute/index'
+                    ],
+                ]
+            ],
+            [
                 'title'=>'通用配置',
                 'icon'=>'fa fa-file',
                 'name'=>['language'],

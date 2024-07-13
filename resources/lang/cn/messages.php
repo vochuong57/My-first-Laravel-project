@@ -242,4 +242,57 @@ return [
     'generate_note_schema' => '输入架构信息',
     'generate_sidebar_module' => '功能名称:',
     'generate_path' => '路径:',
+
+    // ATTRIBUTE CATALOGUE
+    'attributeCatalogue' => [
+        'index'=>[
+            'title'=> '属性组管理',
+        ],
+        'create'=>[
+            'title'=>'新增属性组',
+            'btnTitle'=>'新增'
+        ],
+        'edit'=>[
+            'title'=>'更新属性组',
+            'btnTitle'=>'更新'
+        ],
+        'delete'=>[
+            'title'=>'删除属性组',
+            'btnDelete'=>'删除数据'
+        ],
+    ],
+
+    // table
+    'tableAttributeCatalogue_brand'=>'属性组列表',
+    'tableAttributeCatalogue_name'=>'标题',
+    'tableAttributeCatalogue_status'=>'状态',
+    'tableAttributeCatalogue_action'=>'操作',
+
+    // ATTRIBUTE
+    'attribute' => [
+        'index'=>[
+            'title'=> '属性管理',
+        ],
+        'create'=>[
+            'title'=>'新增属性',
+            'btnTitle'=>'新增'
+        ],
+        'edit'=>[
+            'title'=>'更新属性',
+            'btnTitle'=>'更新'
+        ],
+        'delete'=>[
+            'title'=>'删除属性',
+            'btnDelete'=>'删除数据'
+        ],
+    ],
+
+    // table
+    'tableAttribute_brand'=>'属性列表',
+    'tableAttribute_name'=>'标题',
+    'tableAttribute_pos'=>'位置',
+    'tableAttribute_status'=>'状态',
+    'tableAttribute_action'=>'操作',
+    'tableAttribute_displayCatalogue' => '属性组',
+
 ];
