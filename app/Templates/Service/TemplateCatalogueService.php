@@ -21,6 +21,8 @@ use Illuminate\Support\Str;
 
 use App\Repositories\Interfaces\RouterRepositoryInterface as RouterRepository;
 use App\Repositories\Interfaces\{ModuleTemplate}LanguageRepositoryInterface as {ModuleTemplate}LanguageRepository;
+use App\Repositories\Interfaces\{Relation}RepositoryInterface as {Relation}Repository;
+use App\Repositories\Interfaces\{Relation}LanguageRepositoryInterface as {Relation}LanguageRepository;
 
 
 /**
@@ -33,9 +35,11 @@ class {ModuleTemplate}Service extends BaseService implements {ModuleTemplate}Ser
     protected $language;    
     protected $routerRepository;
     protected ${moduleTemplate}LanguageRepository;
+    protected ${relation}Repository;
+    protected ${relation}LanguageRepository;
     protected $controllerName = '{ModuleTemplate}Controller';
 
-    public function __construct({ModuleTemplate}Repository ${moduleTemplate}Repository, RouterRepository $routerRepository, {ModuleTemplate}LanguageRepository ${moduleTemplate}LanguageRepository){
+    public function __construct({ModuleTemplate}Repository ${moduleTemplate}Repository, RouterRepository $routerRepository, {ModuleTemplate}LanguageRepository ${moduleTemplate}LanguageRepository, {Relation}Repository ${relation}Repository, {Relation}LanguageRepository ${relation}LanguageRepository){
         $this->{moduleTemplate}Repository=${moduleTemplate}Repository;
         $this->language=$this->currentLanguage();
         $this->nestedset=new Nestedsetbie([
@@ -45,6 +49,8 @@ class {ModuleTemplate}Service extends BaseService implements {ModuleTemplate}Ser
         ]);
         $this->routerRepository=$routerRepository;
         $this->{moduleTemplate}LanguageRepository=${moduleTemplate}LanguageRepository;
+        $this->{relation}Repository=${relation}Repository;
+        $this->{relation}LanguageRepository=${relation}LanguageRepository;
     }
 
     public function paginate($request, $languageId){//$request để tiến hành chức năng tìm kiếm
@@ -133,7 +139,7 @@ class {ModuleTemplate}Service extends BaseService implements {ModuleTemplate}Ser
             ];
             $this->routerRepository->deleteByWhere($findRouter);
 
-            //Sau khi xóa xong thì nó tiếp tục kiểm tra xem thử là còn cái {relation}_id đó trong {pivotTable} không
+            //Sau khi xóa xong thì nó tiếp tục kiểm tra xem thử là còn cái {relation}_catalogue_id đó trong {pivotTable} không
             $condition=[
                 ['{moduleKey}', '=', $id]
             ];
@@ -143,6 +149,41 @@ class {ModuleTemplate}Service extends BaseService implements {ModuleTemplate}Ser
             if(!$flag){
                 ${moduleTemplate}=$this->{moduleTemplate}Repository->forceDelete($id);
             }
+
+            //--------------------------Xóa cho module chi tiết--------------------------
+            ${relation}s = $this->{relation}Repository->findByConditions([
+                ['{relation}_catalogue_id', '=', $id],
+            ]);
+
+            // dd(${relation}s);
+            foreach (${relation}s as ${relation}) {
+                $whereDetail=[
+                    ['{relation}_id', '=', ${relation}->id],
+                    ['language_id', '=', $languageId]
+                ];
+                //Xóa đi dữ liệu tương ứng của bảng {relation}s, {relation}_language theo {relation}_id và language_id đang chọn
+                $this->{relation}LanguageRepository->deleteByWhere($whereDetail);
+
+                //Tiếp theo xóa đi canonical của bản dịch đó khỏi routers
+                $findRouterDetail=[
+                    ['module_id', '=', ${relation}->id],
+                    ['language_id', '=', $languageId],
+                    ['controller', '=', 'App\Http\Controllers\Frontend\{Relation}Controller'],
+                ];
+                $this->routerRepository->deleteByWhere($findRouterDetail);
+
+                //Sau khi xóa xong thì nó tiếp tục kiểm tra xem thử là còn cái {relation}_id đó trong {relation}_language không
+                $conditionDetail=[
+                    ['{relation}_id', '=', ${relation}->id]
+                ];
+                $flag = $this->{relation}LanguageRepository->findByCondition($conditionDetail);
+
+                //Nếu không tìm thấy nữa thì ta mới tiến hành xóa đi {relation}
+                if(!$flag){
+                    $this->{relation}Repository->forceDelete(${relation}->id);
+                }
+            }
+
             DB::commit();
             return true;
         }catch(\Exception $ex){

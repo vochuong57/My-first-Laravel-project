@@ -569,6 +569,7 @@ SCHEMA;
                 'pivotTable' => $this->coverModuleNameToTableName($name).'_language',
 
                 'relation' => explode('_', $this->coverModuleNameToTableName($name))[0],
+                'Relation' => ucfirst(explode('_', $this->coverModuleNameToTableName($name))[0]),
                 'relationCatalogue' => $this->coverModuleNameToTableName($name).'_catalogue',
 
                 'relationTable2' => $this->coverModuleNameToTableName($name).'_catalogue_'.explode('_', $this->coverModuleNameToTableName($name))[0],
