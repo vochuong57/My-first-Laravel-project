@@ -21,6 +21,8 @@ use Illuminate\Support\Str;
 
 use App\Repositories\Interfaces\RouterRepositoryInterface as RouterRepository;
 use App\Repositories\Interfaces\PostCatalogueLanguageRepositoryInterface as PostCatalogueLanguageRepository;
+use App\Repositories\Interfaces\PostRepositoryInterface as PostRepository;
+use App\Repositories\Interfaces\PostLanguageRepositoryInterface as PostLanguageRepository;
 
 
 /**
@@ -33,9 +35,11 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
     protected $language;    
     protected $routerRepository;
     protected $postCatalogueLanguageRepository;
+    protected $postRepository;
+    protected $postLanguageRepository;
     protected $controllerName = 'PostCatalogueController';
 
-    public function __construct(PostCatalogueRepository $postCatalogueRepository, RouterRepository $routerRepository, PostCatalogueLanguageRepository $postCatalogueLanguageRepository){
+    public function __construct(PostCatalogueRepository $postCatalogueRepository, RouterRepository $routerRepository, PostCatalogueLanguageRepository $postCatalogueLanguageRepository, PostRepository $postRepository, PostLanguageRepository $postLanguageRepository){
         $this->postCatalogueRepository=$postCatalogueRepository;
         $this->language=$this->currentLanguage();
         $this->nestedset=new Nestedsetbie([
@@ -45,6 +49,8 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
         ]);
         $this->routerRepository=$routerRepository;
         $this->postCatalogueLanguageRepository=$postCatalogueLanguageRepository;
+        $this->postRepository=$postRepository;
+        $this->postLanguageRepository=$postLanguageRepository;
     }
 
     public function paginate($request, $languageId){//$request để tiến hành chức năng tìm kiếm
@@ -133,7 +139,7 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
             ];
             $this->routerRepository->deleteByWhere($findRouter);
 
-            //Sau khi xóa xong thì nó tiếp tục kiểm tra xem thử là còn cái post_id đó trong post_catalogue_language không
+            //Sau khi xóa xong thì nó tiếp tục kiểm tra xem thử là còn cái post_catalogue_id đó trong post_catalogue_language không
             $condition=[
                 ['post_catalogue_id', '=', $id]
             ];
@@ -143,6 +149,41 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
             if(!$flag){
                 $post=$this->postCatalogueRepository->forceDelete($id);
             }
+
+            //--------------------------Xóa cho module chi tiết--------------------------
+            $posts = $this->postRepository->findByConditions([
+                ['post_catalogue_id', '=', $id],
+            ]);
+
+            // dd($posts);
+            foreach ($posts as $post) {
+                $whereDetail=[
+                    ['post_id', '=', $post->id],
+                    ['language_id', '=', $languageId]
+                ];
+                //Xóa đi dữ liệu tương ứng của bảng posts, post_language theo post_id và language_id đang chọn
+                $this->postLanguageRepository->deleteByWhere($whereDetail);
+
+                //Tiếp theo xóa đi canonical của bản dịch đó khỏi routers
+                $findRouterDetail=[
+                    ['module_id', '=', $post->id],
+                    ['language_id', '=', $languageId],
+                    ['controller', '=', 'App\Http\Controllers\Frontend\PostController'],
+                ];
+                $this->routerRepository->deleteByWhere($findRouterDetail);
+
+                //Sau khi xóa xong thì nó tiếp tục kiểm tra xem thử là còn cái post_id đó trong post_language không
+                $conditionDetail=[
+                    ['post_id', '=', $post->id]
+                ];
+                $flag = $this->postLanguageRepository->findByCondition($conditionDetail);
+
+                //Nếu không tìm thấy nữa thì ta mới tiến hành xóa đi post
+                if(!$flag){
+                    $this->postRepository->forceDelete($post->id);
+                }
+            }
+
             DB::commit();
             return true;
         }catch(\Exception $ex){

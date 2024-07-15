@@ -21,6 +21,8 @@ use Illuminate\Support\Str;
 
 use App\Repositories\Interfaces\RouterRepositoryInterface as RouterRepository;
 use App\Repositories\Interfaces\AttributeCatalogueLanguageRepositoryInterface as AttributeCatalogueLanguageRepository;
+use App\Repositories\Interfaces\AttributeRepositoryInterface as AttributeRepository;
+use App\Repositories\Interfaces\AttributeLanguageRepositoryInterface as AttributeLanguageRepository;
 
 
 /**
@@ -33,9 +35,11 @@ class AttributeCatalogueService extends BaseService implements AttributeCatalogu
     protected $language;    
     protected $routerRepository;
     protected $attributeCatalogueLanguageRepository;
+    protected $attributeRepository;
+    protected $attributeLanguageRepository;
     protected $controllerName = 'AttributeCatalogueController';
 
-    public function __construct(AttributeCatalogueRepository $attributeCatalogueRepository, RouterRepository $routerRepository, AttributeCatalogueLanguageRepository $attributeCatalogueLanguageRepository){
+    public function __construct(AttributeCatalogueRepository $attributeCatalogueRepository, RouterRepository $routerRepository, AttributeCatalogueLanguageRepository $attributeCatalogueLanguageRepository, AttributeRepository $attributeRepository, AttributeLanguageRepository $attributeLanguageRepository){
         $this->attributeCatalogueRepository=$attributeCatalogueRepository;
         $this->language=$this->currentLanguage();
         $this->nestedset=new Nestedsetbie([
@@ -45,6 +49,8 @@ class AttributeCatalogueService extends BaseService implements AttributeCatalogu
         ]);
         $this->routerRepository=$routerRepository;
         $this->attributeCatalogueLanguageRepository=$attributeCatalogueLanguageRepository;
+        $this->attributeRepository=$attributeRepository;
+        $this->attributeLanguageRepository=$attributeLanguageRepository;
     }
 
     public function paginate($request, $languageId){//$request để tiến hành chức năng tìm kiếm
@@ -133,7 +139,7 @@ class AttributeCatalogueService extends BaseService implements AttributeCatalogu
             ];
             $this->routerRepository->deleteByWhere($findRouter);
 
-            //Sau khi xóa xong thì nó tiếp tục kiểm tra xem thử là còn cái attribute_id đó trong attribute_catalogue_language không
+            //Sau khi xóa xong thì nó tiếp tục kiểm tra xem thử là còn cái attribute_catalogue_id đó trong attribute_catalogue_language không
             $condition=[
                 ['attribute_catalogue_id', '=', $id]
             ];
@@ -143,6 +149,41 @@ class AttributeCatalogueService extends BaseService implements AttributeCatalogu
             if(!$flag){
                 $attributeCatalogue=$this->attributeCatalogueRepository->forceDelete($id);
             }
+
+            //--------------------------Xóa cho module chi tiết--------------------------
+            $attributes = $this->attributeRepository->findByConditions([
+                ['attribute_catalogue_id', '=', $id],
+            ]);
+
+            // dd($attributes);
+            foreach ($attributes as $attribute) {
+                $whereDetail=[
+                    ['attribute_id', '=', $attribute->id],
+                    ['language_id', '=', $languageId]
+                ];
+                //Xóa đi dữ liệu tương ứng của bảng attributes, attribute_language theo attribute_id và language_id đang chọn
+                $this->attributeLanguageRepository->deleteByWhere($whereDetail);
+
+                //Tiếp theo xóa đi canonical của bản dịch đó khỏi routers
+                $findRouterDetail=[
+                    ['module_id', '=', $attribute->id],
+                    ['language_id', '=', $languageId],
+                    ['controller', '=', 'App\Http\Controllers\Frontend\AttributeController'],
+                ];
+                $this->routerRepository->deleteByWhere($findRouterDetail);
+
+                //Sau khi xóa xong thì nó tiếp tục kiểm tra xem thử là còn cái attribute_id đó trong attribute_language không
+                $conditionDetail=[
+                    ['attribute_id', '=', $attribute->id]
+                ];
+                $flag = $this->attributeLanguageRepository->findByCondition($conditionDetail);
+
+                //Nếu không tìm thấy nữa thì ta mới tiến hành xóa đi attribute
+                if(!$flag){
+                    $this->attributeRepository->forceDelete($attribute->id);
+                }
+            }
+
             DB::commit();
             return true;
         }catch(\Exception $ex){

@@ -72,6 +72,13 @@ class BaseRepository implements BaseRepositoryInterface
         }
         return $query->first();
     }
+    public function findByConditions(array $condition = []){
+        $query = $this->model->newQuery();
+        foreach($condition as $key => $val){
+            $query->where($val[0], $val[1], $val[2]);
+        }
+        return $query->get();
+    }
     //phương thức thêm (CREATE)
     public function create(array $payload =[]){
         $model= $this->model->create($payload);
