@@ -186,26 +186,42 @@ class LanguageController extends Controller
 
         //Kiểm tra khi người dùng chưa tạo bản dịch cho module danh mục mà đã muốn tạo bản dịch cho module chi tiết
         if(strpos($model, 'Catalogue') == false){
-            $catalogueLanguageRepositoryInterfaceNamespace='\App\Repositories\\'.ucfirst($model).'CatalogueLanguageRepository';
-            // dd($catalogueLanguageRepositoryInterfaceNamespace);
-            if(class_exists($catalogueLanguageRepositoryInterfaceNamespace)){
-                $catalogueLanguageRepositoryInstance=app($catalogueLanguageRepositoryInterfaceNamespace);
-                // dd($catalogueLanguageRepositoryInstance);
-            }
-            //Từ id module chi tiết tìm ra id module danh mục
-            $moduleDetail = $repositoryInstance->findById($id);
-            // dd($moduleDetail);
 
-            $moduleCatalogueId = lcfirst($model).'_catalogue_id';
-            $conditionFindModuleCatalogue=[
-                ['language_id', '=', $LanguageId],
-                [$moduleCatalogueId, '=', $moduleDetail->$moduleCatalogueId]
-            ];
-            $flag = $catalogueLanguageRepositoryInstance->findByCondition($conditionFindModuleCatalogue);
-            // dd($flag);
-            if(!$flag){
-                $routeName = lcfirst($model).'.index';
-                return redirect()->route($routeName)->with('error','Vui lòng tạo bản dịch cho '.$model.' Catalogue trước');
+            // Lấy ra bảng module_catalogue_module tương ứng để biết được có bao nhiêu module_catalogue_id thuộc module_id đó
+            $moduleCatalogueModuleInterfaceNamespace='\App\Models\\'.ucfirst($model).'Catalogue'.ucfirst($model);
+            // dd($moduleCatalogueModuleInterfaceNamespace);
+            if(class_exists($moduleCatalogueModuleInterfaceNamespace)){
+                $moduleCatalogueModuleInstance=app($moduleCatalogueModuleInterfaceNamespace);
+                // dd($moduleCatalogueModuleInstance);
+            }
+            
+            // Kiểm tra và lấy danh sách module_catalogue_id thuộc module_id
+            $module_id = lcfirst($model).'_id';
+            $module_catalogue_id = lcfirst($model).'_catalogue_id';
+            $moduleCatalogueIds = $moduleCatalogueModuleInstance->where($module_id, $id)->pluck($module_catalogue_id);
+            // dd($moduleCatalogueIds);
+
+
+            // Sau khi biết được những module_catalogue_id của module_id đang chọn thì tiến hành kiểm tra trong bảng module_catalogue_language xem thử
+            // với module_catalogue_id đó đã có bản dịch theo language_id đang chọn hay chưa
+            foreach($moduleCatalogueIds as $key => $val){
+                $catalogueLanguageRepositoryInterfaceNamespace='\App\Repositories\\'.ucfirst($model).'CatalogueLanguageRepository';
+                // dd($catalogueLanguageRepositoryInterfaceNamespace);
+                if(class_exists($catalogueLanguageRepositoryInterfaceNamespace)){
+                    $catalogueLanguageRepositoryInstance=app($catalogueLanguageRepositoryInterfaceNamespace);
+                    // dd($catalogueLanguageRepositoryInstance);
+                }
+                
+                $conditionFindModuleCatalogue=[
+                    ['language_id', '=', $LanguageId],
+                    [$module_catalogue_id, '=', $val]
+                ];
+                $flag = $catalogueLanguageRepositoryInstance->findByCondition($conditionFindModuleCatalogue);
+                // dd($flag);
+                if(!$flag){
+                    $routeName = lcfirst($model).'.index';
+                    return redirect()->route($routeName)->with('error','Vui lòng tạo bản dịch cho '.$model.' Catalogue trước');
+                }
             }
         }
 

@@ -354,6 +354,7 @@ SCHEMA;
                 $this->createTemplateModel($payload['name'], 'TemplateCatalogueModel');
             }else if($payload['module_type'] == 2){
                 $this->createTemplateModel($payload['name'], 'TemplateModel');
+                $this->createTemplateModelCatalogueModel($payload['name'], 'TemplateModelCatalogueModel');
             }else{
                 $this->createSingleModel();
             }
@@ -422,6 +423,50 @@ SCHEMA;
             }
             $modelPivotPath = base_path('app/Models/'.$modelPivotFileName);
             FILE::PUT($modelPivotPath, $modelPivotContent);
+
+            // die();
+            return true;
+        }catch(\Exception $ex){
+            echo $ex->getMessage();die();
+            return false;
+        }
+    }
+
+    private function createTemplateModelCatalogueModel($name, $modelFile){
+        try{
+            //Product
+
+            // Tạo TÊN FILE model từ tên module
+            $modelFileName = $name.'Catalogue'.$name.'.php';
+            // echo $modelFileName; die();
+
+            // Tạo ĐƯỜNG DẪN tới file TemplateModelCatalogueModel để lấy nội dung dựng
+            $templateModelPath = base_path('app/Templates/Model/'.$modelFile.'.php');
+            // echo $templateModelPath; die();
+
+            // Đọc NỘI DUNG từ đường dẫn TemplateModelCatalogueModel
+            $modelContent = file_get_contents($templateModelPath);
+            // dd($modelContent);
+
+            // Chuẩn bị các biến để đổ vào nội dung TemplateModelCatalogueModel
+            $replace=[
+                'ModuleTemplate' => $name,
+                'moduleTemplate' => lcfirst($name),
+            ];
+            // dd($replace['relationModel']); die();
+
+            // Tiến hành THAY THẾ các biến ban đầu của TemplateModelCatalogueModel thành các biến đã được chuẩn bị
+            foreach($replace as $key => $val){
+                $modelContent = str_replace('{'.$key.'}', $replace[$key], $modelContent);
+            }
+            // dd($modelContent);
+
+            // Tạo ĐƯỜNG DẪN tới folder Models
+            $modelPath = base_path('app/Models/'.$modelFileName);
+            // echo $modelPath; die();
+
+            // TIẾN HÀNH tạo file ModelCatalogueModel
+            FILE::put($modelPath, $modelContent);//kq: ModelCatalogueModel.php
 
             // die();
             return true;
