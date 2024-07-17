@@ -294,4 +294,57 @@ return[
     'tableAttribute_action'=>'Action',
     'tableAttribute_displayCatalogue' => 'Attribute Group',
 
+    // PRODUCT CATALOGUE
+    'productCatalogue' => [
+        'index'=>[
+            'title'=> 'Product Group Management',
+        ],
+        'create'=>[
+            'title'=>'Add New Product Group',
+            'btnTitle'=>'Add New'
+        ],
+        'edit'=>[
+            'title'=>'Update Product Group',
+            'btnTitle'=>'Update'
+        ],
+        'delete'=>[
+            'title'=>'Delete Product Group',
+            'btnDelete'=>'Delete Data'
+        ],
+    ],
+
+    // table
+    'tableProductCatalogue_brand'=>'Product Group List',
+    'tableProductCatalogue_name'=>'Title',
+    'tableProductCatalogue_status'=>'Status',
+    'tableProductCatalogue_action'=>'Action',
+
+    // PRODUCT
+    'product' => [
+        'index'=>[
+            'title'=> 'Product Management',
+        ],
+        'create'=>[
+            'title'=>'Add New Product',
+            'btnTitle'=>'Add New'
+        ],
+        'edit'=>[
+            'title'=>'Update Product',
+            'btnTitle'=>'Update'
+        ],
+        'delete'=>[
+            'title'=>'Delete Product',
+            'btnDelete'=>'Delete Data'
+        ],
+    ],
+
+    // table
+    'tableProduct_brand'=>'Product List',
+    'tableProduct_name'=>'Title',
+    'tableProduct_pos'=>'Position',
+    'tableProduct_status'=>'Status',
+    'tableProduct_action'=>'Action',
+    'tableProduct_displayCatalogue'=>'Product Group',
+
+
 ];

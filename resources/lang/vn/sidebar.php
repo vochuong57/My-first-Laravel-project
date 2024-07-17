@@ -38,7 +38,7 @@
             [
                 'title'=>'Quản lý sản phẩm',
                 'icon'=>'fa fa-cube',
-                'name'=>['attribute'],
+                'name'=>['attribute','product'],
                 'subModule'=>[
                     [
                         'title'=>'QL Nhóm Thuộc Tính',
@@ -47,6 +47,14 @@
                     [
                         'title'=>'QL Thuộc Tính',
                         'route'=>'attribute/index'
+                    ],
+                    [
+                        'title'=>'QL Nhóm Sản Phẩm',
+                        'route'=>'product/catalogue/index'
+                    ],
+                    [
+                        'title'=>'QL Sản Phẩm',
+                        'route'=>'product/index'
                     ],
                 ]
             ],

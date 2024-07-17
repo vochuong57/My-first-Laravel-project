@@ -38,7 +38,7 @@
             [
                 'title' => 'Product Management',
                 'icon' => 'fa fa-cube',
-                'name' => ['attribute'],
+                'name' => ['attribute', 'product'],
                 'subModule' => [
                     [
                         'title' => 'Attribute Group Management',
@@ -47,6 +47,14 @@
                     [
                         'title' => 'Attribute Management',
                         'route' => 'attribute/index'
+                    ],
+                    [
+                        'title' => 'Product Group Management',
+                        'route' => 'product/catalogue/index'
+                    ],
+                    [
+                        'title' => 'Product Management',
+                        'route' => 'product/index'
                     ],
                 ]
             ],
