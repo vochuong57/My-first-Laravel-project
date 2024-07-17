@@ -36,17 +36,25 @@
                 ]
             ],
             [
-                'title' => 'Product Management',
+                'title' => '产品管理',
                 'icon' => 'fa fa-cube',
-                'name' => ['attribute'],
+                'name' => ['attribute', 'product'],
                 'subModule' => [
                     [
-                        'title' => 'Attribute Group Management',
+                        'title' => '属性组管理',
                         'route' => 'attribute/catalogue/index'
                     ],
                     [
-                        'title' => 'Attribute Management',
+                        'title' => '属性管理',
                         'route' => 'attribute/index'
+                    ],
+                    [
+                        'title' => '产品组管理',
+                        'route' => 'product/catalogue/index'
+                    ],
+                    [
+                        'title' => '产品管理',
+                        'route' => 'product/index'
                     ],
                 ]
             ],

@@ -1,0 +1,29 @@
+
+@include('Backend.dashboard.component.breadcrumb',['title' =>$config['seo']['index']['title']])
+
+
+<div class="row mt20">
+
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>{{ __('messages.tableProduct_brand') }} </h5>
+                @include('Backend.dashboard.component.toolbox', ['content'=>(__('messages.toolboxDestroyProduct'))])
+            </div>
+            <div class="ibox-content">
+                <!-- tìm kiếm product -->
+                @include('Backend.product.product.component.filter')
+                <!-- bảng product -->
+                @include('Backend.product.product.component.table')
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Để chạy <input type="checkbox" class="js-switch" checked /> cần thêm vào file js và css riêng của nó cùng với đoạn mã script này -->
+
+<!-- <script>
+    $(document).ready(function () {
+        var elem = document.querySelector('.js-switch');
+        var switchery = new Switchery(elem, { color: '#1AB394' });
+    })
+</script> -->

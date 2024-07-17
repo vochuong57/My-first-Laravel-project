@@ -44,6 +44,14 @@ class AppRepositoryProvider extends ServiceProvider
         'App\Repositories\Interfaces\AttributeRepositoryInterface' => 'App\Repositories\AttributeRepository',
 
         'App\Repositories\Interfaces\AttributeLanguageRepositoryInterface' => 'App\Repositories\AttributeLanguageRepository',
+    
+        'App\Repositories\Interfaces\ProductCatalogueRepositoryInterface' => 'App\Repositories\ProductCatalogueRepository',
+
+        'App\Repositories\Interfaces\ProductCatalogueLanguageRepositoryInterface' => 'App\Repositories\ProductCatalogueLanguageRepository',
+    
+        'App\Repositories\Interfaces\ProductRepositoryInterface' => 'App\Repositories\ProductRepository',
+
+        'App\Repositories\Interfaces\ProductLanguageRepositoryInterface' => 'App\Repositories\ProductLanguageRepository',
     ];
     public function register(): void
     {

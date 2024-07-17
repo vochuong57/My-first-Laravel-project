@@ -301,5 +301,57 @@ return[
     'tableAttribute_pos'=>'Vị trí',
     'tableAttribute_status'=>'Tình trạng',
     'tableAttribute_action'=>'Thao tác',
-    'tableAttribute_displayCatalogue'=>'Nhóm thuộc tính'
+    'tableAttribute_displayCatalogue'=>'Nhóm thuộc tính',
+
+    //PRODUCT CATALOGUE
+    'productCatalogue' => [
+        'index'=>[
+            'title'=> 'Quản lý nhóm sản phẩm',
+        ],
+        'create'=>[
+            'title'=>'Thêm mới nhóm sản phẩm',
+            'btnTitle'=>'Thêm mới'
+        ],
+        'edit'=>[
+            'title'=>'Cập nhật nhóm sản phẩm',
+            'btnTitle'=>'Cập nhật'
+        ],
+        'delete'=>[
+            'title'=>'Xóa nhóm sản phẩm',
+            'btnDelete'=>'Xóa dữ liệu'
+        ],
+    ],
+
+    //table
+    'tableProductCatalogue_brand'=>'Danh sách nhóm sản phẩm',
+    'tableProductCatalogue_name'=>'Tiêu đề',
+    'tableProductCatalogue_status'=>'Tình trạng',
+    'tableProductCatalogue_action'=>'Thao tác',
+
+    //PRODUCT
+    'product' => [
+        'index'=>[
+            'title'=> 'Quản lý sản phẩm',
+        ],
+        'create'=>[
+            'title'=>'Thêm mới sản phẩm',
+            'btnTitle'=>'Thêm mới'
+        ],
+        'edit'=>[
+            'title'=>'Cập nhật sản phẩm',
+            'btnTitle'=>'Cập nhật'
+        ],
+        'delete'=>[
+            'title'=>'Xóa sản phẩm',
+            'btnDelete'=>'Xóa dữ liệu'
+        ],
+    ],
+
+    //table
+    'tableProduct_brand'=>'Danh sách sản phẩm',
+    'tableProduct_name'=>'Tiêu đề',
+    'tableProduct_pos'=>'Vị trí',
+    'tableProduct_status'=>'Tình trạng',
+    'tableProduct_action'=>'Thao tác',
+    'tableProduct_displayCatalogue'=>'Nhóm sản phẩm',
 ];

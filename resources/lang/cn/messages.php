@@ -295,4 +295,56 @@ return [
     'tableAttribute_action'=>'操作',
     'tableAttribute_displayCatalogue' => '属性组',
 
+    // PRODUCT CATALOGUE
+    'productCatalogue' => [
+        'index'=>[
+            'title'=> '产品组管理',
+        ],
+        'create'=>[
+            'title'=>'新增产品组',
+            'btnTitle'=>'新增'
+        ],
+        'edit'=>[
+            'title'=>'更新产品组',
+            'btnTitle'=>'更新'
+        ],
+        'delete'=>[
+            'title'=>'删除产品组',
+            'btnDelete'=>'删除数据'
+        ],
+    ],
+
+    // table
+    'tableProductCatalogue_brand'=>'产品组列表',
+    'tableProductCatalogue_name'=>'标题',
+    'tableProductCatalogue_status'=>'状态',
+    'tableProductCatalogue_action'=>'操作',
+
+    // PRODUCT
+    'product' => [
+        'index'=>[
+            'title'=> '产品管理',
+        ],
+        'create'=>[
+            'title'=>'新增产品',
+            'btnTitle'=>'新增'
+        ],
+        'edit'=>[
+            'title'=>'更新产品',
+            'btnTitle'=>'更新'
+        ],
+        'delete'=>[
+            'title'=>'删除产品',
+            'btnDelete'=>'删除数据'
+        ],
+    ],
+
+    // table
+    'tableProduct_brand'=>'产品列表',
+    'tableProduct_name'=>'标题',
+    'tableProduct_pos'=>'位置',
+    'tableProduct_status'=>'状态',
+    'tableProduct_action'=>'操作',
+    'tableProduct_displayCatalogue'=>'产品组',
+
 ];
