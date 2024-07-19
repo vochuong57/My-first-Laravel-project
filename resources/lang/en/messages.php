@@ -346,5 +346,25 @@ return[
     'tableProduct_action'=>'Action',
     'tableProduct_displayCatalogue'=>'Product Group',
 
+    // aside
+    'General_product_information' => 'General Information',
+    'Product_code' => 'Product Code',
+    'Product_made_in' => 'Made In',
+    'Product_price' => 'Product Price',
+
+    // store
+    'The_product_has_many_versions' => 'The product has many versions',
+    'tphmv_content1' => 'Allows you to sell different versions of the product, for example: pants, shirts have different',
+    'tphmv_content2' => 'colors',
+    'tphmv_content3' => 'and',
+    'tphmv_content4' => 'varieties.',
+    'tphmv_content5' => 'Each version will be a row in the version list below',
+
+    // variant
+    'Product_variantCheckbox' => 'This product has many variants. For example, different colors, sizes',
+    'Product_attribute-title-1' => 'Select Attribute',
+    'Product_attribute-title-2' => 'Select Attribute Value (enter 2 words to search)',
+    'Product_add-variant' => 'Add New Version',
+    'Product_select-attribute-group' => 'Select Attribute Group',
 
 ];

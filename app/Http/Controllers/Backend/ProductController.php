@@ -15,6 +15,7 @@ use App\Http\Requests\UpdateProductRequest;
 //use App\Models\User;
 use App\Classes\Nestedsetbie;
 use App\Models\Language;
+use App\Repositories\Interfaces\AttributeCatalogueRepositoryInterface as AttributeCatalogueRepository;
 
 class ProductController extends Controller
 {
@@ -22,11 +23,13 @@ class ProductController extends Controller
     protected $productRepository;
     protected $nestedset;
     protected $language;//được lấy từ extends Controller
+    protected $attributeCatalogueRepository;
 
-    public function __construct(ProductService $productService, ProductRepository $productRepository)
+    public function __construct(ProductService $productService, ProductRepository $productRepository, AttributeCatalogueRepository $attributeCatalogueRepository)
     {
         $this->productService = $productService; // định nghĩa $this->userService=$userCatalogueService để biến này nó có thể trỏ tới các phương tức của UserCatalogueService
         $this->productRepository = $productRepository;
+        $this->attributeCatalogueRepository = $attributeCatalogueRepository;
 
         $this->middleware(function($request, $next) {
             try {
@@ -104,9 +107,12 @@ class ProductController extends Controller
         $dropdown= $this->nestedset->Dropdown();
         //dd($dropdown);
 
+        $attributeCatalogues =  $this->attributeCatalogueRepository->getAll($this->language);//nằm ở phần relations khi dd
+        // dd($attributeCatalogues);
+
         $this->authorize('modules', 'product.store');//phân quyền
 
-        return view('Backend.dashboard.layout', compact('template','config','dropdown'));
+        return view('Backend.dashboard.layout', compact('template','config','dropdown','attributeCatalogues'));
     }
 
     //xử lý thêm user
@@ -204,9 +210,12 @@ class ProductController extends Controller
                 'Backend/libary/finder.js',
                 'Backend/plugins/ckeditor/ckeditor.js',
                 'Backend/libary/seo.js',
+                'Backend/plugins/nice-select/js/jquery.nice-select.min.js',
+                'Backend/libary/variant.js',
             ],
             'css'=>[
                 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css',
+                'Backend/plugins/nice-select/css/nice-select.css'
             ]
         ];
     }

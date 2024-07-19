@@ -28,4 +28,5 @@ interface AttributeCatalogueRepositoryInterface
     public function deleteByWhereIn(string $whereInField = '', array $whereIn = [], int $languageId = null);
     public function createPivot($model, array $payload=[], string $relation='');//xử lý logic thêm 2 bảng
     public function getAttributeCatalogueById(int $id=0, $language_id=0);//xử lý hiện thị dữ liệu từ 2 bảng
+    public function getAll(int $language_id=0);
 }

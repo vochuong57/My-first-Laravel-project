@@ -75,9 +75,9 @@
             <div class="col-lg-12">
                 <div class="form-row">
                    
-                    <div class="mb15">
+                <div class="mb15">
                         <select name="publish" class="form-control setupSelect2" id="">
-                            @foreach(config('apps.general.publish') as $key => $val)
+                            @foreach(__('messages.publish') as $key => $val)
                                 <option 
                                     {{ $key == old('publish', (isset(${moduleTemplate}->publish)) ? ${moduleTemplate}->publish : '') ? 'selected' : '' }} 
                                     value="{{ $key }}"
@@ -91,7 +91,7 @@
                     
                     <div class="mb15">
                         <select name="follow" class="form-control setupSelect2" id="">
-                            @foreach(config('apps.general.follow') as $key => $val)
+                            @foreach(__('messages.follow') as $key => $val)
                             <option 
                                 {{ $key == old('follow', (isset(${moduleTemplate}->follow)) ? ${moduleTemplate}->follow : '') ? 'selected' : '' }} 
                                 value="{{ $key }}"

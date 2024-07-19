@@ -17,6 +17,53 @@
         }
     }
 
+    //Dùng trong form product/variant
+    HT.niceSelect = () =>{
+        $('.setupNiceSelect').niceSelect();
+    }
+
+    // Dùng trong form product/aside để chuyển chuỗi string về dạng thành tiền 1.234.567
+    HT.int = () => {
+        $(document).on('change keyup blur', '.int', function() {
+            let _this = $(this);
+            let value = _this.val();
+            if (value === '') {
+                _this.val('0');
+            } else {
+                value = value.replace(/\./g, '');
+                if (isNaN(value)) {
+                    _this.val('0');
+                } else {
+                    _this.val(HT.addCommas(value));
+                }
+            }
+        });
+
+        $(document).on('keydown', '.int', function(e) {
+            let _this = $(this);
+            let data = _this.val();
+            if (data == '0') {
+                let unicode = e.keyCode || e.which;
+                // Check for numbers on both the main keyboard and the numpad
+                if (unicode != 190 && ((unicode >= 48 && unicode <= 57) || (unicode >= 96 && unicode <= 105))) {
+                    _this.val('');
+                }
+            }
+        });
+    };
+
+    HT.addCommas = (nStr) => {
+        nStr = String(nStr);
+        nStr = nStr.replace(/\./g, '');
+        let str = '';
+        for (let i = nStr.length; i > 0; i -= 3) {
+            let a = (i - 3) < 0 ? 0 : (i - 3);
+            str = nStr.slice(a, i) + '.' + str;
+        }
+        str = str.slice(0, str.length - 1);
+        return str;
+    };
+
     // V6 thay đổi trạng thái publish user
     HT.changeStatus = () => {
         if ($('.status').length) {
@@ -207,6 +254,12 @@
 
         //gọi phương thức tạo select2 (giao diện)
         HT.select2();
+
+        //gọi phương thức tạo niceSelect (giao diện)
+        HT.niceSelect();
+
+        //gọi chức năng ép chuỗi về giạng số thành tiền 
+        HT.int();
 
         //gọi thay đổi trạng thái (cột trạng thái) user cập nhật lại giá trị vào lưu vào DB
         HT.changeStatus();
