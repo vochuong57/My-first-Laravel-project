@@ -354,4 +354,25 @@ return[
     'tableProduct_status'=>'Tình trạng',
     'tableProduct_action'=>'Thao tác',
     'tableProduct_displayCatalogue'=>'Nhóm sản phẩm',
+
+    //aside
+    'General_product_information'=>'Thông tin chung',
+    'Product_code'=>'Mã sản phẩm',
+    'Product_made_in'=>'Xuất xứ',
+    'Product_price'=>'Giá bán sản phẩm',
+
+    //store
+    'The_product_has_many_versions'=>'Sản phẩm có nhiều phiên bản',
+    'tphmv_content1'=>'Cho phép bạn bán các phiên bản khác nhau của sản phẩm, ví dụ: quần, áo thì có các',
+    'tphmv_content2'=>'màu sắc',
+    'tphmv_content3'=>'và',
+    'tphmv_content4'=>'khác nhau.',
+    'tphmv_content5'=>'Mỗi phiên bản sẽ là 1 dòng trong mục danh sách phiên bản phía dưới',
+
+    //variant
+    'Product_variantCheckbox'=>'Sản phẩm này có nhiều biến thể. Ví dụ như khác nhau về màu sắc, kích thước',
+    'Product_attribute-title-1'=>'Chọn thuộc tính',
+    'Product_attribute-title-2'=>'Chọn giá trị của thuộc tính (nhập 2 từ để tìm kiếm)',
+    'Product_add-variant'=>'Thêm phiên bản mới',
+    'Product_select-attribute-group'=>'Chọn nhóm thuộc tính'
 ];

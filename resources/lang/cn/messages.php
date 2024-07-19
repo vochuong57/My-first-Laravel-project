@@ -347,4 +347,25 @@ return [
     'tableProduct_action'=>'操作',
     'tableProduct_displayCatalogue'=>'产品组',
 
+    // aside
+    'General_product_information' => '常规信息',
+    'Product_code' => '产品代码',
+    'Product_made_in' => '产地',
+    'Product_price' => '产品售价',
+
+    // store
+    'The_product_has_many_versions' => '产品有多个版本',
+    'tphmv_content1' => '允许您销售不同版本的产品，例如：裤子、衬衫有不同的',
+    'tphmv_content2' => '颜色',
+    'tphmv_content3' => '和',
+    'tphmv_content4' => '不同。',
+    'tphmv_content5' => '每个版本将在下面的版本列表中作为一个项目',
+
+    // variant
+    'Product_variantCheckbox' => '此产品有多个变体。例如颜色、尺寸不同',
+    'Product_attribute-title-1' => '选择属性',
+    'Product_attribute-title-2' => '选择属性值（输入两个词以搜索）',
+    'Product_add-variant' => '添加新版本',
+    'Product_select-attribute-group' => '选择属性组',
+
 ];

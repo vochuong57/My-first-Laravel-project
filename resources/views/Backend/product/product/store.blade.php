@@ -17,7 +17,24 @@
                         @include('Backend.product.product.component.general')
                     </div>
                 </div>
+
                 @include('Backend.dashboard.component.album')
+
+                <div class="ibox variant-box">
+                    <div class="ibox-title">
+                        <div>
+                            <h5>{{ __('messages.The_product_has_many_versions') }}</h5>
+                        </div>
+                        <div class="description">{{ __('messages.tphmv_content1') }} <strong class="text-danger">{{ __('messages.tphmv_content2') }}</strong> 
+                            {{ __('messages.tphmv_content3') }} <strong class="text-danger">size</strong> {{ __('messages.tphmv_content4') }} 
+                            {{ __('messages.tphmv_content5') }}
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        @include('Backend.product.product.component.variant')
+                    </div>
+                </div>
+
                 <div class="ibox">
                     <div class="ibox-title">
                         <h5>{{ __('messages.seo') }}</h5>

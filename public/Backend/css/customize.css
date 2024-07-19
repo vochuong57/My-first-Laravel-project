@@ -18,6 +18,9 @@
 .mb25{
     margin-bottom: 25px;
 }
+.mb20{
+    margin-bottom: 20px;
+}
 h5{
     text-transform: uppercase;
     font-weight: normal;
@@ -298,4 +301,65 @@ table strong{
 /* CSS CHO SCHEMA GENERATE/STORE */
 .schema{
     height: 350px !important;
+}
+/* CSS CHO Product_price product/aside*/
+.int{
+    text-align: right;
+}
+/* CSS CHO Product_many versions product/store*/
+.ibox-title h5{
+    float: none;
+}
+.variant-box .description{
+    font-size: 10px;
+}
+/* CSS CHO Product_many versions product/variant */
+.variant-checkbox input{
+    margin-top: 0;
+    width: 16px;
+    height: 16px;
+}
+.variant-checkbox label{
+    margin-bottom: 0;
+    margin-left: 10px;
+    font-weight: normal;
+    cursor: pointer;
+}
+.variant-container{
+    margin-top: 30px;
+}
+.attribute-title{
+    font-size: 12px;
+    color: #1791f2;
+}
+.variant-body{
+    margin-top: 10px;
+}
+.fake-variant, .variant-body button{
+    height: 42px;
+    border-radius: 5px;
+}
+.remove-attribute{
+    font-size: 20px;
+}
+
+.setupNiceSelect, .list{
+    width: 100% !important;
+}
+.mt10{
+    margin-top: 10px;
+}
+
+.add-variant{
+    height: 42px;
+    color: #1791f2;
+    border: 1px dashed #1791f2;
+    background: #fafafa;
+    text-align: center;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    padding: 0 40px;
+}
+.add-variant:hover{
+    background: #efefef;
 }
