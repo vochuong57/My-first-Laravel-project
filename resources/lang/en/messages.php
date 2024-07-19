@@ -366,5 +366,6 @@ return[
     'Product_attribute-title-2' => 'Select Attribute Value (enter 2 words to search)',
     'Product_add-variant' => 'Add New Version',
     'Product_select-attribute-group' => 'Select Attribute Group',
+    'Product_placeholder-select2' => 'Enter at least 2 characters to search',
 
 ];

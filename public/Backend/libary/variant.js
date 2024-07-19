@@ -82,9 +82,19 @@
         // console.log(id)
     }
  
-    // Cập nhật lại option chưa được chọn
+    // Cập nhật lại option chưa được chọn (liên tục làm mới trạng thái các option)
     HT.chooseVariantGroup = () =>{
         $(document).on('change', '.choose-attribute', function(){
+            let _this = $(this)
+            let attributeCatalogueId = _this.val()
+            if(attributeCatalogueId != 0){
+                _this.parents('.col-lg-3').siblings('.col-lg-8').html(HT.select2Variant(attributeCatalogueId))
+                $('.selectVariant').each(function(key, index){
+                    HT.getSelect2($(this))
+                })
+            }else{
+                _this.parents('.col-lg-3').siblings('.col-lg-8').html('<input type="text" name="" class="fake-variant form-control" disabled>')
+            }
             HT.disabledAttributeCatalogueChoose()
         })
     }
@@ -95,7 +105,7 @@
         if(variantItem >= attributeCatalogues.length){
             $('.add-variant').remove()
         }else{
-            $('.variant-foot').html('<button type="button" class="add-variant">Thêm phiên bản mới</button>')
+            $('.variant-foot').html('<button type="button" class="add-variant">'+addVariant+'</button>')
         }
     }
 
@@ -105,6 +115,44 @@
             let _this = $(this)
             _this.parents('.variant-item').remove()
             HT.checkMaxAtrributeGroup(attributeCatalogues)
+        })
+    }
+
+    // Tạo ra form select2 thực hiện chọn multiple cho col-lg-8
+    HT.select2Variant = (attributeCatalogueId) => {
+        let html = '<select class="selectVariant form-control" name="attribute['+attributeCatalogueId+'][]" multiple data-catid="'+attributeCatalogueId+'"></select>'
+        return html
+    }
+
+    // Truyền và Nhận dữ liệu của Attributes
+    HT.getSelect2 = (object) => {
+        let option = {
+            'attributeCatalogueId': object.attr('data-catid')
+        }
+        $(object).select2({
+            minimumInputLength: 2,
+            placeholder: placeholderSelect2,
+            ajax: {
+                url: 'ajax/attribute/getAttribute',
+                type: 'GET',
+                dataType: 'json',
+                delay: 250,
+                data: function (params){
+                    return{
+                        search: params.term,
+                        option: option,
+                    }
+                },
+                processResults: function(data){
+                    console.log(data)
+                    return {
+                        results: $.map(data, function(obj, i){
+                            return obj
+                        })
+                    }
+                },
+                cache: true
+            }
         })
     }
 

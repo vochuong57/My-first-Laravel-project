@@ -374,5 +374,7 @@ return[
     'Product_attribute-title-1'=>'Chọn thuộc tính',
     'Product_attribute-title-2'=>'Chọn giá trị của thuộc tính (nhập 2 từ để tìm kiếm)',
     'Product_add-variant'=>'Thêm phiên bản mới',
-    'Product_select-attribute-group'=>'Chọn nhóm thuộc tính'
+    'Product_select-attribute-group'=>'Chọn nhóm thuộc tính',
+    'Product_placeholder-select2'=>'Nhập tối thiểu 2 ký tự để tìm kiếm',
+    
 ];

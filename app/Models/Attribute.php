@@ -47,4 +47,8 @@ class Attribute extends Model
         return $this->belongsToMany(AttributeCatalogue::class, 'attribute_catalogue_attribute', 'attribute_id', 'attribute_catalogue_id');//sau đó ở đây nó sẽ lấy được tên nhờ việc nó truy cập được vào trong các function AttributeCatalogue::class cụ thể ở đây là attribute_catalogue_language() nơi lưu tên attribute_catalogue
     }
 
+    public function attribute_language()
+    {
+        return $this->hasMany(AttributeLanguage::class, 'attribute_id');
+    }
 }

@@ -367,5 +367,6 @@ return [
     'Product_attribute-title-2' => '选择属性值（输入两个词以搜索）',
     'Product_add-variant' => '添加新版本',
     'Product_select-attribute-group' => '选择属性组',
+    'Product_placeholder-select2' => '输入至少2个字符以搜索',
 
 ];
