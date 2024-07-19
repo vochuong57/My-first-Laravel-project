@@ -27,6 +27,7 @@ use App\Http\Controllers\Backend\ProductController;
 //thư viện AJAX
 use App\Http\Controllers\Ajax\LocationController;
 use App\Http\Controllers\Ajax\DashboardController as AjaxDashboardController;
+use App\Http\Controllers\Ajax\AttributeController as AjaxAttributeController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -73,6 +74,7 @@ Route::group(['middleware' => ['admin','locale']], function (){
     Route::post('ajax/dashboard/changeStatus',[AjaxDashboardController::class, 'changeStatus'])->name('ajax.dashboard.changeStatus');//Trang thực thi chuyển đổi ... đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
     Route::post('ajax/dashboard/changeStatusAll',[AjaxDashboardController::class, 'changeStatusAll'])->name('ajax.dashboard.changeStatusAll');//Trang thực thi chuyển đổi ... đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
     Route::post('ajax/dashboard/deleteAll',[AjaxDashboardController::class, 'deleteAll'])->name('ajax.dashboard.deleteAll');//Trang thực thi chuyển đổi ... đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+    Route::get('ajax/attribute/getAttribute',[AjaxAttributeController::class, 'getAttribute'])->name('ajax.attribute.getAttribute');//Trang thực thi chuyển đổi ... đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
 
     //UserCatalogueController (Trang quản lí nhóm người dùng)
     Route::group(['prefix'=>'user/catalogue'], function(){

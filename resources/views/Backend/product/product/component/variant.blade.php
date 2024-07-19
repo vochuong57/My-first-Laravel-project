@@ -37,4 +37,6 @@
     })->values());
 
     let selectAttributeGroup = "{{ __('messages.Product_select-attribute-group') }}";
+    let addVariant = "{{ __('messages.Product_add-variant') }}";
+    let placeholderSelect2 = "{{ __('messages.Product_placeholder-select2') }}";
 </script>
