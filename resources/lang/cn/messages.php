@@ -369,4 +369,10 @@ return [
     'Product_select-attribute-group' => '选择属性组',
     'Product_placeholder-select2' => '输入至少2个字符以搜索',
 
+    // productVariant
+    'List_product_versions' => '版本列表',
+    'Product_image-product-variant' => '图片',
+    'Product_storage-product-variant' => '数量',
+    'Product_price-product-variant' => '价格',
+
 ];

@@ -363,3 +363,23 @@ table strong{
 .add-variant:hover{
     background: #efefef;
 }
+
+/* CSS CHO productVariant product/productVariant */
+.variantTable thead{
+    background: #333;
+    color: #fff;
+}
+.variantTable tbody td,
+.variantTable thead td{
+    text-align: right;
+    cursor: pointer;
+}
+.variantTable thead td:first-child,
+.variantTable tbody td:first-child{
+    text-align: left;
+}
+
+.variantTable .variant-row .image-variant img{
+    width: 28px;
+    height: 28px;
+}

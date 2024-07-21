@@ -82,7 +82,7 @@
         // console.log(id)
     }
  
-    // Cập nhật lại option chưa được chọn (liên tục làm mới trạng thái các option)
+    // Liên tục làm mới trạng thái của chọn nhóm thuộc tính (choose-attribute) được chọn 
     HT.chooseVariantGroup = () =>{
         $(document).on('change', '.choose-attribute', function(){
             let _this = $(this)
@@ -118,13 +118,17 @@
         })
     }
 
-    // Tạo ra form select2 thực hiện chọn multiple cho col-lg-8
+    //-----------------------------------------------------------------------------------48
+    // Sau khi người dùng đã chọn một option attribute-catalogue ở class choose-attribute
+    // Tạo ra form select2 thực hiện chọn multiple cho col-lg-8 lúc này nó không còn là ô input fake nữa mà thay bằng form select2 chọn multiple
     HT.select2Variant = (attributeCatalogueId) => {
-        let html = '<select class="selectVariant form-control" name="attribute['+attributeCatalogueId+'][]" multiple data-catid="'+attributeCatalogueId+'"></select>'
+        let html = '<select class="selectVariant form-control variant-'+attributeCatalogueId+'" name="attribute['+attributeCatalogueId+'][]" multiple data-catid="'+attributeCatalogueId+'"></select>'
         return html
     }
 
-    // Truyền và Nhận dữ liệu của Attributes
+    // Để lúc này khi người dùng nhập được dữ liệu vào nhờ đoạn code bên dưới này thì nó sẽ biến form select2 chọn multiple thành form nhập tìm kiếm select2
+    // cùng với dữ liệu nhập vào để tìm và attributeCatalogueId đã chọn
+    // Truyền và Nhận dữ liệu của Attributes tương ứng
     HT.getSelect2 = (object) => {
         let option = {
             'attributeCatalogueId': object.attr('data-catid')
@@ -144,7 +148,7 @@
                     }
                 },
                 processResults: function(data){
-                    console.log(data)
+                    // console.log(data)
                     return {
                         results: $.map(data, function(obj, i){
                             return obj
@@ -156,6 +160,89 @@
         })
     }
 
+    //----------------------------------------------------------------------49
+    // Sau khi người dùng đã chọn các thuộc tính ở form select2 multiple ta sẽ cần phải xây dựng được mảng sản phẩm gồm nhiều phiên bản
+    // sau đó sẽ tạo ra một table để hiện thị lên trực quan từ mảng sản phẩm gồm nhiều phiên bản đó
+
+    // Tạo Sản Phẩm có nhiều phiên bản
+    HT.createProductVariant = () => {
+        $(document).on('change', '.selectVariant', function(){// .selectVariant: form select2 multiple (r)
+            let _this = $(this)
+            // console.log(123)
+            HT.createVariant()
+        })
+    }
+
+    // Xử lý việc tạo phiên bản sản phẩm
+    HT.createVariant = () => {
+
+        let attributes = []
+        let variant = []
+        let attributeTitle = []
+
+        $('.variant-item').each(function(){ //variant gồm có (choose-attibute, selectVariant )
+            let _this = $(this)
+            let attr = []
+            let attributeCatalogueId = _this.find('.choose-attribute option:selected').val() // .choose-attribute (l)
+            let optionText = _this.find('.choose-attribute option:selected').text()
+            let attribute = $('.variant-'+attributeCatalogueId).select2('data')
+            // console.log(attribute)
+
+            for(let i = 0; i < attribute.length; i++){
+                let item = {}
+                let itemVariant = {}
+                item[optionText] = attribute[i].text
+                attr.push(item)
+            }
+            attributeTitle.push(optionText)
+            attributes.push(attr)
+        })
+        // console.log(attributeTitle)
+        // console.log(attributes)
+        
+        attributes = attributes.reduce(
+            (a, b) => a.flatMap( d => b.map( e => ( { ...d,...e } )))
+        )
+        // console.log(attributes)
+
+        let html = HT.renderTableHtml(attributes, attributeTitle)
+        $('table.variantTable').html(html)
+    }
+
+    //Render mảng phiên bản sản phẩm thành dạng bảng
+    HT.renderTableHtml = (attributes, attributeTitle) => {
+        let html = '';
+        html += '<thead>';
+        html += '    <tr>';
+        html += '        <td>'+imageProductVariant+'</td>';
+                        for(let i = 0; i<attributeTitle.length; i++){
+                            html += '<td>'+attributeTitle[i]+'</td>';
+                        }
+        html += '        <td>'+storageProductVariant+'</td>';
+        html += '        <td>'+priceProductVariant+'</td>';
+        html += '        <td>SKU</td>';
+        html += '    </tr>';
+        html += '</thead>';
+        html += '<tbody>';
+                    for(let j = 0; j < attributes.length; j++){
+                        html += '    <tr class="variant-row">';
+                        html += '        <td>';
+                        html += '            <span class="image-variant img-cover">';
+                        html += '                <img src="Backend/img/not-found.png" alt="">';
+                        html += '            </span>';
+                        html += '        </td>';
+                                        $.each(attributes[j], function(index, value){
+                                            html += '        <td>'+value+'</td>';
+                                        })
+                        html += '        <td>-</td>';
+                        html += '        <td>-</td>';
+                        html += '        <td>-</td>';
+                        html += '    </tr>';
+                    }
+        html += '</tbody>';
+        return html;
+    }
+    
     //Dùng trong form product/variant
     HT.niceSelect = () =>{
         $('.setupNiceSelect').niceSelect();
@@ -179,6 +266,9 @@
 
         // Xóa việc tạo một nhóm thuộc tính
         HT.removeAttribute()
+
+        // Tạo Sản Phẩm có nhiều phiên bản
+        HT.createProductVariant()
 
         //gọi phương thức tạo niceSelect (giao diện)
         HT.niceSelect();

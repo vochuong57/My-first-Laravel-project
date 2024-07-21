@@ -368,4 +368,10 @@ return[
     'Product_select-attribute-group' => 'Select Attribute Group',
     'Product_placeholder-select2' => 'Enter at least 2 characters to search',
 
+    // productVariant
+    'List_product_versions' => 'List of Versions',
+    'Product_image-product-variant' => 'Image',
+    'Product_storage-product-variant' => 'Quantity',
+    'Product_price-product-variant' => 'Price',
+
 ];
