@@ -36,7 +36,13 @@
         ];
     })->values());
 
+    //variant
     let selectAttributeGroup = "{{ __('messages.Product_select-attribute-group') }}";
     let addVariant = "{{ __('messages.Product_add-variant') }}";
     let placeholderSelect2 = "{{ __('messages.Product_placeholder-select2') }}";
+
+    //productVariant
+    let imageProductVariant = "{{ __('messages.Product_image-product-variant') }}";
+    let storageProductVariant = "{{ __('messages.Product_storage-product-variant') }}";
+    let priceProductVariant = "{{ __('messages.Product_price-product-variant') }}";
 </script>

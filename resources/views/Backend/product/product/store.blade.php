@@ -35,6 +35,17 @@
                     </div>
                 </div>
 
+                <div class="ibox product-variant">
+                    <div class="ibox-title">
+                        <div>
+                            <h5>{{ __('messages.List_product_versions') }}</h5>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        @include('Backend.product.product.component.productVariant')
+                    </div>
+                </div>
+
                 <div class="ibox">
                     <div class="ibox-title">
                         <h5>{{ __('messages.seo') }}</h5>

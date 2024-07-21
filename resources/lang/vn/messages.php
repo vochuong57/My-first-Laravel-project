@@ -377,4 +377,9 @@ return[
     'Product_select-attribute-group'=>'Chọn nhóm thuộc tính',
     'Product_placeholder-select2'=>'Nhập tối thiểu 2 ký tự để tìm kiếm',
     
+    //productVariant
+    'List_product_versions'=>'Danh sách phiên bản',
+    'Product_image-product-variant'=>'Hình ảnh',
+    'Product_storage-product-variant'=>'Số lượng',
+    'Product_price-product-variant'=>'Giá tiền',
 ];
