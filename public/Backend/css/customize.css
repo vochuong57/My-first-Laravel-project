@@ -200,7 +200,8 @@ table strong{
     display: table;
     clear: both;
 }
-#sortable{
+#sortable,
+#sortable2{
     list-style: none;
     padding-left: 0;
 }
@@ -235,10 +236,12 @@ table strong{
     padding: 20px;
     border: 1px dashed #b8b2b2;
 }
-#sortable .thumb{
+#sortable .thumb,
+#sortable2 .thumb{
     position: relative;
 }
-#sortable .delete-image{
+#sortable .delete-image,
+#sortable2 .varitant-delete-image{
     position: absolute;
     background: linear-gradient(to bottom,#fff, #f9fafb);
     color: red;
@@ -250,7 +253,8 @@ table strong{
     width: 25px;
     height: 25px;
 }
-#sortable .delete-image:hover{
+#sortable .delete-image:hover,
+#sortable2 .varitant-delete-image:hover{
     background: red;
     color: #fff;
 }
@@ -382,4 +386,20 @@ table strong{
 .variantTable .variant-row .image-variant img{
     width: 28px;
     height: 28px;
+}
+/* css cho toolbox product/productVariant */
+.updateVariant{
+    box-shadow: none !important;
+    background: #eaeaea;
+}
+.click-to-upload-variant{
+    text-align: center;
+    border: 1px dashed #b8b2b2;
+    padding: 20px;
+}
+.updateVariant label{
+    margin-bottom: 0;
+    font-weight: 600;
+    color: #1a0dab;
+    margin-bottom: 5px;
 }

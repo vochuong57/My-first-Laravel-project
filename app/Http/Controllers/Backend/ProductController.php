@@ -212,10 +212,12 @@ class ProductController extends Controller
                 'Backend/libary/seo.js',
                 'Backend/plugins/nice-select/js/jquery.nice-select.min.js',
                 'Backend/libary/variant.js',
+                'Backend/js/plugins/switchery/switchery.js',
             ],
             'css'=>[
                 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css',
-                'Backend/plugins/nice-select/css/nice-select.css'
+                'Backend/plugins/nice-select/css/nice-select.css',
+                'Backend/css/plugins/switchery/switchery.css',
             ]
         ];
     }

@@ -118,7 +118,8 @@
         })
     }
 
-    //-----------------------------------------------------------------------------------48
+    //----------------------------------------------------------------------48------------------------------------------------------------------
+
     // Sau khi người dùng đã chọn một option attribute-catalogue ở class choose-attribute
     // Tạo ra form select2 thực hiện chọn multiple cho col-lg-8 lúc này nó không còn là ô input fake nữa mà thay bằng form select2 chọn multiple
     HT.select2Variant = (attributeCatalogueId) => {
@@ -160,8 +161,9 @@
         })
     }
 
-    //----------------------------------------------------------------------49
-    // Sau khi người dùng đã chọn các thuộc tính ở form select2 multiple ta sẽ cần phải xây dựng được mảng sản phẩm gồm nhiều phiên bản
+    //----------------------------------------------------------------------49------------------------------------------------------------------
+
+    // Sau khi người dùng đã chọn các thuộc tính ở form select2 multiple (.selectVariant) ta sẽ cần phải xây dựng được mảng sản phẩm gồm nhiều phiên bản
     // sau đó sẽ tạo ra một table để hiện thị lên trực quan từ mảng sản phẩm gồm nhiều phiên bản đó
 
     // Tạo Sản Phẩm có nhiều phiên bản
@@ -242,7 +244,59 @@
         html += '</tbody>';
         return html;
     }
-    
+
+    //----------------------------------------------------------------------50------------------------------------------------------------------
+    //Xây dựng giao diện một hàng toolbox để cập nhật thông tin phiên bản sản phẩm, hình ảnh, giá v.v... tương ứng cho từng hàng trong phiên bản sản phẩm
+    // xây dụng upload album ảnh trong product/productVariant và delete album ảnh
+    HT.variantAlbum = () => {
+        $(document).on('click', '.click-to-upload-variant', function(e){
+            e.preventDefault()
+            HT.browseServerAlbum()
+        })
+    }
+
+    HT.browseServerAlbum=()=>{
+        var type='Images';
+        var finder = new CKFinder();
+        finder.resourceType = type;
+        finder.selectActionFunction = function(fileUrl, data, allFiles){
+            //console.log(allFiles)
+            let html=''
+            for(var i = 0; i<allFiles.length;i++){
+                var image = allFiles[i].url
+                
+                html+='<li class="ui-state-default">'
+                    html+='<div class="thumb">'
+                        html+='<span class="span image img-scaledown">'
+                            html+='<img src="'+image+'" alt="'+image+'">'
+                            html+='<input type="hidden" name="variantAlbum[]" value="'+image+'">'
+                        html+='</span>'
+                        html+='<button class="varitant-delete-image"><i class="fa fa-trash"></i></button>'
+                    html+='</div>'
+                html+='</li>'
+               
+            }
+            $('.click-to-upload-variant').addClass('hidden')
+            $('#sortable2').append(html)
+            $('.upload-variant-list').removeClass('hidden')
+        }
+        finder.popup();
+    }
+
+    // Cho phép hoặc không để thao tác lên các ô input số lượng, tên, đường dẫn
+    HT.switchChange = () => {
+        $(document).on('change', '.js-switch', function(){
+            let _this = $(this)
+            let isChecked = _this.prop('checked')
+            // console.log(isChecked)
+            if(isChecked == true){
+                _this.parents('.col-lg-2').siblings('.col-lg-10').find('.disabled').removeAttr('disabled')
+            }else{
+                _this.parents('.col-lg-2').siblings('.col-lg-10').find('.disabled').attr('disabled', true)
+            }
+        })
+    }
+
     //Dùng trong form product/variant
     HT.niceSelect = () =>{
         $('.setupNiceSelect').niceSelect();
@@ -269,6 +323,12 @@
 
         // Tạo Sản Phẩm có nhiều phiên bản
         HT.createProductVariant()
+
+        // xây dụng upload album ảnh trong product/productVariant và delete album ảnh
+        HT.variantAlbum()
+        
+        // Cho phép hoặc không để thao tác lên các ô input số lượng, tên, đường dẫn
+        HT.switchChange()
 
         //gọi phương thức tạo niceSelect (giao diện)
         HT.niceSelect();
