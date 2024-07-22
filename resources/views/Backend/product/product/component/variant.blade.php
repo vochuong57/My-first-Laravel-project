@@ -17,7 +17,7 @@
             <div class="attribute-title">{{ __('messages.Product_attribute-title-1') }}</div>
         </div>
         <div class="col-lg-9">
-        <div class="attribute-title">{{ __('messages.Product_attribute-title-2') }}</div>
+            <div class="attribute-title">{{ __('messages.Product_attribute-title-2') }}</div>
         </div>
     </div>
     <div class="variant-body">

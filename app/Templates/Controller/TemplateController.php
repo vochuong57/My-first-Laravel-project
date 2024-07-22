@@ -204,6 +204,7 @@ class {ModuleTemplate}Controller extends Controller
                 'Backend/libary/finder.js',
                 'Backend/plugins/ckeditor/ckeditor.js',
                 'Backend/libary/seo.js',
+                'Backend/plugins/nice-select/js/jquery.nice-select.min.js',//mặc dù có model không dùng tới nice-slect nhưng cần thêm vào để tránh lỗi xung đột với sortui
             ],
             'css'=>[
                 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css',
