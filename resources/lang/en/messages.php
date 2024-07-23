@@ -373,5 +373,12 @@ return[
     'Product_image-product-variant' => 'Image',
     'Product_storage-product-variant' => 'Quantity',
     'Product_price-product-variant' => 'Price',
+    'Product_update_version_information' => 'Update version information',
+    'Product_inventory' => 'Inventory',
+    'Product_cancel' => 'Cancel',
+    'Product_save' => 'Save',
+    'Product_manage_file' => 'Manage file',
+    'Product_file_name' => 'File name',
+    'Product_file_path' => 'File path'
 
 ];

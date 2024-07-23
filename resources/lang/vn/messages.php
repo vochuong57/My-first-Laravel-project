@@ -382,4 +382,11 @@ return[
     'Product_image-product-variant'=>'Hình ảnh',
     'Product_storage-product-variant'=>'Số lượng',
     'Product_price-product-variant'=>'Giá tiền',
+    'Product_update_version_information'=>'Cập nhật thông tin phiên bản',
+    'Product_inventory'=>'Tồn kho',
+    'Product_cancel'=>'Hủy bỏ',
+    'Product_save'=>'Lưu lại',
+    'Product_manage_file'=>'Quản lý file',
+    'Product_file_name'=>'Tên file',
+    'Product_file_path'=>'Đường dẫn',
 ];

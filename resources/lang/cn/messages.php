@@ -374,5 +374,12 @@ return [
     'Product_image-product-variant' => '图片',
     'Product_storage-product-variant' => '数量',
     'Product_price-product-variant' => '价格',
+    'Product_update_version_information' => '更新版本信息',
+    'Product_inventory' => '库存',
+    'Product_cancel' => '取消',
+    'Product_save' => '保存',
+    'Product_manage_file' => '文件管理',
+    'Product_file_name' => '文件名',
+    'Product_file_path' => '路径'
 
 ];
