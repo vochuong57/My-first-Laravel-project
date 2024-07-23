@@ -177,14 +177,15 @@
 
     // Xử lý việc tạo phiên bản sản phẩm
     HT.createVariant = () => {
-
         let attributes = []
-        let variant = []
         let attributeTitle = []
+
+        let variants = []
 
         $('.variant-item').each(function(){ //variant gồm có (choose-attibute, selectVariant )
             let _this = $(this)
             let attr = []
+            let attrVariant = []
             let attributeCatalogueId = _this.find('.choose-attribute option:selected').val() // .choose-attribute (l)
             let optionText = _this.find('.choose-attribute option:selected').text()
             let attribute = $('.variant-'+attributeCatalogueId).select2('data')
@@ -193,26 +194,43 @@
             for(let i = 0; i < attribute.length; i++){
                 let item = {}
                 let itemVariant = {}
+
+                //Xử lý tạo mảng tên tuộc tính để hiển thị trong bảng danh sách phiên bản
                 item[optionText] = attribute[i].text
                 attr.push(item)
+
+                // Xử lý tạo mảng id phiên bản là gồm các id thuộc tính (attribute) để lưu vào name="" trong input <td hidden>
+                itemVariant[attributeCatalogueId] = attribute[i].id
+                attrVariant.push(itemVariant)
             }
+            //Xử lý tạo mảng tên tuộc tính để hiển thị trong bảng danh sách phiên bản
             attributeTitle.push(optionText)
             attributes.push(attr)
+
+            // Xử lý tạo mảng id phiên bản là gồm các id thuộc tính (attribute) để lưu vào name="" trong input <td hidden>
+            variants.push(attrVariant)
+
         })
         // console.log(attributeTitle)
         // console.log(attributes)
+        // console.log(variants)
         
         attributes = attributes.reduce(
             (a, b) => a.flatMap( d => b.map( e => ( { ...d,...e } )))
         )
         // console.log(attributes)
 
-        let html = HT.renderTableHtml(attributes, attributeTitle)
+        variants = variants.reduce((a, b) => 
+            a.flatMap(d => b.map(e => ({ ...d, ...e })))
+        );
+        // console.log(variants)
+
+        let html = HT.renderTableHtml(attributes, attributeTitle, variants)
         $('table.variantTable').html(html)
     }
 
     //Render mảng phiên bản sản phẩm thành dạng bảng
-    HT.renderTableHtml = (attributes, attributeTitle) => {
+    HT.renderTableHtml = (attributes, attributeTitle, variants) => {
         let html = '';
         html += '<thead>';
         html += '    <tr>';
@@ -233,12 +251,37 @@
                         html += '                <img src="Backend/img/not-found.png" alt="">';
                         html += '            </span>';
                         html += '        </td>';
+                                        let attributeArray = []
+                                        let attributeString = ''
                                         $.each(attributes[j], function(index, value){
                                             html += '        <td>'+value+'</td>';
+                                            attributeArray.push(value)
                                         })
-                        html += '        <td>-</td>';
-                        html += '        <td>-</td>';
-                        html += '        <td>-</td>';
+                                        //Xử lý việc tạo tên phiên bản vd: value="Màu xanh, Vàng"
+                                        attributeString = attributeArray.join(', ')
+
+                                        let attributeArrayId = []
+                                        let attributeId = ''
+                                        $.each(variants[j], function(index, value){
+                                            attributeArrayId.push(value)
+                                        })
+                                        //Xử lý việc tạo id phiên bản vd: value="4, 7"
+                                        attributeId = attributeArrayId.join(', ')
+                        html += '        <td class="td-quantity">-</td>';
+                        html += '        <td class="td-price">-</td>';
+                        html += '        <td class="td-sku">-</td>';
+                        html += '        <td class="hidden td-variant">'
+                        html += '           <input type="text" name"variant[quantity][]" class="variant-quantity">';
+                        html += '           <input type="text" name"variant[sku][]" class="variant-sku">';
+                        html += '           <input type="text" name"variant[price][]" class="variant-price">';    
+                        html += '           <input type="text" name"variant[barcode][]" class="variant-barcode">';   
+                        html += '           <input type="text" name"variant[file_name][]" class="variant-filename">'; 
+                        html += '           <input type="text" name"variant[file_path][]" class="variant-filepath">'; 
+                        html += '           <input type="text" name"variant[album][]" class="variant-album">';
+                        html += '           <input type="text" name"attribute[name][]" value="'+attributeString+'">';   
+                        html += '           <input type="text" name"attribute[id][]" value="'+attributeId+'">';     
+                        html += '        </td>';
+                        
                         html += '    </tr>';
                     }
         html += '</tbody>';
@@ -297,6 +340,146 @@
         })
     }
 
+    //----------------------------------------------------------------------51------------------------------------------------------------------
+    // Xây dựng được hành động cơ bản mở, tắt, lưu để tạo thuộc tính cho từng phiên bản sản phẩm và tiến hành lưu nó cho từng tr thuộc tính sản phẩm
+
+    // Hiển thị nội dung của toolBox để cập nhật thông tin từng phiên bản sản phẩm của mỗi dòng khi click vào tr ('.variant-row')
+    HT.updateVariant = () => {
+        $(document).on('click', '.variant-row', function(){
+            let _this = $(this)
+            let updateVariantBox = HT.updateVariantHTML()
+            if($('.updateVariantTr').length == 0){
+                _this.after(updateVariantBox)
+                HT.switchery()
+            }
+           
+        })
+    }
+
+    HT.switchery=()=>{
+        $('.js-switch').each(function(){
+            var switchery = new Switchery(this, { color: '#1AB394', size: 'small' });
+        })
+    }
+
+    HT.updateVariantHTML = () => {
+        let html = '';
+    
+        html += '<tr class="updateVariantTr">';
+        html += '    <td colspan="6">';
+        html += '        <div class="updateVariant ibox">';
+        html += '            <div class="ibox-title">';
+        html += '                <div class="uk-flex uf-flex-middle uk-flex-space-between">';
+        html += '                    <h5>'+updateVersionInformation+'</h5>';
+        html += '                    <div class="button-group">';
+        html += '                        <div class="uk-flex uk-flex-middle">';
+        html += '                            <button type="button" class="cancelUpdate btn btn-danger mr10">'+cancel+'</button>';
+        html += '                            <button type="button" class="saveUpdate btn btn-success">'+save+'</button>';
+        html += '                        </div>';
+        html += '                    </div>';
+        html += '                </div>';
+        html += '            </div>';
+        html += '            <div class="ibox-content">';
+        html += '                <div class="click-to-upload-variant">';
+        html += '                    <div class="icon">';
+        html += '                        <a href="" class="upload-variant-picture">';
+        html += '                            <svg style="width:80px;height:80px;fill: #d3dbe2;margin-bottom: 10px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80">';
+        html += '                                <path d="M80 57.6l-4-18.7v-23.9c0-1.1-.9-2-2-2h-3.5l-1.1-5.4c-.3-1.1-1.4-1.8-2.4-1.6l-32.6 7h-27.4c-1.1 0-2 .9-2 2v4.3l-3.4.7c-1.1.2-1.8 1.3-1.5 2.4l5 23.4v20.2c0 1.1.9 2 2 2h2.7l.9 4.4c.2.9 1 1.6 2 1.6h.4l27.9-6h33c1.1 0 2-.9 2-2v-5.5l2.4-.5c1.1-.2 1.8-1.3 1.6-2.4zm-75-21.5l-3-14.1 3-.6v14.7zm62.4-28.1l1.1 5h-24.5l23.4-5zm-54.8 64l-.8-4h19.6l-18.8 4zm37.7-6h-43.3v-51h67v51h-23.7zm25.7-7.5v-9.9l2 9.4-2 .5zm-52-21.5c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5zm0-8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3zm-13-10v43h59v-43h-59zm57 2v24.1l-12.8-12.8c-3-3-7.9-3-11 0l-13.3 13.2-.1-.1c-1.1-1.1-2.5-1.7-4.1-1.7-1.5 0-3 .6-4.1 1.7l-9.6 9.8v-34.2h55zm-55 39v-2l11.1-11.2c1.4-1.4 3.9-1.4 5.3 0l9.7 9.7c-5.2 1.3-9 2.4-9.4 2.5l-3.7 1h-13zm55 0h-34.2c7.1-2 23.2-5.9 33-5.9l1.2-.1v6zm-1.3-7.9c-7.2 0-17.4 2-25.3 3.9l-9.1-9.1 13.3-13.3c2.2-2.2 5.9-2.2 8.1 0l14.3 14.3v4.1l-1.3.1z"></path>';
+        html += '                            </svg>';
+        html += '                        </a>';
+        html += '                    </div>';
+        html += '                    <div class="small-text">'+adviseAlbum+'</div>';
+        html += '                </div>';
+        html += '                <div class="upload-variant-list hidden">';
+        html += '                    <div class="row">';
+        html += '                        <ul id="sortable2" class="clearfix data-album sortui ui-sortable"></ul>';
+        html += '                    </div>';
+        html += '                </div>';
+        html += '                <div class="row mt20 uk-flex uk-flex-middle">';
+        html += '                    <div class="col-lg-2 uk-flex uk-flex-middle">';
+        html += '                        <label for="" class="mr10">'+inventory+'</label>';
+        html += '                        <input type="checkbox" name="quantity" value="0" class="js-switch" data-target="variantQuantity">';
+        html += '                    </div>';
+        html += '                    <div class="col-lg-10">';
+        html += '                        <div class="row">';
+        html += '                            <div class="col-lg-3">';
+        html += '                                <label for="" class="control-label">'+storageProductVariant+'</label>';
+        html += '                                <input type="text" name="variant_quantity" value="0" class="form-control int disabled" disabled>';
+        html += '                            </div>';
+        html += '                            <div class="col-lg-3">';
+        html += '                                <label for="" class="control-label">SKU</label>';
+        html += '                                <input type="text" name="variant_sku" value="" class="form-control text-right">';
+        html += '                            </div>';
+        html += '                            <div class="col-lg-3">';
+        html += '                                <label for="" class="control-label">'+priceProductVariant+'</label>';
+        html += '                                <input type="text" name="variant_price" value="0" class="form-control int">';
+        html += '                            </div>';
+        html += '                            <div class="col-lg-3">';
+        html += '                                <label for="" class="control-label">Barcode</label>';
+        html += '                                <input type="text" name="variant_barcode" value="" class="form-control text-right">';
+        html += '                            </div>';
+        html += '                        </div>';
+        html += '                    </div>';
+        html += '                </div>';
+        html += '                <div class="row mt20 uk-flex uk-flex-middle">';
+        html += '                    <div class="col-lg-2 uk-flex uk-flex-middle">';
+        html += '                        <label for="" class="mr10">'+manageFile+'</label>';
+        html += '                        <input type="checkbox" name="" class="js-switch" data-target="disabled">';
+        html += '                    </div>';
+        html += '                    <div class="col-lg-10">';
+        html += '                        <div class="row">';
+        html += '                            <div class="col-lg-6">';
+        html += '                                <label for="" class="control-label">'+fileName+'</label>';
+        html += '                                <input type="text" name="variant_file_name" value="" class="form-control disabled" disabled>';
+        html += '                            </div>';
+        html += '                            <div class="col-lg-6">';
+        html += '                                <label for="" class="control-label">'+filePath+'</label>';
+        html += '                                <input type="text" name="variant_file_path" value="" class="form-control disabled" disabled>';
+        html += '                            </div>';
+        html += '                        </div>';
+        html += '                    </div>';
+        html += '                </div>';
+        html += '            </div>';
+        html += '        </div>';
+        html += '    </td>';
+        html += '</tr>';
+    
+        return html;
+    }
+
+    // Sự kiện tắt form toolbox của thuộc tính từng phiên bản
+    HT.cancelVariantUpdate = () =>{
+        $(document).on('click','.cancelUpdate', function(){
+            $('.updateVariantTr').remove()
+        })
+    }
+
+    // Sự kiện tắt form toolbox và lưu các thuộc tính từng phiên bản
+    HT.saveVariantUpdate = () =>{
+        $(document).on('click','.saveUpdate', function(){
+
+            let variant = {
+                'quantity': $('input[name=variant_quantity]').val(),
+                'sku': $('input[name=variant_sku]').val(),
+                'price': $('input[name=variant_price]').val(),
+                'barcode': $('input[name=variant_barcode]').val(),
+                'filename': $('input[name=variant_file_name]').val(),
+                'filepath': $('input[name=variant_file_path]').val(),
+                'album': $("input[name='variantAlbum[]']").map(function(){
+                    return $(this).val()
+                }).get(),
+            }
+            // console.log(variant)
+
+            $.each(variant, function(index, value){
+                $('.variant-'+index).val(value)
+            })
+
+            $('.updateVariantTr').remove()
+        })
+    }
+    
+
     //Dùng trong form product/variant
     HT.niceSelect = () =>{
         $('.setupNiceSelect').niceSelect();
@@ -329,6 +512,15 @@
         
         // Cho phép hoặc không để thao tác lên các ô input số lượng, tên, đường dẫn
         HT.switchChange()
+
+        // Hiển thị nội dung của toolBox để cập nhật thông tin từng phiên bản sản phẩm của mỗi dòng khi click vào tr
+        HT.updateVariant()
+        
+        // Sự kiện tắt form toolbox của thuộc tính từng phiên bản
+        HT.cancelVariantUpdate()
+
+        // Sự kiện tắt form toolbox và lưu các thuộc tính từng phiên bản
+        HT.saveVariantUpdate()
 
         //gọi phương thức tạo niceSelect (giao diện)
         HT.niceSelect();

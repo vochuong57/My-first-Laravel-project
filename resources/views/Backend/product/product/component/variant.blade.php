@@ -45,4 +45,13 @@
     let imageProductVariant = "{{ __('messages.Product_image-product-variant') }}";
     let storageProductVariant = "{{ __('messages.Product_storage-product-variant') }}";
     let priceProductVariant = "{{ __('messages.Product_price-product-variant') }}";
+
+    let updateVersionInformation = "{{ __('messages.Product_update_version_information') }}";
+    let cancel = "{{ __('messages.Product_cancel') }}";
+    let save = "{{ __('messages.Product_save') }}";
+    let adviseAlbum = "{{ __('messages.adviseAlbum') }}";
+    let inventory = "{{ __('messages.Product_inventory') }}";
+    let manageFile = "{{ __('messages.Product_manage_file') }}";
+    let fileName = "{{ __('messages.Product_file_name') }}";
+    let filePath = "{{ __('messages.Product_file_path') }}";
 </script>
