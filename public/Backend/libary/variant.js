@@ -248,7 +248,7 @@
                         html += '    <tr class="variant-row">';
                         html += '        <td>';
                         html += '            <span class="image-variant img-cover">';
-                        html += '                <img src="Backend/img/not-found.png" alt="">';
+                        html += '                <img src="Backend/img/not-found.png" alt="" class="imageSrc">';
                         html += '            </span>';
                         html += '        </td>';
                                         let attributeArray = []
@@ -271,13 +271,13 @@
                         html += '        <td class="td-price">-</td>';
                         html += '        <td class="td-sku">-</td>';
                         html += '        <td class="hidden td-variant">'
-                        html += '           <input type="text" name"variant[quantity][]" class="variant-quantity">';
-                        html += '           <input type="text" name"variant[sku][]" class="variant-sku">';
-                        html += '           <input type="text" name"variant[price][]" class="variant-price">';    
-                        html += '           <input type="text" name"variant[barcode][]" class="variant-barcode">';   
-                        html += '           <input type="text" name"variant[file_name][]" class="variant-filename">'; 
-                        html += '           <input type="text" name"variant[file_path][]" class="variant-filepath">'; 
-                        html += '           <input type="text" name"variant[album][]" class="variant-album">';
+                        html += '           <input type="text" name"variant[quantity][]" class="variant_quantity">';
+                        html += '           <input type="text" name"variant[sku][]" class="variant_sku">';
+                        html += '           <input type="text" name"variant[price][]" class="variant_price">';    
+                        html += '           <input type="text" name"variant[barcode][]" class="variant_barcode">';   
+                        html += '           <input type="text" name"variant[file_name][]" class="variant_filename">'; 
+                        html += '           <input type="text" name"variant[file_path][]" class="variant_filepath">'; 
+                        html += '           <input type="text" name"variant[album][]" class="variant_album">';
                         html += '           <input type="text" name"attribute[name][]" value="'+attributeString+'">';   
                         html += '           <input type="text" name"attribute[id][]" value="'+attributeId+'">';     
                         html += '        </td>';
@@ -314,7 +314,7 @@
                             html+='<img src="'+image+'" alt="'+image+'">'
                             html+='<input type="hidden" name="variantAlbum[]" value="'+image+'">'
                         html+='</span>'
-                        html+='<button class="varitant-delete-image"><i class="fa fa-trash"></i></button>'
+                        html+='<button class="variant-delete-image"><i class="fa fa-trash"></i></button>'
                     html+='</div>'
                 html+='</li>'
                
@@ -324,6 +324,22 @@
             $('.upload-variant-list').removeClass('hidden')
         }
         finder.popup();
+    }
+
+    HT.deleteVaraintPicture=()=>{
+        $(document).on('click','.variant-delete-image',function(){
+            let _this=$(this)
+            _this.parents('.ui-state-default').remove()
+            if($('.ui-state-default').length == 0){
+                $('.click-to-upload-variant').removeClass('hidden')
+                $('.upload-variant-list').addClass('hidden')
+            }
+        })
+    }
+
+    HT.sortuiVariant=()=>{
+        $('#sortable2').sortable()
+        $('#sortable2').disableSelection()
     }
 
     // Cho phép hoặc không để thao tác lên các ô input số lượng, tên, đường dẫn
@@ -340,17 +356,29 @@
         })
     }
 
-    //----------------------------------------------------------------------51------------------------------------------------------------------
+    //----------------------------------------------------------------------51 - 52 ------------------------------------------------------------------
     // Xây dựng được hành động cơ bản mở, tắt, lưu để tạo thuộc tính cho từng phiên bản sản phẩm và tiến hành lưu nó cho từng tr thuộc tính sản phẩm
 
     // Hiển thị nội dung của toolBox để cập nhật thông tin từng phiên bản sản phẩm của mỗi dòng khi click vào tr ('.variant-row')
+    //Phần code logic 2.
+    // (Lấy giá trị từ td-hidden đã có từ logic 1. đã lưu đổ ngược lại vào toolbox)
     HT.updateVariant = () => {
         $(document).on('click', '.variant-row', function(){
             let _this = $(this)
-            let updateVariantBox = HT.updateVariantHTML()
+
+            // loop qua tất cả các class của td-hidden này để lấy giá trị từ td-hidden
+            let variantData = {}
+            _this.find(".td-variant input[type=text][class^='variant_']").each(function(){
+                let className = $(this).attr('class')
+                variantData[className] = $(this).val()
+            })
+            // console.log(variantData)
+
+            let updateVariantBox = HT.updateVariantHTML(variantData)//đổ biến lấy giá trị hidden đưa lại vào toolbox
             if($('.updateVariantTr').length == 0){
                 _this.after(updateVariantBox)
                 HT.switchery()
+                HT.sortuiVariant()
             }
            
         })
@@ -362,8 +390,32 @@
         })
     }
 
-    HT.updateVariantHTML = () => {
+    // Render ra album của từng phiêm bản sản phẩm
+    HT.variantAlbumList = (album) => {
         let html = '';
+
+        if(album.length && album[0] !== ''){
+            for(let i = 0; i<album.length; i++){
+                html += '<li class="ui-state-default">';
+                html += '    <div class="thumb">';
+                html += '        <span class="span image img-scaledown">';
+                html += '            <img src="'+album[i]+'" alt="'+album[i]+'">';
+                html += '            <input type="hidden" name="variantAlbum[]" value="'+album[i]+'">';
+                html += '        </span>';
+                html += '        <button class="variant-delete-image"><i class="fa fa-trash"></i></button>';
+                html += '    </div>';
+                html += '</li>';
+            }
+        }
+        
+        return html;
+    };
+    
+    //Render ra lại form toolbox thuộc tính sản phẩm
+    HT.updateVariantHTML = (variantData) => {
+        let html = '';
+        let variantAlbum = variantData.variant_album.split(',');
+        let variantAlbumItem = HT.variantAlbumList(variantAlbum)
     
         html += '<tr class="updateVariantTr">';
         html += '    <td colspan="6">';
@@ -380,7 +432,7 @@
         html += '                </div>';
         html += '            </div>';
         html += '            <div class="ibox-content">';
-        html += '                <div class="click-to-upload-variant">';
+        html += '                <div class="click-to-upload-variant '+( (variantAlbum.length > 0 && variantAlbum[0] !== '') ? 'hidden' : '' )+'">';
         html += '                    <div class="icon">';
         html += '                        <a href="" class="upload-variant-picture">';
         html += '                            <svg style="width:80px;height:80px;fill: #d3dbe2;margin-bottom: 10px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80">';
@@ -390,33 +442,33 @@
         html += '                    </div>';
         html += '                    <div class="small-text">'+adviseAlbum+'</div>';
         html += '                </div>';
-        html += '                <div class="upload-variant-list hidden">';
+        html += '                <div class="upload-variant-list '+( (variantAlbumItem.length) ? '' : 'hidden' )+'">';
         html += '                    <div class="row">';
-        html += '                        <ul id="sortable2" class="clearfix data-album sortui ui-sortable"></ul>';
+        html += '                        <ul id="sortable2" class="clearfix data-album sortui ui-sortable">'+variantAlbumItem+'</ul>';
         html += '                    </div>';
         html += '                </div>';
         html += '                <div class="row mt20 uk-flex uk-flex-middle">';
         html += '                    <div class="col-lg-2 uk-flex uk-flex-middle">';
         html += '                        <label for="" class="mr10">'+inventory+'</label>';
-        html += '                        <input type="checkbox" name="quantity" value="0" class="js-switch" data-target="variantQuantity">';
+        html += '                        <input type="checkbox" name="quantity" value="0" class="js-switch" '+((variantData.variant_quantity !== '') ? 'checked' : '')+' data-target="variantQuantity">';
         html += '                    </div>';
         html += '                    <div class="col-lg-10">';
         html += '                        <div class="row">';
         html += '                            <div class="col-lg-3">';
         html += '                                <label for="" class="control-label">'+storageProductVariant+'</label>';
-        html += '                                <input type="text" name="variant_quantity" value="0" class="form-control int disabled" disabled>';
+        html += '                                <input type="text" name="variant_quantity" value="'+HT.addCommas(variantData.variant_quantity)+'" class="form-control int disabled" '+((variantData.variant_quantity == '') ? 'disabled' : '')+'>';
         html += '                            </div>';
         html += '                            <div class="col-lg-3">';
         html += '                                <label for="" class="control-label">SKU</label>';
-        html += '                                <input type="text" name="variant_sku" value="" class="form-control text-right">';
+        html += '                                <input type="text" name="variant_sku" value="'+variantData.variant_sku+'" class="form-control text-right">';
         html += '                            </div>';
         html += '                            <div class="col-lg-3">';
         html += '                                <label for="" class="control-label">'+priceProductVariant+'</label>';
-        html += '                                <input type="text" name="variant_price" value="0" class="form-control int">';
+        html += '                                <input type="text" name="variant_price" value="'+HT.addCommas(variantData.variant_price)+'" class="form-control int">';
         html += '                            </div>';
         html += '                            <div class="col-lg-3">';
         html += '                                <label for="" class="control-label">Barcode</label>';
-        html += '                                <input type="text" name="variant_barcode" value="" class="form-control text-right">';
+        html += '                                <input type="text" name="variant_barcode" value="'+variantData.variant_barcode+'" class="form-control text-right">';
         html += '                            </div>';
         html += '                        </div>';
         html += '                    </div>';
@@ -424,17 +476,17 @@
         html += '                <div class="row mt20 uk-flex uk-flex-middle">';
         html += '                    <div class="col-lg-2 uk-flex uk-flex-middle">';
         html += '                        <label for="" class="mr10">'+manageFile+'</label>';
-        html += '                        <input type="checkbox" name="" class="js-switch" data-target="disabled">';
+        html += '                        <input type="checkbox" name="" class="js-switch" '+((variantData.variant_filename !== '') ? 'checked' : '')+' data-target="disabled">';
         html += '                    </div>';
         html += '                    <div class="col-lg-10">';
         html += '                        <div class="row">';
         html += '                            <div class="col-lg-6">';
         html += '                                <label for="" class="control-label">'+fileName+'</label>';
-        html += '                                <input type="text" name="variant_file_name" value="" class="form-control disabled" disabled>';
+        html += '                                <input type="text" name="variant_file_name" value="'+variantData.variant_filename+'" class="form-control disabled" '+((variantData.variant_filename == '') ? 'disabled' : '')+'>';
         html += '                            </div>';
         html += '                            <div class="col-lg-6">';
         html += '                                <label for="" class="control-label">'+filePath+'</label>';
-        html += '                                <input type="text" name="variant_file_path" value="" class="form-control disabled" disabled>';
+        html += '                                <input type="text" name="variant_file_path" value="'+variantData.variant_filepath+'" class="form-control disabled" '+((variantData.variant_filepath == '') ? 'disabled' : '')+'>';
         html += '                            </div>';
         html += '                        </div>';
         html += '                    </div>';
@@ -447,6 +499,18 @@
         return html;
     }
 
+    HT.addCommas = (nStr) => {
+        nStr = String(nStr);
+        nStr = nStr.replace(/\./g, '');
+        let str = '';
+        for (let i = nStr.length; i > 0; i -= 3) {
+            let a = (i - 3) < 0 ? 0 : (i - 3);
+            str = nStr.slice(a, i) + '.' + str;
+        }
+        str = str.slice(0, str.length - 1);
+        return str;
+    };
+
     // Sự kiện tắt form toolbox của thuộc tính từng phiên bản
     HT.cancelVariantUpdate = () =>{
         $(document).on('click','.cancelUpdate', function(){
@@ -454,10 +518,14 @@
         })
     }
 
-    // Sự kiện tắt form toolbox và lưu các thuộc tính từng phiên bản
+    //Phần code logic 1.
+    // Sự kiện tắt form toolbox và lưu các thuộc tính từng phiên bản làm 2 việc:
+    // 1. (lấy thẳng giá trị từ toolbox nhập được và đưa lại vào td-hidden tương ứng, 
+    // 2.giá trị vừa nhập ở toolbox lên các cột được hiển thị của từng phiên bản sản phẩm tương ứng)
     HT.saveVariantUpdate = () =>{
         $(document).on('click','.saveUpdate', function(){
 
+            //Lấy giá trị từ toolbox nhập được
             let variant = {
                 'quantity': $('input[name=variant_quantity]').val(),
                 'sku': $('input[name=variant_sku]').val(),
@@ -472,7 +540,17 @@
             // console.log(variant)
 
             $.each(variant, function(index, value){
-                $('.variant-'+index).val(value)
+                // Lấy dữ liệu từ toolbox đưa vào td-hidden ('.variant_')
+                // $('.variant_'+index).val(value)//viết như này thì tất cả các td-hidden sẽ nhận giá trị mới nhất của toolbox hiện tại được mỡ
+                $('.updateVariantTr').prev().find('.variant_'+index).val(value)// dữ liệu của toolbox sẽ tìm đúng với td-hidden vì ngay trước nó thì sẽ đúng
+
+                // Lấy dữ liệu từ toolbox đưa lên và hiển thị ở bảng danh mục sản phẩm
+                
+                if (index === 'album' && value.length > 0) {
+                    $('.updateVariantTr').prev().find('.imageSrc').attr('src', value[0]);
+                }else{
+                    $('.updateVariantTr').prev().find('.td-'+index).html(value)
+                }
             })
 
             $('.updateVariantTr').remove()
@@ -507,8 +585,10 @@
         // Tạo Sản Phẩm có nhiều phiên bản
         HT.createProductVariant()
 
-        // xây dụng upload album ảnh trong product/productVariant và delete album ảnh
+        // xây dụng upload album ảnh trong product/productVariant
         HT.variantAlbum()
+        //sự kiện xóa đi album ảnh tương ứng
+        HT.deleteVaraintPicture()
         
         // Cho phép hoặc không để thao tác lên các ô input số lượng, tên, đường dẫn
         HT.switchChange()

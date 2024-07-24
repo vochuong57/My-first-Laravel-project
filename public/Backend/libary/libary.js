@@ -245,8 +245,6 @@
     HT.sortui=()=>{
         $('#sortable').sortable()
         $('#sortable').disableSelection()
-        $('#sortable2').sortable()
-        $('#sortable2').disableSelection()
     }
 
     $document.ready(function(){
