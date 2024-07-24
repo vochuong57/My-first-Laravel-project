@@ -241,7 +241,7 @@ table strong{
     position: relative;
 }
 #sortable .delete-image,
-#sortable2 .varitant-delete-image{
+#sortable2 .variant-delete-image{
     position: absolute;
     background: linear-gradient(to bottom,#fff, #f9fafb);
     color: red;
@@ -254,7 +254,7 @@ table strong{
     height: 25px;
 }
 #sortable .delete-image:hover,
-#sortable2 .varitant-delete-image:hover{
+#sortable2 .variant-delete-image:hover{
     background: red;
     color: #fff;
 }
