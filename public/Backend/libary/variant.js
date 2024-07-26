@@ -26,6 +26,8 @@
             $(document).on('click', '.add-variant', function(){
                 let html = HT.renderVariantItem(attributeCatalogues)
                 $('.variant-body').append(html)
+                $('.variantTable thead').html('')
+                $('.variantTable tbody').html('')
                 HT.checkMaxAtrributeGroup(attributeCatalogues)
                 HT.disabledAttributeCatalogueChoose()
             })
@@ -115,6 +117,7 @@
             let _this = $(this)
             _this.parents('.variant-item').remove()
             HT.checkMaxAtrributeGroup(attributeCatalogues)
+            HT.createVariant()
         })
     }
 
@@ -224,12 +227,126 @@
             a.flatMap(d => b.map(e => ({ ...d, ...e })))
         );
         // console.log(variants)
+        
+        // Tạo append cho table.variantTable thead
+        HT.createTableHeader(attributeTitle)
 
-        let html = HT.renderTableHtml(attributes, attributeTitle, variants)
-        $('table.variantTable').html(html)
+        let trClass = []
+
+        // Tạo append cho table.variantTable tbody
+        attributes.forEach((index,item) =>{
+            let row = HT.createVariantRow(index, variants[item])
+
+            let classModified = 'tr-variant-' + Object.values(variants[item]).join(', ').replace(/, /g, '-')
+            trClass.push(classModified)
+            if(!$('table.variantTable tbody tr').hasClass(classModified)){
+                $('table.variantTable tbody').append(row)
+            }
+        })
+
+        // Thực hiện xóa rowClass khi mảng class không includes đúng với mảng trClass
+        $('table.variantTable tbody tr').each(function(){
+            const row = $(this)
+            const rowClasses = row.attr('class')
+            if(rowClasses){
+                const rowClassArray = rowClasses.split(' ')
+                let shouldRemove = false
+                rowClassArray.forEach(rowClass =>{
+                    if(rowClass == 'variant-row'){
+                        return;
+                    }else if(!trClass.includes(rowClass)){
+                        shouldRemove = true
+                    }
+                })
+                if(shouldRemove){
+                    row.remove()
+                }
+            }
+        })
+
+        // Không dùng cách render lại toàn bộ bảng
+        // let html = HT.renderTableHtml(attributes, attributeTitle, variants)
+        // $('table.variantTable').html(html)
     }
 
-    //Render mảng phiên bản sản phẩm thành dạng bảng
+    // V53 Tạo append cho table.variantTable thead
+    HT.createTableHeader = (attributeTitle) =>{
+        let thead = $('table.variantTable thead')
+        let row = $('<tr>')
+
+        row.append($('<td>').text(imageProductVariant))
+        for(let i = 0; i < attributeTitle.length; i++){
+            row.append($('<td>').text(attributeTitle[i]))
+        }
+        row.append($('<td>').text(storageProductVariant))
+        row.append($('<td>').text(priceProductVariant))
+        row.append($('<td>').text('SKU'))
+
+        thead.html(row)
+        return thead
+    }
+
+    // V53 Tạo append cho table.variantTable tbody
+    HT.createVariantRow = (attributeItem, variantItem) =>{
+        // console.log(attributeItem)
+        // console.log(variantItem)
+
+        let attibuteString = Object.values(attributeItem).join(', ')
+        // console.log(attibuteString)
+        let attributeId = Object.values(variantItem).join(', ')
+        // console.log(attributeId)
+
+        //đổi attributeId từ dạng '1, 2, 3' thành '1-2-3' 
+        let classModified = attributeId.replace(/, /g, '-')
+        // console.log(classModified)
+
+        let row = $('<tr>').addClass('variant-row tr-variant-' + classModified)
+        let td
+
+        td = $('<td>').append(
+            $('<span>').addClass('image-variant img-cover').append(
+                $('<img>').attr('src', 'Backend/img/not-found.png').addClass('imageSrc')
+            )
+        )
+        row.append(td)
+
+        Object.values(attributeItem).forEach(value => {
+            td = $('<td>').text(value)
+            row.append(td)
+        })
+
+        td = $('<td>').addClass('hidden td-variant')
+
+        let inputHiddenFields = [
+            { name: 'variant[quantity][]', class: 'variant_quantity'},
+            { name: 'variant[sku][]', class: 'variant_sku'},
+            { name: 'variant[price][]', class: 'variant_price'},
+            { name: 'variant[barcode][]', class: 'variant_barcode'},
+            { name: 'variant[file_name][]', class: 'variant_filename'},
+            { name: 'variant[file_path][]', class: 'variant_filepath'},
+            { name: 'variant[album][]', class: 'variant_album'},
+            { name: 'attribute[name][]', value: attibuteString},
+            { name: 'attribute[id][]', value: attributeId},
+        ]
+        // console.log(inputHiddenFields)
+        $.each(inputHiddenFields, function(_, field){
+            let input = $('<input>').attr('type', 'text').attr('name', field.name).addClass(field.class)
+            if(field.value){
+                input.val(field.value)
+            }
+            td.append(input)
+        })
+
+        row.append($('<td>').addClass('td-quantity').text('-'))
+            .append($('<td>').addClass('td-price').text('-'))
+            .append($('<td>').addClass('td-sku').text('-'))
+            .append(td)
+
+        return row
+
+    }
+
+    // V49 Render mảng phiên bản sản phẩm thành dạng bảng
     HT.renderTableHtml = (attributes, attributeTitle, variants) => {
         let html = '';
         html += '<thead>';
@@ -520,8 +637,9 @@
 
     //Phần code logic 1.
     // Sự kiện tắt form toolbox và lưu các thuộc tính từng phiên bản làm 2 việc:
-    // 1. (lấy thẳng giá trị từ toolbox nhập được và đưa lại vào td-hidden tương ứng, 
-    // 2.giá trị vừa nhập ở toolbox lên các cột được hiển thị của từng phiên bản sản phẩm tương ứng)
+    // 1. (lấy thẳng giá trị từ toolbox nhập được ('.updateVariantTr') và đưa lại vào td-hidden tương ứng. Đây được xem là nơi lưu biến tạm của từng phiên bản sản phẩm
+    // để sau này đổ ngược lại dữ liệu lên toolbox được làm ở code logic 2, 
+    // 2. giá trị vừa nhập ở toolbox lên các cột được hiển thị của từng phiên bản sản phẩm tương ứng)
     HT.saveVariantUpdate = () =>{
         $(document).on('click','.saveUpdate', function(){
 
