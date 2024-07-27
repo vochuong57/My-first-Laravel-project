@@ -116,13 +116,17 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="form-row">
+
+                @php
+                    $timestamp = time(); // Lấy thời gian hiện tại dưới dạng UNIX timestamp
+                @endphp
                    
                     <div class="mb15">
                         <label for="">{{ __('messages.Product_code') }}</label>
                         <input 
                             type="text"
                             name="code"
-                            value="{{ old('code', ($product->code) ?? null) }}"
+                            value="{{ old('code', ($product->code) ?? $timestamp) }}"
                             class="form-control"
                         >
                     </div>

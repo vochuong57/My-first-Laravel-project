@@ -68,6 +68,7 @@ class AttributeRepository extends BaseRepository implements AttributeRepositoryI
         ->find($id);
     }
 
+    // Dùng để lấy ra id và name của attribute và attribute_language dựa vào attribute_catalogue_id (ajax) đã chọn
     public function searchAttributes(string $keyword = '', array $option = [], int $language_id = 0) {
         return $this->model->whereHas('attribute_catalogues', function($query) use($option) {
             $query->where('attribute_catalogue_id', $option['attributeCatalogueId']);
@@ -80,4 +81,15 @@ class AttributeRepository extends BaseRepository implements AttributeRepositoryI
         }])->get();
     }
     
+    // Dùng để lấy lại id và name của attribute và attribute_language dựa vào dữ liệu đã được submit form
+    public function findAttributeByIdArray($attributeArray = [], int $language_id = 0){
+        return $this->model->select([
+            'attributes.id',
+            'tb2.name'
+        ])
+        ->join('attribute_language as tb2','tb2.attribute_id', '=', 'attributes.id')
+        ->where('tb2.language_id','=', $language_id)
+        ->whereIn('attributes.id', $attributeArray)
+        ->get();
+    }
 }
