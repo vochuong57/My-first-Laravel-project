@@ -9,7 +9,15 @@
             $(document).on('click', '.variant-checkbox input[type="checkbox"], .variant-checkbox label', function() {
                 let _this = $(this).closest('.variant-checkbox');
                 let checkbox = _this.find('input[type="checkbox"]');
-    
+
+                let price = $('input[name = price]').val()
+                let code = $('input[name = code]').val()
+
+                if(price == 0 || code == ''){
+                    alert('Bạn phải nhập vào Giá và Mã sản phẩm để sử dụng chức năng này')
+                    return false
+                }
+
                 // Kiểm tra trạng thái của checkbox và ẩn/hiện .variant-wrapper
                 if (checkbox.is(':checked')) {
                     $('.variant-wrapper').removeClass('hidden');
@@ -41,7 +49,7 @@
         html += '<div class="row mb20 variant-item">';
         html += '    <div class="col-lg-3">';
         html += '        <div class="attribute-catalogue">';
-        html += '            <select name="" id="" class="choose-attribute setupNiceSelect">';
+        html += '            <select name="attributeCatalogue[]" id="" class="choose-attribute setupNiceSelect">';
         html += '                <option value="0">'+selectAttributeGroup+'</option>';
         
         for (let i = 0; i < attributeCatalogues.length; i++) {
@@ -79,6 +87,10 @@
         for(let i = 0; i<id.length; i++){
             $('.choose-attribute').find('option[value='+id[i]+']').prop('disabled', true)
         }
+
+        // đoạn code này dùng để lấy được submit khi gửi form sẽ old được select name attributeCatalogue[]
+        $('.choose-attribute').find('option:selected').removeAttr('disabled')
+
         HT.destroyNiceSelect()
         HT.niceSelect()
         // console.log(id)
@@ -95,7 +107,7 @@
                     HT.getSelect2($(this))
                 })
             }else{
-                _this.parents('.col-lg-3').siblings('.col-lg-8').html('<input type="text" name="" class="fake-variant form-control" disabled>')
+                _this.parents('.col-lg-3').siblings('.col-lg-8').html('<input type="text" name="attribute['+attributeCatalogueId+'][]" class="fake-variant form-control" disabled>')
             }
             HT.disabledAttributeCatalogueChoose()
         })
@@ -185,88 +197,94 @@
 
         let variants = []
 
-        $('.variant-item').each(function(){ //variant gồm có (choose-attibute, selectVariant )
-            let _this = $(this)
-            let attr = []
-            let attrVariant = []
-            let attributeCatalogueId = _this.find('.choose-attribute option:selected').val() // .choose-attribute (l)
-            let optionText = _this.find('.choose-attribute option:selected').text()
-            let attribute = $('.variant-'+attributeCatalogueId).select2('data')
-            // console.log(attribute)
-
-            for(let i = 0; i < attribute.length; i++){
-                let item = {}
-                let itemVariant = {}
-
-                //Xử lý tạo mảng tên tuộc tính để hiển thị trong bảng danh sách phiên bản
-                item[optionText] = attribute[i].text
-                attr.push(item)
-
-                // Xử lý tạo mảng id phiên bản là gồm các id thuộc tính (attribute) để lưu vào name="" trong input <td hidden>
-                itemVariant[attributeCatalogueId] = attribute[i].id
-                attrVariant.push(itemVariant)
-            }
-            //Xử lý tạo mảng tên tuộc tính để hiển thị trong bảng danh sách phiên bản
-            attributeTitle.push(optionText)
-            attributes.push(attr)
-
-            // Xử lý tạo mảng id phiên bản là gồm các id thuộc tính (attribute) để lưu vào name="" trong input <td hidden>
-            variants.push(attrVariant)
-
-        })
-        // console.log(attributeTitle)
-        // console.log(attributes)
-        // console.log(variants)
-        
-        attributes = attributes.reduce(
-            (a, b) => a.flatMap( d => b.map( e => ( { ...d,...e } )))
-        )
-        // console.log(attributes)
-
-        variants = variants.reduce((a, b) => 
-            a.flatMap(d => b.map(e => ({ ...d, ...e })))
-        );
-        // console.log(variants)
-        
-        // Tạo append cho table.variantTable thead
-        HT.createTableHeader(attributeTitle)
-
-        let trClass = []
-
-        // Tạo append cho table.variantTable tbody
-        attributes.forEach((index,item) =>{
-            let row = HT.createVariantRow(index, variants[item])
-
-            let classModified = 'tr-variant-' + Object.values(variants[item]).join(', ').replace(/, /g, '-')
-            trClass.push(classModified)
-            if(!$('table.variantTable tbody tr').hasClass(classModified)){
-                $('table.variantTable tbody').append(row)
-            }
-        })
-
-        // Thực hiện xóa rowClass khi mảng class không includes đúng với mảng trClass
-        $('table.variantTable tbody tr').each(function(){
-            const row = $(this)
-            const rowClasses = row.attr('class')
-            if(rowClasses){
-                const rowClassArray = rowClasses.split(' ')
-                let shouldRemove = false
-                rowClassArray.forEach(rowClass =>{
-                    if(rowClass == 'variant-row'){
-                        return;
-                    }else if(!trClass.includes(rowClass)){
-                        shouldRemove = true
-                    }
-                })
-                if(shouldRemove){
-                    row.remove()
+        if($('.variant-item').length !== 0){
+            $('.variant-item').each(function(){ //variant gồm có (choose-attibute, selectVariant )
+                let _this = $(this)
+                let attr = []
+                let attrVariant = []
+                let attributeCatalogueId = _this.find('.choose-attribute option:selected').val() // .choose-attribute (l)
+                let optionText = _this.find('.choose-attribute option:selected').text()
+                let attribute = $('.variant-'+attributeCatalogueId).select2('data')
+                // console.log(attribute)
+    
+                for(let i = 0; i < attribute.length; i++){
+                    let item = {}
+                    let itemVariant = {}
+    
+                    //Xử lý tạo mảng tên tuộc tính để hiển thị trong bảng danh sách phiên bản
+                    item[optionText] = attribute[i].text
+                    attr.push(item)
+    
+                    // Xử lý tạo mảng id phiên bản là gồm các id thuộc tính (attribute) để lưu vào name="" trong input <td hidden>
+                    itemVariant[attributeCatalogueId] = attribute[i].id
+                    attrVariant.push(itemVariant)
                 }
-            }
-        })
-
-        // Không dùng cách render lại toàn bộ bảng
-        // let html = HT.renderTableHtml(attributes, attributeTitle, variants)
-        // $('table.variantTable').html(html)
+                //Xử lý tạo mảng tên tuộc tính để hiển thị trong bảng danh sách phiên bản
+                attributeTitle.push(optionText)
+                attributes.push(attr)
+    
+                // Xử lý tạo mảng id phiên bản là gồm các id thuộc tính (attribute) để lưu vào name="" trong input <td hidden>
+                variants.push(attrVariant)
+    
+            })
+            // console.log(attributeTitle)
+            // console.log(attributes)
+            // console.log(variants)
+            
+            attributes = attributes.reduce(
+                (a, b) => a.flatMap( d => b.map( e => ( { ...d,...e } )))
+            )
+            // console.log(attributes)
+    
+            variants = variants.reduce((a, b) => 
+                a.flatMap(d => b.map(e => ({ ...d, ...e })))
+            );
+            // console.log(variants)
+            
+            // Tạo append cho table.variantTable thead
+            HT.createTableHeader(attributeTitle)
+    
+            let trClass = []
+    
+            // Tạo append cho table.variantTable tbody
+            attributes.forEach((index,item) =>{
+                let row = HT.createVariantRow(index, variants[item])
+    
+                let classModified = 'tr-variant-' + Object.values(variants[item]).join(', ').replace(/, /g, '-')
+                trClass.push(classModified)
+                if(!$('table.variantTable tbody tr').hasClass(classModified)){
+                    $('table.variantTable tbody').append(row)
+                }
+            })
+    
+            // Thực hiện xóa rowClass khi mảng class của row đó đã không còn đã không includes đúng với mảng trClass
+            $('table.variantTable tbody tr').each(function(){
+                const row = $(this)
+                const rowClasses = row.attr('class')
+                if(rowClasses){
+                    const rowClassArray = rowClasses.split(' ')
+                    let shouldRemove = false
+                    rowClassArray.forEach(rowClass =>{
+                        if(rowClass == 'variant-row'){
+                            return;
+                        }else if(!trClass.includes(rowClass)){
+                            shouldRemove = true
+                        }
+                    })
+                    if(shouldRemove){
+                        row.remove()
+                    }
+                }
+            })
+    
+            // Không dùng cách render lại toàn bộ bảng
+            // let html = HT.renderTableHtml(attributes, attributeTitle, variants)
+            // $('table.variantTable').html(html)
+        }
+        else{
+            $('.variantTable thead').html('')
+            $('.variantTable tbody').html('')
+        }
     }
 
     // V53 Tạo append cho table.variantTable thead
@@ -317,16 +335,19 @@
 
         td = $('<td>').addClass('hidden td-variant')
 
+        let mainPrice = $('input[name=price]').val()
+        let mainSku = $('input[name=code]').val()
+
         let inputHiddenFields = [
             { name: 'variant[quantity][]', class: 'variant_quantity'},
-            { name: 'variant[sku][]', class: 'variant_sku'},
-            { name: 'variant[price][]', class: 'variant_price'},
+            { name: 'variant[sku][]', class: 'variant_sku', value: mainSku + '-' + classModified},
+            { name: 'variant[price][]', class: 'variant_price', value: mainPrice },
             { name: 'variant[barcode][]', class: 'variant_barcode'},
             { name: 'variant[file_name][]', class: 'variant_filename'},
             { name: 'variant[file_path][]', class: 'variant_filepath'},
             { name: 'variant[album][]', class: 'variant_album'},
-            { name: 'attribute[name][]', value: attibuteString},
-            { name: 'attribute[id][]', value: attributeId},
+            { name: 'productVariant[name][]', value: attibuteString},
+            { name: 'productVariant[id][]', value: attributeId},
         ]
         // console.log(inputHiddenFields)
         $.each(inputHiddenFields, function(_, field){
@@ -338,8 +359,8 @@
         })
 
         row.append($('<td>').addClass('td-quantity').text('-'))
-            .append($('<td>').addClass('td-price').text('-'))
-            .append($('<td>').addClass('td-sku').text('-'))
+            .append($('<td>').addClass('td-price').text(mainPrice))
+            .append($('<td>').addClass('td-sku').text(mainSku + '-' + classModified))
             .append(td)
 
         return row
@@ -395,8 +416,8 @@
                         html += '           <input type="text" name"variant[file_name][]" class="variant_filename">'; 
                         html += '           <input type="text" name"variant[file_path][]" class="variant_filepath">'; 
                         html += '           <input type="text" name"variant[album][]" class="variant_album">';
-                        html += '           <input type="text" name"attribute[name][]" value="'+attributeString+'">';   
-                        html += '           <input type="text" name"attribute[id][]" value="'+attributeId+'">';     
+                        html += '           <input type="text" name"productVariant[name][]" value="'+attributeString+'">';   
+                        html += '           <input type="text" name"productVariant[id][]" value="'+attributeId+'">';     
                         html += '        </td>';
                         
                         html += '    </tr>';
@@ -674,6 +695,32 @@
             $('.updateVariantTr').remove()
         })
     }
+
+    // V54 hiển thị ra dạng select multiple (select2) và hiển lại các option đã chọn trong selectVariant khi submit form
+    HT.setupSelectMutiple = () => {
+        if($('.selectVariant').length){
+            $('.selectVariant').each(function(){
+                let _this = $(this)
+                let attributeCatalogueId = _this.attr('data-catid')
+                if(attribute != ''){
+                    $.get('ajax/attribute/loadAttribute', {
+                        attribute: attribute,
+                        attributeCatalogueId: attributeCatalogueId
+                    }, function(json){
+                        if(json.items != 'undefined' && json.items.length){
+                            for(let i = 0; i < json.items.length; i++){
+                                var option = new Option(json.items[i].text, json.items[i].id, true, true)
+                                _this.append(option).trigger('change')//sau khi append ở class selectVariant thì ta trigger('change') luôn thì nó sẽ chạy được sự kiện change của selectVariant
+                            }
+                        }
+                    });
+                }
+                HT.getSelect2(_this)
+                HT.disabledAttributeCatalogueChoose()
+            })
+        }
+        
+    }
     
 
     //Dùng trong form product/variant
@@ -721,7 +768,11 @@
         HT.saveVariantUpdate()
 
         //gọi phương thức tạo niceSelect (giao diện)
+        HT.destroyNiceSelect()
         HT.niceSelect();
+       
+        // Hiển thị ra dạng select multiple (select2) và hiển lại các option đã chọn trong selectVariant khi submit form
+        HT.setupSelectMutiple()
     })
 
 })(jQuery)

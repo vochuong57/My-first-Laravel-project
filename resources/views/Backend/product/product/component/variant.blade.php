@@ -3,15 +3,17 @@
         <div class="variant-checkbox uk-flex uk-flex-middle">
             <input 
                 type="checkbox"
-                value=""
+                value="1"
                 name="accept"
                 id="variantCheckbox"
+                {{ old('accept') == 1 ? 'checked' : '' }}
             >
             <label for="variantCheckbox" class="">{{ __('messages.Product_variantCheckbox') }}</label>
         </div>
     </div>
 </div>
-<div class="variant-wrapper hidden">
+
+<div class="variant-wrapper {{ old('accept') == 1 ? '' : 'hidden' }}">
     <div class="row variant-container">
         <div class="col-lg-3">
             <div class="attribute-title">{{ __('messages.Product_attribute-title-1') }}</div>
@@ -21,7 +23,32 @@
         </div>
     </div>
     <div class="variant-body">
-        
+        @if(old('attributeCatalogue'))
+        @foreach(old('attributeCatalogue') as $keyAttr => $valAttr)
+        <div class="row mb20 variant-item">
+            <div class="col-lg-3">
+                <div class="attribute-catalogue">
+                    <select name="attributeCatalogue[]" id="" class="choose-attribute setupNiceSelect">
+                        <option value="0">{{ __('messages.Product_select-attribute-group') }}</option>
+                        @foreach($attributeCatalogues as $key => $val)
+                        <option {{ ($valAttr == $val->id) ? 'selected' : '' }} value="{{ $val->id }}">{{ $val->attribute_catalogue_language->first()->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                @if($valAttr == 0)
+                <input type="text" name="" class="fake-variant form-control" disabled>
+                @else
+                <select name="attribute[{{ $valAttr }}][]" class="selectVariant form-control variant-{{ $valAttr }}" multiple data-catid="{{ $valAttr }}" id=""></select>
+                @endif
+            </div>
+            <div class="col-lg-1">
+                <button type="button" class="remove-attribute btn btn-danger"><i class="fa fa-trash"></i></button>
+            </div>
+        </div>
+        @endforeach
+        @endif
     </div>
     <div class="variant-foot mt10">
         <button type="button" class="add-variant">{{ __('messages.Product_add-variant') }}</button>
@@ -35,6 +62,8 @@
             'name' => $name
         ];
     })->values());
+
+    var attribute='{{ base64_encode(json_encode(old('attribute'))) }}'
 
     //variant
     let selectAttributeGroup = "{{ __('messages.Product_select-attribute-group') }}";
