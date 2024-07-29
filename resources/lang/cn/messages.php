@@ -380,6 +380,7 @@ return [
     'Product_save' => '保存',
     'Product_manage_file' => '文件管理',
     'Product_file_name' => '文件名',
-    'Product_file_path' => '路径'
+    'Product_file_path' => '路径',
+    'Product_publish' => '状态'
 
 ];

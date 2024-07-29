@@ -697,8 +697,10 @@
     }
 
     // V54 hiển thị ra dạng select multiple (select2) và hiển lại các option đã chọn trong selectVariant khi submit form
-    HT.setupSelectMutiple = () => {
+    HT.setupSelectMutiple = (callback) => {
         if($('.selectVariant').length){
+            let count = $('.selectVariant').length
+
             $('.selectVariant').each(function(){
                 let _this = $(this)
                 let attributeCatalogueId = _this.attr('data-catid')
@@ -713,6 +715,10 @@
                                 _this.append(option).trigger('change')//sau khi append ở class selectVariant thì ta trigger('change') luôn thì nó sẽ chạy được sự kiện change của selectVariant
                             }
                         }
+
+                        if(--count === 0 && callback){
+                            callback()
+                        }
                     });
                 }
                 HT.getSelect2(_this)
@@ -720,6 +726,39 @@
             })
         }
         
+    }
+
+    // V55 Lưu và đổ lại value của td hidden và đổ lại giữ liệu lên toolbox và lên td hiển thị khi submit form
+    HT.productVariant = () =>{
+        variant = JSON.parse(atob(variant))
+        // console.log(variant)
+        // console.log($('.variant-row').length)
+
+        $('.variant-row').each(function(index, value){
+
+            let _this = $(this)
+            let inputHiddenFields = [
+                { name: 'variant[quantity][]', class: 'variant_quantity', value: variant.quantity[index]},
+                { name: 'variant[sku][]', class: 'variant_sku', value: variant.sku[index]},
+                { name: 'variant[price][]', class: 'variant_price', value: variant.price[index] },
+                { name: 'variant[barcode][]', class: 'variant_barcode', value: variant.barcode[index]},
+                { name: 'variant[file_name][]', class: 'variant_filename', value: variant.file_name[index]},
+                { name: 'variant[file_path][]', class: 'variant_filepath', value: variant.file_path[index]},
+                { name: 'variant[album][]', class: 'variant_album', value: variant.album[index]},
+            ]
+
+            for(let i = 0; i < inputHiddenFields.length; i++){
+                _this.find('input[name="'+inputHiddenFields[i].name+'"]').val(inputHiddenFields[i].value)
+            }
+
+            let album = variant.album[index]
+            let variantImage = (album) ? album.split(',')[0] : 'Backend/img/not-found.png'
+            
+            _this.find('.td-quantity').html(HT.addCommas(variant.quantity[index]))
+            _this.find('.td-price').html(HT.addCommas(variant.price[index]))
+            _this.find('.td-sku').html(variant.sku[index])
+            _this.find('.imageSrc').attr('src', variantImage) 
+        })
     }
     
 
@@ -772,7 +811,12 @@
         HT.niceSelect();
        
         // Hiển thị ra dạng select multiple (select2) và hiển lại các option đã chọn trong selectVariant khi submit form
-        HT.setupSelectMutiple()
+        HT.setupSelectMutiple(
+            () => {
+                // Lưu và đổ lại value của td hidden và đổ lại giữ liệu lên toolbox và lên td hiển thị khi submit form
+                HT.productVariant()
+            }
+        )
     })
 
 })(jQuery)

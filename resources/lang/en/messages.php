@@ -379,6 +379,7 @@ return[
     'Product_save' => 'Save',
     'Product_manage_file' => 'Manage file',
     'Product_file_name' => 'File name',
-    'Product_file_path' => 'File path'
+    'Product_file_path' => 'File path',
+    'Product_publish' => 'Status'
 
 ];

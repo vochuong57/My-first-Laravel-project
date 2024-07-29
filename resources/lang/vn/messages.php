@@ -389,4 +389,5 @@ return[
     'Product_manage_file'=>'Quản lý file',
     'Product_file_name'=>'Tên file',
     'Product_file_path'=>'Đường dẫn',
+    'Product_publish'=>'Tình trạng'
 ];
