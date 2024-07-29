@@ -23,6 +23,7 @@
         </div>
     </div>
     <div class="variant-body">
+        <!-- v54 -->
         @if(old('attributeCatalogue'))
         @foreach(old('attributeCatalogue') as $keyAttr => $valAttr)
         <div class="row mb20 variant-item">
@@ -63,7 +64,11 @@
         ];
     })->values());
 
+    // V54
     var attribute='{{ base64_encode(json_encode(old('attribute'))) }}'
+
+    // V55
+    var variant = '{{ base64_encode(json_encode(old('variant'))) }}'
 
     //variant
     let selectAttributeGroup = "{{ __('messages.Product_select-attribute-group') }}";
@@ -83,4 +88,5 @@
     let manageFile = "{{ __('messages.Product_manage_file') }}";
     let fileName = "{{ __('messages.Product_file_name') }}";
     let filePath = "{{ __('messages.Product_file_path') }}";
+    let publish = "{{ __('messages.Product_publish') }}";
 </script>
