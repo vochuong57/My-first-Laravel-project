@@ -30,6 +30,7 @@ class ProductVariant extends Model
 
     protected $table='product_variants';
 
+    // khai báo mối quan hệ này dùng để thêm dữ liệu nhiều mảng cùng một lúc dùng createBatch (insert) vào bảng product_variants
     public function products(){
         return $this->belongsTo(Product::class,'product_id', 'id');
     }
