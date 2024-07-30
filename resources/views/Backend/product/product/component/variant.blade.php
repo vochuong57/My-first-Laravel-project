@@ -65,10 +65,10 @@
     })->values());
 
     // V54
-    var attribute='{{ base64_encode(json_encode(old('attribute'))) }}'
+    var attribute='{{ base64_encode(json_encode(old('attribute'))) }}' // (old('attribute') lấy từ select2 thực hiện chọn multiple
 
     // V55
-    var variant = '{{ base64_encode(json_encode(old('variant'))) }}'
+    var variant = '{{ base64_encode(json_encode(old('variant'))) }}' // old('variant') lấy từ td hidden
 
     //variant
     let selectAttributeGroup = "{{ __('messages.Product_select-attribute-group') }}";

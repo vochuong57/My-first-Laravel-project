@@ -20,6 +20,8 @@ use Spatie\LaravelIgnition\Exceptions\CannotExecuteSolutionForNonLocalIp;
 use Illuminate\Support\Str;
 use App\Repositories\Interfaces\RouterRepositoryInterface as RouterRepository;
 use App\Repositories\Interfaces\ProductLanguageRepositoryInterface as ProductLanguageRepository;
+use App\Repositories\Interfaces\ProductVariantLanguageRepositoryInterface as ProductVariantLanguageRepository;
+use App\Repositories\Interfaces\ProductVariantAttributeRepositoryInterface as ProductVariantAttributeRepository;
 
 /**
  * Class UserService
@@ -31,11 +33,15 @@ class ProductService extends BaseService implements ProductServiceInterface
     protected $routerRepository;
     protected $productLanguageRepository;
     protected $controllerName = 'ProductController';
+    protected $productVariantLanguageRepository;
+    protected $productVariantAttributeRepository;
 
-    public function __construct(ProductRepository $productRepository, RouterRepository $routerRepository, ProductLanguageRepository $productLanguageRepository){
+    public function __construct(ProductRepository $productRepository, RouterRepository $routerRepository, ProductLanguageRepository $productLanguageRepository, ProductVariantLanguageRepository $productVariantLanguageRepository, ProductVariantAttributeRepository $productVariantAttributeRepository){
         $this->productRepository=$productRepository;
         $this->routerRepository=$routerRepository;
         $this->productLanguageRepository=$productLanguageRepository;
+        $this->productVariantLanguageRepository = $productVariantLanguageRepository;
+        $this->productVariantAttributeRepository = $productVariantAttributeRepository;
     }
 
     public function paginate($request, $languageId){//$request để tiến hành chức năng tìm kiếm
@@ -82,6 +88,8 @@ class ProductService extends BaseService implements ProductServiceInterface
                 $catalogue=$this->mergeCatalogue($request);
                 //dd($catalogue);
                 $product->product_catalogues()->sync($catalogue);//product_catalogues() là function của Model/Product
+
+                $this->createVariant($product, $request, $languageId);
             }
             DB::commit();
             return true;
@@ -334,6 +342,83 @@ class ProductService extends BaseService implements ProductServiceInterface
         $payloadLanguage['product_id']=$product->id;
         //dd($payloadLanguage);
         return $payloadLanguage;
+    }
+
+    // Tạo dữ liệu cho phiên bản có nhiều sản phẩm
+    private function createVariant($product, $request, $languageId){
+        $payload = $request->only(['variant', 'productVariant', 'attribute']);
+        // dd($payload);
+        
+        // 1. Create product_variants
+        $variant = $this->createVariantArray($payload);
+        $product->product_variants()->delete();
+        $variants = $product->product_variants()->createMany($variant);
+
+        // 2. Create product_variant_language
+        $variantsId = $variants->pluck('id');
+        // dd($variantsId);
+        $productVariantLanguage = [];
+        if(count($variantsId)){
+            foreach($variantsId as $key => $val){
+                $productVariantLanguage[] = [
+                    'product_variant_id' => $val,
+                    'language_id' => $languageId,
+                    'name' => $payload['productVariant']['name'][$key]
+                ];
+            }
+        }
+        // dd($productVariantLanguage);
+        $variantLanguage = $this->productVariantLanguageRepository->createBatch($productVariantLanguage);
+        // dd($variantLanguage);
+
+        // 3. Create product_variant_attribute
+        $variantAttribute = [];
+        if(count($variantsId)){
+            foreach($variantsId as $key => $val){
+                if(count($payload['attribute'])){
+                    foreach($payload['attribute'] as $keyAttr => $valAttr){
+                        if(count($valAttr)){
+                            foreach($valAttr as $attr){
+                                $variantAttribute[] = [
+                                    'product_variant_id' => $val,
+                                    'attribute_id' => $attr
+                                ];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        // dd($variantAttribute);
+
+        $variantAttribute = $this->productVariantAttributeRepository->createBatch($variantAttribute);
+    }
+
+    private function createVariantArray(array $payload = []): array{
+        $variant = [];
+        if(isset($payload['variant']['sku']) && count($payload['variant']['sku'])){
+            foreach($payload['variant']['sku'] as $key => $val){
+                $variant[]=[
+                    'code' => ($payload['productVariant']['id'][$key]) ?? '',
+                    'quantity' => ($payload['variant']['quantity'][$key]) ?? '',
+                    'sku' => $val,
+                    'price' => ($payload['variant']['price'][$key]) ? $this->convert_price($payload['variant']['price'][$key]) : '',
+                    'barcode' => ($payload['variant']['barcode'][$key]) ?? '',
+                    'file_name' => ($payload['variant']['file_name'][$key]) ?? '',
+                    'file_path' => ($payload['variant']['file_path'][$key]) ?? '',
+                    'album' => ($payload['variant']['album'][$key]) ?? '',  
+                    'user_id' => Auth::id(),                  
+                ];
+            }
+            // dd($variant);
+        }
+        return $variant;
+    }
+
+    private function convert_price($price) {
+        // Sử dụng str_replace để thay thế dấu chấm bằng chuỗi rỗng
+        $converted_price = str_replace('.', '', $price);
+        return $converted_price;
     }
 }
 

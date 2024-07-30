@@ -3,12 +3,12 @@
 namespace App\Repositories\Interfaces;
 
 /**
- * Interface BaseServiceInterface
+ * Interface ProductVariantLanguageServiceInterface
  * @package App\Services\Interfaces
  */
-interface BaseRepositoryInterface
+interface ProductVariantLanguageRepositoryInterface
 {
-    public function all(array $relation = []);
+    public function all();
     public function pagination(
         array $column=['*'],
         array $condition=[],
@@ -19,18 +19,13 @@ interface BaseRepositoryInterface
         array $relations=[],
         array $rawQuery = []
     );
-    public function findById(int $id, array $column=['*'], array $relation =[]);
-    public function findWhereIn(string $column='', array $ids = []);
-    public function findByCondition(array $condition = []);
-    public function findByConditions(array $condition = []);
     public function create(array $payload =[]);
     public function createBatch(array $payload = []);
+    public function findById(int $id, array $column=['*'], array $relation =[]);
     public function update(int $id=0, array $payload=[]);
-    public function updateByWhereIn(string $whereInField='', array $whereIn=[], array $payload=[]);
-    public function updateByWhere(array $condition=[], array $payload=[]);
     public function delete(int $id=0);
     public function forceDelete(int $id=0);
+    public function updateByWhereIn(string $whereInField='', array $whereIn=[], array $payload=[]);//dùng khi ở toolbox thay đổi hàng loạt trạng thái user
     public function deleteByWhereIn(string $whereInField = '', array $whereIn = [], int $languageId = null);
-    public function deleteByWhere(array $condition=[]);
-    public function createPivot($model, array $payload=[], string $relation ='');
+    public function createPivot($model, array $payload=[], string $relation='');//xử lý logic thêm 2 bảng
 }
