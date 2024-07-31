@@ -12,7 +12,7 @@ use App\Traits\QueryScopes;
 
 class ProductVariant extends Model
 {
-    use HasFactory, SoftDeletes, QueryScopes;
+    use HasFactory, QueryScopes;
 
     protected $fillable = [//c=những trường nào cho phép người dùng cập nhật thông tin
         'product_id',
@@ -43,4 +43,8 @@ class ProductVariant extends Model
         )->withTimestamps();
     }
 
+    // ProductRepository/getProductById() c1
+    public function attributes(){
+        return $this->belongsToMany(Attribute::class, 'product_variant_attribute', 'product_variant_id', 'attribute_id');
+    }
 }

@@ -89,13 +89,20 @@ class ProductService extends BaseService implements ProductServiceInterface
                 //dd($catalogue);
                 $product->product_catalogues()->sync($catalogue);//product_catalogues() là function của Model/Product
 
-                $this->createVariant($product, $request, $languageId);
+
+                if (!empty($request->input('attribute', []))) {
+                    // Đảm bảo rằng hàm createVariant chỉ được gọi khi `attribute` không rỗng
+                    if (!empty($request->input('attribute', []))) {
+                        $this->createVariant($product, $request, $languageId);
+                    }
+                }
+                
             }
             DB::commit();
             return true;
         }catch(\Exception $ex){
             DB::rollBack();
-            echo $ex->getMessage();//die();
+            echo $ex->getMessage();die();
             return false;
         }
     }
@@ -113,12 +120,25 @@ class ProductService extends BaseService implements ProductServiceInterface
                 $catalogue=$this->mergeCatalogue($request);
                 //dd($catalogue);
                 $product->product_catalogues()->sync($catalogue);
+
+                $product->product_variants()->each(function($variant){
+                    $variant->languages()->detach();
+                    $variant->attributes()->detach();
+                    $variant->delete();
+                });
+                if (!empty($request->input('attribute', []))) {
+                    // Đảm bảo rằng hàm createVariant chỉ được gọi khi `attribute` không rỗng
+                    if (!empty($request->input('attribute', []))) {
+                        $this->createVariant($product, $request, $languageId);
+                    }
+                }
+                
             }
             DB::commit();
             return true;
         }catch(\Exception $ex){
             DB::rollBack();
-            echo $ex->getMessage();//die();
+            echo $ex->getMessage();die();
             return false;
         }
     }
@@ -253,7 +273,13 @@ class ProductService extends BaseService implements ProductServiceInterface
             'publish',
             'image',
             'album',
-            'product_catalogue_id'
+            'product_catalogue_id',
+            'code',
+            'made_id',
+            'price',
+            'attributeCatalogue',
+            'attribute',
+            'variant'
         ];
     }
 
@@ -311,7 +337,15 @@ class ProductService extends BaseService implements ProductServiceInterface
         if($payload['publish'] == null || $payload['publish'] == 0){
             $payload['publish'] = 1;
         }
-        //dd($payload);
+        if($payload['price'] != 0){
+            $payload['price'] = $this->convert_price($payload['price']);
+        }
+
+        // V57
+        $payload['attributeCatalogue'] = $this->formatJson($request, 'attributeCatalogue');
+        $payload['attribute'] = $this->formatJson($request, 'attribute');
+        $payload['variant'] = $this->formatJson($request, 'variant');
+        // dd($payload);
         $product=$this->productRepository->create($payload);
         //dd($language);
         //echo -1; die();
@@ -320,8 +354,22 @@ class ProductService extends BaseService implements ProductServiceInterface
     }
     private function updateTableProduct($request, $id){
         $payload = $request->only($this->payload());//lấy tất cả ngoại trừ hai trường này thay vì dùng input là lấy tất cả
-        $payload['album']=$this->formatAlbum($request);
         //dd($payload);
+        //vì chúng ta có khóa ngoại khi thêm bảng này mà khóa ngoại này là user_id thì đó là tài khoản đã đăng nhập thì
+        $payload['user_id']=Auth::id();
+        $payload['album']=$this->formatAlbum($request);
+        if($payload['publish'] == null || $payload['publish'] == 0){
+            $payload['publish'] = 1;
+        }
+        if($payload['price'] != 0){
+            $payload['price'] = $this->convert_price($payload['price']);
+        }
+
+        // V57
+        $payload['attributeCatalogue'] = $this->formatJson($request, 'attributeCatalogue');
+        $payload['attribute'] = $this->formatJson($request, 'attribute');
+        $payload['variant'] = $this->formatJson($request, 'variant');
+        // dd($payload);
         $flag=$this->productRepository->update($id,$payload);
         return $flag;
     }
@@ -344,14 +392,13 @@ class ProductService extends BaseService implements ProductServiceInterface
         return $payloadLanguage;
     }
 
-    // Tạo dữ liệu cho phiên bản có nhiều sản phẩm
+    // Tạo dữ liệu cho sản phẩm có nhiều phiên bản
     private function createVariant($product, $request, $languageId){
         $payload = $request->only(['variant', 'productVariant', 'attribute']);
         // dd($payload);
         
         // 1. Create product_variants
         $variant = $this->createVariantArray($payload);
-        $product->product_variants()->delete();
         $variants = $product->product_variants()->createMany($variant);
 
         // 2. Create product_variant_language
@@ -372,25 +419,23 @@ class ProductService extends BaseService implements ProductServiceInterface
         // dd($variantLanguage);
 
         // 3. Create product_variant_attribute
+        $attributeCombines = $this->combineAttribute(array_values($payload['attribute']));
+        // dd($attributeCombines);
+
         $variantAttribute = [];
         if(count($variantsId)){
             foreach($variantsId as $key => $val){
-                if(count($payload['attribute'])){
-                    foreach($payload['attribute'] as $keyAttr => $valAttr){
-                        if(count($valAttr)){
-                            foreach($valAttr as $attr){
-                                $variantAttribute[] = [
-                                    'product_variant_id' => $val,
-                                    'attribute_id' => $attr
-                                ];
-                            }
-                        }
+                if(count($attributeCombines)){
+                    foreach($attributeCombines[$key] as $attributeId){
+                        $variantAttribute[]=[
+                            'product_variant_id' => $val,
+                            'attribute_id' => $attributeId,
+                        ];
                     }
                 }
             }
         }
         // dd($variantAttribute);
-
         $variantAttribute = $this->productVariantAttributeRepository->createBatch($variantAttribute);
     }
 
@@ -400,9 +445,9 @@ class ProductService extends BaseService implements ProductServiceInterface
             foreach($payload['variant']['sku'] as $key => $val){
                 $variant[]=[
                     'code' => ($payload['productVariant']['id'][$key]) ?? '',
-                    'quantity' => ($payload['variant']['quantity'][$key]) ?? '',
+                    'quantity' => ($payload['variant']['quantity'][$key]) ?? 0,
                     'sku' => $val,
-                    'price' => ($payload['variant']['price'][$key]) ? $this->convert_price($payload['variant']['price'][$key]) : '',
+                    'price' => ($payload['variant']['price'][$key]) ? $this->convert_price($payload['variant']['price'][$key]) : 0.0,
                     'barcode' => ($payload['variant']['barcode'][$key]) ?? '',
                     'file_name' => ($payload['variant']['file_name'][$key]) ?? '',
                     'file_path' => ($payload['variant']['file_path'][$key]) ?? '',
@@ -413,6 +458,20 @@ class ProductService extends BaseService implements ProductServiceInterface
             // dd($variant);
         }
         return $variant;
+    }
+
+    // Đệ quy để tiến hành tạo mảng dữ liệu cho bảng product_variant_attribute
+    private function combineAttribute($attributes = [], $index = 0){
+        if($index === count($attributes)) return [[]];
+        
+        $subCombines = $this->combineAttribute($attributes, $index + 1);
+        $combines = [];
+        foreach($attributes[$index] as $key => $val){
+            foreach($subCombines as $keySub => $valSub){
+                $combines[] = array_merge([$val], $valSub);
+            }
+        }
+        return $combines;
     }
 
     private function convert_price($price) {

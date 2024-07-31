@@ -25,7 +25,10 @@ class Product extends Model
         'product_catalogue_id',
         'price',
         'made_id',
-        'code'
+        'code',
+        'attributeCatalogue',
+        'attribute',
+        'variant'
     ];
 
     protected $table='products';
@@ -50,7 +53,8 @@ class Product extends Model
         return $this->belongsToMany(ProductCatalogue::class, 'product_catalogue_product', 'product_id', 'product_catalogue_id');//sau đó ở đây nó sẽ lấy được tên nhờ việc nó truy cập được vào trong các function ProductCatalogue::class cụ thể ở đây là product_catalogue_language() nơi lưu tên product_catalogue
     }
 
-    // khai báo mối quan hệ này dùng để thêm dữ liệu nhiều mảng cùng một lúc dùng createBatch (insert) vào bảng product_variants
+    // khai báo mối quan hệ này dùng để thêm dữ liệu nhiều mảng cùng một lúc dùng createBatch (insert) vào bảng product_variants, cũng nhưng là để lấy ra phần relations
+    // khi dùng hàm getProductById() trong ProductRepository c0
     public function product_variants(){
         return $this->hasMany(ProductVariant::class, 'product_id', 'id');
     }
