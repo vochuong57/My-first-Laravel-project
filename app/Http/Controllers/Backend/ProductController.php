@@ -136,6 +136,7 @@ class ProductController extends Controller
 
         //truy vấn thông tin
         $product=$this->productRepository->getProductById($id,$this->language);
+        // dd($product);
 
         if(!$product){
             return redirect()->route('product.index')->with('error', 'Bài viết này chưa có bản dịch của ngôn ngữ được chọn');
@@ -147,9 +148,11 @@ class ProductController extends Controller
 
         $album = json_decode($product->album);
 
+        $attributeCatalogues =  $this->attributeCatalogueRepository->getAll($this->language);
+
         $this->authorize('modules', 'product.edit');//phân quyền
 
-        return view('Backend.dashboard.layout', compact('template','config','product','dropdown','album'));
+        return view('Backend.dashboard.layout', compact('template','config','product','dropdown','album','attributeCatalogues'));
     }
     //xử lý sửa user
     public function update($id, UpdateProductRequest $request){

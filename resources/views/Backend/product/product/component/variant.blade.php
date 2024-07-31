@@ -6,14 +6,14 @@
                 value="1"
                 name="accept"
                 id="variantCheckbox"
-                {{ old('accept') == 1 ? 'checked' : '' }}
+                {{ (old('accept') == 1 || (isset($product) && count($product->product_variants) > 0))  ? 'checked' : '' }}
             >
             <label for="variantCheckbox" class="">{{ __('messages.Product_variantCheckbox') }}</label>
         </div>
     </div>
 </div>
 
-<div class="variant-wrapper {{ old('accept') == 1 ? '' : 'hidden' }}">
+<div class="variant-wrapper {{ (old('accept') == 1 || (isset($product) && count($product->product_variants) > 0)) ? '' : 'hidden' }}">
     <div class="row variant-container">
         <div class="col-lg-3">
             <div class="attribute-title">{{ __('messages.Product_attribute-title-1') }}</div>
@@ -24,8 +24,12 @@
     </div>
     <div class="variant-body">
         <!-- v54 -->
-        @if(old('attributeCatalogue'))
-        @foreach(old('attributeCatalogue') as $keyAttr => $valAttr)
+        @php
+            $variantCatalogue = old('attributeCatalogue', (isset($product->attributeCatalogue)) ? json_decode($product->attributeCatalogue, TRUE) : null);
+            //dd($variantCatalogue)
+        @endphp
+        @if(old('attributeCatalogue') || (isset($product) && count($product->product_variants) > 0))
+        @foreach($variantCatalogue as $keyAttr => $valAttr)
         <div class="row mb20 variant-item">
             <div class="col-lg-3">
                 <div class="attribute-catalogue">
@@ -65,10 +69,10 @@
     })->values());
 
     // V54
-    var attribute='{{ base64_encode(json_encode(old('attribute'))) }}' // (old('attribute') lấy từ select2 thực hiện chọn multiple
+    var attribute='{{ base64_encode(json_encode(old('attribute', (isset($product->attribute)) ? json_decode($product->attribute, TRUE) : null))) }}' // (old('attribute') lấy từ select2 thực hiện chọn multiple
 
     // V55
-    var variant = '{{ base64_encode(json_encode(old('variant'))) }}' // old('variant') lấy từ td hidden
+    var variant = '{{ base64_encode(json_encode(old('variant', (isset($product->variant)) ? json_decode($product->variant, TRUE) : null))) }}' // old('variant') lấy từ td hidden
 
     //variant
     let selectAttributeGroup = "{{ __('messages.Product_select-attribute-group') }}";

@@ -10,6 +10,7 @@ interface BaseServiceInterface
 {
    public function currentLanguage();
    public function formatAlbum($request);
+   public function formatJson($request, $inputName);
    public function nestedset();
    public function formatRouterPayload($request, $model, $controller, $languageId);
    public function createRouter($request, $model, $controllerName, $languageId);

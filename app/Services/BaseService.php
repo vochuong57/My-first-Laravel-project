@@ -41,6 +41,10 @@ class BaseService implements BaseServiceInterface
     public function formatAlbum($request){
         return ($request->input('album') && !empty($request->input('album'))) ? json_encode($request->input('album')) : null;
     }
+
+    public function formatJson($request, $inputName){
+        return ($request->input($inputName) && !empty($request->input($inputName))) ? json_encode($request->input($inputName)) : null;
+    }
     
     public function nestedset(){
         $this->nestedset->Get();//gọi Get để lấy dữ liệu
