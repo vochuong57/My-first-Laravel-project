@@ -70,7 +70,11 @@
                     [
                         'title' => 'Module Management',
                         'route' => 'generate/index'
-                    ],                    
+                    ],    
+                    [
+                        'title' => 'System Configuration',
+                        'route' => 'system/index'
+                    ]                                    
                 ]
             ]
         ]

@@ -67,5 +67,6 @@ class Kernel extends HttpKernel
         //khai báo thêm middle ware tự tạo
         'admin' => \App\Http\Middleware\AuthenticateMiddleware::class,
         'locale' => \App\Http\Middleware\SetLocale::class,
+        'backend_default_locale' => \App\Http\Middleware\SetDefaultLocale::class,
     ];
 }

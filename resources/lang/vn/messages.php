@@ -389,5 +389,17 @@ return[
     'Product_manage_file'=>'Quản lý file',
     'Product_file_name'=>'Tên file',
     'Product_file_path'=>'Đường dẫn',
-    'Product_publish'=>'Tình trạng'
+    'Product_publish'=>'Tình trạng',
+
+    //SYSTEM
+    'system' => [
+        'index'=>[
+            'title'=> 'Cấu hình hệ thống',
+        ],
+        'create'=>[
+            'title'=>'Cài đặt cấu hình hệ thống',
+            'btnTitle'=>'Thêm mới'
+        ],
+        
+    ],
 ];
