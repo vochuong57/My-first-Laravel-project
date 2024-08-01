@@ -21,6 +21,7 @@ use App\Http\Controllers\Backend\AttributeCatalogueController;
 use App\Http\Controllers\Backend\AttributeController;
 use App\Http\Controllers\Backend\ProductCatalogueController;
 use App\Http\Controllers\Backend\ProductController;
+use App\Http\Controllers\Backend\SystemController;
 //@@useController@@
 
 
@@ -51,7 +52,7 @@ Route::get('admin',[AuthController::class, 'index'])->name('auth.admin')->middle
 Route::post('login',[AuthController::class, 'login'])->name('auth.login');//Trang xử lí dùng trong action form login.blade.php (xử lý nhập liệu, kiểm tra dữ liệu và truy cập tới trang admin)
 Route::get('logout',[AuthController::class, 'logout'])->name('auth.logout');//Trang hiển thị dùng để logout (xử lý việc huỷ dữ liệu Auth và chuyển trang về auth.admin)
 
-Route::group(['middleware' => ['admin','locale']], function (){
+Route::group(['middleware' => ['admin','locale','backend_default_locale']], function (){
     //DashboardController (Trang chủ khi đăng nhập thành công)
     Route::get('dashboard/index',[DashboardController::class, 'index'])->name('dashboard.index');//hiển thị form dashboard khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
 
@@ -221,6 +222,10 @@ Route::group(['middleware' => ['admin','locale']], function (){
 
         Route::get('{id}/destroy',[ProductController::class, 'destroy'])->name('product.destroy')->where(['id'=>'[0-9]+']);//hiển thị form xóa user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
         Route::post('{id}/delete',[ProductController::class, 'delete'])->name('product.delete')->where(['id'=>'[0-9]+']);//Thực thi xử lý xóa user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+    });
+
+    Route::group(['prefix'=>'system'], function(){
+        Route::get('index',[SystemController::class, 'index'])->name('system.index')->middleware(['admin', 'locale']);//hiển thị form user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
     });
 
     //@@new-module@@

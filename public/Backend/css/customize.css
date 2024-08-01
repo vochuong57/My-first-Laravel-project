@@ -403,3 +403,12 @@ table strong{
     color: #1a0dab;
     margin-bottom: 5px;
 }
+/*  */
+.system-link{
+    font-size: 12px;
+    font-weight: normal;
+    font-style: italic;
+}
+.system-textarea{
+    height: 100px !important;
+}

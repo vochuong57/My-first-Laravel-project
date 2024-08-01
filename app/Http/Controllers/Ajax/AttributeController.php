@@ -39,7 +39,7 @@ class AttributeController extends Controller
 
         return response()->json(array('items' => $attributeMapped));
     }
-
+    // V54
     public function loadAttribute(Request $request){
         $payload['attribute'] = json_decode(base64_decode($request->input('attribute')), TRUE);
         $payload['attributeCatalogueId'] = $request->input('attributeCatalogueId');
