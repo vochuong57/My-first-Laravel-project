@@ -84,6 +84,7 @@ class BaseRepository implements BaseRepositoryInterface
         $model= $this->model->create($payload);
         return $model->fresh();
     }
+    //phương thức thêm (INSERT)
     public function createBatch(array $payload = []){
         return $this->model->insert($payload);
     }
@@ -104,6 +105,9 @@ class BaseRepository implements BaseRepositoryInterface
         }
         //echo $query->toSql(); die();
         return $query->update($payload);
+    }
+    public function updateOrInsert(array $payload = [], array $condition = []){
+        return $this->model->updateOrInsert($condition, $payload);
     }
     //Phương thức xóa mềm (DELETE) 
     public function delete(int $id=0){

@@ -1,10 +1,10 @@
 @include('Backend.dashboard.component.breadcrumb', ['title' =>$config['seo']['index']['title']])
 <!-- V58 -->
 
-<form action="" method="post" class="box">
+<form action="{{ route('system.create') }}" method="post" class="box">
     @csrf
     <div class="wrapper wrapper-content animated fadeInRight">
-        @foreach($system as $key => $val)
+        @foreach($systemConfig as $key => $val)
         <div class="row">
             <div class="col-lg-5">
                 <div class="panel-head">
@@ -35,16 +35,19 @@
                                     </label>
                                     @switch($item['type'])
                                         @case('text')
-                                            {!! renderSystemInput($name) !!}
+                                            {!! renderSystemInput($name, $systems) !!}
                                             @break
                                         @case('images')
-                                            {!! renderSystemImages($name) !!}
+                                            {!! renderSystemImages($name, $systems) !!}
                                             @break
                                         @case('textarea')
-                                            {!! renderSystemTextarea($name) !!}
+                                            {!! renderSystemTextarea($name, $systems) !!}
                                             @break
                                         @case('select')
-                                            {!! renderSystemSelect($item, $name) !!}
+                                            {!! renderSystemSelect($item, $name, $systems) !!}
+                                            @break
+                                        @case('editor')
+                                            {!! renderSystemEditor($name, $systems) !!}
                                             @break
                                     @endswitch
                                 </div>

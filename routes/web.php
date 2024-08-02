@@ -226,6 +226,7 @@ Route::group(['middleware' => ['admin','locale','backend_default_locale']], func
 
     Route::group(['prefix'=>'system'], function(){
         Route::get('index',[SystemController::class, 'index'])->name('system.index')->middleware(['admin', 'locale']);//hiển thị form user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+        Route::post('create',[SystemController::class, 'create'])->name('system.create');//thực thi xử lý thêm user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
     });
 
     //@@new-module@@
