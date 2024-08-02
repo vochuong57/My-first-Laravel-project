@@ -412,3 +412,14 @@ table strong{
 .system-textarea{
     height: 100px !important;
 }
+.language-container {
+    display: flex; /* Ensure the parent container uses flexbox */
+    gap: 10px; /* Add some spacing between the items */
+    margin-left: 10px;
+    margin-top: 10px;
+}
+.system-flag{
+    width: 35px;
+    height: 23px;
+    /* margin-right: 10px; */
+}

@@ -64,6 +64,28 @@ class SystemController extends Controller
         
     }
 
+    // V60
+    public function translate($languageId = 0){
+        $systemConfig = $this->systemLibrary->config();
+        $condition=[
+            ['language_id', '=', $languageId]
+        ];
+        $systems = convert_array($this->systemRepository->findByConditions($condition), 'keyword', 'content');
+        // dd($systems);
+        $config=$this->config();
+        $config['seo']=__('messages.system');
+        $config['method'] = 'translate';
+        $template='Backend.system.index';
+        return view('Backend.dashboard.layout', compact('template','config', 'systemConfig', 'systems', 'languageId'));
+    }
+
+    public function saveTranslate(Request $request, $languageId){
+        if($this->systemService->saveSystem($request, $languageId)){
+            return redirect()->route('system.translate', ['languageId' => $languageId])->with('success','Cập nhật bản ghi thành công');
+        }
+           return redirect()->route('system.translate', ['languageId' => $languageId])->with('error','Cập nhật bản ghi thất bại. Hãy thử lại');
+    }
+
     private function config(){
         return [
             'js'=>[

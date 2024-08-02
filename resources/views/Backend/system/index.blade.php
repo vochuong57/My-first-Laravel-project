@@ -1,8 +1,22 @@
 @include('Backend.dashboard.component.breadcrumb', ['title' =>$config['seo']['index']['title']])
 <!-- V58 -->
-
-<form action="{{ route('system.create') }}" method="post" class="box">
+@php
+    $url = (isset($config['method']) && $config['method'] == 'translate' ) ? route('system.saveTranslate', ['languageId' => $languageId]) : route('system.create')
+@endphp
+<form action="{{ $url }}" method="post" class="box">
     @csrf
+    <div class="language-container uk-flex uk-flex-middle">
+        @foreach($languages as $language)
+            <div class="uk-flex uk-flex-middle">
+            
+                <a  class="image img-cover system-flag"
+                    href="{{ route('system.translate', ['languageId' => $language->id]) }}">
+                    <img src="{{ $language->image }}" alt="">
+                </a>
+            </div>
+        @endforeach
+    </div>
+
     <div class="wrapper wrapper-content animated fadeInRight">
         @foreach($systemConfig as $key => $val)
         <div class="row">
@@ -30,8 +44,8 @@
                                 <div class="form-row">
                                     <label for="" class="uk-flex uk-flex-space-between">
                                         <span>{{ $item['label'] }}</span>
-                                        <span>{!! renderSystemLink($item) !!}</span>
-                                         
+                                        {!! renderSystemLink($item) !!}
+                                        {!! renderSystemTitle($item) !!}
                                     </label>
                                     @switch($item['type'])
                                         @case('text')
