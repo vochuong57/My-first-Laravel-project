@@ -14,7 +14,8 @@ class System{
                 'logo' => ['type' => 'images', 'label' => 'Logo Website', 'title' => 'Click vào ô phía dưới để tải logo'],
                 'favicon' => ['type' => 'images', 'label' => 'Favicon', 'title' => 'Click vào ô phía dưới để tải logo'],
                 'copyright' => ['type' => 'text', 'label' => 'Copyright'],
-                'website' => ['type' => 'select', 'label' => 'Tình trạng website', 'option' => ['open' => 'Mở cửa website', 'close' => 'Website đang bảo trì']]
+                'website' => ['type' => 'select', 'label' => 'Tình trạng website', 'option' => ['open' => 'Mở cửa website', 'close' => 'Website đang bảo trì']],
+                'short_intro' => ['type' => 'editor', 'label'=>'Giới thiệu ngắn']
             ]
         ];
 
