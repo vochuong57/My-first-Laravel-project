@@ -63,6 +63,12 @@ if(!function_exists('renderSystemLink')){
     }
 }
 
+if(!function_exists('renderSystemTitle')){
+    function renderSystemTitle(array $item = []){
+        return (isset($item['title'])) ? '<span class="system-link text-danger">'.$item['title'].'</span>' : '';
+    }
+}
+
 if(!function_exists('renderSystemSelect')){
     function renderSystemSelect(array $item = [], string $name = '', $systems = null){
         $html = '';
