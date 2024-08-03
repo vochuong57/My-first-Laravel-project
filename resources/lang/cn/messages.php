@@ -381,6 +381,18 @@ return [
     'Product_manage_file' => '文件管理',
     'Product_file_name' => '文件名',
     'Product_file_path' => '路径',
-    'Product_publish' => '状态'
+    'Product_publish' => '状态',
+
+    //MENU
+    'menu' => [
+        'index' => [
+            'title' => '菜单管理',
+        ],
+        'create' => [
+            'title' => '新增菜单',
+            'btnTitle' => '新增'
+        ],
+    ],
+
 
 ];

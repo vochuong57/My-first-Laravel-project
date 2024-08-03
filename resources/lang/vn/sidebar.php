@@ -60,7 +60,7 @@
             ],
             [
                 'title'=>'Cấu hình chung',
-                'icon'=>'fa fa-file',
+                'icon'=>'fa fa-sliders',
                 'name'=>['language', 'generate', 'system'],
                 'subModule'=>[
                     [
@@ -75,6 +75,18 @@
                         'title'=>'Cấu hình hệ thống',
                         'route'=>'system/index'
                     ],
+                ]
+            ],
+            [
+                'title'=>'QL Menu',
+                'icon'=>'fa fa-bars',
+                'name'=>['menu'],
+                'subModule'=>[
+                    [
+                        'title'=>'Cài đặt Menu',
+                        'route'=>'menu/index'
+                    ],
+                    
                 ]
             ]
         ]

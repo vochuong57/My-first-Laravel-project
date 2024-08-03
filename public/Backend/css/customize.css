@@ -21,6 +21,9 @@
 .mb20{
     margin-bottom: 20px;
 }
+.text-bold{
+    font-weight: bold;
+}
 h5{
     text-transform: uppercase;
     font-weight: normal;
@@ -422,4 +425,19 @@ table strong{
     width: 35px;
     height: 23px;
     /* margin-right: 10px; */
+}
+/* css cho menu/component/catalogue (store) */
+.menuContainer .select2-container{
+    width: 100% !important;
+}
+/* css cho menu/component/list (store) */
+#accordion .panel-title{
+    font-size: 13px;
+    margin: 0 !important;
+}
+#accordion .panel-title a{
+    display: block;
+}
+#accordion{
+    margin-bottom: 0;
 }

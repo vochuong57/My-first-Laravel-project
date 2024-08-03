@@ -398,6 +398,18 @@ return[
         ],
         'create'=>[
             'title'=>'Cài đặt cấu hình hệ thống',
+            'btnTitle'=>'Cập nhật'
+        ],
+        
+    ],
+
+    //MENU
+    'menu' => [
+        'index'=>[
+            'title'=> 'Quản lý Menu',
+        ],
+        'create'=>[
+            'title'=>'Thêm mới Menu',
             'btnTitle'=>'Thêm mới'
         ],
         
