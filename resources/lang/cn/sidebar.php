@@ -60,8 +60,8 @@
             ],
             [
                 'title'=>'通用配置',
-                'icon'=>'fa fa-file',
-                'name'=>['language'],
+                'icon'=>'fa fa-sliders',
+                'name'=>['language','generate','system'],
                 'subModule'=>[
                     [
                         'title'=>'语言',
@@ -76,7 +76,18 @@
                         'route' => 'system/index'
                     ]                                        
                 ]
-            ]
+            ],
+            [
+                'title' => '菜单管理',
+                'icon' => 'fa fa-bars',
+                'name' => ['menu'],
+                'subModule' => [
+                    [
+                        'title' => '菜单设置',
+                        'route' => 'menu/index'
+                    ],
+                ]
+                ],
         ]
     ];
 

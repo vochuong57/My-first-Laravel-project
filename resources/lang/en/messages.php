@@ -380,6 +380,17 @@ return[
     'Product_manage_file' => 'Manage file',
     'Product_file_name' => 'File name',
     'Product_file_path' => 'File path',
-    'Product_publish' => 'Status'
+    'Product_publish' => 'Status',
+
+    //MENU
+    'menu' => [
+        'index' => [
+            'title' => 'Menu Management',
+        ],
+        'create' => [
+            'title' => 'Add New Menu',
+            'btnTitle' => 'Add New'
+        ],
+    ],
 
 ];

@@ -60,8 +60,8 @@
             ],
             [
                 'title'=>'General Configuration',
-                'icon'=>'fa fa-file',
-                'name'=>['language'],
+                'icon'=>'fa fa-sliders',
+                'name'=>['language','generate','system'],
                 'subModule'=>[
                     [
                         'title'=>'Language',
@@ -76,6 +76,17 @@
                         'route' => 'system/index'
                     ]                                    
                 ]
-            ]
+            ],
+            [
+                'title' => 'Menu Management',
+                'icon' => 'fa fa-bars',
+                'name' => ['menu'],
+                'subModule' => [
+                    [
+                        'title' => 'Menu Settings',
+                        'route' => 'menu/index'
+                    ],
+                ]
+            ],
         ]
     ];
