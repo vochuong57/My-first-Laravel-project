@@ -441,3 +441,13 @@ table strong{
 #accordion{
     margin-bottom: 0;
 }
+/* css cho menu/component/popup (store) */
+.error{
+    font-style: italic;
+    margin-top: 5px;
+    color: red;
+}
+.success{
+    font-style: italic;
+    color: green;
+}
