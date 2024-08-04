@@ -17,6 +17,7 @@ use App\Http\Requests\UpdateMenuRequest;
 //use App\Models\Menu;
 //chén thêm thư viện của menuCatalogueRepository để lấy thông tin nhóm thành viên cho form thêm
 use App\Models\Language;
+use App\Repositories\Interfaces\MenuCatalogueRepositoryInterface as MenuCatalogueRepository;
 
 
 
@@ -24,10 +25,12 @@ class MenuController extends Controller
 {
     protected $menuService;
     protected $menuRepository;
+    protected $menuCatalogueRepository;
 
-    public function __construct(MenuService $menuService, MenuRepository $menuRepository){
+    public function __construct(MenuService $menuService, MenuRepository $menuRepository, MenuCatalogueRepository $menuCatalogueRepository){
         $this->menuService=$menuService;//định nghĩa  $this->menuService=$menuService để biến này nó có thể trỏ tới các phương tức của MenuService
         $this->menuRepository=$menuRepository;
+        $this->menuCatalogueRepository=$menuCatalogueRepository;
 
         $this->middleware(function($request, $next) {
             try {
@@ -76,9 +79,12 @@ class MenuController extends Controller
 
         $config['method']='create';
 
+        $menuCatalogues = $this->menuCatalogueRepository->all();
+        // dd($menuCatalogues);
+
         $this->authorize('modules', 'menu.store');//phân quyền
 
-        return view('Backend.dashboard.layout', compact('template','config'));
+        return view('Backend.dashboard.layout', compact('template','config','menuCatalogues'));
     }
 
     //xử lý thêm menu
@@ -162,7 +168,8 @@ class MenuController extends Controller
     private function configCUD(){
         return[
             'js'=>[
-                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',               
+                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', 
+                'Backend/libary/menu.js',              
             ],
             'css'=>[
                 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css',

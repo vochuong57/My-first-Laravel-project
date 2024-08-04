@@ -8,6 +8,11 @@
     <div class="col-lg-12">
         <select class="setupSelect2" name="menu_catalogue_id" id="">
             <option value="0">[Chọn vị trí hiển thị]</option>
+            @if(isset($menuCatalogues))
+            @foreach($menuCatalogues as $menuCatalogue)
+            <option value="{{ $menuCatalogue->id }}">{{ $menuCatalogue->name }}</option>
+            @endforeach
+            @endif
         </select>
     </div>
 </div>
