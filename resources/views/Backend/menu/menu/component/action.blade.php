@@ -22,18 +22,5 @@
             Hãy nhấn vào <span style="color: blue;">"Thêm đường dẫn"</span> để bắt đầu thêm.
         </p>
     </div>
-    <div class="row">
-        <div class="col-lg-4">
-            <input type="text" class="form-control" name="menu[name][]">
-        </div>
-        <div class="col-lg-4">
-            <input type="text" class="form-control" name="menu[canonical][]">
-        </div>
-        <div class="col-lg-2">
-            <input type="text" class="form-control" name="menu[order][]">
-        </div>
-        <div class="col-lg-2">
-            <a href="" class="delete-menu img-scaledown" style="width: 15%; height: 30px; margin-left: 6px"><img src="Backend/img/close.png" alt=""></a>
-        </div>
-    </div>
+    
 </div>

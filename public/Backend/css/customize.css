@@ -21,6 +21,9 @@
 .mb20{
     margin-bottom: 20px;
 }
+.m0{
+    margin: 0 !important;
+}
 .text-bold{
     font-weight: bold;
 }
@@ -437,9 +440,17 @@ table strong{
 }
 #accordion .panel-title a{
     display: block;
+    text-transform: uppercase;
 }
 #accordion{
     margin-bottom: 0;
+}
+.m-item label{
+    margin: 0;
+    font-weight: bold;
+    color: blue;
+    margin-left: 5px;
+    cursor: pointer;
 }
 /* css cho menu/component/popup (store) */
 .error{

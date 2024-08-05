@@ -7,13 +7,23 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 //thêm thư viện tự tạo
 use App\Services\Interfaces\UserServiceInterface as UserService;
+use App\Models\Language;
 
 
 class DashboardController extends Controller
 {
     protected $userService;
+    protected $language;
+
     public function __construct(UserService $userService){
-       $this->userService=$userService;
+        $this->userService=$userService;
+
+        $this->middleware(function($request, $next) {
+            $locale = app()->getLocale(); // vn cn en
+            $language = Language::where('canonical', $locale)->first();
+            $this->language = $language->id;
+            return $next($request);
+        });
     }
 
     public function changeStatus(Request $request){
@@ -49,7 +59,17 @@ class DashboardController extends Controller
         $flag=$serviceInstance->deleteAll($post);
         return response()->json(['flag'=>$flag]);
     }
-    public function renderHTML(){
 
+    // V63
+    public function getMenu(Request $request){
+        $model = $request->input('model');
+        // dd($model);
+        $serviceInterfaceNamespace='\App\Services\\'.ucfirst($model).'Service';
+        if(class_exists($serviceInterfaceNamespace)){
+            $serviceInstance=app($serviceInterfaceNamespace);
+        }
+        $object = $serviceInstance->paginate($request, $this->language);
+        // dd($object);
+        return response()->json($object);
     }
 }
