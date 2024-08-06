@@ -31,7 +31,7 @@
             <div class="panel-body">
                 <form action="" method="get" data-model="{{ $key }}" class="search-model">
                     <div class="form-row">
-                        <input type="text" name="keyword" value="" class="form-control" placeholder="Nhập 2 ký tự để tìm kiếm...">
+                        <input type="text" name="keyword" value="" class="form-control search-menu" placeholder="Nhập 2 ký tự để tìm kiếm..." autocomplete="off">
                     </div>
                 </form>
                 <div class="menu-list mt20">
