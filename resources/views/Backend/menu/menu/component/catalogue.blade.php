@@ -5,7 +5,7 @@
             <button type="button" class="createMenuCatalogue btn btn-danger" data-toggle="modal" data-target="#createMenuCatalogue">Tạo vị trí hiển thị</button>
         </div>
     </div>
-    <div class="col-lg-12">
+    <div class="col-lg-6">
         <select class="setupSelect2" name="menu_catalogue_id" id="">
             <option value="0">[Chọn vị trí hiển thị]</option>
             @if(isset($menuCatalogues))
@@ -13,6 +13,14 @@
             <option value="{{ $menuCatalogue->id }}">{{ $menuCatalogue->name }}</option>
             @endforeach
             @endif
+        </select>
+    </div>
+    <div class="col-lg-6">
+        <select class="setupSelect2" name="menu_type" id="">
+            <option value="0">[Chọn kiểu menu]</option>
+            @foreach(__('module.type') as $key => $val)
+            <option value="{{ $key }}">{{ $val }}</option>
+            @endforeach
         </select>
     </div>
 </div>

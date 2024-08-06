@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 //thêm thư viện tự tạo
 use App\Services\Interfaces\UserServiceInterface as UserService;
 use App\Models\Language;
-
+use Illuminate\Support\Str;
 
 class DashboardController extends Controller
 {
@@ -64,12 +64,42 @@ class DashboardController extends Controller
     public function getMenu(Request $request){
         $model = $request->input('model');
         // dd($model);
-        $serviceInterfaceNamespace='\App\Services\\'.ucfirst($model).'Service';
-        if(class_exists($serviceInterfaceNamespace)){
-            $serviceInstance=app($serviceInterfaceNamespace);
+        $repositoryInterfaceNamespace='\App\Repositories\\'.$model.'Repository';
+        if(class_exists($repositoryInterfaceNamespace)){
+            $repositoryInstance=app($repositoryInterfaceNamespace);
         }
-        $object = $serviceInstance->paginate($request, $this->language);
-        // dd($object);
+        // dd($repositoryInstance);
+        $page = ($request->input('page')) ?? 1; //V64
+        // dd($page);
+        $arguments = $this->paginationAgrument($model);
+        // dd($arguments);
+        $object = $repositoryInstance->pagination(...array_values($arguments));
         return response()->json($object);
+    }
+
+    private function paginationAgrument(string $model = ''): array{
+        $model = Str::snake($model);
+        $join = [
+            [$model.'_language as tb2', 'tb2.'.$model.'_id', '=', $model.'s.id'],
+        ];
+        if(strpos($model,'_catalogue') == false){
+            $join[] = [''.$model.'_catalogue_'.$model.' as tb3', ''.$model.'s.id', '=', 'tb3.'.$model.'_id'];
+        }
+        return [
+            'select' => ['id', 'name', 'canonical'],
+            'condition' => [
+                'where' => [
+                    ['tb2.language_id', '=', $this->language]
+                ]
+            ],
+            'perpage' => 1,
+            'paginationConfig' => [
+                'path' => $model.'.index',
+                'groupBy' => ['id', 'name', 'canonical']
+            ],
+            'orderBy' => [$model.'s.id', 'DESC'],
+            'join' => $join,
+            'relations' => [],
+        ];
     }
 }
