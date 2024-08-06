@@ -50,6 +50,10 @@
             });
         })
     }
+    
+    // ---------------------------V63 Xây dựng hành động thêm, xóa menu, gửi AJAX lấy ra danh sách m-item theo từng menu-module, 
+    //----------------------------khi click vào m-item bên trái đổ dữ liệu qua bên menu-wrapper bên phải--------------------------------
+
     // V63 Xây sự kiện cho nút thêm đường dẫn bên trái a.add-menu (sẽ những thêm div.menu-item bên phải bên trong div.menu-wrapper)
     HT.createMenuRow = () =>{
         $(document).on('click', '.add-menu', function(e){
@@ -231,46 +235,50 @@
         })
     }
 
+    // ---------------------------------V64 Xây dựng chức năng phân trang và kiểm tra m-item bên trái nào được checked--------------------------------
+
     // V64 đổ ra giao diện phân trang theo res.links khi gửi AJAX khi click .module-menu hoặc .page-link bên trái
     HT.menuLinks = (links) => {
-        let html = '<nav><ul class="pagination">';
-        
-        $.each(links, function(index, link) {
-            let liClass = 'page-item';
-            
-            if (link.active) {
-                liClass += ' active';
-            } else if (!link.url) {
-                liClass += ' disabled';
-            }
-            
-            html += '<li class="' + liClass + '">';
-            
-            if (link.label === 'pagination.previous') {
-                if (link.url) {
-                    html += '<a class="page-link" aria-label="pagination.previous" href="' + link.url + '">‹</a>';
-                } else {
-                    html += '<span class="page-link" aria-hidden="true">‹</span>';
+        let html = '';
+        if(links.length > 3){
+            html += '<nav><ul class="pagination">';
+            $.each(links, function(index, link) {
+                let liClass = 'page-item';
+                
+                if (link.active) {
+                    liClass += ' active';
+                } else if (!link.url) {
+                    liClass += ' disabled';
                 }
-            } 
-            else if (link.label === 'pagination.next') {
-                if (link.url) {
-                    html += '<a class="page-link" aria-label="pagination.next" href="' + link.url + '">›</a>';
-                } else {
-                    html += '<span class="page-link" aria-hidden="true">›</span>';
+                
+                html += '<li class="' + liClass + '">';
+                
+                if (link.label === 'pagination.previous') {
+                    if (link.url) {
+                        html += '<a class="page-link" aria-label="pagination.previous" href="' + link.url + '">‹</a>';
+                    } else {
+                        html += '<span class="page-link" aria-hidden="true">‹</span>';
+                    }
+                } 
+                else if (link.label === 'pagination.next') {
+                    if (link.url) {
+                        html += '<a class="page-link" aria-label="pagination.next" href="' + link.url + '">›</a>';
+                    } else {
+                        html += '<span class="page-link" aria-hidden="true">›</span>';
+                    }
+                } 
+                else if (link.url) {
+                    html += '<a class="page-link" href="' + link.url + '">' + link.label + '</a>';
+                } 
+                else {
+                    html += '<span class="page-link">' + link.label + '</span>';
                 }
-            } 
-            else if (link.url) {
-                html += '<a class="page-link" href="' + link.url + '">' + link.label + '</a>';
-            } 
-            else {
-                html += '<span class="page-link">' + link.label + '</span>';
-            }
-            
-            html += '</li>';
-        });
+                
+                html += '</li>';
+            });
+            html += '</ul></nav>';
+        }
         
-        html += '</ul></nav>';
         return html;
 
         // <nav>
@@ -319,6 +327,40 @@
         }).get()
 
         return arrayMenuItem//trả về mảng vừa được tạo ra
+    }
+
+    // ----------------------------V65 Xây dựng chức năng tìm kiếm theo .search-menu bên trái đổ AJAX dữ liệu được tìm kiếm vào lại .menu-list------------
+
+    // V65 Xây dựng chức năng tìm kiếm theo .search-menu bên trái đổ AJAX dữ liệu được tìm kiếm vào lại .menu-list
+    HT.searchMenu = () =>{
+        let typingTimer;
+        let doneTypingInterval = 1000; //1s
+        $(document).on('keyup', '.search-menu', function(){
+            // console.log(123)
+            let _this = $(this)
+            let keyword = _this.val()
+            let option = {
+                model: _this.parents('.panel-default').find('.menu-module').attr('data-model'),
+                keyword: keyword
+            }
+            // console.log(option)
+
+            let specialKeys = [9, 16, 17, 18, 27]; // Tab, Shift, Ctrl, Alt, Esc
+            // Kiểm tra xem mã phím có thuộc danh sách các phím đặc biệt không
+            if (specialKeys.includes(event.which)) {
+                return; // Nếu đúng, thoát khỏi hàm mà không thực hiện AJAX
+            }
+           
+            clearTimeout(typingTimer)
+            typingTimer = setTimeout(function(){
+                // console.log(keyword)
+
+                let target = _this.parents('.panel-body').find('.menu-list')
+                let arrayMenuItem = HT.checkMenuRowExits()
+                HT.sendAjaxGetMenu(_this, option, target, arrayMenuItem)
+            }, doneTypingInterval)
+             
+        })
     }
 
     // V63 Dùng trong form product/aside để chuyển chuỗi string về dạng thành tiền 1.234.567
@@ -381,6 +423,9 @@
 
         // V64 khi click vào page-link thì nó sẽ hiển thị ra được m-item tương ứng (hiện thị dữ liệu khi đã click vào số trang tương ứng)
         HT.getPaginationMenu()
+
+        // V65 Xây dựng chức năng tìm kiếm theo .search-menu bên trái đổ AJAX dữ liệu được tìm kiếm vào lại .menu-list
+        HT.searchMenu()
 
         // V63 Dùng trong form product/aside để chuyển chuỗi string về dạng thành tiền 1.234.567
         HT.int()

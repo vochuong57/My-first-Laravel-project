@@ -71,13 +71,15 @@ class DashboardController extends Controller
         // dd($repositoryInstance);
         $page = ($request->input('page')) ?? 1; //V64
         // dd($page);
-        $arguments = $this->paginationAgrument($model);
+        $keyword = addslashes($request->input('keyword'));//V65
+        // dd($keyword);
+        $arguments = $this->paginationAgrument($model, $keyword);
         // dd($arguments);
         $object = $repositoryInstance->pagination(...array_values($arguments));
         return response()->json($object);
     }
 
-    private function paginationAgrument(string $model = ''): array{
+    private function paginationAgrument(string $model = '', string $keyword): array{
         $model = Str::snake($model);
         $join = [
             [$model.'_language as tb2', 'tb2.'.$model.'_id', '=', $model.'s.id'],
@@ -90,9 +92,10 @@ class DashboardController extends Controller
             'condition' => [
                 'where' => [
                     ['tb2.language_id', '=', $this->language]
-                ]
+                ],
+                'keyword' => $keyword
             ],
-            'perpage' => 1,
+            'perpage' => 10,
             'paginationConfig' => [
                 'path' => $model.'.index',
                 'groupBy' => ['id', 'name', 'canonical']
