@@ -50,7 +50,7 @@
             });
         })
     }
-    // V63 Xây sự kiện cho nút thêm đường dẫn bên trái (sẽ những thêm div.menu-item bên phải bên trong div.menu-wrapper)
+    // V63 Xây sự kiện cho nút thêm đường dẫn bên trái a.add-menu (sẽ những thêm div.menu-item bên phải bên trong div.menu-wrapper)
     HT.createMenuRow = () =>{
         $(document).on('click', '.add-menu', function(e){
             e.preventDefault()
@@ -60,7 +60,7 @@
         })
     }
 
-    // V63 Xử dụng để Render ra giao diện cho sự kiện click vào thẻ a.add-menu và cho từng cái input.checkbox ở .m-item
+    // V63 Tạo function dùng để Render ra giao diện cho sự kiện click vào thẻ a.add-menu và cho từng cái input.checkbox ở .m-item
     HT.menuRowHtml = (option) =>{
         let html = '';
         let row = $('<div>').addClass('row mb10 menu-item '+ ((typeof(option) != 'undefined') ? option.canonical : '') +'')
@@ -106,7 +106,7 @@
         // </div>
     }
 
-    // V63 Xây dựng xự kiện cho nút xóa bên phải a.delete-menu và kiểm tra trạng thái input.checkbox và trạng thái menu-item
+    // V63 Xây dựng xự kiện cho nút xóa bên phải a.delete-menu và kiểm tra trạng thái input.checkbox và độ dài menu-item
     HT.deleteMenuRow = () => {
         $(document).on('click', '.delete-menu', function(){
             let _this = $(this)
@@ -127,12 +127,12 @@
             }
             _this.parents('.menu-item').remove()
 
-            // kiểm tra trạng thái menu-item
+            // kiểm tra độ dài menu-item
             HT.checkMenuItemLength()
         })
     }
 
-    // V63 kiểm tra trạng thái menu-item mỗi lần chạy sự kiện nút xóa hoặc thay đổi input.checkbox ở .m-item
+    // V63 kiểm tra độ dài menu-item mỗi lần chạy sự kiện nút xóa hoặc thay đổi input.checkbox ở .m-item
     HT.checkMenuItemLength=()=>{
         if($('.menu-item').length == 0){
             $('.notification').show()
@@ -146,58 +146,72 @@
             let option = {
                 model: _this.attr('data-model')
             }
+            let target = _this.parents('.panel-default').find('.menu-list')
 
-            $.ajax({
-                url: 'ajax/dashboard/getMenu',
-                type: 'GET',
-                data: option,
-                dataType: 'json',
-                success: function(res){
-                    // console.log(res)
-                    let html = ''
-                    let canonical=[]
-                    for(let i = 0; i< res.data.length; i++){
-                        html += HT.renderModelMenu(res.data[i])
+            let arrayMenuItem = HT.checkMenuRowExits()
+            // console.log(arrayMenuItem)
 
-                        canonical.push(res.data[i].canonical);//Lây ra danh sách canonical của từng menu-module để tiến hành kiểm tra checked của bên trái
-                    }
-                    _this.parents('.panel-default').find('.menu-list').html(html)//Đổ dữ liệu và giao diện vừa được gửi ajax vào trong vùng menu-list
-
-                   
-                    canonical.forEach(value => {
-                        let element = _this.parents('.wrapper-content').find('.' + value);//Tìm bên phải trước
-                        // console.log(element); // In ra để kiểm tra
-                        if(element.length > 0){//Nếu như bên phải có danh sách thì mới tìm bên trái
-                            let checkbox = _this.parents('.panel-default').find('#'+value)// tiến hành tìm bên trái
-                            // console.log(checkbox)
-                            //Nếu bên trái có danh sách giống bên phải theo cái value đó thì tiến hành checked những cái input:checkbox này
-                            checkbox.prop('checked', true);
-                        }
-                    });
-                },
-                beforeSend: function(){
-                    _this.parents('.panel-default').find('.menu-list').html('')
-                },
-                error: function(jqXHR, textStatus, errorThrown){
-                    
-                }
-            });
+            HT.sendAjaxGetMenu(_this, option, target, arrayMenuItem)
         })
     }
 
+    HT.sendAjaxGetMenu = (_this, option, target, arrayMenuItem) => {
+        $.ajax({
+            url: 'ajax/dashboard/getMenu',
+            type: 'GET',
+            data: option,
+            dataType: 'json',
+            success: function(res){
+                // console.log(res)
+                let html = ''
+                // let canonical=[]
+                for(let i = 0; i< res.data.length; i++){
+                    html += HT.renderModelMenu(res.data[i], arrayMenuItem)
+
+                    // canonical.push(res.data[i].canonical);//Lây ra danh sách canonical của từng a.menu-module để tiến hành kiểm tra checkbox nào được checked bên trái
+                }
+                // console.log(canonical)
+                // console.log(res.links)
+                html += HT.menuLinks(res.links)// V64 đổ ra giao diện phân trang theo res.links
+                target.html(html)//Đổ dữ liệu và giao diện vừa được gửi ajax vào trong vùng menu-list
+
+                // // Kiểm tra checkbox nào được checked mỗi lần chạy lại ajax
+                // canonical.forEach(value => {
+                //     // console.log(value)
+                //     let element = _this.parents('.wrapper-content').find('.' + value);//Tìm bên phải trước
+                //     console.log(element); // In ra để kiểm tra
+                //     if(element.length > 0){//Nếu như bên phải có danh sách giống với bên trái thì mới tìm bên trái và checked nó lên
+                //         let checkbox = _this.parents('.panel-default').find('#'+value)// tiến hành tìm bên trái
+                //         // console.log(checkbox)
+                //         //Nếu bên trái có danh sách giống bên phải theo cái value đó thì tiến hành checked những cái input:checkbox này
+                //         checkbox.prop('checked', true);
+                //     }
+                // });
+
+               
+            },
+            beforeSend: function(){
+                _this.parents('.panel-default').find('.menu-list').html('')
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                
+            }
+        });
+    }
+
     // V63 Tạo chức năng khi click vào từng thẻ a.menu-module tương ứng thì đổ dữ liệu và giao diện vừa được gửi ajax vào trong vùng menu-list
-    HT.renderModelMenu = (object) => {
+    HT.renderModelMenu = (object, arrayMenuItem) => {
         let html = '';
         html += '<div class="m-item mb10">';
         html += '    <div class="uk-flex uk-flex-middle">';
-        html += '        <input type="checkbox" name="" class="m0 choose-menu" value="'+object.canonical+'" id="'+object.canonical+'">';
+        html += '        <input type="checkbox" '+((arrayMenuItem.includes(object.canonical)) ? 'checked' : '')+' name="" class="m0 choose-menu" value="'+object.canonical+'" id="'+object.canonical+'">';
         html += '        <label for="'+object.canonical+'">'+object.name+'</label>';
         html += '    </div>';
         html += '</div>';
         return html;
     }
 
-    // V63 Tạo chức năng khi click vào từng phần tử input:checkbox trong danh sách của từng model sẽ đổ dữ liệu đó qua bên phải div.menu-wrapper
+    // V63 Tạo chức năng khi click vào từng phần tử input:checkbox bên trái trong danh sách của từng model sẽ đổ dữ liệu đó qua bên phải div.menu-wrapper
     HT.chooseMenu = () => {
         $(document).on('click', '.choose-menu', function(){
             let _this = $(this)
@@ -215,6 +229,96 @@
                 HT.checkMenuItemLength()
             }
         })
+    }
+
+    // V64 đổ ra giao diện phân trang theo res.links khi gửi AJAX khi click .module-menu hoặc .page-link bên trái
+    HT.menuLinks = (links) => {
+        let html = '<nav><ul class="pagination">';
+        
+        $.each(links, function(index, link) {
+            let liClass = 'page-item';
+            
+            if (link.active) {
+                liClass += ' active';
+            } else if (!link.url) {
+                liClass += ' disabled';
+            }
+            
+            html += '<li class="' + liClass + '">';
+            
+            if (link.label === 'pagination.previous') {
+                if (link.url) {
+                    html += '<a class="page-link" aria-label="pagination.previous" href="' + link.url + '">‹</a>';
+                } else {
+                    html += '<span class="page-link" aria-hidden="true">‹</span>';
+                }
+            } 
+            else if (link.label === 'pagination.next') {
+                if (link.url) {
+                    html += '<a class="page-link" aria-label="pagination.next" href="' + link.url + '">›</a>';
+                } else {
+                    html += '<span class="page-link" aria-hidden="true">›</span>';
+                }
+            } 
+            else if (link.url) {
+                html += '<a class="page-link" href="' + link.url + '">' + link.label + '</a>';
+            } 
+            else {
+                html += '<span class="page-link">' + link.label + '</span>';
+            }
+            
+            html += '</li>';
+        });
+        
+        html += '</ul></nav>';
+        return html;
+
+        // <nav>
+        //     <ul class="pagination">
+    
+        //         <li class="page-item disabled" aria-disabled="true" aria-label="pagination.previous">
+        //             <span class="page-link" aria-hidden="true">‹</span>
+        //         </li>
+        //         <li class="page-item active" aria-current="page"><span class="page-link">1</span></li>
+        //         <li class="page-item"><a class="page-link" href="http://127.0.0.1:8000/product/index?page=2">2</a></li>
+                                                                
+        //         <li class="page-item">
+        //             <a class="page-link" href="http://127.0.0.1:8000/product/index?page=2" rel="next" aria-label="pagination.next">›</a>
+        //         </li>
+        //     </ul>
+        // </nav>
+    };
+    
+    // V64 khi click vào .page-link thì nó sẽ hiển thị ra được m-item tương ứng (hiện thị dữ liệu khi đã click vào số trang tương ứng)
+    HT.getPaginationMenu = () => {
+        $(document).on('click', '.page-link', function(e) {
+            e.preventDefault();
+            let _this = $(this);
+            
+            // Chỉ xử lý nếu liên kết không bị vô hiệu hóa
+            if (!_this.parent().hasClass('disabled') && !_this.parent().hasClass('active')) {
+                let option = {
+                    model: _this.parents('.panel-default').find('.menu-module').attr('data-model'),
+                    page: _this.attr('href').split('page=')[1] // Lấy số trang từ URL
+                };
+
+                let arrayMenuItem = HT.checkMenuRowExits()
+                
+                let target = _this.parents('.menu-list');
+                HT.sendAjaxGetMenu(_this, option, target, arrayMenuItem);
+            }
+        });
+    };
+
+    // V64 lấy ra danh sách là mảng các class đã có ở bên phải để ss đối chiếu với mỗi lần chạy AJAX render lại m-item checkbox nào được checked bên trái
+    HT.checkMenuRowExits = () =>{
+        let arrayMenuItem = $('.menu-item').map(function(){//Lấy ra danh sách menu-item đã được chọn bên phải
+            let allClasses = $(this).attr('class').split(' ').slice(3).join(' ')//tạo một mảng gồm các class của vị trí thứ 4
+
+            return allClasses
+        }).get()
+
+        return arrayMenuItem//trả về mảng vừa được tạo ra
     }
 
     // V63 Dùng trong form product/aside để chuyển chuỗi string về dạng thành tiền 1.234.567
@@ -263,18 +367,21 @@
         // V62 Tiến hành tạo chức năng xây dựng vị trí hiển thị menu mỗi lần submit form
         HT.createMenuCatalogue()
 
-        // V63 Xây sự kiện cho nút thêm đường dẫn bên trái (sẽ những thêm div.menu-item bên phải bên trong div.menu-wrapper)
+        // V63 Xây sự kiện cho nút thêm đường dẫn bên trái a.add-menu (sẽ những thêm div.menu-item bên phải bên trong div.menu-wrapper)
         HT.createMenuRow()
 
-        // V63 Xây dựng xự kiện cho nút xóa bên phải a.delete-menu và kiểm tra trạng thái input.checkbox và trạng thái menu-item
+        // V63 Xây dựng xự kiện cho nút xóa bên phải a.delete-menu và kiểm tra trạng thái input.checkbox và độ dài menu-item
         HT.deleteMenuRow()
 
         // V63 Xây dựng chức năng lấy dữ liệu đổ ra giao diện danh sách của từng model khi click vào a.menu-model đồng thời kiểm tra tình trạng input:checkbox ở .m-item
         HT.getMenu()
 
-        // V63 Tạo chức năng khi click vào từng phần tử input:checkbox trong danh sách của từng model sẽ đổ dữ liệu đó qua bên phải div.menu-wrapper
+        // V63 Tạo chức năng khi click vào từng phần tử input:checkbox bên trái trong danh sách của từng model sẽ đổ dữ liệu đó qua bên phải div.menu-wrapper
         HT.chooseMenu()
-        
+
+        // V64 khi click vào page-link thì nó sẽ hiển thị ra được m-item tương ứng (hiện thị dữ liệu khi đã click vào số trang tương ứng)
+        HT.getPaginationMenu()
+
         // V63 Dùng trong form product/aside để chuyển chuỗi string về dạng thành tiền 1.234.567
         HT.int()
     })
