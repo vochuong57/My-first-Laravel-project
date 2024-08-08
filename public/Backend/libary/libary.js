@@ -18,9 +18,9 @@
     }
 
     //Dùng trong form product/variant
-    HT.niceSelect = () =>{
-        $('.setupNiceSelect').niceSelect();
-    }
+    // HT.niceSelect = () =>{
+    //     $('.setupNiceSelect').niceSelect();
+    // }
 
     // Dùng trong form product/aside để chuyển chuỗi string về dạng thành tiền 1.234.567
     HT.int = () => {
@@ -256,7 +256,7 @@
         HT.select2();
 
         //gọi phương thức tạo niceSelect (giao diện)
-        HT.niceSelect();
+        //HT.niceSelect();
 
         //gọi chức năng ép chuỗi về giạng số thành tiền 
         HT.int();

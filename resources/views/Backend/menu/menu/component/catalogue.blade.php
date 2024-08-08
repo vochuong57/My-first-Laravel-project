@@ -10,16 +10,16 @@
             <option value="0">[Chọn vị trí hiển thị]</option>
             @if(isset($menuCatalogues))
             @foreach($menuCatalogues as $menuCatalogue)
-            <option value="{{ $menuCatalogue->id }}">{{ $menuCatalogue->name }}</option>
+            <option {{ (!empty(old('menu_catalogue_id') && old('menu_catalogue_id') == $menuCatalogue->id)) ? 'selected' : '' }} value="{{ $menuCatalogue->id }}">{{ $menuCatalogue->name }}</option>
             @endforeach
             @endif
         </select>
     </div>
     <div class="col-lg-6">
-        <select class="setupSelect2" name="menu_type" id="">
+        <select class="setupSelect2" name="type" id="">
             <option value="0">[Chọn kiểu menu]</option>
             @foreach(__('module.type') as $key => $val)
-            <option value="{{ $key }}">{{ $val }}</option>
+            <option {{ (!empty(old('type') && old('type') == $key)) ? 'selected' : '' }} value="{{ $key }}">{{ $val }}</option>
             @endforeach
         </select>
     </div>

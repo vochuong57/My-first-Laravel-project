@@ -33,35 +33,25 @@ class MenuCatalogueService extends BaseService implements MenuCatalogueServiceIn
     }
 
     public function paginate($request, $languageId){//$request để tiến hành chức năng tìm kiếm
-        // //dd($request);
-        // //echo 123; die();
-        // $condition['keyword']=addslashes($request->input('keyword'));
-        // $condition['publish']=$request->input('publish');
-        // // Kiểm tra nếu giá trị publish là 0, thì gán lại thành null
-        // if ($condition['publish'] == '0') {
-        //     $condition['publish'] = null;
-        // }
-        // $condition['where']=[
-        //     ['tb2.language_id', '=', $languageId],
-        // ];
-        // //dd($condition);
-        // $perpage=$request->integer('perpage', 20);
-        // $menuCatalogues=$this->menuCatalogueRepository->pagination(
-        //     $this->paginateSelect(),
-        //     $condition,
-        //     $perpage,
-        //     ['path'=> 'menuCatalogue/index', 'groupBy' => $this->paginateSelect()],
-        //     ['menuCatalogues.id', 'DESC'],
-        //     [
-        //         ['menuCatalogue_language as tb2','tb2.menuCatalogue_id','=','menuCatalogues.id'],//dùng cho hiển thị nội dung table
-        //         ['menuCatalogue_catalogue_menuCatalogue as tb3','menuCatalogues.id', '=', 'tb3.menuCatalogue_id']//dùng cho whereRaw lọc tìm kiếm bài viết theo nhóm bài viêt
-        //     ],
-        //     ['menuCatalogue_catalogues'],//là function menuCatalogue_catalogues của Model/menuCatalogue
-        //     $this->whereRaw($request),
-        // );
-        // //dd($menuCatalogues);
+        //dd($request);
+        //echo 123; die();
+        $condition['keyword']=addslashes($request->input('keyword'));
+        $condition['publish']=$request->input('publish');
+        // Kiểm tra nếu giá trị publish là 0, thì gán lại thành null
+        if ($condition['publish'] == '0') {
+            $condition['publish'] = null;
+        }
+        // dd($condition);
+        $perpage=$request->integer('perpage', 20);
+        $menuCatalogues=$this->menuCatalogueRepository->pagination(
+            $this->paginateSelect(),
+            $condition,
+            $perpage,
+            ['path'=> 'menu/index', 'groupBy' => $this->paginateSelect()],
+        );
+        //dd($menuCatalogues);
         
-        return [];
+        return $menuCatalogues;
     }
     public function createMenuCatalogue($request){
         DB::beginTransaction();
@@ -136,6 +126,35 @@ class MenuCatalogueService extends BaseService implements MenuCatalogueServiceIn
             echo $ex->getMessage();//die();
             return false;
         }
+    }
+
+    private function paginateSelect(){
+        return[
+            'menu_catalogues.id',
+            'menu_catalogues.name',
+            'menu_catalogues.keyword',
+            'menu_catalogues.publish',
+            'menu_catalogues.user_id',
+        ];
+    }
+    public function updateStatus($post=[]){
+        //echo 123; die();
+        DB::beginTransaction();
+        try{
+            $payload[$post['field']]=(($post['value']==1)?2:1);
+            
+            //dd($payload);
+            $post=$this->menuCatalogueRepository->update($post['modelId'], $payload);
+            //echo 1; die();
+            //$this->changeUserStatus($post, $payload[$post['field']]);
+            DB::commit();
+            return true;
+        }catch(\Exception $ex){
+            DB::rollBack();
+            echo $ex->getMessage();//die();
+            return false;
+        }
+        
     }
 }
 

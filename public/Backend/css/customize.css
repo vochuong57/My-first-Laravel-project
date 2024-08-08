@@ -462,3 +462,6 @@ table strong{
     font-style: italic;
     color: green;
 }
+.none{
+    display: none;
+}

@@ -1,5 +1,22 @@
 @include('Backend.dashboard.component.breadcrumb', ['title' =>$config['seo']['title']])
-@include('Backend.dashboard.component.formError')
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @php
+                // Gộp các thông báo lỗi trùng lặp và đếm số lần xảy ra
+                $errorMessages = [];
+                foreach ($errors->all() as $error) {
+                    $errorMessages[$error] = isset($errorMessages[$error]) ? $errorMessages[$error] + 1 : 1;
+                }
+            @endphp
+
+            @foreach ($errorMessages as $message => $count)
+                <li>{{ str_replace('{number}', $count, $message) }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
 
 @php
     $url=($config['method']=='create')?route('menu.create'):route('menu.update', $menu->id)
