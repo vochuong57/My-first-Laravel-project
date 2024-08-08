@@ -18,6 +18,7 @@ use App\Services\BaseService;//tiến hành chèn dữ liệu vào bảng ngoài
 use Request;
 use Spatie\LaravelIgnition\Exceptions\CannotExecuteSolutionForNonLocalIp;
 use Illuminate\Support\Str;
+use App\Classes\Nestedsetbie;
 
 /**
  * Class UserService
@@ -27,9 +28,16 @@ class MenuService extends BaseService implements MenuServiceInterface
 {
     protected $menuRepository;
     protected $controllerName = 'MenuController';
+    protected $language;    
 
     public function __construct(MenuRepository $menuRepository){
         $this->menuRepository=$menuRepository;
+        $this->language=$this->currentLanguage();
+        $this->nestedset=new Nestedsetbie([
+            'table'=>'menus',
+            'foreignkey'=>'menu_id',
+            'language_id'=>$this->currentLanguage(),
+        ]);
     }
 
     public function paginate($request, $languageId){//$request để tiến hành chức năng tìm kiếm
@@ -66,12 +74,42 @@ class MenuService extends BaseService implements MenuServiceInterface
     public function createMenu($request, $languageId){
         DB::beginTransaction();
         try{
-           
+            
+            $payload = $request->only('menu', 'menu_catalogue_id', 'type');
+            // dd($payload);
+
+            if(count($payload['menu']['name'])){
+                foreach($payload['menu']['name'] as $key => $val){
+                    $menuArray = [
+                        'menu_catalogue_id' => $payload['menu_catalogue_id'],
+                        'type' => $payload['type'],
+                        'order' => $payload['menu']['order'][$key],
+                        'user_id' => Auth::id()
+                    ];
+                    // dd($menuArray);
+                    $menu = $this->menuRepository->create($menuArray);
+                    // dd($menu);
+                    if($menu->id > 0){
+                        $menu->languages()->detach($languageId, $menu->id);
+                        $payloadLanguage = [
+                            'language_id' => $languageId,
+                            'name' => $val,
+                            'canonical' => $payload['menu']['canonical'][$key],
+                        ];
+                        $language1 = $this->menuRepository->createPivot($menu,$payloadLanguage,'languages');
+                        // dd($language1);
+                    }
+                }
+                // die();
+                $this->nestedset();
+            }
+            // die();
+
             DB::commit();
             return true;
         }catch(\Exception $ex){
             DB::rollBack();
-            echo $ex->getMessage();//die();
+            echo $ex->getMessage();die();
             return false;
         }
     }

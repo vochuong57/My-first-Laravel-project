@@ -117,16 +117,20 @@
 
             // kiểm tra trạng thái trực tiếp input.checkbox đó nếu có hiển thị
             let element =  _this.parents('.menu-item')
+            // console.log(element)
             if (element.length > 0) {
                 // Lấy danh sách các class của phần tử
                 let classList = element.attr('class').split(/\s+/);
+                console.log(classList)
                 // Lấy class thứ 4 (nếu có)
                 if (classList.length >= 3) {
                     let fourthClass = classList[3];
-                    // console.log(fourthClass); // In ra để kiểm tra
-                    let checkbox = _this.parents('.wrapper-content').find('#'+fourthClass)
-                    // console.log(checkbox)
-                    checkbox.prop('checked', false);
+                    console.log(fourthClass); // In ra để kiểm tra
+                    if(fourthClass != ''){
+                        let checkbox = _this.parents('.wrapper-content').find('#'+fourthClass)
+                        // console.log(checkbox)
+                        checkbox.prop('checked', false);
+                    }
                 }
             }
             _this.parents('.menu-item').remove()

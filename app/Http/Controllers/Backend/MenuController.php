@@ -18,6 +18,7 @@ use App\Http\Requests\UpdateMenuRequest;
 //chén thêm thư viện của menuCatalogueRepository để lấy thông tin nhóm thành viên cho form thêm
 use App\Models\Language;
 use App\Repositories\Interfaces\MenuCatalogueRepositoryInterface as MenuCatalogueRepository;
+use App\Services\Interfaces\MenuCatalogueServiceInterface as MenuCatalogueService;
 
 
 
@@ -26,11 +27,13 @@ class MenuController extends Controller
     protected $menuService;
     protected $menuRepository;
     protected $menuCatalogueRepository;
+    protected $menuCatalogueService;
 
-    public function __construct(MenuService $menuService, MenuRepository $menuRepository, MenuCatalogueRepository $menuCatalogueRepository){
+    public function __construct(MenuService $menuService, MenuRepository $menuRepository, MenuCatalogueRepository $menuCatalogueRepository,MenuCatalogueService $menuCatalogueService){
         $this->menuService=$menuService;//định nghĩa  $this->menuService=$menuService để biến này nó có thể trỏ tới các phương tức của MenuService
         $this->menuRepository=$menuRepository;
         $this->menuCatalogueRepository=$menuCatalogueRepository;
+        $this->menuCatalogueService=$menuCatalogueService;
 
         $this->middleware(function($request, $next) {
             try {
@@ -62,11 +65,12 @@ class MenuController extends Controller
         $config['seo'] = __('messages.menu');
 
         //Đổ dữ liệu Menu từ DB vào form theo mô hình service và repository
-        $menus = $this->menuService->paginate($request, $this->language);//$request để tiến hành chức năng tìm kiếm
+        $menuCatalogues = $this->menuCatalogueService->paginate($request, $this->language);//$request để tiến hành chức năng tìm kiếm
+        // dd($menuCatalogues);
 
         $this->authorize('modules', 'menu.index');//phân quyền
 
-        return view('Backend.dashboard.layout', compact('template','config','menus'));
+        return view('Backend.dashboard.layout', compact('template','config','menuCatalogues'));
     }
 
     //giao diện thêm menu
@@ -89,7 +93,7 @@ class MenuController extends Controller
 
     //xử lý thêm menu
     public function create(StoreMenuRequest $request){
-        if($this->menuService->createMenu($request)){
+        if($this->menuService->createMenu($request, $this->language)){
             return redirect()->route('menu.index')->with('success','Thêm mới thành viên thành công');
         }
            return redirect()->route('menu.index')->with('error','Thêm mới thành viên thất bại. Hãy thử lại');
@@ -154,14 +158,14 @@ class MenuController extends Controller
         return[
             'js'=>[
                 'Backend/js/plugins/switchery/switchery.js',
-                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js'
+                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
                 
             ],
             'css'=>[
                 'Backend/css/plugins/switchery/switchery.css',
                 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css',
             ],
-            'model'=>'Menu'
+            'model'=>'MenuCatalogue'
         ];
     }
 
