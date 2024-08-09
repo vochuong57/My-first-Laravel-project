@@ -367,47 +367,44 @@
         })
     }
 
-    // V63 Dùng trong form product/aside để chuyển chuỗi string về dạng thành tiền 1.234.567
-    HT.int = () => {
-        $(document).on('change keyup blur', '.int', function() {
-            let _this = $(this);
-            let value = _this.val();
-            if (value === '') {
-                _this.val('0');
-            } else {
-                value = value.replace(/\./g, '');
-                if (isNaN(value)) {
-                    _this.val('0');
-                } else {
-                    _this.val(HT.addCommas(value));
-                }
-            }
-        });
+    // ------------------------------------------- V67 setupNestable -------------------------------------------------
 
-        $(document).on('keydown', '.int', function(e) {
-            let _this = $(this);
-            let data = _this.val();
-            if (data == '0') {
-                let unicode = e.keyCode || e.which;
-                // Check for numbers on both the main keyboard and the numpad
-                if (unicode != 190 && ((unicode >= 48 && unicode <= 57) || (unicode >= 96 && unicode <= 105))) {
-                    _this.val('');
-                }
-            }
-        });
-    };
-
-    HT.addCommas = (nStr) => {
-        nStr = String(nStr);
-        nStr = nStr.replace(/\./g, '');
-        let str = '';
-        for (let i = nStr.length; i > 0; i -= 3) {
-            let a = (i - 3) < 0 ? 0 : (i - 3);
-            str = nStr.slice(a, i) + '.' + str;
+    HT.setupNestable = () =>{
+        if( $('#nestable2').length){
+            $('#nestable2').nestable({
+                group: 1
+            }).on('change', updateOutput);
         }
-        str = str.slice(0, str.length - 1);
-        return str;
-    };
+    }
+
+    HT.updateNestableOutput = () => {
+        var updateOutput = function (e) {
+            var list = e.length ? e : $(e.target),
+                    output = list.data('output');
+            if (window.JSON) {
+                output.val(window.JSON.stringify(list.nestable('serialize')));//, null, 2));
+            } else {
+                output.val('JSON browser support required for this demo.');
+            }
+        };
+    }
+
+    HT.runUpdateNestableOutput = () => {
+        updateOutput($('#nestable2').data('output', $('#nestable2-output')));
+    }
+
+    HT.expandAndCollapse = () =>{
+        $('#nestable-menu').on('click', function (e) {
+            var target = $(e.target),
+                    action = target.data('action');
+            if (action === 'expand-all') {
+                $('.dd').nestable('expandAll');
+            }
+            if (action === 'collapse-all') {
+                $('.dd').nestable('collapseAll');
+            }
+        });
+    }
 
     $(document).ready(function(){
         // V62 Tiến hành tạo chức năng xây dựng vị trí hiển thị menu mỗi lần submit form
@@ -431,8 +428,11 @@
         // V65 Xây dựng chức năng tìm kiếm theo .search-menu bên trái đổ AJAX dữ liệu được tìm kiếm vào lại .menu-list
         HT.searchMenu()
 
-        // V63 Dùng trong form product/aside để chuyển chuỗi string về dạng thành tiền 1.234.567
-        HT.int()
+        HT.setupNestable()
+        HT.updateNestableOutput()
+        HT.runUpdateNestableOutput()
+        HT.expandAndCollapse()
+
     })
 
 })(jQuery)

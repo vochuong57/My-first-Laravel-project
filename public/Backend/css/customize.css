@@ -465,3 +465,6 @@ table strong{
 .none{
     display: none;
 }
+.uppercase{
+    text-transform: uppercase;
+}

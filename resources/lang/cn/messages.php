@@ -392,6 +392,10 @@ return [
             'title' => '新增菜单',
             'btnTitle' => '新增'
         ],
+        'show' => [
+            'title' => '菜单列表',
+            'btnTitle' => '更新'
+        ],
     ],
 
 

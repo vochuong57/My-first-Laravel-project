@@ -79,6 +79,26 @@ class BaseRepository implements BaseRepositoryInterface
         }
         return $query->get();
     }
+    public function findByConditionsWithRelation(array $condition = [], array $relation = [])
+    {
+        $query = $this->model->newQuery();
+        
+        // Thêm các điều kiện tìm kiếm vào query
+        foreach ($condition as $val) {
+            $query->where($val[0], $val[1], $val[2]);
+        }
+
+        // Thêm điều kiện kiểm tra quan hệ tồn tại
+        foreach ($relation as $rel => $closure) {
+            $query->whereHas($rel, $closure);
+        }
+
+        // Load các mối quan hệ
+        $query->with($relation);
+
+        return $query->get();
+    }
+
     //phương thức thêm (CREATE)
     public function create(array $payload =[]){
         $model= $this->model->create($payload);

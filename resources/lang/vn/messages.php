@@ -412,6 +412,9 @@ return[
             'title'=>'Thêm mới Menu',
             'btnTitle'=>'Thêm mới'
         ],
-        
+        'show'=>[
+            'title'=>'Danh sách menu',
+            'btnTitle'=>'Cập nhật'
+        ],
     ],
 ];

@@ -17,7 +17,7 @@
     </div>
     <div class="col-lg-6">
         <select class="setupSelect2" name="type" id="">
-            <option value="0">[Chọn kiểu menu]</option>
+            <option value="none">[Chọn kiểu menu]</option>
             @foreach(__('module.type') as $key => $val)
             <option {{ (!empty(old('type') && old('type') == $key)) ? 'selected' : '' }} value="{{ $key }}">{{ $val }}</option>
             @endforeach
