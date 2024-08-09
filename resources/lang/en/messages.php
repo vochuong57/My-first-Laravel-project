@@ -391,6 +391,10 @@ return[
             'title' => 'Add New Menu',
             'btnTitle' => 'Add New'
         ],
+        'show' => [
+            'title' => 'Menu List',
+            'btnTitle' => 'Update'
+        ],
     ],
 
 ];

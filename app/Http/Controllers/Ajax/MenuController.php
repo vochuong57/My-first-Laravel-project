@@ -29,6 +29,7 @@ class MenuController extends Controller
         });
     }
 
+    //V62
     public function createCatalogue(StoreMenuCatalogueRequest $request){
         // echo 1; die();
         $menuCatalogue = $this->menuCatalogueService->createMenuCatalogue($request);

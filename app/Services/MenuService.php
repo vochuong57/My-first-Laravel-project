@@ -80,6 +80,7 @@ class MenuService extends BaseService implements MenuServiceInterface
 
             if(count($payload['menu']['name'])){
                 foreach($payload['menu']['name'] as $key => $val){
+                    // 1. menus
                     $menuArray = [
                         'menu_catalogue_id' => $payload['menu_catalogue_id'],
                         'type' => $payload['type'],
@@ -89,6 +90,8 @@ class MenuService extends BaseService implements MenuServiceInterface
                     // dd($menuArray);
                     $menu = $this->menuRepository->create($menuArray);
                     // dd($menu);
+
+                    // 2. menu_language
                     if($menu->id > 0){
                         $menu->languages()->detach($languageId, $menu->id);
                         $payloadLanguage = [

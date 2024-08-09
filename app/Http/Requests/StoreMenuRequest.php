@@ -30,7 +30,6 @@ class StoreMenuRequest extends FormRequest
             'menu.name.*' => 'required|string',
             'menu.canonical.*' => 'required|unique:menu_language,canonical',
             'menu_catalogue_id'=>'gt:0',
-            'type'=>'gt:0',
         ];
     }
     public function messages(): array
@@ -42,7 +41,6 @@ class StoreMenuRequest extends FormRequest
             'menu.canonical.*.required' => 'Có {number} đường dẫn chưa được nhập',
             'menu.canonical.*.unique' => 'Có {number} đường dẫn bị trùng vui lòng kiểm tra lại',
             'menu_catalogue_id.gt'=> 'Bạn chưa chọn vị trí hiển thị menu',
-            'type.gt'=> 'Bạn chưa chọn kiểu menu',
         ];
     }
     protected function prepareForValidation()
@@ -59,5 +57,12 @@ class StoreMenuRequest extends FormRequest
             ]);
         }
     }
-
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            if ($this->input('type') === 'none') {
+                $validator->errors()->add('type', 'Bạn chưa chọn kiểu menu');
+            }
+        });
+    }
 }

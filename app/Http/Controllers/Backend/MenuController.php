@@ -101,25 +101,31 @@ class MenuController extends Controller
     }
     //giao diện sửa user
     public function edit($id){
-        //echo $id;
-        $template='Backend.menu.menu.store';
+        // echo $id;
+        $template='Backend.menu.menu.show';
 
         $config=$this->configCUD();
 
-        $config['seo']=config('apps.menu.edit');
+        $config['seo']=__('messages.menu.show');
 
         $config['method']='edit';//kiểm tra metho để thay đổi giao diện cho phù hợp
 
-        $provinces=$this->provinceRepository->all();
-        //dd($provinces);
-
         //truy vấn thông tin
-        $menu=$this->menuRepository->findById($id);
-        //dd($menu); die();
+        $condition = [
+            ['menu_catalogue_id', '=', $id],
+        ];
+        $languageId = $this->language;
+        $relation = [
+            'languages' => function($query) use ($languageId){
+                $query->where('language_id', $languageId);
+            }
+        ];
+        $menus=$this->menuRepository->findByConditionsWithRelation($condition, $relation);
+        // dd($menus); die();
 
         $this->authorize('modules', 'menu.edit');//phân quyền
 
-        return view('Backend.dashboard.layout', compact('template','config','provinces','menu'));
+        return view('Backend.dashboard.layout', compact('template','config', 'menus'));
     }
     //xử lý sửa menu
     public function update($id, UpdateMenuRequest $request){
@@ -173,7 +179,8 @@ class MenuController extends Controller
         return[
             'js'=>[
                 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', 
-                'Backend/libary/menu.js',              
+                'Backend/libary/menu.js',   
+                'Backend/js/plugins/nestable/jquery.nestable.js'           
             ],
             'css'=>[
                 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css',
