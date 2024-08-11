@@ -247,6 +247,9 @@ Route::group(['middleware' => ['admin','locale','backend_default_locale']], func
 
         Route::get('{id}/destroy',[MenuController::class, 'destroy'])->name('menu.destroy')->where(['id'=>'[0-9]+']);//hiển thị form xóa user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
         Route::post('{id}/delete',[MenuController::class, 'delete'])->name('menu.delete')->where(['id'=>'[0-9]+']);//Thực thi xử lý xóa user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+    
+        Route::get('{id}/children',[MenuController::class, 'children'])->name('menu.children')->where(['id'=>'[0-9]+']);//thực thi xử lý thêm user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+        Route::post('{id}/saveChildren',[MenuController::class, 'saveChildren'])->name('menu.saveChildren')->where(['id'=>'[0-9]+']);//thực thi xử lý thêm user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
     });
 
     //@@new-module@@

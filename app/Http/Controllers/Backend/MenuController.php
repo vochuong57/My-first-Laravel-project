@@ -10,6 +10,7 @@ use App\Services\Interfaces\MenuServiceInterface as MenuService;
 //chèn thêm tự viện ProvinceServiceInterface tự tạo để lấy thông tin province từ DB vào form
 //chèn thêm thư viện tự tạo request để kiểm tra dữ liệu đầu vào khi thêm menu
 use App\Http\Requests\StoreMenuRequest;
+use App\Http\Requests\StoreMenuChildrenRequest;
 //chèn thêm viện menuRepositoryInterface để lấy function findById để truy xuất dữ liệu của id vừa nhập
 use App\Repositories\Interfaces\MenuRepositoryInterface as MenuRepository;
 //chèn thêm thư viện tự tạo request để kiểm tra dữ liệu đầu vào khi edit menu
@@ -94,9 +95,9 @@ class MenuController extends Controller
     //xử lý thêm menu
     public function create(StoreMenuRequest $request){
         if($this->menuService->createMenu($request, $this->language)){
-            return redirect()->route('menu.index')->with('success','Thêm mới thành viên thành công');
+            return redirect()->route('menu.index')->with('success','Thêm mới menu thành công');
         }
-           return redirect()->route('menu.index')->with('error','Thêm mới thành viên thất bại. Hãy thử lại');
+           return redirect()->route('menu.index')->with('error','Thêm mới menu thất bại. Hãy thử lại');
         
     }
     //giao diện sửa user
@@ -160,6 +161,56 @@ class MenuController extends Controller
         }
            return redirect()->route('menu.index')->with('error','Xóa thành viên thất bại. Hãy thử lại');
     }
+
+    // V66
+    public function children($id){
+        $template='Backend.menu.menu.children';
+
+        $config=$this->configCUD();
+
+        $config['seo']=__('messages.menu.create');
+        // dd($config['seo']);
+
+        $config['method']='children';
+
+        $languageId = $this->language;
+
+        $menu = $this->menuRepository->findById($id, ['*'], [
+            'languages' => function($query) use ($languageId){
+                $query->where('language_id', $languageId);
+            }
+        ]);
+        // dd($menu);
+
+        $condition = [
+            ['parent_id', '=', $menu->id]
+        ];
+        $languageId = $this->language;
+        $relation = [
+            'languages' => function($query) use ($languageId){
+                $query->where('language_id', $languageId);
+            }
+        ];
+        $childrenMenus=$this->menuRepository->findByConditionsWithRelation($condition, $relation);
+        // dd($childrenMenus); die();
+
+        $childrenMenus = $this->menuService->convertMenu($childrenMenus);
+        // dd($childrenMenus);
+
+        $this->authorize('modules', 'menu.store');//phân quyền
+
+        return view('Backend.dashboard.layout', compact('template','config','menu', 'childrenMenus'));
+    }
+
+    // V66
+    public function saveChildren(StoreMenuChildrenRequest $request, $id){
+        $menu = $this->menuRepository->findById($id);
+        if($this->menuService->saveChildren($request, $this->language, $menu)){
+            return redirect()->route('menu.edit', ['id' => $menu->menu_catalogue_id])->with('success','Cập nhật menu con thành công');
+        }
+           return redirect()->route('menu.edit', ['id' => $menu->menu_catalogue_id])->with('error','Cập nhật menu con thất bại. Hãy thử lại');
+    }
+
     private function configIndex(){
         return[
             'js'=>[

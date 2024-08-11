@@ -34,6 +34,7 @@
                                 <div class="dd-handle">
                                     <span class="label label-info"><i class="fa fa-arrows"></i></span> {{ $val->languages->first()->getOriginal('pivot_name') }}
                                 </div>
+                                <a class="create-children-menu" href="{{ route('menu.children', $val->id) }}"> Quản lý menu con </a>
                                 <ol class="dd-list">
                                     <li class="dd-item" data-id="2">
                                         <div class="dd-handle">

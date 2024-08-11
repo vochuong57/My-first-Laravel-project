@@ -71,6 +71,7 @@ class MenuService extends BaseService implements MenuServiceInterface
         
         return [];
     }
+    // V66
     public function createMenu($request, $languageId){
         DB::beginTransaction();
         try{
@@ -99,8 +100,81 @@ class MenuService extends BaseService implements MenuServiceInterface
                             'name' => $val,
                             'canonical' => $payload['menu']['canonical'][$key],
                         ];
-                        $language1 = $this->menuRepository->createPivot($menu,$payloadLanguage,'languages');
-                        // dd($language1);
+                        $language = $this->menuRepository->createPivot($menu,$payloadLanguage,'languages');
+                        // dd($language);
+                    }
+                }
+                // die();
+                $this->nestedset();
+            }
+            // die();
+
+            DB::commit();
+            return true;
+        }catch(\Exception $ex){
+            DB::rollBack();
+            echo $ex->getMessage();die();
+            return false;
+        }
+    }
+
+    // V68
+    public function saveChildren($request, $languageId, $menu){
+        DB::beginTransaction();
+        try{
+            
+            $payload = $request->only('menu');
+            // dd($payload);
+
+            // ---------------------------------Đối với việc bỏ bớt childrenMenu--------------------------------
+            
+            $parentId = $menu->id;
+            $arrayChildrenMenuIdsDB = DB::table('menus')->where('parent_id', $parentId)->pluck('id')->toArray();
+            // dd($arrayChildrenMenuIdsDB); // 49, 50, 51, 52
+
+            $arrayChildrenMenuIdsPayload = $payload['menu']['id'];
+            // dd($arrayChildrenMenuIdsPayload); // 49, 50, 51
+
+            $differentIds = array_diff($arrayChildrenMenuIdsDB, $arrayChildrenMenuIdsPayload); 
+            // dd($differentIds);
+
+            if(count($differentIds) > 0){
+                foreach($differentIds as $differentid){
+                    $this->menuRepository->forceDelete($differentid);
+                }
+            }
+
+            // ---------------------------------Đối với việc thêm mới và cập nhật childrenMenu--------------------------------
+
+            if(count($payload['menu']['name'])){
+                foreach($payload['menu']['name'] as $key => $val){
+                    $menuId = $payload['menu']['id'][$key];
+                    // 1. menus
+                    $menuArray = [
+                        'menu_catalogue_id' => $menu->menu_catalogue_id,
+                        'parent_id' => $menu->id,
+                        'order' => $payload['menu']['order'][$key],
+                        'user_id' => Auth::id()
+                    ];
+                    // dd($menuArray);
+                    
+                    if($menuId == 0){
+                        $menuSave = $this->menuRepository->create($menuArray);
+                    }else{
+                        $menuSave = $this->menuRepository->updateReturn($menuId, $menuArray);
+                    }
+                    // dd($menuSave);
+
+                    // 2. menu_language
+                    if($menuSave->id > 0){
+                        $menuSave->languages()->detach($languageId, $menuSave->id);
+                        $payloadLanguage = [
+                            'language_id' => $languageId,
+                            'name' => $val,
+                            'canonical' => $payload['menu']['canonical'][$key],
+                        ];
+                        $language = $this->menuRepository->createPivot($menuSave,$payloadLanguage,'languages');
+                        // dd($language);
                     }
                 }
                 // die();
@@ -167,6 +241,24 @@ class MenuService extends BaseService implements MenuServiceInterface
             echo $ex->getMessage();//die();
             return false;
         }
+    }
+
+    public function convertMenu($menuArray = null):array{
+        $temp = [];
+        $fields = ['name', 'canonical', 'order', 'id'];
+        if(count($menuArray)){
+            foreach($menuArray as $key => $val){
+                foreach($fields as $field){
+                    if($field == 'name' || $field == 'canonical'){
+                        $temp[$field][] = $val->languages->first()->pivot->{$field};
+                        // $temp[$field][] = $val->languages->first()->getOriginal('pivot_'.$field);
+                    }else{
+                        $temp[$field][] = $val->{$field};
+                    }
+                }
+            }
+        }
+        return $temp;
     }
 }
 

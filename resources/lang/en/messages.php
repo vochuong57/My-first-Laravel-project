@@ -389,6 +389,7 @@ return[
         ],
         'create' => [
             'title' => 'Add New Menu',
+            'children' => 'Update sub-menu for menu ',
             'btnTitle' => 'Add New'
         ],
         'show' => [

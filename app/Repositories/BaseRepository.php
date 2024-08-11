@@ -108,10 +108,17 @@ class BaseRepository implements BaseRepositoryInterface
     public function createBatch(array $payload = []){
         return $this->model->insert($payload);
     }
-    //Phương thức cập nhật (UPDATE)
+    //Phương thức cập nhật (UPDATE) trả về true/false
     public function update(int $id=0, array $payload=[]){
         $model=$this->findById($id);
         return $model->update($payload);
+    }
+    //Phương thức cập nhật (UPDATE) trả về model được update
+    public function updateReturn(int $id=0, array $payload=[]){
+        $model=$this->findById($id);
+        $model->fill($payload);
+        $model->save();
+        return $model;
     }
     //Phương thức cập nhật WHERE IN (UPDATE)
     public function updateByWhereIn(string $whereInField='', array $whereIn=[], array $payload=[]){

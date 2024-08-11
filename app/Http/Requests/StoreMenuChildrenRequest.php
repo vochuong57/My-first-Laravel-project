@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
-class StoreMenuRequest extends FormRequest
+class StoreMenuChildrenRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -29,7 +29,6 @@ class StoreMenuRequest extends FormRequest
             ],
             'menu.name.*' => 'required|string',
             'menu.canonical.*' => 'required',
-            'menu_catalogue_id'=>'gt:0',
         ];
     }
     public function messages(): array
@@ -40,7 +39,6 @@ class StoreMenuRequest extends FormRequest
             'menu.name.*.string' => 'Có {number} tên menu không ở dạng ký tự',
             'menu.canonical.*.required' => 'Có {number} đường dẫn chưa được nhập',
             // 'menu.canonical.*.unique' => 'Có {number} đường dẫn bị trùng vui lòng kiểm tra lại',
-            'menu_catalogue_id.gt'=> 'Bạn chưa chọn vị trí hiển thị menu',
         ];
     }
     protected function prepareForValidation()
@@ -56,13 +54,5 @@ class StoreMenuRequest extends FormRequest
                 'canonical' => Str::slug($this->canonical),
             ]);
         }
-    }
-    public function withValidator($validator)
-    {
-        $validator->after(function ($validator) {
-            if ($this->input('type') === 'none') {
-                $validator->errors()->add('type', 'Bạn chưa chọn kiểu menu');
-            }
-        });
     }
 }

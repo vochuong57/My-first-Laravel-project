@@ -468,3 +468,13 @@ table strong{
 .uppercase{
     text-transform: uppercase;
 }
+/* CSS cho menu/show */
+.create-children-menu{
+    position: absolute;
+    top: 11px;
+    right: 11px;
+    z-index: 100;
+}
+.dd-handle{
+    position: relative;
+}
