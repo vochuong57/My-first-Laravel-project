@@ -410,6 +410,7 @@ return[
         ],
         'create'=>[
             'title'=>'Thêm mới Menu',
+            'children'=>'Cập nhật menu con cho menu ',
             'btnTitle'=>'Thêm mới'
         ],
         'show'=>[

@@ -17,7 +17,8 @@ class Menu extends Model
         'publish',
         'order',
         'user_id',
-        'menu_catalogue_id'
+        'menu_catalogue_id',
+        'parent_id'
     ];
 
     protected $table='menus';

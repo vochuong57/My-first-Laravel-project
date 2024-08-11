@@ -88,8 +88,12 @@
         let removeCol = $('<div>').addClass('col-lg-2')
         let a = $('<a>').addClass('delete-menu img-scaledown').attr('style', 'width: 15%; height: 30px; margin-left: 6px;');
         let img = $('<img>').attr('src', 'Backend/img/close.png')
+
+        let input = $('<input>').addClass('hidden').attr('name', 'menu[id][]').attr('value', 0) // V66
+
         a.append(img)
         removeCol.append(a)
+        removeCol.append(input)
         row.append(removeCol)
 
         return row

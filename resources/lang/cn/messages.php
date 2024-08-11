@@ -390,6 +390,7 @@ return [
         ],
         'create' => [
             'title' => '新增菜单',
+            'children' => '更新菜单的子菜单',
             'btnTitle' => '新增'
         ],
         'show' => [
