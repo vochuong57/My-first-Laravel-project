@@ -100,7 +100,7 @@ class MenuController extends Controller
            return redirect()->route('menu.index')->with('error','Thêm mới menu thất bại. Hãy thử lại');
         
     }
-    //giao diện sửa user
+    //giao diện danh sách menu theo id của vị trí menu (menu_catalogue_id)
     public function edit($id){
         // echo $id;
         $template='Backend.menu.menu.show';
@@ -123,6 +123,10 @@ class MenuController extends Controller
         ];
         $menus=$this->menuRepository->findByConditionsWithRelation($condition, $relation);
         // dd($menus); die();
+
+        // V69
+        // $a = recursive($menus);
+        // dd($a);
 
         $this->authorize('modules', 'menu.edit');//phân quyền
 

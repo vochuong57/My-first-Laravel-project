@@ -89,7 +89,8 @@
         let a = $('<a>').addClass('delete-menu img-scaledown').attr('style', 'width: 15%; height: 30px; margin-left: 6px;');
         let img = $('<img>').attr('src', 'Backend/img/close.png')
 
-        let input = $('<input>').addClass('hidden').attr('name', 'menu[id][]').attr('value', 0) // V66
+        // V68
+        let input = $('<input>').addClass('hidden').attr('name', 'menu[id][]').attr('value', 0)
 
         a.append(img)
         removeCol.append(a)
