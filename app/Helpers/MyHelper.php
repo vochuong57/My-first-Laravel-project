@@ -86,3 +86,80 @@ if(!function_exists('renderSystemEditor')){
         return '<textarea name="config['.$name.']" id="'.$name.'" class="form-control system-textarea ck-editor">'.old($name, ($systems[$name]) ?? '').'</textarea>';
     }
 }
+
+// V69
+if(!function_exists('recursive')){ 
+    function recursive($data, $parentId = 0){ // data chạy từ 28, 29 ,49, 50, 51
+        $temp=[];
+        if(!is_null($data) && count($data)){
+            foreach($data as $key => $val){
+                if($val->parent_id == $parentId){ // lần đầu chạy ở parentId 0 ra được 2 mảng là của 28, 29. Lần chạy thứ hai parentId 28 ra được 3 mảng là 49, 50, 51 và pareetId 29 thì không mảng nào được tạo ra
+                    $temp[]=[
+                        'item' => $val,  
+                        'children' => recursive($data, $val->id) // lúc này lần chạy thứ 2 parentId là 28, 29, lần chạy thứ 3 thì parent id là 49, 50, 51
+                    ];
+                }
+            }
+        }
+        return $temp;
+    }
+}
+
+// <ol class="dd-list">
+//     @foreach($menus as $key => $val)
+//     <li class="dd-item" data-id="{{ $val->id }}">
+//         <div class="dd-handle">
+//             <span class="label label-info"><i class="fa fa-arrows"></i></span> {{ $val->languages->first()->getOriginal('pivot_name') }}
+//         </div>
+//         <a class="create-children-menu" href="{{ route('menu.children', $val->id) }}"> Quản lý menu con </a>
+//         <ol class="dd-list">
+//             <li class="dd-item" data-id="2">
+//                 <div class="dd-handle">
+//                     <span class="pull-right"> 12:00 pm </span>
+//                     <span class="label label-info"><i class="fa fa-arrows"></i></span> Vivamus vestibulum nulla nec ante.
+//                 </div>
+//             </li>
+//             <li class="dd-item" data-id="3">
+//                 <div class="dd-handle">
+//                     <span class="pull-right"> 11:00 pm </span>
+//                     <span class="label label-info"><i class="fa fa-arrows"></i></span> Nunc dignissim risus id metus.
+//                 </div>
+//             </li>
+//             <li class="dd-item" data-id="4">
+//                 <div class="dd-handle">
+//                     <span class="pull-right"> 11:00 pm </span>
+//                     <span class="label label-info"><i class="fa fa-arrows"></i></span> Vestibulum commodo
+//                 </div>
+//             </li>
+//         </ol>
+//     </li>
+//     @endforeach
+// </ol>
+
+// V69
+if(!function_exists('recursive_menu')){
+    function recursive_menu($data){
+        $html = '';
+        if(count($data)){
+            foreach($data as $key => $val){
+                $itemId = $val['item']->id;
+                $itemName = $val['item']->languages->first()->getOriginal('pivot_name');
+                $itemUrl = route('menu.children', ['id' => $itemId]);
+
+                $html .= "<li class='dd-item' data-id='$itemId'>";
+                $html .=    "<div class='dd-handle'>";
+                $html .=        "<span class='label label-info'><i class='fa fa-arrows'></i></span> $itemName";
+                $html .=    "</div>";
+                $html .=    "<a class='create-children-menu' href='$itemUrl'> Quản lý menu con </a>";
+                if(count($val['children'])){
+                    $html .= "<ol class='dd-list'>";
+                    $html .=    recursive_menu($val['children']);
+                    $html .= "</ol>";
+                }
+                $html .= "</li>";
+
+            }
+        }
+        return $html;
+    }
+}
