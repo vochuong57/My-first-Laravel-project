@@ -478,3 +478,6 @@ table strong{
 .dd-handle{
     position: relative;
 }
+#nestable2 .dd-item > button {
+    z-index: 9999;
+}

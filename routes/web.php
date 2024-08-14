@@ -81,6 +81,7 @@ Route::group(['middleware' => ['admin','locale','backend_default_locale']], func
     Route::get('ajax/attribute/loadAttribute',[AjaxAttributeController::class, 'loadAttribute'])->name('ajax.attribute.loadAttribute');//Trang thực thi chuyển đổi ... đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
     Route::post('ajax/menu/createCatalogue',[AjaxMenuController::class, 'createCatalogue'])->name('ajax.menu.createCatalogue');//Trang thực thi chuyển đổi ... đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
     Route::get('ajax/dashboard/getMenu',[AjaxDashboardController::class, 'getMenu'])->name('ajax.dashboard.getMenu');//Trang thực thi chuyển đổi ... đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+    Route::post('ajax/menu/drag',[AjaxMenuController::class, 'drag'])->name('ajax.dashboard.drag');//Trang thực thi chuyển đổi ... đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
 
     //UserCatalogueController (Trang quản lí nhóm người dùng)
     Route::group(['prefix'=>'user/catalogue'], function(){

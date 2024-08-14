@@ -243,6 +243,7 @@ class MenuService extends BaseService implements MenuServiceInterface
         }
     }
 
+    // V68
     public function convertMenu($menuArray = null):array{
         $temp = [];
         $fields = ['name', 'canonical', 'order', 'id'];
@@ -259,6 +260,27 @@ class MenuService extends BaseService implements MenuServiceInterface
             }
         }
         return $temp;
+    }
+
+    // V70
+    public function updateDrag($json, $menuCatalogueId, $parentId = 0){
+        // dd($json);
+        // dd(count($json)); // 3, 2
+        if(count($json)){
+            foreach($json as $key => $val){
+                // dd($key);
+                $update = [
+                    'order' => count($json) - $key, // của 49 là 3, của 28 là 2, của 50 là 2, của 51 là 1, của 29 là 1
+                    'parent_id'=> $parentId, // của 49 là 0, của 28 là 0, của 50 là 28, của 51 là 28, của 29 là 0
+                ];
+
+                $menu = $this->menuRepository->update($val['id'], $update);
+                if(isset($val['children']) && count($val['children'])){
+                    $this->updateDrag($val['children'], $menuCatalogueId, $val['id']);
+                }
+            }
+            $this->nestedset();
+        }
     }
 }
 

@@ -79,7 +79,7 @@ class BaseRepository implements BaseRepositoryInterface
         }
         return $query->get();
     }
-    public function findByConditionsWithRelation(array $condition = [], array $relation = [])
+    public function findByConditionsWithRelation(array $condition = [], array $relation = [], array $orderBy = ['id', 'desc'])
     {
         $query = $this->model->newQuery();
         
@@ -95,6 +95,9 @@ class BaseRepository implements BaseRepositoryInterface
 
         // Load các mối quan hệ
         $query->with($relation);
+
+        //Sắp xếp bắt đầu dùng V70
+        $query->orderBy($orderBy[0], $orderBy[1]);
 
         return $query->get();
     }
