@@ -25,7 +25,7 @@
                         <a href="" class="custom-button">Cập nhật menu</a>
                     </div>
                 </div>
-                <div class="ibox-content">
+                <div class="ibox-content" id="dataCatalogue" data-catalogueId="{{ $id }}">
                     @php
                         // V69
                         $menus = recursive($menus);

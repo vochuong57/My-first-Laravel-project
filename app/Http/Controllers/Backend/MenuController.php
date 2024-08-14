@@ -121,7 +121,8 @@ class MenuController extends Controller
                 $query->where('language_id', $languageId);
             }
         ];
-        $menus=$this->menuRepository->findByConditionsWithRelation($condition, $relation);
+        $order = ['order', 'desc'];
+        $menus=$this->menuRepository->findByConditionsWithRelation($condition, $relation, $order);
         // dd($menus); die();
 
         // V69
@@ -130,7 +131,7 @@ class MenuController extends Controller
 
         $this->authorize('modules', 'menu.edit');//phân quyền
 
-        return view('Backend.dashboard.layout', compact('template','config', 'menus'));
+        return view('Backend.dashboard.layout', compact('template','config', 'menus', 'id'));
     }
     //xử lý sửa menu
     public function update($id, UpdateMenuRequest $request){
@@ -195,7 +196,8 @@ class MenuController extends Controller
                 $query->where('language_id', $languageId);
             }
         ];
-        $childrenMenus=$this->menuRepository->findByConditionsWithRelation($condition, $relation);
+        $order = ['order', 'desc'];
+        $childrenMenus=$this->menuRepository->findByConditionsWithRelation($condition, $relation, $order);
         // dd($childrenMenus); die();
 
         $childrenMenus = $this->menuService->convertMenu($childrenMenus);

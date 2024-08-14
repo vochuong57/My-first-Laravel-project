@@ -378,20 +378,36 @@
         if( $('#nestable2').length){
             $('#nestable2').nestable({
                 group: 1
-            }).on('change', updateOutput);
+            }).on('change', HT.updateNestableOutput); // V70
         }
     }
 
-    HT.updateNestableOutput = () => {
-        var updateOutput = function (e) {
-            var list = e.length ? e : $(e.target),
-                    output = list.data('output');
-            if (window.JSON) {
-                output.val(window.JSON.stringify(list.nestable('serialize')));//, null, 2));
-            } else {
-                output.val('JSON browser support required for this demo.');
+    HT.updateNestableOutput = (e) => {
+        // V70
+        var list = $(e.currentTarget),
+        output = $(list.data('output'));
+        let json = window.JSON.stringify(list.nestable('serialize'))
+        console.log(json)
+
+        if(json.length){
+            let _form = $(this)
+            let option = {
+                json: json,
+                menu_catalogue_id: $('#dataCatalogue').attr('data-catalogueId'),
+                _token: _token
             }
-        };
+            
+            $.ajax({
+                url: 'ajax/menu/drag',
+                type: 'POST',
+                data: option,
+                dataType: 'json',
+                success: function(res){
+                    console.log(res);
+                    
+                },
+            });
+        }
     }
 
     HT.runUpdateNestableOutput = () => {
