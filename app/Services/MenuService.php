@@ -71,36 +71,72 @@ class MenuService extends BaseService implements MenuServiceInterface
         
         return [];
     }
-    // V66
-    public function createMenu($request, $languageId){
+    // V66, V71
+    public function saveMenu($request, $languageId){
         DB::beginTransaction();
         try{
             
-            $payload = $request->only('menu', 'menu_catalogue_id', 'type');
-            // dd($payload);
+            $payload = $request->only('menu', 'menu_catalogue_id');
+            // dd($payload['menu_catalogue_id']);
+
+            // v71 ---------------------------------Đối với việc bỏ bớt mainMenu--------------------------------
+            
+            $arrayMainMenuIdsDB = DB::table('menus')->where('parent_id', 0)->where('menu_catalogue_id', $payload['menu_catalogue_id'])->pluck('id')->toArray();
+            // dd($arrayMainMenuIdsDB); // 28, 29, 57
+
+            $arrayMainMenuIdsPayload = $payload['menu']['id'];
+            // dd($arrayMainMenuIdsPayload); // 28, 29
+
+            $differentIds = array_diff($arrayMainMenuIdsDB, $arrayMainMenuIdsPayload); 
+            // dd($differentIds);
+
+            if(count($differentIds) > 0){
+                foreach($differentIds as $differentid){
+                    $hasChildrenIds = $this->getAllChildMenuIds($differentid);
+                    // dd($hasChildrenIds);
+                    $this->menuRepository->deleteByWhereIn('id', $hasChildrenIds);
+                }
+                foreach($differentIds as $differentid){
+                    $this->menuRepository->forceDelete($differentid);
+                }
+            }
+
+            // V66, V71 ---------------------------------Đối với việc thêm mới và cập nhật mainMenu--------------------------------
 
             if(count($payload['menu']['name'])){
                 foreach($payload['menu']['name'] as $key => $val){
+                    $menuId = $payload['menu']['id'][$key];
                     // 1. menus
                     $menuArray = [
                         'menu_catalogue_id' => $payload['menu_catalogue_id'],
-                        'type' => $payload['type'],
+                        // 'type' => $payload['type'],
                         'order' => $payload['menu']['order'][$key],
                         'user_id' => Auth::id()
                     ];
                     // dd($menuArray);
-                    $menu = $this->menuRepository->create($menuArray);
-                    // dd($menu);
+
+                    // V71
+                    if($menuId == 0){
+                        $menuSave = $this->menuRepository->create($menuArray);
+                    }else{
+                        $menuSave = $this->menuRepository->updateReturn($menuId, $menuArray);
+                        $hasChildrenIds = $this->getAllChildMenuIds($menuId);
+                        // dd($hasChildrenIds);
+                        if(count($hasChildrenIds)){
+                            $this->menuRepository->updateByWhereIn('id', $hasChildrenIds, ['menu_catalogue_id' => $payload['menu_catalogue_id']]);  
+                        }
+                    }
+                    // dd($menuSave);
 
                     // 2. menu_language
-                    if($menu->id > 0){
-                        $menu->languages()->detach($languageId, $menu->id);
+                    if($menuSave->id > 0){
+                        $menuSave->languages()->detach($languageId, $menuSave->id);
                         $payloadLanguage = [
                             'language_id' => $languageId,
                             'name' => $val,
                             'canonical' => $payload['menu']['canonical'][$key],
                         ];
-                        $language = $this->menuRepository->createPivot($menu,$payloadLanguage,'languages');
+                        $language = $this->menuRepository->createPivot($menuSave,$payloadLanguage,'languages');
                         // dd($language);
                     }
                 }
@@ -116,6 +152,24 @@ class MenuService extends BaseService implements MenuServiceInterface
             echo $ex->getMessage();die();
             return false;
         }
+    }
+
+    // V71
+    public function getAllChildMenuIds($menuId)
+    {
+        // Lấy danh sách các id của các menu con
+        $childrenIds = DB::table('menus')->where('parent_id', $menuId)->pluck('id')->toArray();
+        // dd($childrenIds);
+
+        // Tạo mảng chứa tất cả các id
+        $allIds = $childrenIds;
+
+        // Đệ quy để tìm các menu con của các menu con
+        foreach ($childrenIds as $childId) {
+            $allIds = array_merge($allIds, $this->getAllChildMenuIds($childId));
+        }
+
+        return $allIds;
     }
 
     // V68

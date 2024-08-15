@@ -14,7 +14,7 @@
 </div>
 <div class="hr-line-dashed" style="margin: 10px 0;"></div>
 <div class="menu-wrapper">
-    <div class="notification text-center {{ (!empty($menu)) ? 'none' : '' }}">
+    <div class="notification text-center {{ (!empty($listMenus)) ? 'none' : '' }}">
         <h4 style="font-weight: 500; font-size: 16px; color: #000;">
             Danh sách liên kết này chưa có bất kì đường dẫn nào.
         </h4>
@@ -23,7 +23,7 @@
         </p>
     </div>
     @php
-        $menu = old('menu', ($childrenMenus) ?? null);
+        $menu = old('menu', ($listMenus) ?? null);
     @endphp
     @if(!empty($menu))
         @foreach($menu['name'] as $key => $val)

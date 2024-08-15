@@ -45,7 +45,7 @@
         </div>
   
         <div class="text-right mb15">
-            <button class="btn btn-primary" type="submit" name="send" value="send">{{ $config['seo']['btnTitle'] }}</button>
+            <button class="btn btn-primary" type="submit" name="send" value="send">{{ $config['seo']['btnTitleSave'] }}</button>
         </div>
     </div>
 </form>
