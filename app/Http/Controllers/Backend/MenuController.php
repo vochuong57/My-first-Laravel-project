@@ -74,7 +74,7 @@ class MenuController extends Controller
         return view('Backend.dashboard.layout', compact('template','config','menuCatalogues'));
     }
 
-    //giao diện thêm menu
+    // V62 giao diện thêm menu chính
     public function store(){   
         $template='Backend.menu.menu.store';
 
@@ -92,15 +92,17 @@ class MenuController extends Controller
         return view('Backend.dashboard.layout', compact('template','config','menuCatalogues'));
     }
 
-    //xử lý thêm menu
+    // V66 xử lý thêm menu chính, V71 xử lý save menu chính
     public function create(StoreMenuRequest $request){
-        if($this->menuService->createMenu($request, $this->language)){
-            return redirect()->route('menu.index')->with('success','Thêm mới menu thành công');
+        $MenuCatalogueIdPayload = $request->input('menu_catalogue_id');
+        // dd($MenuCatalogueIdPayload);
+        if($this->menuService->saveMenu($request, $this->language)){
+            return redirect()->route('menu.edit', ['id' => $MenuCatalogueIdPayload])->with('success','Save menu chính thành công');
         }
-           return redirect()->route('menu.index')->with('error','Thêm mới menu thất bại. Hãy thử lại');
+           return redirect()->route('menu.edit', ['id' => $MenuCatalogueIdPayload])->with('error','Save menu chính thất bại. Hãy thử lại');
         
     }
-    //giao diện danh sách menu theo id của vị trí menu (menu_catalogue_id)
+    // V67 giao diện danh sách menu theo id của vị trí menu (menu_catalogue_id)
     public function edit($id){
         // echo $id;
         $template='Backend.menu.menu.show';
@@ -128,46 +130,49 @@ class MenuController extends Controller
         // V69
         // $a = recursive($menus);
         // dd($a);
+        
+        // V71
+        $menuCatalogueLoaded = $this->menuCatalogueRepository->findById($id);
 
         $this->authorize('modules', 'menu.edit');//phân quyền
 
-        return view('Backend.dashboard.layout', compact('template','config', 'menus', 'id'));
+        return view('Backend.dashboard.layout', compact('template','config', 'menus', 'id', 'menuCatalogueLoaded'));
     }
-    //xử lý sửa menu
-    public function update($id, UpdateMenuRequest $request){
-        //echo $id; die();
-        //dd($request);
-        if($this->menuService->updateMenu($id, $request)){
-            return redirect()->route('menu.index')->with('success','Cập nhật thành viên thành công');
-        }
-           return redirect()->route('menu.index')->with('error','Cập nhật thành viên thất bại. Hãy thử lại');
-    }
-    //giao diện xóa menu
-    public function destroy($id){
-        $template='Backend.menu.menu.destroy';
+    // //xử lý sửa menu
+    // public function update($id, UpdateMenuRequest $request){
+    //     //echo $id; die();
+    //     //dd($request);
+    //     if($this->menuService->updateMenu($id, $request)){
+    //         return redirect()->route('menu.index')->with('success','Cập nhật thành viên thành công');
+    //     }
+    //        return redirect()->route('menu.index')->with('error','Cập nhật thành viên thất bại. Hãy thử lại');
+    // }
+    // //giao diện xóa menu
+    // public function destroy($id){
+    //     $template='Backend.menu.menu.destroy';
 
-        $config=$this->configCUD();
+    //     $config=$this->configCUD();
 
-        $config['seo']=config('apps.menu.delete');
+    //     $config['seo']=config('apps.menu.delete');
 
-        //truy vấn thông tin
-        $menu=$this->menuRepository->findById($id);
-        //dd($menu); die();
+    //     //truy vấn thông tin
+    //     $menu=$this->menuRepository->findById($id);
+    //     //dd($menu); die();
 
-        $this->authorize('modules', 'menu.destroy');//phân quyền
+    //     $this->authorize('modules', 'menu.destroy');//phân quyền
 
-        return view('Backend.dashboard.layout', compact('template','config','menu'));
-    }
-    //xử lý xóa menu
-    public function delete($id){
-        //echo $id;
-        if($this->menuService->deleteMenu($id)){
-            return redirect()->route('menu.index')->with('success','Xóa thành viên thành công');
-        }
-           return redirect()->route('menu.index')->with('error','Xóa thành viên thất bại. Hãy thử lại');
-    }
+    //     return view('Backend.dashboard.layout', compact('template','config','menu'));
+    // }
+    // //xử lý xóa menu
+    // public function delete($id){
+    //     //echo $id;
+    //     if($this->menuService->deleteMenu($id)){
+    //         return redirect()->route('menu.index')->with('success','Xóa thành viên thành công');
+    //     }
+    //        return redirect()->route('menu.index')->with('error','Xóa thành viên thất bại. Hãy thử lại');
+    // }
 
-    // V66
+    // V66 đổ ra giao diện menu con tương ứng với menu chính theo $id của menu chính
     public function children($id){
         $template='Backend.menu.menu.children';
 
@@ -197,24 +202,61 @@ class MenuController extends Controller
             }
         ];
         $order = ['order', 'desc'];
-        $childrenMenus=$this->menuRepository->findByConditionsWithRelation($condition, $relation, $order);
-        // dd($childrenMenus); die();
+        $listMenus=$this->menuRepository->findByConditionsWithRelation($condition, $relation, $order);
+        // dd($listMenus); die();
 
-        $childrenMenus = $this->menuService->convertMenu($childrenMenus);
-        // dd($childrenMenus);
+        $listMenus = $this->menuService->convertMenu($listMenus);
+        // dd($listMenus);
 
         $this->authorize('modules', 'menu.store');//phân quyền
 
-        return view('Backend.dashboard.layout', compact('template','config','menu', 'childrenMenus'));
+        return view('Backend.dashboard.layout', compact('template','config','menu', 'listMenus'));
     }
 
-    // V66
+    // V66 save dữ liệu menu con theo menu chính tương ứng
     public function saveChildren(StoreMenuChildrenRequest $request, $id){
         $menu = $this->menuRepository->findById($id);
         if($this->menuService->saveChildren($request, $this->language, $menu)){
             return redirect()->route('menu.edit', ['id' => $menu->menu_catalogue_id])->with('success','Cập nhật menu con thành công');
         }
            return redirect()->route('menu.edit', ['id' => $menu->menu_catalogue_id])->with('error','Cập nhật menu con thất bại. Hãy thử lại');
+    }
+
+    // V71 Giao diện cập nhật menu chính theo parent_id là 0 và menu_catalogue_id là $id
+    public function editMenu($id){
+        $template='Backend.menu.menu.store';
+
+        $config=$this->configCUD();
+
+        $config['seo']=__('messages.menu.create');
+        // dd($config['seo']);
+
+        $menuCatalogues = $this->menuCatalogueRepository->all();
+
+        $menuCatalogueLoaded = $this->menuCatalogueRepository->findById($id);
+
+        $config['method']='save';
+        //truy vấn thông tin
+        $condition = [
+            ['parent_id', '=', 0],
+            ['menu_catalogue_id', '=', $id]
+        ];
+        $languageId = $this->language;
+        $relation = [
+            'languages' => function($query) use ($languageId){
+                $query->where('language_id', $languageId);
+            }
+        ];
+        $order = ['order', 'desc'];
+        $listMenus=$this->menuRepository->findByConditionsWithRelation($condition, $relation, $order);
+        // dd($listMenus);
+
+        $listMenus = $this->menuService->convertMenu($listMenus);
+        // dd($listMenus);
+
+        $this->authorize('modules', 'menu.store');//phân quyền
+
+        return view('Backend.dashboard.layout', compact('template', 'config', 'menuCatalogues', 'menuCatalogueLoaded', 'listMenus',));
     }
 
     private function configIndex(){

@@ -1,4 +1,4 @@
-@include('Backend.dashboard.component.breadcrumb', ['title' =>$config['seo']['title']])
+@include('Backend.dashboard.component.breadcrumb', ['title' => ($config['method'] == 'create') ? $config['seo']['title'] : $config['seo']['main'].$menuCatalogueLoaded->name])
 @if ($errors->any())
     <div class="alert alert-danger">
         <ul>
@@ -19,7 +19,7 @@
 
 
 @php
-    $url=($config['method']=='create')?route('menu.create'):route('menu.update', $menu->id)
+    $url=($config['method']=='create' || $config['method'] == 'save')?route('menu.create'):'' //V62, V71
 @endphp
 <form action="{{ $url }}" method="post" class="box menuContainer">
     @csrf
@@ -67,7 +67,7 @@
         </div>
   
         <div class="text-right mb15">
-            <button class="btn btn-primary" type="submit" name="send" value="send">{{ $config['seo']['btnTitle'] }}</button>
+            <button class="btn btn-primary" type="submit" name="send" value="send">{{ ($config['method'] == 'create') ? $config['seo']['btnTitleCreate'] : $config['seo']['btnTitleSave'] }}</button>
         </div>
     </div>
 </form>

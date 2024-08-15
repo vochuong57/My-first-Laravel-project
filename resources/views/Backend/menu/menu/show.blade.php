@@ -1,4 +1,4 @@
-@include('Backend.dashboard.component.breadcrumb', ['title' =>$config['seo']['title']])
+@include('Backend.dashboard.component.breadcrumb', ['title' =>$config['seo']['title']. $menuCatalogueLoaded->name])
 
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
@@ -22,7 +22,7 @@
                 <div class="ibox-title">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
                         <h5 style="margin: 0">Menu Chính</h5>
-                        <a href="" class="custom-button">Cập nhật menu</a>
+                        <a href="{{ route('menu.editMenu', ['id' => $id]) }}" class="custom-button">Cập nhật menu cấp 1</a>
                     </div>
                 </div>
                 <div class="ibox-content" id="dataCatalogue" data-catalogueId="{{ $id }}">

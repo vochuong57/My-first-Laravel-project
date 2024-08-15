@@ -411,10 +411,12 @@ return[
         'create'=>[
             'title'=>'Thêm mới Menu',
             'children'=>'Cập nhật menu con cho menu ',
-            'btnTitle'=>'Thêm mới'
+            'main'=>'Cập nhật danh sách menu cấp 1. Vị trí hiển thị hiện tại ',
+            'btnTitleCreate'=>'Thêm mới',
+            'btnTitleSave'=>'Lưu lại',
         ],
         'show'=>[
-            'title'=>'Danh sách menu',
+            'title'=>'Danh sách menu ở vị trí ',
             'btnTitle'=>'Cập nhật'
         ],
     ],
