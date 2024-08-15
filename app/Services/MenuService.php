@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Services\Interfaces\MenuServiceInterface;
 use App\Repositories\Interfaces\MenuRepositoryInterface as MenuRepository;
+use App\Repositories\Interfaces\MenuLanguageRepositoryInterface as MenuLanguageRepository;
+use App\Repositories\Interfaces\MenuCatalogueRepositoryInterface as MenuCatalogueRepository;
 //thêm thư viện cho việc xử lý INSERT
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -27,11 +29,15 @@ use App\Classes\Nestedsetbie;
 class MenuService extends BaseService implements MenuServiceInterface
 {
     protected $menuRepository;
+    protected $menuLanguageRepository;
+    protected $menuCatalogueRepository;
     protected $controllerName = 'MenuController';
     protected $language;    
 
-    public function __construct(MenuRepository $menuRepository){
+    public function __construct(MenuRepository $menuRepository, MenuLanguageRepository $menuLanguageRepository, MenuCatalogueRepository $menuCatalogueRepository){
         $this->menuRepository=$menuRepository;
+        $this->menuLanguageRepository=$menuLanguageRepository;
+        $this->menuCatalogueRepository=$menuCatalogueRepository;
         $this->language=$this->currentLanguage();
         $this->nestedset=new Nestedsetbie([
             'table'=>'menus',
@@ -245,54 +251,62 @@ class MenuService extends BaseService implements MenuServiceInterface
         }
     }
 
-    public function updateMenu($id, $request, $languageId){
-        DB::beginTransaction();
-        try{
+    // public function updateMenu($id, $request, $languageId){
+    //     DB::beginTransaction();
+    //     try{
             
             
-            DB::commit();
-            return true;
-        }catch(\Exception $ex){
-            DB::rollBack();
-            echo $ex->getMessage();//die();
-            return false;
-        }
-    }
+    //         DB::commit();
+    //         return true;
+    //     }catch(\Exception $ex){
+    //         DB::rollBack();
+    //         echo $ex->getMessage();//die();
+    //         return false;
+    //     }
+    // }
    
+    // V72
     public function deleteMenu($id, $languageId){
         DB::beginTransaction();
         try{
-            // //echo '123'; die();
-            // //Đầu tiền xóa đi bản dịch đó khỏi menu_language
-            // $where=[
-            //     ['menu_id', '=', $id],
-            //     ['language_id', '=', $languageId]
-            // ];
-            // $this->menuLanguageRepository->deleteByWhere($where);
+            $menuIds = DB::table('menus')->where('menu_catalogue_id', $id)->pluck('id')->toArray();
+            // dd($menuIds);
+            // dd(count($menuIds));
+            $countDeletedMenu = 0;
+            foreach($menuIds as $menuId){
+                $this->menuLanguageRepository->deleteByWhere([
+                    ['menu_id', '=', $menuId],
+                    ['language_id', '=', $languageId]
+                ]);
+                // echo 1; die();
 
-            // //Tiếp theo xóa đi canonical của bản dịch đó khỏi routers
-            // $findRouter=[
-            //     ['module_id', '=', $id],
-            //     ['language_id', '=', $languageId],
-            //     ['controller', '=', 'App\Http\Controllers\Frontend\MenuController'],
-            // ];
-            // $this->routerRepository->deleteByWhere($findRouter);
+                $hasMenuIdInMenuLanguage = $this->menuLanguageRepository->findByCondition([
+                    ['menu_id', '=', $menuId]
+                ]);
+                // echo 2; die();
+                // dd($hasMenuIdInMenuLanguage);
 
-            // //Sau khi xóa xong thì nó tiếp tục kiểm tra xem thử là còn cái menu_id đó trong menu_language không
-            // $condition=[
-            //     ['menu_id', '=', $id]
-            // ];
-            // $flag = $this->menuLanguageRepository->findByCondition($condition);
-
-            // //Nếu không tìm thấy nữa thì ta mới tiến hành xóa đi Menu
-            // if(!$flag){
-            //     $menu=$this->menuRepository->forceDelete($id);
-            // }
+                if($hasMenuIdInMenuLanguage == null){
+                    $this->menuRepository->deleteByWhere([
+                        ['id', '=', $menuId],
+                    ]);
+                    $countDeletedMenu++;
+                    // echo 3; die();
+                }
+            }
+            // dd($countDeletedMenu);
+            if(count($menuIds) == $countDeletedMenu){
+                $this->menuCatalogueRepository->deleteByWhere([
+                    ['id', '=', $id],
+                ]);
+                // echo 4; die();
+            }
+            // echo 1; die();
             DB::commit();
             return true;
         }catch(\Exception $ex){
             DB::rollBack();
-            echo $ex->getMessage();//die();
+            echo $ex->getMessage();die();
             return false;
         }
     }

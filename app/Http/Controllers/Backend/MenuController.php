@@ -147,30 +147,30 @@ class MenuController extends Controller
     //     }
     //        return redirect()->route('menu.index')->with('error','Cập nhật thành viên thất bại. Hãy thử lại');
     // }
-    // //giao diện xóa menu
-    // public function destroy($id){
-    //     $template='Backend.menu.menu.destroy';
+    // V72 giao diện xóa vị trí menu (menu_catalogue_id)
+    public function destroy($id){
+        $template='Backend.menu.menu.destroy';
 
-    //     $config=$this->configCUD();
+        $config=$this->configCUD();
 
-    //     $config['seo']=config('apps.menu.delete');
+        $config['seo']=__('messages.menu.delete');
 
-    //     //truy vấn thông tin
-    //     $menu=$this->menuRepository->findById($id);
-    //     //dd($menu); die();
+        //truy vấn thông tin
+        $menuCatalogue=$this->menuCatalogueRepository->findById($id);
+        //dd($menu); die();
 
-    //     $this->authorize('modules', 'menu.destroy');//phân quyền
+        $this->authorize('modules', 'menu.destroy');//phân quyền
 
-    //     return view('Backend.dashboard.layout', compact('template','config','menu'));
-    // }
-    // //xử lý xóa menu
-    // public function delete($id){
-    //     //echo $id;
-    //     if($this->menuService->deleteMenu($id)){
-    //         return redirect()->route('menu.index')->with('success','Xóa thành viên thành công');
-    //     }
-    //        return redirect()->route('menu.index')->with('error','Xóa thành viên thất bại. Hãy thử lại');
-    // }
+        return view('Backend.dashboard.layout', compact('template','config','menuCatalogue'));
+    }
+    // V72 xử lý xóa vị trí menu (menu_catalogue_id)
+    public function delete($id){
+        // echo $id; die();
+        if($this->menuService->deleteMenu($id, $this->language)){
+            return redirect()->route('menu.index')->with('success','Xóa thành viên thành công');
+        }
+           return redirect()->route('menu.index')->with('error','Xóa thành viên thất bại. Hãy thử lại');
+    }
 
     // V66 đổ ra giao diện menu con tương ứng với menu chính theo $id của menu chính
     public function children($id){
