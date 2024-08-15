@@ -419,5 +419,9 @@ return[
             'title'=>'Danh sách menu ở vị trí ',
             'btnTitle'=>'Cập nhật'
         ],
+        'delete'=>[
+            'title'=>'Xóa vị trí menu ',
+            'btnDelete'=>'Xóa dữ liệu'
+        ],
     ],
 ];
