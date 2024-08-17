@@ -27,12 +27,23 @@
     @endphp
     @if(!empty($menu))
         @foreach($menu['name'] as $key => $val)
-        <div class="row mb10 menu-item {{ $menu['canonical'][$key] }}">
+        <div class="row mb10 menu-item{{ !empty($menu['canonical'][$key]) ? ' ' . $menu['canonical'][$key] : '' }}">
             <div class="col-lg-4">
                 <input type="text" class="form-control" name="menu[name][]" value="{{ $val }}">
             </div>
             <div class="col-lg-4">
-                <input type="text" class="form-control" name="menu[canonical][]" value="{{ $menu['canonical'][$key] }}">
+                @php
+                    // V72
+                    $isReadonly = '';
+
+                    foreach($listCanonicalInRouter as $valRouter){
+                        if($menu['canonical'][$key] == $valRouter){
+                            $isReadonly = 'readonly';
+                            break;
+                        }
+                    }
+                @endphp
+                <input type="text" class="form-control" name="menu[canonical][]" value="{{ $menu['canonical'][$key] }}" {{ $isReadonly }}>
             </div>
             <div class="col-lg-2">
                 <input type="text" class="form-control" name="menu[order][]" value="{{ $menu['order'][$key] }}">

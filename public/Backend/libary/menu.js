@@ -70,7 +70,7 @@
         let row = $('<div>').addClass('row mb10 menu-item '+ ((typeof(option) != 'undefined') ? option.canonical : '') +'')
         const colums = [
             { class: 'col-lg-4', name: 'menu[name][]', value: (typeof(option) != 'undefined') ? option.name : '' },
-            { class: 'col-lg-4', name: 'menu[canonical][]', value: (typeof(option) != 'undefined') ? option.canonical : '' },
+            { class: 'col-lg-4', name: 'menu[canonical][]', value: (typeof(option) != 'undefined') ? option.canonical : '', readonly: (typeof(option) != 'undefined') ? true : false },
             { class: 'col-lg-2', name: 'menu[order][]', value: 0 },
         ]
         colums.forEach($col => {
@@ -78,6 +78,7 @@
             let input = $('<input>')
             .attr('type', 'text')
             .attr('value', $col.value)
+            .attr('readonly', $col.readonly)
             .addClass('form-control '+ (($col.name == 'menu[order][]') ? 'int text-right' : ''))
             .attr('name', $col.name)
 
@@ -242,6 +243,23 @@
                 HT.checkMenuItemLength()
             }
         })
+    }
+
+    // V72 lấy ra value là danh sách mảng các menu[id][] của từng menu-item đã có ở bên phải là những id được đổ từ DB về (chưa dùng)
+    let initialId = null;
+
+    HT.checkMenuRowIdInDB = () => {
+        if (initialId === null) {  // Chỉ lấy danh sách khi biến initialId là null
+            initialId = $('.menu-item').map(function() {
+                let allId
+                if($('.menu-item').find('input[name="menu[id][]"]').val() !== '0'){
+                    allId = $(this).find('input[name="menu[id][]"]').val()
+                }
+                return allId
+            }).get();
+        }
+        
+        return initialId; // Trả về danh sách đã được lưu từ lần đầu
     }
 
     // ---------------------------------V64 Xây dựng chức năng phân trang và kiểm tra m-item bên trái nào được checked--------------------------------
@@ -442,6 +460,9 @@
 
         // V63 Tạo chức năng khi click vào từng phần tử input:checkbox bên trái trong danh sách của từng model sẽ đổ dữ liệu đó qua bên phải div.menu-wrapper
         HT.chooseMenu()
+
+        // V72 lấy ra value là danh sách mảng các menu[id][] của từng menu-item đã có ở bên phải là những id được đổ từ DB về
+        HT.checkMenuRowIdInDB()
 
         // V64 khi click vào page-link thì nó sẽ hiển thị ra được m-item tương ứng (hiện thị dữ liệu khi đã click vào số trang tương ứng)
         HT.getPaginationMenu()

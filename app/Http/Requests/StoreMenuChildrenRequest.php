@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use App\Rules\NotAUrl;
 
 class StoreMenuChildrenRequest extends FormRequest
 {
@@ -28,7 +29,7 @@ class StoreMenuChildrenRequest extends FormRequest
                 'required',
             ],
             'menu.name.*' => 'required|string',
-            'menu.canonical.*' => 'required',
+            'menu.canonical.*' => ['required', 'distinct', new NotAUrl],
         ];
     }
     public function messages(): array
@@ -39,6 +40,7 @@ class StoreMenuChildrenRequest extends FormRequest
             'menu.name.*.string' => 'Có {number} tên menu không ở dạng ký tự',
             'menu.canonical.*.required' => 'Có {number} đường dẫn chưa được nhập',
             // 'menu.canonical.*.unique' => 'Có {number} đường dẫn bị trùng vui lòng kiểm tra lại',
+            'menu.canonical.*.distinct' => 'Có {number} đường dẫn bị trùng lặp.',
         ];
     }
     protected function prepareForValidation()
