@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 //chèn thêm thư viện menuInterface tự tạo để lấy thông tin menu từ DB vào form
 use App\Services\Interfaces\MenuServiceInterface as MenuService;
 //chèn thêm tự viện ProvinceServiceInterface tự tạo để lấy thông tin province từ DB vào form
@@ -92,7 +93,7 @@ class MenuController extends Controller
         return view('Backend.dashboard.layout', compact('template','config','menuCatalogues'));
     }
 
-    // V66 xử lý thêm menu chính, V71 xử lý save menu chính
+    // V66 xử lý thêm menu chính, V71 xử lý save menu cấp 1
     public function create(StoreMenuRequest $request){
         $MenuCatalogueIdPayload = $request->input('menu_catalogue_id');
         // dd($MenuCatalogueIdPayload);
@@ -172,7 +173,7 @@ class MenuController extends Controller
            return redirect()->route('menu.index')->with('error','Xóa thành viên thất bại. Hãy thử lại');
     }
 
-    // V66 đổ ra giao diện menu con tương ứng với menu chính theo $id của menu chính
+    // V66 Giao diện cập nhật menu con tương ứng với menu chính theo $id của menu cha
     public function children($id){
         $template='Backend.menu.menu.children';
 
@@ -207,22 +208,31 @@ class MenuController extends Controller
 
         $listMenus = $this->menuService->convertMenu($listMenus);
         // dd($listMenus);
+        // dd($listMenus['canonical']);
+
+        // V72
+        $listCanonicalInRouter = [];
+        if(!empty($listMenus)){
+            $listCanonicalInRouter = DB::table('routers')->whereIn('canonical', $listMenus['canonical'])->pluck('canonical')->toArray();
+        }
+        // dd($listCanonicalInRouter);
 
         $this->authorize('modules', 'menu.store');//phân quyền
 
-        return view('Backend.dashboard.layout', compact('template','config','menu', 'listMenus'));
+        return view('Backend.dashboard.layout', compact('template','config','menu', 'listMenus', 'listCanonicalInRouter'));
     }
 
     // V66 save dữ liệu menu con theo menu chính tương ứng
     public function saveChildren(StoreMenuChildrenRequest $request, $id){
         $menu = $this->menuRepository->findById($id);
+        // dd($menu);
         if($this->menuService->saveChildren($request, $this->language, $menu)){
             return redirect()->route('menu.edit', ['id' => $menu->menu_catalogue_id])->with('success','Cập nhật menu con thành công');
         }
            return redirect()->route('menu.edit', ['id' => $menu->menu_catalogue_id])->with('error','Cập nhật menu con thất bại. Hãy thử lại');
     }
 
-    // V71 Giao diện cập nhật menu chính theo parent_id là 0 và menu_catalogue_id là $id
+    // V71 Giao diện cập nhật menu cấp 1 theo parent_id là 0 và menu_catalogue_id là $id
     public function editMenu($id){
         $template='Backend.menu.menu.store';
 
@@ -254,9 +264,13 @@ class MenuController extends Controller
         $listMenus = $this->menuService->convertMenu($listMenus);
         // dd($listMenus);
 
+        // V72
+        $listCanonicalInRouter = DB::table('routers')->whereIn('canonical', $listMenus['canonical'])->pluck('canonical')->toArray();
+        // dd($listCanonicalInRouter);
+
         $this->authorize('modules', 'menu.store');//phân quyền
 
-        return view('Backend.dashboard.layout', compact('template', 'config', 'menuCatalogues', 'menuCatalogueLoaded', 'listMenus',));
+        return view('Backend.dashboard.layout', compact('template', 'config', 'menuCatalogues', 'menuCatalogueLoaded', 'listMenus', 'listCanonicalInRouter'));
     }
 
     private function configIndex(){

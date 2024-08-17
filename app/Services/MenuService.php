@@ -98,12 +98,40 @@ class MenuService extends BaseService implements MenuServiceInterface
 
             if(count($differentIds) > 0){
                 foreach($differentIds as $differentid){
+                    //Tìm và xóa menu con của menu cấp 1 trước
                     $hasChildrenIds = $this->getAllChildMenuIds($differentid);
-                    // dd($hasChildrenIds);
-                    $this->menuRepository->deleteByWhereIn('id', $hasChildrenIds);
-                }
-                foreach($differentIds as $differentid){
-                    $this->menuRepository->forceDelete($differentid);
+                    foreach($hasChildrenIds as $hasChildrenId){
+                        $this->menuLanguageRepository->deleteByWhere([
+                            ['menu_id', '=', $hasChildrenId],
+                            ['language_id', '=', $languageId]
+                        ]);
+
+                        $hasMenuIdInMenuLanguage = $this->menuLanguageRepository->findByCondition([
+                            ['menu_id', '=', $hasChildrenId]
+                        ]);
+
+                        if($hasMenuIdInMenuLanguage == null){
+                            $this->menuRepository->deleteByWhere([
+                                ['id', '=', $hasChildrenId],
+                            ]);
+                        }
+                    }
+                    
+                    // Sau đó mới xóa đi menu 1 cấp 1 đang truy cập
+                    $this->menuLanguageRepository->deleteByWhere([
+                        ['menu_id', '=', $differentid],
+                        ['language_id', '=', $languageId]
+                    ]);
+
+                    $hasMenuIdInMenuLanguage = $this->menuLanguageRepository->findByCondition([
+                        ['menu_id', '=', $differentid]
+                    ]);
+
+                    if($hasMenuIdInMenuLanguage == null){
+                        $this->menuRepository->deleteByWhere([
+                            ['id', '=', $differentid],
+                        ]);
+                    }
                 }
             }
 
@@ -150,7 +178,7 @@ class MenuService extends BaseService implements MenuServiceInterface
                 $this->nestedset();
             }
             // die();
-
+            // echo 1; die();
             DB::commit();
             return true;
         }catch(\Exception $ex){
@@ -186,7 +214,7 @@ class MenuService extends BaseService implements MenuServiceInterface
             $payload = $request->only('menu');
             // dd($payload);
 
-            // ---------------------------------Đối với việc bỏ bớt childrenMenu--------------------------------
+            // V68 ---------------------------------Đối với việc bỏ bớt childrenMenu--------------------------------
             
             $parentId = $menu->id;
             $arrayChildrenMenuIdsDB = DB::table('menus')->where('parent_id', $parentId)->pluck('id')->toArray();
@@ -200,11 +228,44 @@ class MenuService extends BaseService implements MenuServiceInterface
 
             if(count($differentIds) > 0){
                 foreach($differentIds as $differentid){
-                    $this->menuRepository->forceDelete($differentid);
+                    //Tìm và xóa menu con của menu con truy cập trước
+                    $hasChildrenIds = $this->getAllChildMenuIds($differentid);
+                    foreach($hasChildrenIds as $hasChildrenId){
+                        $this->menuLanguageRepository->deleteByWhere([
+                            ['menu_id', '=', $hasChildrenId],
+                            ['language_id', '=', $languageId]
+                        ]);
+
+                        $hasMenuIdInMenuLanguage = $this->menuLanguageRepository->findByCondition([
+                            ['menu_id', '=', $hasChildrenId]
+                        ]);
+
+                        if($hasMenuIdInMenuLanguage == null){
+                            $this->menuRepository->deleteByWhere([
+                                ['id', '=', $hasChildrenId],
+                            ]);
+                        }
+                    }
+                    
+                    // Sau đó mới xóa đi menu con đang truy cập
+                    $this->menuLanguageRepository->deleteByWhere([
+                        ['menu_id', '=', $differentid],
+                        ['language_id', '=', $languageId]
+                    ]);
+
+                    $hasMenuIdInMenuLanguage = $this->menuLanguageRepository->findByCondition([
+                        ['menu_id', '=', $differentid]
+                    ]);
+
+                    if($hasMenuIdInMenuLanguage == null){
+                        $this->menuRepository->deleteByWhere([
+                            ['id', '=', $differentid],
+                        ]);
+                    }
                 }
             }
 
-            // ---------------------------------Đối với việc thêm mới và cập nhật childrenMenu--------------------------------
+            // V68 ---------------------------------Đối với việc thêm mới và cập nhật childrenMenu--------------------------------
 
             if(count($payload['menu']['name'])){
                 foreach($payload['menu']['name'] as $key => $val){
@@ -233,6 +294,7 @@ class MenuService extends BaseService implements MenuServiceInterface
                             'name' => $val,
                             'canonical' => $payload['menu']['canonical'][$key],
                         ];
+                        // dd($payloadLanguage);
                         $language = $this->menuRepository->createPivot($menuSave,$payloadLanguage,'languages');
                         // dd($language);
                     }
@@ -241,7 +303,7 @@ class MenuService extends BaseService implements MenuServiceInterface
                 $this->nestedset();
             }
             // die();
-
+            // echo 1; die();
             DB::commit();
             return true;
         }catch(\Exception $ex){

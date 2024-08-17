@@ -14,6 +14,8 @@
                 </small></p>
                 <p><small class="text-danger">* Tiêu đề và đường dẫn của menu không được bỏ trống.</small></p>
                 <p><small class="text-danger">* Hệ thống chỉ hỗ trợ tối đa 5 cấp menu.</small></p>
+                <p><small class="text-danger">* Hệ thống sẽ không cho phép bạn chỉnh sửa đường dẫn được tạo ra từ hệ thống.</small></p>
+                <p><small class="text-danger">* Trường hợp xóa nhầm menu hãy F5 lại trang trước khi ấn vào nút Lưu lại để khôi phục dữ liệu như ban đầu.</small></p>
                 <a style="color:#000; border-color: #c4cdd5; display: inline-block !important;" href="" title="" class="btn btn-default add-menu m-b m-r right">
                     Thêm đường dẫn
                 </a>
