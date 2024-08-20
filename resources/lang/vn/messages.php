@@ -423,5 +423,9 @@ return[
             'title'=>'Xóa vị trí menu ',
             'btnDelete'=>'Xóa dữ liệu'
         ],
+        'translate'=>[
+            'title'=>'Tạo bản dịch {language} cho',
+            'btnTitleSave'=>'Lưu lại',
+        ],
     ],
 ];

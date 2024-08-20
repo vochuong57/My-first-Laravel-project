@@ -163,3 +163,23 @@ if(!function_exists('recursive_menu')){
         return $html;
     }
 }
+
+//V74
+if(!function_exists('buildMenu')){
+    function buildMenu($menus = null, $parentId = 0, $prefix = ''){
+        $output = [];
+        $count = 1;
+
+        if(count($menus)){
+            foreach($menus as $key => $val){ // 28, 50, 29, 49, 51
+                if($val->parent_id == $parentId){
+                    $val->position = $prefix.$count;
+                    $output[] = $val;
+                    $output = array_merge($output, buildMenu($menus , $val->id, $val->position . '.')); //[v1 28: 1, v2 50: 1.1, v3 x, v2 49: 1.2, v3 51: 1.2.1, v4 x, v1 29: 2 ]
+                    $count++;
+                }
+            }
+        }
+        return $output;
+    }
+}

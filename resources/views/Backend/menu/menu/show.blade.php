@@ -3,6 +3,21 @@
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-4">
+            <div class="language-container" style="margin: 0">
+                @foreach($languages as $language)
+                    @php
+                        $url = (session('app_locale') == $language->canonical) ? route('menu.edit', ['id' => $id]) 
+                        : route('menu.translate', ['languageId' => $language->id, 'menu_catalogue_id' => $id]);
+                    @endphp
+                    <div class="uk-flex uk-flex-middle mb20">
+                    
+                        <a  class="image img-cover system-flag"
+                            href="{{ $url }}">
+                            <img src="{{ $language->image }}" alt="">
+                        </a>
+                    </div>
+                @endforeach
+            </div>
             <div class="panel-title">Danh sách menu</div>
             <div class="panel-description">
                 <p>- Danh sách Menu giúp bạn dễ dàng kiểm soát bố cục menu. Bạn có thể thêm mới hoặc cập nhập menu bằng
