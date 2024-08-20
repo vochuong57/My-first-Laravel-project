@@ -481,3 +481,10 @@ table strong{
 #nestable2 .dd-item > button {
     z-index: 9999;
 }
+/* CSS cho menu/translate */
+.menu-name{
+    min-width: 90px;
+}
+.menu-translate-item .form-row:not(:last-child){
+    margin-bottom: 10px;
+}

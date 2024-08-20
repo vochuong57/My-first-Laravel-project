@@ -21,7 +21,7 @@ use App\Http\Requests\UpdateMenuRequest;
 use App\Models\Language;
 use App\Repositories\Interfaces\MenuCatalogueRepositoryInterface as MenuCatalogueRepository;
 use App\Services\Interfaces\MenuCatalogueServiceInterface as MenuCatalogueService;
-
+use App\Repositories\Interfaces\LanguageRepositoryInterface as LanguageRepository;
 
 
 class MenuController extends Controller
@@ -30,12 +30,14 @@ class MenuController extends Controller
     protected $menuRepository;
     protected $menuCatalogueRepository;
     protected $menuCatalogueService;
+    protected $languageRepository;
 
-    public function __construct(MenuService $menuService, MenuRepository $menuRepository, MenuCatalogueRepository $menuCatalogueRepository,MenuCatalogueService $menuCatalogueService){
+    public function __construct(MenuService $menuService, MenuRepository $menuRepository, MenuCatalogueRepository $menuCatalogueRepository,MenuCatalogueService $menuCatalogueService, LanguageRepository $languageRepository){
         $this->menuService=$menuService;//định nghĩa  $this->menuService=$menuService để biến này nó có thể trỏ tới các phương tức của MenuService
         $this->menuRepository=$menuRepository;
         $this->menuCatalogueRepository=$menuCatalogueRepository;
         $this->menuCatalogueService=$menuCatalogueService;
+        $this->languageRepository=$languageRepository;
 
         $this->middleware(function($request, $next) {
             try {
@@ -271,6 +273,57 @@ class MenuController extends Controller
         $this->authorize('modules', 'menu.store');//phân quyền
 
         return view('Backend.dashboard.layout', compact('template', 'config', 'menuCatalogues', 'menuCatalogueLoaded', 'listMenus', 'listCanonicalInRouter'));
+    }
+
+    // V74
+    public function translate($languageTranslateId, $menuCatalogueId){
+        // echo 123; die();
+        $template='Backend.menu.menu.translate';
+
+        $config=$this->configCUD();
+
+        $config['seo']=__('messages.menu.translate');
+
+        $config['method']='translate';
+
+        $languageTranslate = $this->languageRepository->findById($languageTranslateId);
+        // dd($languageTranslate);
+
+        $menuCatalogue=$this->menuCatalogueRepository->findById($menuCatalogueId);
+
+        $condition = [
+            ['menu_catalogue_id', '=', $menuCatalogueId]
+        ];
+        $languageSessionId = $this->language;
+        $relation = [
+            'languages' => function($query) use ($languageSessionId){
+                $query->where('language_id', $languageSessionId);
+            }
+        ];
+        $order = ['order', 'desc'];
+        $menus=$this->menuRepository->findByConditionsWithRelation($condition, $relation, $order);
+        // dd($menus);
+
+        $listMenus = $this->menuService->convertMenu($menus);
+        // dd($listMenus);
+
+        $listCanonicalInRouter = [];
+        if(is_array($listMenus) && !empty($listMenus)){
+            $listCanonicalInRouter = DB::table('routers')->whereIn('canonical', $listMenus['canonical'])->pluck('canonical')->toArray();
+        } 
+
+        $menus = buildMenu($this->menuService->findMenuItemTranslate($menus, $languageSessionId, $languageTranslateId));
+        // dd($menus);     
+
+        return view('Backend.dashboard.layout', compact('template', 'config', 'languageTranslate', 'menuCatalogue', 'menus', 'listCanonicalInRouter'));
+    }
+
+    // V74
+    public function saveTranslate(Request $request, $languageTranslateId){
+        if($this->menuService->saveTranslateMenu($request, $languageTranslateId)){
+            return redirect()->route('menu.index')->with('success','Cập nhật bản dịch menu thành công');
+        }
+           return redirect()->route('menu.index')->with('error','Cập nhật bản dịch menu thất bại. Hãy thử lại');
     }
 
     private function configIndex(){

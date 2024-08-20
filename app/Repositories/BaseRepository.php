@@ -102,6 +102,14 @@ class BaseRepository implements BaseRepositoryInterface
         return $query->get();
     }
 
+    public function findByWhereHas(array $condition = [], string $relation = '', string $alias = ''){//chưa dùng
+        return $this->model->whereHas($relation, function ($query) use ($condition, $alias){
+            foreach($condition as $key => $val){
+                $query->where($alias.'.'.$key, $val);
+            }
+        })->first();
+    }
+
     //phương thức thêm (CREATE)
     public function create(array $payload =[]){
         $model= $this->model->create($payload);

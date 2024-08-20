@@ -6,6 +6,7 @@ use App\Services\Interfaces\MenuServiceInterface;
 use App\Repositories\Interfaces\MenuRepositoryInterface as MenuRepository;
 use App\Repositories\Interfaces\MenuLanguageRepositoryInterface as MenuLanguageRepository;
 use App\Repositories\Interfaces\MenuCatalogueRepositoryInterface as MenuCatalogueRepository;
+use App\Repositories\Interfaces\RouterRepositoryInterface as RouterRepository;
 //thêm thư viện cho việc xử lý INSERT
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -31,13 +32,15 @@ class MenuService extends BaseService implements MenuServiceInterface
     protected $menuRepository;
     protected $menuLanguageRepository;
     protected $menuCatalogueRepository;
+    protected $routerRepository;
     protected $controllerName = 'MenuController';
     protected $language;    
 
-    public function __construct(MenuRepository $menuRepository, MenuLanguageRepository $menuLanguageRepository, MenuCatalogueRepository $menuCatalogueRepository){
+    public function __construct(MenuRepository $menuRepository, MenuLanguageRepository $menuLanguageRepository, MenuCatalogueRepository $menuCatalogueRepository, RouterRepository $routerRepository){
         $this->menuRepository=$menuRepository;
         $this->menuLanguageRepository=$menuLanguageRepository;
         $this->menuCatalogueRepository=$menuCatalogueRepository;
+        $this->routerRepository=$routerRepository;
         $this->language=$this->currentLanguage();
         $this->nestedset=new Nestedsetbie([
             'table'=>'menus',
@@ -410,6 +413,114 @@ class MenuService extends BaseService implements MenuServiceInterface
                 }
             }
             $this->nestedset();
+        }
+    }
+
+    //V74 
+    public function findMenuItemTranslate($menus, $languageSessionId, $languageTranslateId){
+        $output = [];
+        if(count($menus)){
+            foreach($menus as $menu){
+
+                // $detailMenu = $this->menuLanguageRepository->findByCondition([
+                //     ['menu_id', '=', $menu->id],
+                //     ['language_id', '=', $languageTranslateId]
+                // ]);
+                $condition=[
+                    ['id', '=', $menu->id]
+                ];
+                $relation=[
+                    'languages'=> function($query) use ($languageTranslateId){
+                        $query->where('language_id', $languageTranslateId);
+                    }
+                ];
+                $detailMenu = $this->menuRepository->findByConditionsWithRelation($condition, $relation);
+                // dd($detailMenu);
+                if(count($detailMenu) > 0){
+                    foreach($detailMenu as $model){
+                        $translateLanguage = $model->languages->first(); 
+
+                        if(!is_null($translateLanguage)){
+                            $menu->translate_name = $translateLanguage->getOriginal('pivot_name');
+                            $menu->translate_canonical = $translateLanguage->pivot->canonical;
+                            break;
+                        }
+                    }
+                }
+                $canonical = $menu->languages->first()->getOriginal('pivot_canonical');
+                $router = $this->routerRepository->findByCondition([
+                    ['canonical', '=', $canonical]
+                ]);
+
+                if (is_null($menu->translate_canonical)) {
+                    if($router){
+                        // dd($router);
+                        $controller = explode('\\', $router->controller);
+                        // dd($controller[4]);
+                        $model = str_replace('Controller', '', $controller[4]);
+                        // dd($model);
+    
+                        $repositoryInterfaceNamespace='\App\Repositories\\'.$model.'Repository';
+                        if(class_exists($repositoryInterfaceNamespace)){
+                            $repositoryInstance=app($repositoryInterfaceNamespace);
+                        }
+    
+                        $condition = [
+                            ['id', '=', $router->module_id],
+                        ];
+                        $relation = [
+                            'languages' => function($query) use ($languageTranslateId){
+                                $query->where('language_id', $languageTranslateId);
+                            }
+                        ];
+                        // $order = ['order', 'desc'];
+                        $translateObject = $repositoryInstance->findByConditionsWithRelation($condition, $relation);
+                        // dd($translateObject);
+    
+                        if(!is_null($translateObject)){
+                            foreach ($translateObject as $model) {
+                                $translateLanguage = $model->languages->first();
+                    
+                                if (!is_null($translateLanguage)) {
+                                    $menu->translate_name = $translateLanguage->getOriginal('pivot_name');
+                                    $menu->translate_canonical = $translateLanguage->getOriginal('pivot_canonical');
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                $output[] = $menu;
+            }
+        }
+        return $output;
+    }
+
+    // V74
+    public function saveTranslateMenu($request, $languageTranslateId){
+        DB::beginTransaction();
+        try{
+            $payload = $request->only('translate');
+            // dd($payload);
+            foreach($payload['translate']['name'] as $key => $val){
+                if($val == null) continue;
+                $temp=[
+                    'language_id' => $languageTranslateId,
+                    'name' => $val,
+                    'canonical' => $payload['translate']['canonical'][$key]
+                ];
+                // dd($temp);
+                $menu = $this->menuRepository->findById($payload['translate']['id'][$key]);
+                $menu->languages()->detach($languageTranslateId, $menu->id);
+                $this->menuRepository->createPivot($menu, $temp, 'languages');
+            }
+            // echo 1; die();
+            DB::commit();
+            return true;
+        }catch(\Exception $ex){
+            DB::rollBack();
+            echo $ex->getMessage();die();
+            return false;
         }
     }
 }

@@ -24,6 +24,7 @@ interface BaseRepositoryInterface
     public function findByCondition(array $condition = []);
     public function findByConditions(array $condition = []);
     public function findByConditionsWithRelation(array $condition = [], array $relation = []);
+    public function findByWhereHas(array $condition = [], string $relation = '', string $alias = '');
     public function create(array $payload =[]);
     public function createBatch(array $payload = []);
     public function update(int $id=0, array $payload=[]);
