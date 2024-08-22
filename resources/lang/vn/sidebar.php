@@ -88,6 +88,18 @@
                     ],
                     
                 ]
-            ]
+            ],
+            [
+                'title'=>'QL Banner & Slide',
+                'icon'=>'fa fa-image',
+                'name'=>['slide'],
+                'subModule'=>[
+                    [
+                        'title'=>'Cài đặt Slide',
+                        'route'=>'slide/index'
+                    ],
+                    
+                ]
+            ],
         ]
     ];
