@@ -428,4 +428,19 @@ return[
             'btnTitleSave'=>'Lưu lại',
         ],
     ],
+
+    //SLIDE
+    'slide' => [
+        'index'=>[
+            'title'=> 'Quản lý Slide',
+        ],
+        'delete'=>[
+            'title'=>'Xóa vị trí slide ',
+            'btnDelete'=>'Xóa dữ liệu'
+        ],
+        'create'=>[
+            'title'=>'Thêm mới slide',
+            'btnTitle'=>'Thêm mới'
+        ],
+    ],
 ];
