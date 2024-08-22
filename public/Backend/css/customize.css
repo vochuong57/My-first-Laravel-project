@@ -567,6 +567,12 @@ input[type=checkbox]{
 }
 .slide-image img{
     height: 178px;
+    position: relative;
+}
+.delete-slide{
+    position: absolute;
+    right: 10px;
+    top: 10px;
 }
 .slide-seo-tab{
     padding-right: 0 !important;
@@ -576,4 +582,7 @@ input[type=checkbox]{
 }
 .addSlide:hover{
     background: 1px solid #eaeaea;
+}
+.slide-list .ui-state-default{
+    width: 100% !important;
 }
