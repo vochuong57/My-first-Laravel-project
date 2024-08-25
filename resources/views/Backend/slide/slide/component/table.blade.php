@@ -28,12 +28,6 @@
             <td>
                 -
             </td>
-            <td>
-                <div class="address-item name">{{ $slide->address }}</div>
-            </td>
-            <td>
-                <div class="address-item name">{{ $slide->slide_catalogues->name }}</div>
-            </td>
             <td class="text-center js-switch-{{ $slide->id }}">
                 <input type="checkbox" class="js-switch status" value="{{ $slide->publish }}" data-field="publish" data-model="{{ $config['model'] }}" data-modelId="{{ $slide->id }}" {{ ($slide->publish==2)?'checked':'' }} >
             </td>
@@ -46,3 +40,4 @@
         @endif
     </tbody>
 </table>
+{{ $slides->links('pagination::bootstrap-4') }}

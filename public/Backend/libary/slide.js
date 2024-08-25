@@ -1,7 +1,6 @@
 (function($){
     var HT={};
     var _token = $('meta[name="csrf-token"]').attr('content')
-    var counter = 1
 
     // V76 Sự kiện khi click vào nút thêm slide '.addSlide'
     HT.addSlide = (type) => {
@@ -32,16 +31,16 @@
     HT.renderSlideItemHtml = (image) => {
         let tab_1 = "tab_" + counter
         let tab_2 = "tab_" + (counter + 1)
-
-        let html = '';
     
+        let html = '';
+        
         html += '<div class="col-lg-12 ui-state-default">';
         html += '    <div class="slide-item">';
         html += '        <div class="row custom-row">';
         html += '            <div class="col-lg-3">';
         html += '                <span class="slide-image img-cover">';
         html += '                    <img src="'+image+'" alt="">';
-        html += '                    <input type="hidden" name="slide[title][]" value="'+image+'">';
+        html += '                    <input type="hidden" name="slide[image][]" value="'+image+'">';
         html += '                    <span class="delete-slide"><i class="fa fa-trash btn btn-danger"></i></span>';
         html += '                </span>';
         html += '            </div>';
@@ -58,12 +57,12 @@
         html += '                                <div class="form-row mb10">';
         html += '                                    <textarea name="slide[description][]" class="form-control"></textarea>';
         html += '                                </div>';
-        html += '                                <div class="form-row form-row-url">';
-        html += '                                    <input type="text" name="slide[url][]" class="form-control" placeholder="URL">';
+        html += '                                <div class="form-row form-row-canonical">';
+        html += '                                    <input type="text" name="slide[canonical][]" class="form-control" placeholder="URL">';
         html += '                                    <div class="overlay">';
         html += '                                        <div class="uk-flex uk-flex-middle">';
         html += '                                            <label for="input_'+tab_1+'">Mở trong tab mới</label>';
-        html += '                                            <input type="checkbox" name="slide[windown][]" value="_blank" id="input_'+tab_1+'">';
+        html += '                                            <input type="checkbox" name="slide[window][]" value="_blank" id="input_'+tab_1+'">';
         html += '                                        </div>';
         html += '                                    </div>';
         html += '                                </div>';
@@ -72,11 +71,11 @@
         html += '                        <div id="'+tab_2+'" class="tab-pane">';
         html += '                            <div class="panel-body">';
         html += '                                <div class="label-text mb5">Tiêu đề ảnh:</div>';
-        html += '                                <div class="form-row form-row-url slide-seo-tab">';
+        html += '                                <div class="form-row form-row-canonical slide-seo-tab">';
         html += '                                    <input type="text" name="slide[name][]" class="form-control" placeholder="Tiêu đề ảnh">';
         html += '                                </div>';
         html += '                                <div class="label-text mt12">Mô tả ảnh:</div>';
-        html += '                                <div class="form-row form-row-url slide-seo-tab">';
+        html += '                                <div class="form-row form-row-canonical slide-seo-tab">';
         html += '                                    <input type="text" name="slide[alt][]" class="form-control" placeholder="Mô tả ảnh">';
         html += '                                </div>';
         html += '                            </div>';
@@ -88,11 +87,12 @@
         html += '        <hr />';
         html += '    </div>';
         html += '</div>';
-
-        counter += 2
-
+    
+        counter += 2;
+    
         return html;
     }
+    
     
     // V76 xây dựng hàm kiểm tra mõi lần thêm slide '.addSlide' hoặc xóa slide '.delete-slide'
     HT.checkSlideNotification = () => {
@@ -113,9 +113,22 @@
         })
     }
 
+    HT.checkValueSileWindow = () =>{
+        $('form').on('submit', function() {
+            // Duyệt qua tất cả các checkbox với name là slide[window][]
+            $('input[type="checkbox"][name="slide[window][]"]').each(function() {
+                if (!$(this).is(':checked')) {
+                    // Nếu checkbox không được chọn, tạo một input hidden với cùng name và giá trị rỗng
+                    $(this).after('<input type="hidden" name="slide[window][]" value="">');
+                }
+            });
+        });
+    }
+
     $(document).ready(function(){
         HT.addSlide()
         HT.deleteSlide()
+        HT.checkValueSileWindow()
     })
 
 })(jQuery)

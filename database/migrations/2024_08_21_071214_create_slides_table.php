@@ -16,7 +16,11 @@ return new class extends Migration
             $table->string('name');
             $table->string('keyword')->unique();
             $table->longText('album');
+            $table->longText('setting');
+            $table->string('short_code')->nullable();
             $table->tinyInteger('publish')->default(1);
+            $table->bigInteger('user_id')->unsigned();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamp('deleted_at')->nullable();
             $table->timestamps();
         });
