@@ -70,8 +70,8 @@ class SlideController extends Controller
         $config['seo']=__('messages.slide.index');
 
         //Đổ dữ liệu User từ DB vào form theo mô hình service và repository
-        $slides = $this->slideService->paginate($request, $this->language);//$request để tiến hành chức năng tìm kiếm
-        //dd($slides);
+        $slides = $this->slideService->paginate($request);//$request để tiến hành chức năng tìm kiếm
+        // dd($slides);
 
         // $dropdown= $this->nestedset->Dropdown();
 
@@ -97,12 +97,12 @@ class SlideController extends Controller
         return view('Backend.dashboard.layout', compact('template','config'));
     }
 
-    //xử lý thêm user
+    //xử lý thêm slide
     public function create(StoreSlideRequest $request){
         if($this->slideService->createSlide($request, $this->language)){
-            return redirect()->route('slide.index')->with('success','Thêm mới bào viết thành công');
+            return redirect()->route('slide.index')->with('success','Thêm mới slide thành công');
         }
-           return redirect()->route('slide.index')->with('error','Thêm mới bài viết thất bại. Hãy thử lại');
+           return redirect()->route('slide.index')->with('error','Thêm mới slide thất bại. Hãy thử lại');
         
     }
     //giao diện sửa user

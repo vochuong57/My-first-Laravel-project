@@ -34,7 +34,6 @@ class SlideRepository extends BaseRepository implements SlideRepositoryInterface
         return $query
         ->Keyword($condition['keyword'] ?? null)
         ->Publish($condition['publish'] ?? null)
-        ->CustomWhere($condition['where'] ?? null)
         ->RelationCount($relations ?? null)
         ->CustomWhereRaw($rawQuery['whereRaw'] ?? null)
         ->CustomJoin($join ?? null)

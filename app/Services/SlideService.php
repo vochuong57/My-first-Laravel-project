@@ -35,43 +35,46 @@ class SlideService extends BaseService implements SlideServiceInterface
         $this->routerRepository=$routerRepository;
     }
 
-    public function paginate($request, $languageId){//$request để tiến hành chức năng tìm kiếm
-        // //dd($request);
-        // //echo 123; die();
-        // $condition['keyword']=addslashes($request->input('keyword'));
-        // // dd($condition);
-        // $perpage=$request->integer('perpage', 20);
-        // $slides=$this->slideRepository->pagination(
-        //     $this->paginateSelect(),
-        //     $condition,
-        //     $perpage,
-        //     ['path'=> 'slide/index', 'groupBy' => $this->paginateSelect()],
-        //     ['slides.id', 'DESC'],
-        //     [],
-        // );
-        // // dd($slides);
+    public function paginate($request){//$request để tiến hành chức năng tìm kiếm
+        // dd($request);
+        // echo 123; die();
+        $condition['keyword']=addslashes($request->input('keyword'));
+        $condition['publish']=$request->input('publish');
+        if ($condition['publish'] == '0') {
+            $condition['publish'] = null;
+        }
+        // dd($condition);
+        $perpage=$request->integer('perpage', 20);
+        //  echo 123; die();
+        $slides=$this->slideRepository->pagination(
+            $this->paginateSelect(),
+            $condition,
+            $perpage,
+            ['path'=> 'slide/index', 'groupBy' => $this->paginateSelect()],
+            ['slides.id', 'DESC']
+        );
+        // dd($slides);
         
-        return [];
+        return $slides;
     }
     public function createSlide($request, $languageId){
         DB::beginTransaction();
         try{
-            $slide = $this->createTableSlide($request);
-            
-            if($slide->id>0){
-                $this->updateLanguageForSlide($request, $slide, $languageId);
-                $this->createRouter($request, $slide, $this->controllerName, $languageId);
-                
-                //xử lí add dữ liệu vào slide_catalogue_slide
-                $catalogue=$this->mergeCatalogue($request);
-                //dd($catalogue);
-                $slide->slide_catalogues()->sync($catalogue);//slide_catalogues() là function của Model/Slide
-            }
+            $payload = $request->only('name', 'keyword', 'setting', 'short_code');
+            // dd($payload);
+            $payload['setting'] = $this->formatJson($request, 'setting');
+            // dd($payload);
+            $payload['album'] = json_encode($this->handleSlideItem($request->input('slide'), $languageId));
+            // dd($payload);
+            $payload['user_id']=Auth::id();
+
+            $slide = $this->slideRepository->create($payload);
+            // echo 1; die();
             DB::commit();
             return true;
         }catch(\Exception $ex){
             DB::rollBack();
-            echo $ex->getMessage();//die();
+            echo $ex->getMessage();die();
             return false;
         }
     }
@@ -174,130 +177,32 @@ class SlideService extends BaseService implements SlideServiceInterface
             return false;
         }
     }
-    public function deleteAll($slide=[]){
-        DB::beginTransaction();
-        try{
-            $slideLanguage=$this->slideLanguageRepository->deleteByWhereIn('slide_id',$slide['id'],$slide['languageId']);
-            //echo 1; die();
-
-            $languageId = $slide['languageId'];
-
-            foreach($slide['id'] as $id){
-
-                // Tiếp tục xóa tiếp canonical ở bảng routers của từng id được chọn 
-                $findRouter=[
-                    ['module_id', '=', $id],
-                    ['language_id', '=', $languageId],
-                    ['controller', '=', 'App\Http\Controllers\Frontend\SlideController'],
-                ];
-                $this->routerRepository->deleteByWhere($findRouter);
-
-                // Sau khi xóa xong thì nó tiếp tục kiểm tra xem thử là còn cái slide_id đó trong slide_language không
-                $condition=[
-                    ['slide_id', '=', $id]
-                ];
-                $flag = $this->slideLanguageRepository->findByCondition($condition);
-
-                // Nếu không tìm thấy nữa thì ta mới tiến hành xóa đi slide
-                if(!$flag){
-                    $slide=$this->slideRepository->forceDelete($id);
-                }
-            }
-            DB::commit();
-            return true;
-        }catch(\Exception $ex){
-            DB::rollBack();
-            echo $ex->getMessage();//die();
-            return false;
-        }
-    }
 
     private function paginateSelect(){
         return[
             'id',
             'name',
             'keyword',
-            'description',
             'publish',
             'album'
         ];
     }
-    private function payload(){
-        return [
-            'follow',
-            'publish',
-            'image',
-            'album',
-            'slide_catalogue_id'
-        ];
-    }
-
-    private function payloadLanguage(){
-        return [
-            'name',
-            'description',
-            'content',
-            'meta_title',
-            'meta_keyword',
-            'meta_description',
-            'canonical',
-        ];
-    }
-
-    //merge dữ liệu từ hai mảng khác nhau vào chung một bảng
-    private function mergeCatalogue($request){
-        $catalogueInput = $request->input('catalogue');
-        
-        // Kiểm tra nếu $catalogueInput tồn tại và không rỗng
-        if ($request->filled('catalogue') && is_array($catalogueInput)) {
-            return array_unique(array_merge($catalogueInput, [$request->slide_catalogue_id]));
-        } else {
-            // Nếu không tồn tại hoặc rỗng, trả về chỉ mảng chứa $request->slide_catalogue_id
-            return [$request->slide_catalogue_id];
-        }
-    }
     
-    //----TỐI ƯU SOURCE CODE
-    private function createTableSlide($request){
-        $payload = $request->only($this->payload());//lấy tất cả ngoại trừ hai trường này thay vì dùng input là lấy tất cả
-        //dd($payload);
-        //vì chúng ta có khóa ngoại khi thêm bảng này mà khóa ngoại này là user_id thì đó là tài khoản đã đăng nhập thì
-        $payload['user_id']=Auth::id();
-        $payload['album']=$this->formatAlbum($request);
-        if($payload['publish'] == null || $payload['publish'] == 0){
-            $payload['publish'] = 1;
+    private function handleSlideItem($slides, $languageId){
+        // dd($slides);
+        $temp = [];
+        foreach($slides['image'] as $key => $val){
+            $temp[$languageId][] = [
+                'image' => $val,
+                'description' => $slides['description'][$key],
+                'canonical' => $slides['canonical'][$key],
+                'name' => $slides['name'][$key],
+                'alt' => $slides['alt'][$key],
+                'window' => (isset($slides['window'][$key])) ? $slides['window'][$key] : '',
+            ];
         }
-        //dd($payload);
-        $slide=$this->slideRepository->create($payload);
-        //dd($language);
-        //echo -1; die();
-        //echo $slide->id; die();
-        return $slide;
-    }
-    private function updateTableSlide($request, $id){
-        $payload = $request->only($this->payload());//lấy tất cả ngoại trừ hai trường này thay vì dùng input là lấy tất cả
-        $payload['album']=$this->formatAlbum($request);
-        //dd($payload);
-        $flag=$this->slideRepository->update($id,$payload);
-        return $flag;
-    }
-    //Cho bảng slide_language
-    private function updateLanguageForSlide($request, $slide, $languageId){
-        $payloadLanguage=$this->formatLanguagePayload($request, $slide, $languageId);
-        $slide->languages()->detach($languageId, $slide->id);
-        $language = $this->slideRepository->createPivot($slide,$payloadLanguage,'languages');
-        //dd($language); die();
-        return $language;
-    }
-    private function formatLanguagePayload($request, $slide, $languageId){
-        $payloadLanguage = $request->only($this->payloadLanguage());
-        //dd($payloadLanguage);
-        //dd($this->currentLanguage());
-        $payloadLanguage['canonical']=Str::slug($payloadLanguage['canonical']);
-        $payloadLanguage['language_id']=$languageId;
-        $payloadLanguage['slide_id']=$slide->id;
-        //dd($payloadLanguage);
-        return $payloadLanguage;
+        // dd($temp);
+        return $temp;
     }
 }
 

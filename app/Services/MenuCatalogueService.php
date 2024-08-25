@@ -33,23 +33,24 @@ class MenuCatalogueService extends BaseService implements MenuCatalogueServiceIn
     }
 
     public function paginate($request, $languageId){//$request để tiến hành chức năng tìm kiếm
-        //dd($request);
-        //echo 123; die();
+       // dd($request);
+        // echo 123; die();
         $condition['keyword']=addslashes($request->input('keyword'));
         $condition['publish']=$request->input('publish');
-        // Kiểm tra nếu giá trị publish là 0, thì gán lại thành null
         if ($condition['publish'] == '0') {
             $condition['publish'] = null;
         }
         // dd($condition);
         $perpage=$request->integer('perpage', 20);
+        //  echo 123; die();
         $menuCatalogues=$this->menuCatalogueRepository->pagination(
             $this->paginateSelect(),
             $condition,
             $perpage,
             ['path'=> 'menu/index', 'groupBy' => $this->paginateSelect()],
+            ['menu_catalogues.id', 'DESC']
         );
-        //dd($menuCatalogues);
+        // dd($menuCatalogues);
         
         return $menuCatalogues;
     }

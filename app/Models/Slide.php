@@ -18,8 +18,10 @@ class Slide extends Model
         'id',
         'name',
         'keyword',
-        'description',
-        'item',
-        'publish'
+        'album',
+        'setting',
+        'publish',
+        'user_id',
+        'short_code'
     ];
 }

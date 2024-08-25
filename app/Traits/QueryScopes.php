@@ -6,8 +6,11 @@ trait QueryScopes{
 
     public function scopeKeyword($query, $keyword){
         if(!empty($keyword)){
-            $query->where('name', 'LIKE', '%' . $keyword . '%')
-            ->orWhere('canonical', 'LIKE', '%' . $keyword . '%');
+            $query->where('name', 'LIKE', '%' . $keyword . '%');
+            // Kiểm tra nếu bảng có cột 'canonical'
+            if (\Schema::hasColumn($this->getTable(), 'canonical')) {
+                $query->orWhere('canonical', 'LIKE', '%' . $keyword . '%');
+            }
         }
         return $query;
     }

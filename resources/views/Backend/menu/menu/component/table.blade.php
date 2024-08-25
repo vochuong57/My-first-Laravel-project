@@ -44,3 +44,4 @@
         @endif
     </tbody>
 </table>
+{{ $menuCatalogues->links('pagination::bootstrap-4') }}
