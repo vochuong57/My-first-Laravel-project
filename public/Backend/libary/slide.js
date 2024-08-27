@@ -126,6 +126,7 @@
         });
     }
 
+    // V78
     HT.checkValueSetting = () =>{
         $('form').on('submit', function() {
             // Duyệt qua tất cả các checkbox với name là slide[arrow][]
@@ -148,11 +149,68 @@
         });
     }
 
+    // V79 kéo thả danh sách ảnh ở slide/table.blade.php lưu vào DB real-time 
+    HT.updatePositionItemInAlbum = () => {
+        $(document).on('sortupdate', '.list-image-table', function() {
+            // Lấy phần tử hiện tại được kéo thả
+            let _this = $(this);
+
+            // Lấy các thuộc tính cần thiết
+            let slideId = _this.attr('data-slideId');
+            let languageSessionId = _this.attr('data-languageSessionId');
+
+            // Tạo mảng để lưu trữ dữ liệu hình ảnh đã được sắp xếp
+            let sortedItems = [];
+
+            // Duyệt qua từng phần tử hình ảnh trong danh sách đã sắp xếp
+            _this.find('.img-list').each(function() {
+                let $imgItem = $(this);
+                let itemData = {
+                    image: $imgItem.find('input[type="hidden"]').data('image'),
+                    description: $imgItem.find('input[type="hidden"]').data('description'),
+                    window: $imgItem.find('input[type="hidden"]').data('window'),
+                    canonical: $imgItem.find('input[type="hidden"]').data('canonical'),
+                    name: $imgItem.find('input[type="hidden"]').data('name'),
+                    alt: $imgItem.find('input[type="hidden"]').data('alt')
+                };
+                sortedItems.push(itemData);
+            });
+
+            // Tạo đối tượng dữ liệu để gửi qua AJAX
+            let requestData = {
+                slideId: slideId,
+                languageSessionId: languageSessionId,
+                items: sortedItems,
+                _token: _token
+            };
+
+            console.log(sortedItems)
+    
+            //Nếu cần gửi AJAX
+            $.ajax({
+                url: 'ajax/slide/drag',
+                type: 'POST',
+                data: requestData,
+                dataType: 'json',
+                success: function(res){
+                    console.log(res);
+                    
+                },
+                // error: function(jqXHR, textStatus, errorThrown){
+                //     console.log('Lỗi: '+jqXHR);
+                //     console.log('Lỗi request: '+ textStatus);
+                //     console.log('Lỗi nội dung: '+ errorThrown);
+                // }
+            });
+        });
+    }
+
     $(document).ready(function(){
         HT.addSlide()
         HT.deleteSlide()
         HT.checkValueSileWindow()
         HT.checkValueSetting()
+        HT.updatePositionItemInAlbum()
     })
 
 })(jQuery)

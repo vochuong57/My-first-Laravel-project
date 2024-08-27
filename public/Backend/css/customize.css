@@ -45,6 +45,29 @@ h5{
     object-fit: cover;
     /* display: block; */
 }
+/* V79 css cho hiển thị danh sách ảnh trông một cột có kéo thả */
+.img-list img{
+    width: 91px;
+    height: 61px;
+    object-fit: cover;
+    /* display: block; */
+}
+.img-list{
+    margin-right: 10px;
+}
+.sortui .ui-state-default-list{
+    /* width: 100% !important; */
+    /* width: calc(20% - 2px); */
+    float: left;
+    padding-right: 10px;
+    margin: 0 0 5px 0;
+    /* margin-bottom: 10px; */
+    cursor: move;
+    background: transparent;
+    box-shadow: none;
+    border: 0;
+}
+/* ------------------------------------------------------- */
 table strong{
     min-width: 88px;
     display: inline-block;

@@ -73,13 +73,13 @@ class SlideController extends Controller
         $slides = $this->slideService->paginate($request);//$request để tiến hành chức năng tìm kiếm
         // dd($slides);
 
-        // $dropdown= $this->nestedset->Dropdown();
+        $languageSessionId = $this->language;
 
         //dd($languages);
 
         $this->authorize('modules', 'slide.index');//phân quyền
 
-        return view('Backend.dashboard.layout', compact('template','config','slides'));
+        return view('Backend.dashboard.layout', compact('template','config','slides','languageSessionId'));
     }
 
     //giao diện thêm slide
@@ -173,7 +173,8 @@ class SlideController extends Controller
         return[
             'js'=>[
                 'Backend/js/plugins/switchery/switchery.js',
-                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js'
+                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
+                'Backend/libary/slide.js',
             ],
             'css'=>[
                 'Backend/css/plugins/switchery/switchery.css',
