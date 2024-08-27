@@ -113,13 +113,36 @@
         })
     }
 
+    // V77
     HT.checkValueSileWindow = () =>{
         $('form').on('submit', function() {
             // Duyệt qua tất cả các checkbox với name là slide[window][]
             $('input[type="checkbox"][name="slide[window][]"]').each(function() {
                 if (!$(this).is(':checked')) {
-                    // Nếu checkbox không được chọn, tạo một input hidden với cùng name và giá trị rỗng
-                    $(this).after('<input type="hidden" name="slide[window][]" value="">');
+                    // Nếu checkbox không được chọn, tạo một input hidden với cùng name và giá trị no
+                    $(this).after('<input type="hidden" name="slide[window][]" value="no">');
+                }
+            });
+        });
+    }
+
+    HT.checkValueSetting = () =>{
+        $('form').on('submit', function() {
+            // Duyệt qua tất cả các checkbox với name là slide[arrow][]
+            $('input[type="checkbox"][name="setting[arrow]"]').each(function() {
+                if (!$(this).is(':checked')) {
+                    // Nếu checkbox không được chọn, tạo một input hidden với cùng name và giá trị no
+                    $(this).after('<input type="hidden" name="setting[arrow]" value="no">');
+                }
+            });
+            $('input[type="checkbox"][name="setting[autoplay]"]').each(function() {
+                if (!$(this).is(':checked')) {
+                    $(this).after('<input type="hidden" name="setting[autoplay]" value="no">');
+                }
+            });
+            $('input[type="checkbox"][name="setting[pauseHover]"]').each(function() {
+                if (!$(this).is(':checked')) {
+                    $(this).after('<input type="hidden" name="setting[pauseHover]" value="no">');
                 }
             });
         });
@@ -129,6 +152,7 @@
         HT.addSlide()
         HT.deleteSlide()
         HT.checkValueSileWindow()
+        HT.checkValueSetting()
     })
 
 })(jQuery)

@@ -61,7 +61,7 @@
                         <h5>Short Code</h5>
                     </div>
                     <div class="ibox-content">
-                        <textarea name="short_code" class="textarea form-control">{{ old('short_code') ?? '' }}</textarea>
+                        <textarea name="short_code" class="textarea form-control">{{ old('short_code', $slide->short_code ?? '') }}</textarea>
                     </div>
                 </div>
             </div>

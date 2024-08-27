@@ -82,22 +82,29 @@ class SlideService extends BaseService implements SlideServiceInterface
     public function updateSlide($id, $request, $languageId){
         DB::beginTransaction();
         try{
-            $slide=$this->slideRepository->findById($id);
-            $flag=$this->updateTableSlide($request, $id);
-            //dd($flag);
-            if($flag==TRUE){
-                $this->updateLanguageForSlide($request, $slide, $languageId);
-                $this->updateRouter($request, $slide, $this->controllerName, $languageId);
+            $payload = $request->only('name', 'keyword', 'setting', 'short_code');
+            // dd($payload);
+            $payload['setting'] = $this->formatJson($request, 'setting');
+            // dd($payload);
+           
+            $payload['user_id']=Auth::id();
+            // dd($payload);
+    
+            $slide = $this->slideRepository->findById($id);
+            // dd($slide);
+            $slideItem = $slide->album;
+            // dd($slideItem);
+            unset($slideItem[$languageId]);
+            // dd($slideItem);
+            $payload['album'] = json_encode($this->handleSlideItem($request->input('slide'), $languageId));
+            // dd($payload);
 
-                $catalogue=$this->mergeCatalogue($request);
-                //dd($catalogue);
-                $slide->slide_catalogues()->sync($catalogue);
-            }
+            $slide = $this->slideRepository->update($id, $payload);
             DB::commit();
             return true;
         }catch(\Exception $ex){
             DB::rollBack();
-            echo $ex->getMessage();//die();
+            echo $ex->getMessage();die();
             return false;
         }
     }
@@ -188,6 +195,7 @@ class SlideService extends BaseService implements SlideServiceInterface
         ];
     }
     
+    // V77
     private function handleSlideItem($slides, $languageId){
         // dd($slides);
         $temp = [];
@@ -200,6 +208,20 @@ class SlideService extends BaseService implements SlideServiceInterface
                 'alt' => $slides['alt'][$key],
                 'window' => (isset($slides['window'][$key])) ? $slides['window'][$key] : '',
             ];
+        }
+        // dd($temp);
+        return $temp;
+    }
+
+    // V78 convert mảng 2 chiều gộp cột thành mảng 2 chiều từng cột
+    public function convertSlideArray(array $slide = []):array{
+        // dd($slide);
+        $temp = [];
+        $fields = ['image', 'description', 'window', 'canonical', 'name', 'alt'];
+        foreach($slide as $key => $val){
+            foreach($fields as $field){
+                $temp[$field][]=$val[$field];
+            }
         }
         // dd($temp);
         return $temp;

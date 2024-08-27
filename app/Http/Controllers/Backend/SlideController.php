@@ -105,19 +105,22 @@ class SlideController extends Controller
            return redirect()->route('slide.index')->with('error','Thêm mới slide thất bại. Hãy thử lại');
         
     }
-    //giao diện sửa user
+    //giao diện sửa slide
     public function edit($id){
         //echo $id;
         $template='Backend.slide.slide.store';
 
         $config=$this->configCUD();
 
-        $config['seo']=config('apps.slide.edit');
+        $config['seo']=__('messages.slide.edit');
 
         $config['method']='edit';//kiểm tra metho để thay đổi giao diện cho phù hợp
 
         //truy vấn thông tin
-        $slide=$this->slideRepository->getSlideById($id,$this->language);
+        $slide=$this->slideRepository->findById($id);
+        // dd($slide->album);
+
+        $slideItems = $this->slideService->convertSlideArray($slide->album[$this->language]);
 
         if(!$slide){
             return redirect()->route('slide.index')->with('error', 'Bài viết này chưa có bản dịch của ngôn ngữ được chọn');
@@ -125,22 +128,18 @@ class SlideController extends Controller
         
         //dd($slide->slide_catalogues);
 
-        $dropdown= $this->nestedset->Dropdown();
-
-        $album = json_decode($slide->album);
-
         $this->authorize('modules', 'slide.edit');//phân quyền
 
-        return view('Backend.dashboard.layout', compact('template','config','slide','dropdown','album'));
+        return view('Backend.dashboard.layout', compact('template','config','slide', 'slideItems'));
     }
-    //xử lý sửa user
+    //xử lý sửa slide
     public function update($id, UpdateSlideRequest $request){
         //echo $id; die();
         //dd($request);
         if($this->slideService->updateSlide($id, $request, $this->language)){
-            return redirect()->route('slide.index')->with('success','Cập nhật bài viết thành công');
+            return redirect()->route('slide.index')->with('success','Cập nhật slide thành công');
         }
-           return redirect()->route('slide.index')->with('error','Cập nhật bài viết thất bại. Hãy thử lại');
+           return redirect()->route('slide.index')->with('error','Cập nhật slide thất bại. Hãy thử lại');
     }
     //giao diện xóa user
     public function destroy($id){

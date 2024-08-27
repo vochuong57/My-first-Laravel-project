@@ -442,5 +442,9 @@ return[
             'title'=>'Thêm mới slide',
             'btnTitle'=>'Thêm mới'
         ],
+        'edit'=>[
+            'title'=>'Cập nhật slide',
+            'btnTitle'=>'Cập nhật'
+        ],
     ],
 ];
