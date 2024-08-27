@@ -26,7 +26,31 @@
                 <div class="info-item email">{{ $slide->keyword }}</div>
             </td>
             <td>
-                -
+            @php
+                // V79
+                $album = $slide->album;
+            @endphp
+            @if(isset($album[$languageSessionId]))
+                <div class="list-image-table sortable-list sortui ui-sortable" data-slideId="{{ $slide->id }}" data-languageSessionId="{{ $languageSessionId }}">
+                @foreach($album[$languageSessionId] as $item)
+                    @if(isset($item['image']))
+                    <span class="img-list ui-state-default-list">
+                        <img src="{{ $item['image'] }}" alt="">
+                        <input type="hidden" name=""
+                            data-image="{{ $item['image'] }}"
+                            data-description="{{ $item['description'] }}"
+                            data-window="{{ $item['window'] }}"
+                            data-canonical="{{ $item['canonical'] }}"
+                            data-name="{{ $item['name'] }}"
+                            data-alt="{{ $item['alt'] }}"
+                        >
+                    </span>
+                    @endif
+                @endforeach
+                </div>
+            @else
+                <p>Không có hình ảnh nào để hiển thị.</p>
+            @endif
             </td>
             <td class="text-center js-switch-{{ $slide->id }}">
                 <input type="checkbox" class="js-switch status" value="{{ $slide->publish }}" data-field="publish" data-model="{{ $config['model'] }}" data-modelId="{{ $slide->id }}" {{ ($slide->publish==2)?'checked':'' }} >

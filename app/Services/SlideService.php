@@ -195,7 +195,7 @@ class SlideService extends BaseService implements SlideServiceInterface
         ];
     }
     
-    // V77
+    // V77 convert mảng 2 chiều từng cột thành mảng 2 chiều gộp cột (xử lý thêm mới, cập nhật)
     private function handleSlideItem($slides, $languageId){
         // dd($slides);
         $temp = [];
@@ -213,7 +213,7 @@ class SlideService extends BaseService implements SlideServiceInterface
         return $temp;
     }
 
-    // V78 convert mảng 2 chiều gộp cột thành mảng 2 chiều từng cột
+    // V78 convert mảng 2 chiều gộp cột thành mảng 2 chiều từng cột (giao diện cập nhật)
     public function convertSlideArray(array $slide = []):array{
         // dd($slide);
         $temp = [];
@@ -226,5 +226,45 @@ class SlideService extends BaseService implements SlideServiceInterface
         // dd($temp);
         return $temp;
     }
+
+    // 79 ajax
+    public function updateDrag($slideId, $items, $languageSessionId){
+        // dd($payload);
+
+        $slide = $this->slideRepository->findById($slideId);
+        // dd($slide);
+        $slideItem = $slide->album;
+        // dd($slideItem);
+        unset($slideItem[$languageSessionId]);
+        // dd($slideItem);
+        $payload['album'] = json_encode($this->joinParentLanguageIdInArray($items, $languageSessionId));
+        // dd($payload);
+
+        $slide = $this->slideRepository->update($slideId, $payload);
+    }
+
+    // V79 convert thêm mảng cha languageId vào cho mảng slide[][]
+    private function joinParentLanguageIdInArray($items, $languageSessionId){
+        $temp = [];
+        
+        // Duyệt qua mỗi phần tử của mảng $items
+        foreach($items as $item){
+            // Kiểm tra xem $item có phải là một mảng không
+            if (is_array($item)) {
+                $temp[$languageSessionId][] = [
+                    'image' => $item['image'], // Truy cập phần tử của mảng
+                    'description' => $item['description'],
+                    'canonical' => $item['canonical'],
+                    'name' => $item['name'],
+                    'alt' => $item['alt'],
+                    'window' => $item['window'],
+                ];
+            }
+        }
+        // dd($temp);
+        // Trả về mảng đã được tạo
+        return $temp;
+    }
+    
 }
 
