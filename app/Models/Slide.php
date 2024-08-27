@@ -24,4 +24,22 @@ class Slide extends Model
         'user_id',
         'short_code'
     ];
+
+    // Đừng dùng tới đoạn code này nếu như chúng ta đã tự xữ lí thủ công dữ liệu cột setting và album ép về kiểu json ở service
+    // protected $casts = [
+    //     'album' => 'json',
+    //     'setting' => 'json'
+    // ];
+
+    // Accessor để giải mã JSON khi truy cập thuộc tính `setting`
+    public function getSettingAttribute($value)
+    {
+        return json_decode($value, true);
+    }
+
+    // Accessor để giải mã JSON khi truy cập thuộc tính `album`
+    public function getAlbumAttribute($value)
+    {
+        return json_decode($value, true);
+    }
 }

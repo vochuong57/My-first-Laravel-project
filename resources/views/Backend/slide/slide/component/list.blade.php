@@ -1,6 +1,6 @@
 <div>
 @php
-    $slides = old('slide', ($listSlides) ?? null);
+    $slides = old('slide', ($slideItems) ?? null);
 
 
     // Tính toán giá trị $counter dựa trên số lượng slide hiện có

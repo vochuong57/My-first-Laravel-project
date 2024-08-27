@@ -33,7 +33,7 @@
                 <div class="uk-flex uk-flex-middle">
                     <span class="setting-text">Chiều rộng</span>
                     <div class="setting-value">
-                        <input type="text" name="setting[width]" class="form-control int" value="{{ old('setting.width', ($slide->width) ?? 0) }}">
+                        <input type="text" name="setting[width]" class="form-control int" value="{{ old('setting.width', ($slide->setting['width']) ?? 0) }}">
                         <span class="px">px</span>
                     </div>
                 </div>
@@ -42,7 +42,7 @@
                 <div class="uk-flex uk-flex-middle">
                     <span class="setting-text">Chiều cao</span>
                     <div class="setting-value">
-                        <input type="text" name="setting[height]" class="form-control int" value="{{ old('setting.height', ($slide->height) ?? 0) }}">
+                        <input type="text" name="setting[height]" class="form-control int" value="{{ old('setting.height', ($slide->setting['height']) ?? 0) }}">
                         <span class="px">px</span>
                     </div>
                 </div>
@@ -53,7 +53,7 @@
                     <div class="setting-value">
                         <select name="setting[animation]" id="" class="form-control setupSelect2">
                             @foreach(__('module.effect') as $key => $val)
-                            <option {{ $key == old('setting.animation') ? 'selected' : '' }} value="{{ $key }}">{{ $val }}</option>
+                            <option {{ $key == old('setting.animation', ($slide->setting['animation']) ?? null) ? 'selected' : '' }} value="{{ $key }}">{{ $val }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -63,7 +63,11 @@
                 <div class="uk-flex uk-flex-middle">
                     <span class="setting-text">Mũi tên</span>
                     <div class="setting-value">
-                        <input type="checkbox" name="setting[arrow]" value="accept" @if(!old() || old('setting.arrow') == 'accept') checked="checked" @endif>
+                        @php
+                            // Lấy giá trị 'arrow' từ old hoặc từ DB
+                            $arrow = old('setting.arrow', $slide->setting['arrow'] ?? 'accept');
+                        @endphp
+                        <input type="checkbox" name="setting[arrow]" value="accept" {{ ($arrow == 'accept') ? 'checked' : ''  }}>
                     </div>
                 </div>
             </div>
@@ -78,7 +82,11 @@
                                 value="{{ $key }}" 
                                 name="setting[navigate]" 
                                 id="navigate_{{$key}}" 
-                                {{ old('setting.navigate', (!old() ? 'dots' : $key)) === $key ? 'checked' : '' }}
+                                @php
+                                    // Lấy giá trị 'navigate' từ old hoặc từ DB
+                                    $navigate = old('setting.navigate', $slide->setting['navigate'] ?? 'dots');
+                                @endphp
+                                {{ ($navigate == $key) ? 'checked' : '' }}
                             >
                             <label for="navigate_{{$key}}">{{ $val }}</label>
                         </div>
