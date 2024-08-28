@@ -96,7 +96,7 @@ class SlideService extends BaseService implements SlideServiceInterface
             // dd($slideItem);
             unset($slideItem[$languageId]);
             // dd($slideItem);
-            $payload['album'] = json_encode($this->handleSlideItem($request->input('slide'), $languageId));
+            $payload['album'] = json_encode($this->handleSlideItem($request->input('slide'), $languageId)+$slideItem);
             // dd($payload);
 
             $slide = $this->slideRepository->update($id, $payload);
@@ -237,7 +237,7 @@ class SlideService extends BaseService implements SlideServiceInterface
         // dd($slideItem);
         unset($slideItem[$languageSessionId]);
         // dd($slideItem);
-        $payload['album'] = json_encode($this->joinParentLanguageIdInArray($items, $languageSessionId));
+        $payload['album'] = json_encode($this->joinParentLanguageIdInArray($items, $languageSessionId)+$slideItem);
         // dd($payload);
 
         $slide = $this->slideRepository->update($slideId, $payload);
@@ -264,6 +264,38 @@ class SlideService extends BaseService implements SlideServiceInterface
         // dd($temp);
         // Trả về mảng đã được tạo
         return $temp;
+    }
+
+    // V81
+    public function saveTranslateSlide($request, $languageTranslateId, $id){
+        DB::beginTransaction();
+        try{
+            $payload = $request->only('translate');
+            // dd($payload['translate']);
+
+            $slide = $this->slideRepository->findById($id);
+            // dd($slide);
+            $slideItem = $slide->album;
+            // dd($slideItem);
+            // dd($languageTranslateId);
+            unset($slideItem[$languageTranslateId]);
+            // dd($languageTranslateId);
+            // dd($slideItem);
+
+            $slides = $this->handleSlideItem($payload['translate'], $languageTranslateId)+$slideItem;
+            // dd($slides);
+            $payload['album'] = json_encode($slides);
+            // dd($payload);
+    
+            $slide = $this->slideRepository->update($id, $payload);
+            // echo 1; die();
+            DB::commit();
+            return true;
+        }catch(\Exception $ex){
+            DB::rollBack();
+            echo $ex->getMessage();die();
+            return false;
+        }
     }
     
 }

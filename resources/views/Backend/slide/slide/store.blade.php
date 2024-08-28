@@ -9,6 +9,23 @@
         </ul>
     </div>
 @endif
+@if($config['method']=='edit')
+<div class="language-container" style="margin: 12">
+    @foreach($languages as $language)
+        @php
+            $url = (session('app_locale') == $language->canonical) ? route('slide.edit', ['id' => $id]) 
+            : route('slide.translate', ['languageId' => $language->id, 'id' => $id]);
+        @endphp
+        <div class="uk-flex uk-flex-middle">
+        
+            <a  class="image img-cover system-flag"
+                href="{{ $url }}">
+                <img src="{{ $language->image }}" alt="">
+            </a>
+        </div>
+    @endforeach
+</div>
+@endif
 @php
     $url=($config['method']=='create')?route('slide.create'):route('slide.update', $slide->id)
 @endphp

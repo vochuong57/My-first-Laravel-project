@@ -146,6 +146,13 @@
                     $(this).after('<input type="hidden" name="slide[window][]" value="no">');
                 }
             });
+            // V81
+            $('input[type="checkbox"][name="translate[window][]"]').each(function() {
+                if (!$(this).is(':checked')) {
+                    // Nếu checkbox không được chọn, tạo một input hidden với cùng name và giá trị no
+                    $(this).after('<input type="hidden" name="translate[window][]" value="no">');
+                }
+            });
         });
     }
 
