@@ -15,6 +15,7 @@ use App\Http\Requests\UpdateSlideRequest;
 //use App\Models\User;
 use App\Classes\Nestedsetbie;
 use App\Models\Language;
+use App\Repositories\Interfaces\LanguageRepositoryInterface as LanguageRepository;
 
 class SlideController extends Controller
 {
@@ -22,11 +23,13 @@ class SlideController extends Controller
     protected $slideRepository;
     protected $nestedset;
     protected $language;//được lấy từ extends Controller
+    protected $languageRepository;
 
-    public function __construct(SlideService $slideService, SlideRepository $slideRepository)
+    public function __construct(SlideService $slideService, SlideRepository $slideRepository, LanguageRepository $languageRepository)
     {
         $this->slideService = $slideService; // định nghĩa $this->userService=$userCatalogueService để biến này nó có thể trỏ tới các phương tức của UserCatalogueService
         $this->slideRepository = $slideRepository;
+        $this->languageRepository=$languageRepository;
 
         $this->middleware(function($request, $next) {
             try {
@@ -130,7 +133,7 @@ class SlideController extends Controller
 
         $this->authorize('modules', 'slide.edit');//phân quyền
 
-        return view('Backend.dashboard.layout', compact('template','config','slide', 'slideItems'));
+        return view('Backend.dashboard.layout', compact('template','config','slide', 'slideItems', 'id'));
     }
     //xử lý sửa slide
     public function update($id, UpdateSlideRequest $request){
@@ -169,6 +172,47 @@ class SlideController extends Controller
         }
            return redirect()->route('slide.index')->with('error','Xóa bài viết thất bại. Hãy thử lại');
     }
+    // V81
+    public function translate($languageTranslateId, $slideId){
+        // echo 123; die();
+        $template='Backend.slide.slide.translate';
+
+        $config=$this->configCUD();
+
+        $config['seo']=__('messages.slide.translate');
+
+        $config['method']='translate';
+
+        $languageTranslate = $this->languageRepository->findById($languageTranslateId);
+        // dd($languageTranslate);
+
+        $slide=$this->slideRepository->findById($slideId);
+
+        $listSlides = $slide->album[$this->language];
+        // dd($listSlides); 
+
+        $listSlides = $this->slideService->convertSlideArray($listSlides);
+        // dd($listSlides);
+
+        $listSlidesTranslate = $slide->album[$languageTranslateId] ?? null;
+
+        // dd($listSlidesTranslate);
+
+        if($listSlidesTranslate != null){
+            $listSlidesTranslate = $this->slideService->convertSlideArray($listSlidesTranslate);
+            // dd($listSlidesTranslate);
+        }
+
+        return view('Backend.dashboard.layout', compact('template', 'config', 'languageTranslate', 'slide', 'listSlides', 'listSlidesTranslate'));
+    }
+    // V81
+    public function saveTranslate(Request $request, $languageTranslateId, $id){
+        if($this->slideService->saveTranslateSlide($request, $languageTranslateId, $id)){
+            return redirect()->route('slide.index')->with('success','Cập nhật bản dịch slide thành công');
+        }
+           return redirect()->route('slide.index')->with('error','Cập nhật bản dịch slide thất bại. Hãy thử lại');
+    }
+
     private function configIndex(){
         return[
             'js'=>[

@@ -272,6 +272,9 @@ Route::group(['middleware' => ['admin','locale','backend_default_locale']], func
 
         Route::get('{id}/destroy',[SlideController::class, 'destroy'])->name('slide.destroy')->where(['id'=>'[0-9]+']);//hiển thị form xóa user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
         Route::post('{id}/delete',[SlideController::class, 'delete'])->name('slide.delete')->where(['id'=>'[0-9]+']);//Thực thi xử lý xóa user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+    
+        Route::get('{languageId}/{id}/translate',[SlideController::class, 'translate'])->where(['languageId'=>'[0-9]+', 'id'=>'[0-9]+'])->name('slide.translate');//thực thi xử lý thêm user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+        Route::post('{languageId}/{id}/saveTranslate',[SlideController::class, 'saveTranslate'])->where(['languageId'=>'[0-9]+', 'id'=>'[0-9]+'])->name('slide.saveTranslate');//thực thi xử lý thêm user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
     });
 
     //@@new-module@@

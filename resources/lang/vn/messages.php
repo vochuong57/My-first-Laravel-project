@@ -446,5 +446,9 @@ return[
             'title'=>'Cập nhật slide',
             'btnTitle'=>'Cập nhật'
         ],
+        'translate'=>[
+            'title'=>'Tạo bản dịch {language} cho slide',
+            'btnTitleSave'=>'Lưu lại',
+        ],
     ],
 ];
