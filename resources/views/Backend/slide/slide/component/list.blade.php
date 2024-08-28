@@ -30,6 +30,7 @@
                         <img src="{{ $val }}" alt="">
                         <input type="hidden" name="slide[image][]" value="{{ $val }}">
                         <span class="delete-slide"><i class="fa fa-trash btn btn-danger"></i></span>
+                        <span class="change-image"><i class="fa fa-pencil-square-o btn btn-warning"></i></span>
                     </span>
                 </div>
                 <div class="col-lg-9">

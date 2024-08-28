@@ -47,8 +47,8 @@ h5{
 }
 /* V79 css cho hiển thị danh sách ảnh trông một cột có kéo thả */
 .img-list img{
-    width: 91px;
-    height: 61px;
+    width: 76px;
+    height: 51px;
     object-fit: cover;
     /* display: block; */
 }
@@ -610,4 +610,12 @@ input[type=checkbox]{
     width: 100% !important;
     font-weight: normal;
 
+}
+.change-image{
+    position: absolute;
+    right: 10px;
+    top: 135px;
+}
+.change-image i, .delete-slide i{
+    font-size: 15px;
 }
