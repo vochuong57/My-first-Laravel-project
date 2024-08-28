@@ -27,6 +27,28 @@
         })
     }
 
+    // V80 Sự kiện khi click vào '.change-slide'
+    HT.changeImage = (type) => {
+        // console.log(123)
+        $(document).on('click', '.change-image', function(e){
+            e.preventDefault()
+            let _this = $(this)
+            if(typeof(type)=='undefined'){
+                type='Images';
+            }
+            var finder = new CKFinder();
+            finder.resourceType = type;
+            finder.selectActionFunction = function(fileUrl, data){
+                // object.val(fileUrl);
+                _this.parents('.slide-image').find('img').attr('src', fileUrl)
+
+                // Cập nhật giá trị của input hidden tương ứng
+                _this.parents('.slide-image').find('input[type="hidden"]').val(fileUrl);
+            }
+            finder.popup();
+        })
+    }
+
     // V76 xây dựng hàm render ra nội dung cho từng slide-item mỗi lần click vào '.addSlide'
     HT.renderSlideItemHtml = (image) => {
         let tab_1 = "tab_" + counter
@@ -42,6 +64,7 @@
         html += '                    <img src="'+image+'" alt="">';
         html += '                    <input type="hidden" name="slide[image][]" value="'+image+'">';
         html += '                    <span class="delete-slide"><i class="fa fa-trash btn btn-danger"></i></span>';
+        html += '                    <span class="change-image"><i class="fa fa-pencil-square-o btn btn-warning"></i></span>';
         html += '                </span>';
         html += '            </div>';
         html += '            <div class="col-lg-9">';
@@ -207,6 +230,7 @@
 
     $(document).ready(function(){
         HT.addSlide()
+        HT.changeImage()
         HT.deleteSlide()
         HT.checkValueSileWindow()
         HT.checkValueSetting()
