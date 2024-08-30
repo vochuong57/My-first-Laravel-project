@@ -195,12 +195,12 @@ class SlideService extends BaseService implements SlideServiceInterface
         ];
     }
     
-    // V77 convert mảng 2 chiều từng cột thành mảng 2 chiều gộp cột (xử lý thêm mới, cập nhật)
+    // V82 convert mảng 2 chiều từng cột thành mảng 3 chiều gộp cột (xử lý thêm mới, cập nhật)
     private function handleSlideItem($slides, $languageId){
         // dd($slides);
         $temp = [];
         foreach($slides['image'] as $key => $val){
-            $temp[$languageId][] = [
+            $temp[$languageId][$slides['id'][$key]][] = [
                 'image' => $val,
                 'description' => $slides['description'][$key],
                 'canonical' => $slides['canonical'][$key],
@@ -213,14 +213,28 @@ class SlideService extends BaseService implements SlideServiceInterface
         return $temp;
     }
 
-    // V78 convert mảng 2 chiều gộp cột thành mảng 2 chiều từng cột (giao diện cập nhật)
+    // // V78 convert mảng 2 chiều gộp cột thành mảng 2 chiều từng cột (giao diện cập nhật)
+    // public function convertSlideArray(array $slide = []):array{
+    //     // dd($slide);
+    //     $temp = [];
+    //     $fields = ['image', 'description', 'window', 'canonical', 'name', 'alt'];
+    //     foreach($slide as $key => $val){
+    //         foreach($fields as $field){
+    //             $temp[$field][]=$val[$field];
+    //         }
+    //     }
+    //     // dd($temp);
+    //     return $temp;
+    // }
+
+    // V82 convert mảng 2 chiều gộp cột thành mảng 2 chiều truyền thống bỏ key thừa 0 đi (giao diện cập nhật)
     public function convertSlideArray(array $slide = []):array{
         // dd($slide);
         $temp = [];
         $fields = ['image', 'description', 'window', 'canonical', 'name', 'alt'];
         foreach($slide as $key => $val){
             foreach($fields as $field){
-                $temp[$field][]=$val[$field];
+                $temp[$field]=$val[$field];
             }
         }
         // dd($temp);
@@ -246,12 +260,13 @@ class SlideService extends BaseService implements SlideServiceInterface
     // V79 convert thêm mảng cha languageId vào cho mảng slide[][]
     private function joinParentLanguageIdInArray($items, $languageSessionId){
         $temp = [];
-        
+        // dd($items);
         // Duyệt qua mỗi phần tử của mảng $items
         foreach($items as $item){
+            // dd($item);
             // Kiểm tra xem $item có phải là một mảng không
             if (is_array($item)) {
-                $temp[$languageSessionId][] = [
+                $temp[$languageSessionId][$item['id']][] = [
                     'image' => $item['image'], // Truy cập phần tử của mảng
                     'description' => $item['description'],
                     'canonical' => $item['canonical'],
@@ -297,6 +312,66 @@ class SlideService extends BaseService implements SlideServiceInterface
             return false;
         }
     }
-    
+
+    // V82
+    public function findSlideItemTranslate($slide, $languageSessionId, $languageTranslateId)
+    {
+        $output = [];
+        $slideItem = $slide->album;
+
+        if (isset($slideItem[$languageSessionId])) {
+            // Lấy mảng cha thứ nhất để làm thứ tự chuẩn
+            $sessionItems = $slideItem[$languageSessionId];
+            $translateItems = $slideItem[$languageTranslateId] ?? null;
+
+            if (!is_null($translateItems)) {
+                // Sắp xếp các phần tử trong mảng $translateItems theo thứ tự của $sessionItems
+                $sortedTranslateItems = [];
+                $remainingTranslateItems = $translateItems; // Giữ lại các phần tử không tìm thấy trong sessionItems
+
+                foreach ($sessionItems as $parentId => $items) {
+                    if (isset($translateItems[$parentId])) {
+                        $sortedTranslateItems[$parentId] = $translateItems[$parentId];
+                        unset($remainingTranslateItems[$parentId]); // Loại bỏ phần tử đã được sử dụng
+                    }
+                }
+                // dd($sortedTranslateItems);
+
+                // Kết hợp $sessionItems với $sortedTranslateItems và loại bỏ mảng cha số 0
+                foreach ($sessionItems as $parentId => &$items) {
+                    $combinedItems = $items[0]; // Lấy mảng con đầu tiên
+                    if (isset($sortedTranslateItems[$parentId])) {
+                        foreach ($sortedTranslateItems[$parentId][0] as $key => $value) {
+                            $combinedItems['translate_' . $key] = $value;
+                        }
+                    }
+                    // Lưu kết quả vào output, không có mảng cha số 0
+                    $output[$parentId] = $combinedItems;
+                }
+                // dd($combinedItems);
+                // dd($output);
+
+                // Xếp các phần tử còn lại (không tìm thấy theo parentId) vào cuối cùng
+                // dd($remainingTranslateItems);
+                foreach ($remainingTranslateItems as $parentId => $items) {
+                    $combinedItems = [];
+                    foreach ($items[0] as $key => $value) {
+                        $combinedItems['translate_' . $key] = $value;
+                    }
+                    $output[$parentId] = $combinedItems;
+                }
+                // dd($output);
+            } else {
+                // Chuyển các phần tử từ $sessionItems vào output mà không có mảng cha số 0
+                foreach ($sessionItems as $parentId => $items) {
+                    $output[$parentId] = $items[0];
+                }
+            }
+            // dd($output);
+        }
+
+        return $output;
+    }
+
 }
 

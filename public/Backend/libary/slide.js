@@ -12,12 +12,14 @@
             }
             var finder = new CKFinder();
             finder.resourceType = type;
+            // Tạo timestamp duy nhất
+            let timestamp = $.now();
             finder.selectActionFunction = function(fileUrl, data, allFiles){
                 // object.val(fileUrl);
                 let html = ''
                 for(var i = 0; i<allFiles.length;i++){
                     let image = allFiles[i].url
-                    html += HT.renderSlideItemHtml(image)
+                    html += HT.renderSlideItemHtml(image, timestamp++)
                 }
 
                 $('.slide-list').append(html)
@@ -50,7 +52,7 @@
     }
 
     // V76 xây dựng hàm render ra nội dung cho từng slide-item mỗi lần click vào '.addSlide'
-    HT.renderSlideItemHtml = (image) => {
+    HT.renderSlideItemHtml = (image, timestamp) => {
         let tab_1 = "tab_" + counter
         let tab_2 = "tab_" + (counter + 1)
     
@@ -63,6 +65,7 @@
         html += '                <span class="slide-image img-cover">';
         html += '                    <img src="'+image+'" alt="">';
         html += '                    <input type="hidden" name="slide[image][]" value="'+image+'">';
+        html += '                    <input type="hidden" name="slide[id][]" value="'+timestamp+'">'; // Thêm input hidden với giá trị timestamp
         html += '                    <span class="delete-slide"><i class="fa fa-trash btn btn-danger"></i></span>';
         html += '                    <span class="change-image"><i class="fa fa-pencil-square-o btn btn-warning"></i></span>';
         html += '                </span>';
@@ -197,6 +200,7 @@
                 let $imgItem = $(this);
                 let itemData = {
                     image: $imgItem.find('input[type="hidden"]').data('image'),
+                    id: $imgItem.find('input[type="hidden"]').data('id'),
                     description: $imgItem.find('input[type="hidden"]').data('description'),
                     window: $imgItem.find('input[type="hidden"]').data('window'),
                     canonical: $imgItem.find('input[type="hidden"]').data('canonical'),

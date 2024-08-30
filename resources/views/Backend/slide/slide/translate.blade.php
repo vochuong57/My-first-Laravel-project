@@ -22,8 +22,8 @@
     // Tính toán giá trị $counter dựa trên số lượng slide hiện có
     $counter = 1;
 
-    if (!empty($listSlides['image'])) {
-        $counter += count($listSlides['image']) * 2;
+    if (!empty($slide['image'])) {
+        $counter += count($slide['image']) * 2;
     }
 
     //echo '<pre>';
@@ -55,19 +55,20 @@
                     </div>
                     <div class="ibox-content">
                         @if(!is_null($listSlides))
-                        @foreach($listSlides['image'] as $key => $val)
+                        @foreach($listSlides as $parentId => $slide)
                             @php
                                 $tab_1 = "tab_" . $counter;
                                 $tab_2 = "tab_" . ($counter + 1);
                             @endphp
                         <div class="menu-translate-item">
                             <div class="row">
+                                @if(!empty($slide['image']))
                                 <div class="col-lg-6">
                                     <div class="slide-item">
                                         <div class="row custom-row">
                                             <div class="col-lg-3">
                                                 <span class="slide-image img-cover">
-                                                    <img src="{{ $val }}" alt="" disabled>
+                                                    <img src="{{ $slide['image'] }}" alt="" disabled>
                                                 </span>
                                             </div>
                                             <div class="col-lg-9">
@@ -81,14 +82,14 @@
                                                             <div class="panel-body">
                                                                 <div class="label-text mb5">Mô tả:</div>
                                                                 <div class="form-row mb10">
-                                                                    <textarea class="form-control" disabled>{{ $listSlides['description'][$key] }}</textarea>
+                                                                    <textarea class="form-control" disabled>{{ $slide['description'] }}</textarea>
                                                                 </div>
                                                                 <div class="form-row form-row-canonical">
-                                                                    <input type="text" class="form-control" placeholder="URL" value="{{ $listSlides['canonical'][$key] }}" disabled>
+                                                                    <input type="text" class="form-control" placeholder="URL" value="{{ $slide['canonical'] }}" disabled>
                                                                     <div class="overlay">
                                                                         <div class="uk-flex uk-flex-middle">
                                                                             <label for="input_{{ $tab_1 }}">Mở trong tab mới</label>
-                                                                            <input type="checkbox" value="_blank" id="input_{{ $tab_1 }}" {{ (isset($listSlides['window'][$key]) && $listSlides['window'][$key] == '_blank') ? 'checked' : '' }} disabled>
+                                                                            <input type="checkbox" value="_blank" id="input_{{ $tab_1 }}" {{ (isset($slide['window']) && $slide['window'] == '_blank') ? 'checked' : '' }} disabled>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -98,11 +99,11 @@
                                                             <div class="panel-body">
                                                                 <div class="label-text mb5">Tiêu đề ảnh:</div>
                                                                 <div class="form-row form-row-canonical slide-seo-tab">
-                                                                    <input type="text" class="form-control" placeholder="Tiêu đề ảnh" value="{{ $listSlides['name'][$key] }}" disabled>
+                                                                    <input type="text" class="form-control" placeholder="Tiêu đề ảnh" value="{{ $slide['name'] }}" disabled>
                                                                 </div>
                                                                 <div class="label-text mt12">Mô tả ảnh:</div>
                                                                 <div class="form-row form-row-canonical slide-seo-tab">
-                                                                    <input type="text" class="form-control" placeholder="Mô tả ảnh" value="{{ $listSlides['alt'][$key] }}" disabled>
+                                                                    <input type="text" class="form-control" placeholder="Mô tả ảnh" value="{{ $slide['alt'] }}" disabled>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -113,13 +114,17 @@
                                         <hr />
                                     </div>
                                 </div>
+                                @else
+                                <div class="col-lg-6"></div>
+                                @endif
                                 <div class="col-lg-6">
                                     <div class="slide-item">
                                         <div class="row custom-row">
                                             <div class="col-lg-3">
                                                 <span class="slide-image img-cover">
-                                                    <img src="{{ $val }}" alt="" disabled>
-                                                    <input type="hidden" name="translate[image][]" value="{{ $val }}">
+                                                    <img src="{{ (!empty($slide['image'])) ? $slide['image'] : $slide['translate_image'] }}" alt="">
+                                                    <input type="hidden" name="translate[image][]" value="{{ (!empty($slide['image'])) ? $slide['image'] : $slide['translate_image'] }}">
+                                                    <input type="hidden" name="translate[id][]" value="{{ $parentId }}">
                                                 </span>
                                             </div>
                                             <div class="col-lg-9">
@@ -133,14 +138,14 @@
                                                             <div class="panel-body">
                                                                 <div class="label-text mb5">Mô tả:</div>
                                                                 <div class="form-row mb10">
-                                                                    <textarea name="translate[description][]" class="form-control">{{ $listSlidesTranslate['description'][$key] ?? '' }}</textarea>
+                                                                    <textarea name="translate[description][]" class="form-control">{{ $slide['translate_description'] ?? '' }}</textarea>
                                                                 </div>
                                                                 <div class="form-row form-row-canonical">
-                                                                    <input type="text" name="translate[canonical][]" class="form-control" placeholder="URL" value="{{ $listSlidesTranslate['canonical'][$key] ?? '' }}">
+                                                                    <input type="text" name="translate[canonical][]" class="form-control" placeholder="URL" value="{{ $slide['translate_canonical'] ?? '' }}">
                                                                     <div class="overlay">
                                                                         <div class="uk-flex uk-flex-middle">
                                                                             <label for="input_{{ $tab_1 }}-">Mở trong tab mới</label>
-                                                                            <input type="checkbox" name="translate[window][]" value="_blank" id="input_{{ $tab_1 }}-" {{ (isset($listSlidesTranslate['window'][$key]) && $listSlidesTranslate['window'][$key] == '_blank') ? 'checked' : '' }}>
+                                                                            <input type="checkbox" name="translate[window][]" value="_blank" id="input_{{ $tab_1 }}-" {{ (isset($slide['translate_window']) && $slide['translate_window'] == '_blank') ? 'checked' : '' }}>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -150,11 +155,11 @@
                                                             <div class="panel-body">
                                                                 <div class="label-text mb5">Tiêu đề ảnh:</div>
                                                                 <div class="form-row form-row-canonical slide-seo-tab">
-                                                                    <input type="text" name="translate[name][]" class="form-control" placeholder="Tiêu đề ảnh" value="{{ $listSlidesTranslate['name'][$key] ?? '' }}">
+                                                                    <input type="text" name="translate[name][]" class="form-control" placeholder="Tiêu đề ảnh" value="{{ $slide['translate_name'] ?? '' }}">
                                                                 </div>
                                                                 <div class="label-text mt12">Mô tả ảnh:</div>
                                                                 <div class="form-row form-row-canonical slide-seo-tab">
-                                                                    <input type="text" name="translate[alt][]" class="form-control" placeholder="Mô tả ảnh" value="{{ $listSlidesTranslate['alt'][$key] ?? '' }}">
+                                                                    <input type="text" name="translate[alt][]" class="form-control" placeholder="Mô tả ảnh" value="{{ $slide['translate_alt'] ?? '' }}">
                                                                 </div>
                                                             </div>
                                                         </div>

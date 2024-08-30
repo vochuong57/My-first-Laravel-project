@@ -32,20 +32,23 @@
             @endphp
             @if(isset($album[$languageSessionId]))
                 <div class="list-image-table sortable-list sortui ui-sortable" data-slideId="{{ $slide->id }}" data-languageSessionId="{{ $languageSessionId }}">
-                @foreach($album[$languageSessionId] as $item)
-                    @if(isset($item['image']))
-                    <span class="img-list ui-state-default-list">
-                        <img src="{{ $item['image'] }}" alt="">
-                        <input type="hidden" name=""
-                            data-image="{{ $item['image'] }}"
-                            data-description="{{ $item['description'] }}"
-                            data-window="{{ $item['window'] }}"
-                            data-canonical="{{ $item['canonical'] }}"
-                            data-name="{{ $item['name'] }}"
-                            data-alt="{{ $item['alt'] }}"
-                        >
-                    </span>
-                    @endif
+                @foreach($album[$languageSessionId] as $parentId => $items)
+                    @foreach($items as $item)
+                        @if(isset($item['image']))
+                        <span class="img-list ui-state-default-list">
+                            <img src="{{ $item['image'] }}" alt="">
+                            <input type="hidden" name=""
+                                data-id="{{ $parentId }}"
+                                data-image="{{ $item['image'] }}"
+                                data-description="{{ $item['description'] }}"
+                                data-window="{{ $item['window'] }}"
+                                data-canonical="{{ $item['canonical'] }}"
+                                data-name="{{ $item['name'] }}"
+                                data-alt="{{ $item['alt'] }}"
+                            >
+                        </span>
+                        @endif
+                    @endforeach
                 @endforeach
                 </div>
             @else

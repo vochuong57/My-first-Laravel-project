@@ -123,8 +123,16 @@ class SlideController extends Controller
         $slide=$this->slideRepository->findById($id);
         // dd($slide->album);
 
-        $slideItems = $this->slideService->convertSlideArray($slide->album[$this->language]);
+        $slideItems = []; // Khởi tạo $slideItems là một mảng trống
 
+        foreach($slide->album[$this->language] as $parentId => $items){
+            $convertedItems = $this->slideService->convertSlideArray($slide->album[$this->language][$parentId]);
+            // dd($convertedItems);
+            $slideItems[$parentId] = $convertedItems; // Tích lũy kết quả từ mỗi lần lặp vào mảng $slideItems
+        }
+        
+        // dd($slideItems);
+        
         if(!$slide){
             return redirect()->route('slide.index')->with('error', 'Bài viết này chưa có bản dịch của ngôn ngữ được chọn');
         }
@@ -191,19 +199,12 @@ class SlideController extends Controller
         $listSlides = $slide->album[$this->language];
         // dd($listSlides); 
 
-        $listSlides = $this->slideService->convertSlideArray($listSlides);
+        $languageSessionId = $this->language;
+
+        $listSlides = $this->slideService->findSlideItemTranslate($slide, $languageSessionId, $languageTranslateId);
         // dd($listSlides);
 
-        $listSlidesTranslate = $slide->album[$languageTranslateId] ?? null;
-
-        // dd($listSlidesTranslate);
-
-        if($listSlidesTranslate != null){
-            $listSlidesTranslate = $this->slideService->convertSlideArray($listSlidesTranslate);
-            // dd($listSlidesTranslate);
-        }
-
-        return view('Backend.dashboard.layout', compact('template', 'config', 'languageTranslate', 'slide', 'listSlides', 'listSlidesTranslate'));
+        return view('Backend.dashboard.layout', compact('template', 'config', 'languageTranslate', 'slide', 'listSlides'));
     }
     // V81
     public function saveTranslate(Request $request, $languageTranslateId, $id){
