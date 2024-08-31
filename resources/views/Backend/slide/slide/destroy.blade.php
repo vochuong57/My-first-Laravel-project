@@ -44,6 +44,20 @@
                                     >
                                 </div>
                             </div>
+                            <div class="col-lg-6">
+                                <div class="form-row">
+                                    <label for="" class="control-label text-left">Từ khóa slide: <span class="text-danger">(*)</span></label>
+                                    <input 
+                                    type="text"
+                                    name="keyword"
+                                    value="{{ old('keyword', ($slide->keyword)??'') }}"
+                                    class="form-control"
+                                    placeholder=""
+                                    autocomplete="off"
+                                    readonly
+                                    >
+                                </div>
+                            </div>
                         </div>
                         
                     </div>
