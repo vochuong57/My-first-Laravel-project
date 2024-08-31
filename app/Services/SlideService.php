@@ -109,40 +109,32 @@ class SlideService extends BaseService implements SlideServiceInterface
         }
     }
    
+    // V83
     public function deleteSlide($id, $languageId){
         DB::beginTransaction();
         try{
-            //echo '123'; die();
-            //Đầu tiền xóa đi bản dịch đó khỏi slide_language
-            $where=[
-                ['slide_id', '=', $id],
-                ['language_id', '=', $languageId]
-            ];
-            $this->slideLanguageRepository->deleteByWhere($where);
+            // echo $id; die();
+            $slide = $this->slideRepository->findById($id);
+            // dd($slide);
+            $slideItem = $slide->album;
+            // dd($slideItem);
+            unset($slideItem[$languageId]);
+            // dd($slideItem);
+            
+            $payload['album'] = json_encode($slideItem);
 
-            //Tiếp theo xóa đi canonical của bản dịch đó khỏi routers
-            $findRouter=[
-                ['module_id', '=', $id],
-                ['language_id', '=', $languageId],
-                ['controller', '=', 'App\Http\Controllers\Frontend\SlideController'],
-            ];
-            $this->routerRepository->deleteByWhere($findRouter);
+            $slide = $this->slideRepository->update($id, $payload);
+            // echo 1; die();
 
-            //Sau khi xóa xong thì nó tiếp tục kiểm tra xem thử là còn cái slide_id đó trong slide_language không
-            $condition=[
-                ['slide_id', '=', $id]
-            ];
-            $flag = $this->slideLanguageRepository->findByCondition($condition);
-
-            //Nếu không tìm thấy nữa thì ta mới tiến hành xóa đi Slide
-            if(!$flag){
-                $slide=$this->slideRepository->forceDelete($id);
+            if(empty($slideItem)){
+                $slide = $this->slideRepository->forceDelete($id);
             }
+
             DB::commit();
             return true;
         }catch(\Exception $ex){
             DB::rollBack();
-            echo $ex->getMessage();//die();
+            echo $ex->getMessage();die();
             return false;
         }
     }

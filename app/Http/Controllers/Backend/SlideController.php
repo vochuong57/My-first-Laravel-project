@@ -152,7 +152,7 @@ class SlideController extends Controller
         }
            return redirect()->route('slide.index')->with('error','Cập nhật slide thất bại. Hãy thử lại');
     }
-    //giao diện xóa user
+    // V83 giao diện xóa slide
     public function destroy($id){
         $template='Backend.slide.slide.destroy';
 
@@ -161,24 +161,24 @@ class SlideController extends Controller
         $config['seo']=__('messages.slide.delete');
 
         //truy vấn thông tin
-        $slide=$this->slideRepository->getSlideById($id,$this->language);
+        $slide=$this->slideRepository->findById($id);
+
+        // dd($slide);
         
         //dd($slideCatalogue);
-
-        $dropdown= $this->nestedset->Dropdown();
 
         $this->authorize('modules', 'slide.destroy');//phân quyền
 
         return view('Backend.dashboard.layout', compact('template','config','slide'));
     }
-    //xử lý xóa user
+    // V83 xử lý xóa slide
     public function delete($id){
         //echo $id;
         //echo 123; die();
         if($this->slideService->deleteSlide($id, $this->language)){
-            return redirect()->route('slide.index')->with('success','Xóa bài viết thành công');
+            return redirect()->route('slide.index')->with('success','Xóa slide thành công');
         }
-           return redirect()->route('slide.index')->with('error','Xóa bài viết thất bại. Hãy thử lại');
+           return redirect()->route('slide.index')->with('error','Xóa slide thất bại. Hãy thử lại');
     }
     // V81
     public function translate($languageTranslateId, $slideId){
