@@ -126,9 +126,9 @@ class SlideController extends Controller
         $slideItems = []; // Khởi tạo $slideItems là một mảng trống
 
         foreach($slide->album[$this->language] as $parentId => $items){
-            $convertedItems = $this->slideService->convertSlideArray($slide->album[$this->language][$parentId]);
+            $convertedItems = $this->slideService->convertSlideArray($slide->album[$this->language]);
             // dd($convertedItems);
-            $slideItems[$parentId] = $convertedItems; // Tích lũy kết quả từ mỗi lần lặp vào mảng $slideItems
+            $slideItems = $convertedItems; // Tích lũy kết quả từ mỗi lần lặp vào mảng $slideItems
         }
         
         // dd($slideItems);

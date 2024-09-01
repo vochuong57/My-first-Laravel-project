@@ -205,30 +205,42 @@ class SlideService extends BaseService implements SlideServiceInterface
         return $temp;
     }
 
-    // // V78 convert mảng 2 chiều gộp cột thành mảng 2 chiều từng cột (giao diện cập nhật)
-    // public function convertSlideArray(array $slide = []):array{
-    //     // dd($slide);
-    //     $temp = [];
-    //     $fields = ['image', 'description', 'window', 'canonical', 'name', 'alt'];
-    //     foreach($slide as $key => $val){
-    //         foreach($fields as $field){
-    //             $temp[$field][]=$val[$field];
-    //         }
-    //     }
-    //     // dd($temp);
-    //     return $temp;
-    // }
-
-    // V82 convert mảng 2 chiều gộp cột thành mảng 2 chiều truyền thống bỏ key thừa 0 đi (giao diện cập nhật)
-    public function convertSlideArray(array $slide = []):array{
+    // V84 convert mảng 2 chiều gộp cột thành mảng 2 chiều từng cột (giao diện cập nhật)
+    public function convertSlideArray2n(array $slide = []):array{
         // dd($slide);
         $temp = [];
-        $fields = ['image', 'description', 'window', 'canonical', 'name', 'alt'];
+        $fields = ['image', 'description', 'window', 'canonical', 'name', 'alt', 'id'];
         foreach($slide as $key => $val){
             foreach($fields as $field){
-                $temp[$field]=$val[$field];
+                $temp[$field][]=$val[$field];
             }
         }
+        // dd($temp);
+        return $temp;
+    }
+
+    // V84 convert mảng 3 chiều gộp cột thành mảng 2 chiều gộp cột và từ 2 chiều gộp cột sang mảng 2 chiều từng cột (giao diện cập nhật)
+    public function convertSlideArray(array $slide = []): array {
+        // dd($slide);
+        $temp = [];
+        $fields = ['image', 'description', 'window', 'canonical', 'name', 'alt', 'id'];
+        
+        foreach ($slide as $key => $val) {
+            $slideItem = [];
+            $data = $val[0];  // Truy cập mảng con tại chỉ số 0
+        
+            foreach ($fields as $field) {
+                if ($field == 'id') {
+                    $slideItem[$field] = $key;  // Đặt giá trị 'id' là $key
+                } else {
+                    $slideItem[$field] = $data[$field] ?? null; // Kiểm tra và gán giá trị nếu tồn tại trong $data
+                }
+            }
+        
+            $temp[] = $slideItem; // Lưu vào mảng tạm $temp
+        }
+        // dd($temp);
+        $temp = $this->convertSlideArray2n($temp);
         // dd($temp);
         return $temp;
     }
