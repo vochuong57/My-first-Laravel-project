@@ -98,7 +98,18 @@
                         'route' => 'slide/index'
                     ],
                 ]
-            ],            
+            ],   
+            [
+                'title' => '管理小部件',
+                'icon' => 'fa fa-cube',
+                'name' => ['widget'],
+                'subModule' => [
+                    [
+                        'title' => '小部件管理',
+                        'route' => 'widget/index'
+                    ]
+                ]
+            ],                     
         ]
     ];
 

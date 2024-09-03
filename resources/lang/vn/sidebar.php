@@ -104,7 +104,7 @@
             [
                 'title'=>'QL Widget',
                 'icon'=>'fa fa-cube',
-                'name'=>['widget', 'widgerModel'],
+                'name'=>['widget'],
                 'subModule'=>[
                     [
                         'title'=>'Quản lý Widget',
