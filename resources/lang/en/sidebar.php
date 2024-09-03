@@ -88,5 +88,16 @@
                     ],
                 ]
             ],
+            [
+                'title' => 'Manage Banner & Slide',
+                'icon' => 'fa fa-image',
+                'name' => ['slide'],
+                'subModule' => [
+                    [
+                        'title' => 'Slide Settings',
+                        'route' => 'slide/index'
+                    ],
+                ]
+            ],            
         ]
     ];

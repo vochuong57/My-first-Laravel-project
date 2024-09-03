@@ -101,5 +101,16 @@
                     
                 ]
             ],
+            [
+                'title'=>'QL Widget',
+                'icon'=>'fa fa-cube',
+                'name'=>['widget', 'widgerModel'],
+                'subModule'=>[
+                    [
+                        'title'=>'Quản lý Widget',
+                        'route'=>'widget/index'
+                    ]
+                ]
+            ],
         ]
     ];

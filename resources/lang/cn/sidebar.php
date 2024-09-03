@@ -87,7 +87,18 @@
                         'route' => 'menu/index'
                     ],
                 ]
-                ],
+            ],
+            [
+                'title' => '管理横幅和幻灯片',
+                'icon' => 'fa fa-image',
+                'name' => ['slide'],
+                'subModule' => [
+                    [
+                        'title' => '幻灯片设置',
+                        'route' => 'slide/index'
+                    ],
+                ]
+            ],            
         ]
     ];
 

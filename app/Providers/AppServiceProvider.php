@@ -39,6 +39,8 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\MenuCatalogueServiceInterface' => 'App\Services\MenuCatalogueService',
 
         'App\Services\Interfaces\SlideServiceInterface' => 'App\Services\SlideService',
+
+        'App\Services\Interfaces\WidgetServiceInterface' => 'App\Services\WidgetService',
     ];
     /**
      * Register any application services.
