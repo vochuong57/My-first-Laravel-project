@@ -470,22 +470,4 @@ return[
         ],
     ],
 
-    //WIDGET-MODEL
-    'widgetModel' => [
-        'index'=>[
-            'title'=> 'Quản lý WidgetModel',
-        ],
-        'delete'=>[
-            'title'=>'Xóa vị trí widgetModel ',
-            'btnDelete'=>'Xóa dữ liệu'
-        ],
-        'create'=>[
-            'title'=>'Thêm mới widgetModel',
-            'btnTitle'=>'Thêm mới'
-        ],
-        'edit'=>[
-            'title'=>'Cập nhật widgetModel',
-            'btnTitle'=>'Cập nhật'
-        ],
-    ],
 ];

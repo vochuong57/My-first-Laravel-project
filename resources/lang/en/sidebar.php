@@ -98,6 +98,17 @@
                         'route' => 'slide/index'
                     ],
                 ]
-            ],            
+            ],  
+            [
+                'title' => 'Manage Widget',
+                'icon' => 'fa fa-cube',
+                'name' => ['widget'],
+                'subModule' => [
+                    [
+                        'title' => 'Widget Management',
+                        'route' => 'widget/index'
+                    ]
+                ]
+            ],                      
         ]
     ];
