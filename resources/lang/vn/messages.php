@@ -451,4 +451,41 @@ return[
             'btnTitleSave'=>'Lưu lại',
         ],
     ],
+    //WIDGET
+    'widget' => [
+        'index'=>[
+            'title'=> 'Quản lý Widget',
+        ],
+        'delete'=>[
+            'title'=>'Xóa vị trí widget ',
+            'btnDelete'=>'Xóa dữ liệu'
+        ],
+        'create'=>[
+            'title'=>'Thêm mới widget',
+            'btnTitle'=>'Thêm mới'
+        ],
+        'edit'=>[
+            'title'=>'Cập nhật widget',
+            'btnTitle'=>'Cập nhật'
+        ],
+    ],
+
+    //WIDGET-MODEL
+    'widgetModel' => [
+        'index'=>[
+            'title'=> 'Quản lý WidgetModel',
+        ],
+        'delete'=>[
+            'title'=>'Xóa vị trí widgetModel ',
+            'btnDelete'=>'Xóa dữ liệu'
+        ],
+        'create'=>[
+            'title'=>'Thêm mới widgetModel',
+            'btnTitle'=>'Thêm mới'
+        ],
+        'edit'=>[
+            'title'=>'Cập nhật widgetModel',
+            'btnTitle'=>'Cập nhật'
+        ],
+    ],
 ];

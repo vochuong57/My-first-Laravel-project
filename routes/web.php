@@ -24,6 +24,7 @@ use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Backend\SystemController;
 use App\Http\Controllers\Backend\MenuController;
 use App\Http\Controllers\Backend\SlideController;
+use App\Http\Controllers\Backend\WidgetController;
 //@@useController@@
 
 
@@ -275,6 +276,19 @@ Route::group(['middleware' => ['admin','locale','backend_default_locale']], func
     
         Route::get('{languageId}/{id}/translate',[SlideController::class, 'translate'])->where(['languageId'=>'[0-9]+', 'id'=>'[0-9]+'])->name('slide.translate');//thực thi xử lý thêm user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
         Route::post('{languageId}/{id}/saveTranslate',[SlideController::class, 'saveTranslate'])->where(['languageId'=>'[0-9]+', 'id'=>'[0-9]+'])->name('slide.saveTranslate');//thực thi xử lý thêm user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+    });
+
+    Route::group(['prefix'=>'widget'], function(){
+        Route::get('index',[WidgetController::class, 'index'])->name('widget.index');//hiển thị form user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+        
+        Route::get('store',[WidgetController::class, 'store'])->name('widget.store');//hiển thị form thêm user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+        Route::post('create',[WidgetController::class, 'create'])->name('widget.create');//thực thi xử lý thêm user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+        
+        Route::get('{id}/edit',[WidgetController::class, 'edit'])->name('widget.edit')->where(['id'=>'[0-9]+']);//hiển thị form cập nhật user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+        Route::post('{id}/update',[WidgetController::class, 'update'])->name('widget.update')->where(['id'=>'[0-9]+']);//Thực thi xử lý cập nhật user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+
+        Route::get('{id}/destroy',[WidgetController::class, 'destroy'])->name('widget.destroy')->where(['id'=>'[0-9]+']);//hiển thị form xóa user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+        Route::post('{id}/delete',[WidgetController::class, 'delete'])->name('widget.delete')->where(['id'=>'[0-9]+']);//Thực thi xử lý xóa user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
     });
 
     //@@new-module@@

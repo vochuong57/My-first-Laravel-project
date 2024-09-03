@@ -68,6 +68,8 @@ class AppRepositoryProvider extends ServiceProvider
         'App\Repositories\Interfaces\MenuLanguageRepositoryInterface' => 'App\Repositories\MenuLanguageRepository',
 
         'App\Repositories\Interfaces\SlideRepositoryInterface' => 'App\Repositories\SlideRepository',
+
+        'App\Repositories\Interfaces\WidgetRepositoryInterface' => 'App\Repositories\WidgetRepository',
     ];
     public function register(): void
     {
