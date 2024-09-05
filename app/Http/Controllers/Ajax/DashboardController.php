@@ -105,4 +105,33 @@ class DashboardController extends Controller
             'relations' => [],
         ];
     }
+
+    // V87
+    private function loadClassInterface(string $model = '', $interface = 'Repository'){
+        $repositoryInterfaceNamespace='\App\Repositories\\'.ucfirst($model).$interface;
+        if(class_exists($repositoryInterfaceNamespace)){
+            $repositoryInstance=app($repositoryInterfaceNamespace);
+        }
+        return $repositoryInstance;
+    }
+    // V87
+    public function getModelObject(Request $request){
+        $get = $request->input();
+        // dd($get);
+        $repositoryInstance = $this->loadClassInterface($get['model'], 'Repository');
+        // dd($repositoryInstance);
+
+        $condition = [];
+        $languageId = $this->language;
+        $relation = [
+            'languages' => function($query) use ($languageId, $get){
+                $query->where('language_id', $languageId);
+                $query->where(Str::snake($get['model']).'_language.name', 'LIKE', '%'.$get['keyword'].'%');
+            }
+        ];
+        // $order = ['order', 'desc'];
+        $object = $repositoryInstance->findByConditionsWithRelation($condition, $relation);
+        // dd($object);
+        return response()->json($object);
+    }
 }
