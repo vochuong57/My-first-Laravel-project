@@ -43,21 +43,12 @@
                             <i class="fa fa-search"></i>
                             <input type="text" class="form-control search-model">
 
-                            <div class="ajax-search-result hidden">
-                                @for($i = 0; $i < 4; $i++)
-                                <button class="ajax-search-item">
-                                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                                        <span>HÌNH THỨC THANH TOÁN KHI ĐẶT HÀNG ONLINE</span>
-                                        <div class="auto-icon">
-                                            <i class="fa fa-check"></i>
-                                        </div>
-                                    </div>
-                                </button>
-                                @endfor
+                            <div class="ajax-search-result">
+                                
                             </div>
                         </div>
 
-                        <div class="search-model-result">
+                        <div class="search-model-result hidden">
                             @for($i = 0; $i < 10; $i++)
                             <div class="search-result-item">
                                 <div class="uk-flex uk-flex-middle uk-flex-space-between">
