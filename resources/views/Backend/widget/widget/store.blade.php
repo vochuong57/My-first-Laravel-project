@@ -48,22 +48,8 @@
                             </div>
                         </div>
 
-                        <div class="search-model-result hidden">
-                            @for($i = 0; $i < 10; $i++)
-                            <div class="search-result-item">
-                                <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                                    <div class="uk-flex uk-flex-middle">
-                                        <span class="image img-cover">
-                                            <img src="https://www.vpbank.com.vn/-/media/vpbank-latest/1retail/picture/tap-and-pay/800x507-vpp.jpg" alt="">
-                                        </span>
-                                        <span class="name">HÌNH THỨC THANH TOÁN KHI ĐẶT HÀNG ONLINE</span>
-                                    </div>
-                                    <div class="delete">
-                                        <a class="delete-menu img-scaledown" style="width: 15%; height: 30px; margin-left: 6px"><img src="Backend/img/close.png" alt=""></a>
-                                    </div>
-                                </div>
-                            </div>
-                            @endfor
+                        <div class="search-model-result">
+                            
                         </div>
                     </div>
                 </div>
