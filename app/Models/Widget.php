@@ -18,12 +18,22 @@ class Widget extends Model
         'id',
         'name',
         'keyword',
-        'modle_id',
+        'model_id',
         'model',
         'album',
         'description',
         'publish',
         'user_id',
+        'short_code'
     ];
 
+    // Accessor để giải mã JSON khi truy cập thuộc tính `model_id`
+    public function getModel_idAttribute($value)
+    {
+        return json_decode($value, true);
+    }
+    public function getAlbumAttribute($value)
+    {
+        return json_decode($value, true);
+    }
 }

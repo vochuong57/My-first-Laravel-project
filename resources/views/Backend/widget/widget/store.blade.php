@@ -34,7 +34,7 @@
                         <div class="labelText">Chọn Module</div>
                         @foreach(__('module.model') as $key => $val)
                         <div class="model-item uk-flex uk-flex-middle">
-                            <input type="radio" name="model" id="{{ $key }}" class="input-radio" value="{{ $key }}">
+                            <input type="radio" name="model" id="{{ $key }}" class="input-radio" value="{{ $key }}" {{ (old('model') == $key) ? 'checked' : '' }}>
                             <label for="{{ $key }}">{{ $val }}</label>
                         </div>
                         @endforeach
@@ -47,9 +47,36 @@
                                 
                             </div>
                         </div>
+                        <div>
+                        @php
+                            $widgets = old('widget', ($widgetItems) ?? null);
 
+                            //echo '<pre>';
+                            //print_r($widgets);
+                        @endphp
+                        </div>
                         <div class="search-model-result">
-                            
+                            @if(!empty($widgets))
+                            @foreach($widgets['image'] as $key => $val)
+                                <div class="search-result-item {{ $widgets['canonical'][$key] }}">
+                                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                                        <div class="uk-flex uk-flex-middle">
+                                            <span class="image img-cover">
+                                                <img src="{{ $val ?? 'Backend/img/not-found.png' }}" alt="">
+                                                <input type="hidden" name="widget[image][]" value="{{ $val ?? '' }}"></input>
+                                                <input type="hidden" name="widget[id][]" value="{{ $widgets['id'][$key] }}"></input>
+                                                <input type="hidden" name="widget[name][]" value="{{ $widgets['name'][$key] }}"></input>
+                                                <input type="hidden" name="widget[canonical][]" value="{{ $widgets['canonical'][$key] }}"></input>
+                                            </span>
+                                            <span class="name">{{ $widgets['name'][$key] }}</span>
+                                        </div>
+                                        <div class="delete">
+                                            <a class="delete-menu img-scaledown" style="width: 15%; height: 30px; margin-left: 6px"><img src="Backend/img/close.png" alt=""></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                            @endif
                         </div>
                     </div>
                 </div>

@@ -107,8 +107,8 @@ class DashboardController extends Controller
     }
 
     // V87
-    private function loadClassInterface(string $model = '', $interface = 'Repository'){
-        $repositoryInterfaceNamespace='\App\Repositories\\'.ucfirst($model).$interface;
+    private function loadClassInterface(string $model = '', $folder = 'Repositories', $interface = 'Repository'){
+        $repositoryInterfaceNamespace='\App\\'.$folder.'\\'.ucfirst($model).$interface;
         if(class_exists($repositoryInterfaceNamespace)){
             $repositoryInstance=app($repositoryInterfaceNamespace);
         }
@@ -118,7 +118,7 @@ class DashboardController extends Controller
     public function getModelObject(Request $request){
         $get = $request->input();
         // dd($get);
-        $repositoryInstance = $this->loadClassInterface($get['model'], 'Repository');
+        $repositoryInstance = $this->loadClassInterface($get['model'], 'Repositories', 'Repository');
         // dd($repositoryInstance);
 
         $condition = [];

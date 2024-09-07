@@ -164,6 +164,10 @@
         html += '    <div class="uk-flex uk-flex-middle">';
         html += '      <span class="image img-cover">';
         html += '        <img src="'+(data.image ? data.image : 'Backend/img/not-found.png')+'" alt="">';
+        html += '        <input type="hidden" name="widget[image][]" value="'+(data.image ? data.image : '')+'"></input>';
+        html += '        <input type="hidden" name="widget[id][]" value="'+data.id+'"></input>';
+        html += '        <input type="hidden" name="widget[name][]" value="'+data.name+'"></input>';
+        html += '        <input type="hidden" name="widget[canonical][]" value="'+data.canonical+'"></input>';
         html += '      </span>';
         html += '      <span class="name">'+data.name+'</span>';
         html += '    </div>';

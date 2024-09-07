@@ -11,13 +11,14 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Carbon;
 //thêm thư viện xử lý password
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 
 /**
  * Class WidgetService
  * @package App\Services
  */
-class WidgetService implements WidgetServiceInterface
+class WidgetService extends BaseService implements WidgetServiceInterface
 {
     protected $widgetRepository;
 
@@ -26,39 +27,46 @@ class WidgetService implements WidgetServiceInterface
     }
 
     public function paginate($request){//$request để tiến hành chức năng tìm kiếm
+        // dd($request);
+        // echo 123; die();
         $condition['keyword']=addslashes($request->input('keyword'));
         $condition['publish']=$request->input('publish');
-        // Kiểm tra nếu giá trị publish là 0, thì gán lại thành null
         if ($condition['publish'] == '0') {
             $condition['publish'] = null;
         }
-        //dd($condition);
+        // dd($condition);
         $perpage=$request->integer('perpage', 20);
+        //  echo 123; die();
         $widgets=$this->widgetRepository->pagination(
-            $this->paginateSelect(), 
-            $condition, 
-            $perpage, 
-            ['path'=> 'widget/index'],
-            []
+            $this->paginateSelect(),
+            $condition,
+            $perpage,
+            ['path'=> 'widget/index', 'groupBy' => $this->paginateSelect()],
+            ['widgets.id', 'DESC']
         );
+        // dd($widgets);
+        
         return $widgets;
     }
     public function createWidget($request){
         DB::beginTransaction();
         try{
-            $payload = $request->except('_token','send','repassword');//lấy tất cả ngoại trừ hai trường này thay vì dùng input là lấy tất cả
-            //$payload['birthday']=$this->convertBirthdayDate($payload['birthday']);
-            $payload['password']=Hash::make($payload['password']);
-            //dd($payload);
+            $payload = $request->only('name', 'keyword', 'description', 'short_code', 'model');
+            // dd($payload);
+            $payload['model_id'] = $this->formatJson($request, 'widget.id');
+            // dd($payload);
+            $payload['album'] = $this->formatJson($request, 'album');
+            // dd($payload);
+            $payload['user_id']=Auth::id();
+            // dd($payload);
 
-            $widget=$this->widgetRepository->create($payload);
-            //dd($widget);
-
+            $widget = $this->widgetRepository->create($payload);
+            // echo 1; die();
             DB::commit();
             return true;
         }catch(\Exception $ex){
             DB::rollBack();
-            echo $ex->getMessage();//die();
+            echo $ex->getMessage();die();
             return false;
         }
     }
@@ -145,7 +153,7 @@ class WidgetService implements WidgetServiceInterface
     }
     private function paginateSelect(){
         return [
-            'id','email','phone','address','name','image','publish'
+            'id','name','keyword','short_code','user_id', 'model' ,'publish'
         ];
     }
 }
