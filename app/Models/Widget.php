@@ -28,7 +28,7 @@ class Widget extends Model
     ];
 
     // Accessor để giải mã JSON khi truy cập thuộc tính `model_id`
-    public function getModel_idAttribute($value)
+    public function getModelIdAttribute($value)
     {
         return json_decode($value, true);
     }
@@ -36,4 +36,12 @@ class Widget extends Model
     {
         return json_decode($value, true);
     }
+    public function getDescriptionAttribute($value)
+    {
+        $decoded = json_decode($value, true);
+
+        // Nếu json_decode thất bại, trả về giá trị gốc (chuỗi HTML)
+        return $decoded === null ? $value : $decoded;
+    }
+
 }

@@ -22,10 +22,10 @@
                         <h5>Thông tin widget</h5>
                     </div>
                     <div class="ibox-content widgetContent">
-                        @include('Backend.dashboard.component.content', ['offTitle' => true, 'offContent' => true])
+                        @include('Backend.dashboard.component.content', ['offTitle' => true, 'offContent' => true, 'model' => $widget ?? null])
                     </div>
                 </div>
-                @include('Backend.dashboard.component.album')
+                @include('Backend.dashboard.component.album', ['album' => $widget->album ?? null])
                 <div class="ibox">
                     <div class="ibox-title">
                         <h5>Cấu hình nội dung widget</h5>
@@ -34,7 +34,7 @@
                         <div class="labelText">Chọn Module</div>
                         @foreach(__('module.model') as $key => $val)
                         <div class="model-item uk-flex uk-flex-middle">
-                            <input type="radio" name="model" id="{{ $key }}" class="input-radio" value="{{ $key }}" {{ (old('model') == $key) ? 'checked' : '' }}>
+                            <input type="radio" name="model" id="{{ $key }}" class="input-radio" value="{{ $key }}" {{ (old('model', $widget->model ?? null) == $key) ? 'checked' : '' }}>
                             <label for="{{ $key }}">{{ $val }}</label>
                         </div>
                         @endforeach

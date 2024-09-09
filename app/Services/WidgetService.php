@@ -48,7 +48,7 @@ class WidgetService extends BaseService implements WidgetServiceInterface
         
         return $widgets;
     }
-    public function createWidget($request){
+    public function createWidget($request, $languageId){
         DB::beginTransaction();
         try{
             $payload = $request->only('name', 'keyword', 'description', 'short_code', 'model');
@@ -56,6 +56,11 @@ class WidgetService extends BaseService implements WidgetServiceInterface
             $payload['model_id'] = $this->formatJson($request, 'widget.id');
             // dd($payload);
             $payload['album'] = $this->formatJson($request, 'album');
+            // dd($payload);
+            $payload['description'] = [
+                $languageId => $payload['description']
+            ];
+            $payload['description'] = json_encode($payload['description']);
             // dd($payload);
             $payload['user_id']=Auth::id();
             // dd($payload);
@@ -71,21 +76,30 @@ class WidgetService extends BaseService implements WidgetServiceInterface
         }
     }
 
-    public function updateWidget($id, $request){
+    public function updateWidget($id, $request, $languageId){
         DB::beginTransaction();
         try{
-            $payload = $request->except('_token','send');//lấy tất cả ngoại trừ hai trường này thay vì dùng input là lấy tất cả
-            //$payload['birthday']=$this->convertBirthdayDate($payload['birthday']);
-            //dd($payload);
+            $payload = $request->only('name', 'keyword', 'description', 'short_code', 'model');
+            // dd($payload);
+            $payload['model_id'] = $this->formatJson($request, 'widget.id');
+            // dd($payload);
+            $payload['album'] = $this->formatJson($request, 'album');
+            // dd($payload);
+            $payload['description'] = [
+                $languageId => $payload['description']
+            ];
+            $payload['description'] = json_encode($payload['description']);
+            // dd($payload);
+            $payload['user_id']=Auth::id();
+            // dd($payload);
 
-            $widget=$this->widgetRepository->update($id, $payload);
-            //dd($widget);
-
+            $widget = $this->widgetRepository->update($id, $payload);
+            // echo 1; die();
             DB::commit();
             return true;
         }catch(\Exception $ex){
             DB::rollBack();
-            echo $ex->getMessage();//die();
+            echo $ex->getMessage();die();
             return false;
         }
     }
@@ -102,6 +116,26 @@ class WidgetService extends BaseService implements WidgetServiceInterface
             return false;
         }
     }
+
+    // V90
+    public function convertWidget($menuArray = null):array{
+        $temp = [];
+        $fields = ['name', 'canonical', 'image', 'id'];
+        if(count($menuArray)){
+            foreach($menuArray as $key => $val){
+                foreach($fields as $field){
+                    if($field == 'name' || $field == 'canonical'){
+                        $temp[$field][] = $val->languages->first()->pivot->{$field};
+                        // $temp[$field][] = $val->languages->first()->getOriginal('pivot_'.$field);
+                    }else{
+                        $temp[$field][] = $val->{$field};
+                    }
+                }
+            }
+        }
+        return $temp;
+    }
+
     public function updateStatus($post=[]){
         //echo 123; die();
         DB::beginTransaction();
