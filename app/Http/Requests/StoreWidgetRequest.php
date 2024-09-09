@@ -29,6 +29,7 @@ class StoreWidgetRequest extends FormRequest
             'widget.image' => [
                 'required',
             ],
+            'short_code' => 'unique:widgets',
             // 'widget.description.*' => 'required|string',
             // 'widget.canonical.*' => ['required', 'distinct'],
         ];
@@ -40,6 +41,7 @@ class StoreWidgetRequest extends FormRequest
             'keyword.required' => 'Bạn chưa nhập từ khóa',
             'keyword.unique'=>'Từ khóa đã tồn tại, hãy nhập từ khóa khác',
             'widget.image.required' => 'Bạn phải tạo ít nhất 1 widget',
+            'short_code.unique'=>'Shortcode đã tồn tại, hãy nhập tên Shortcode khác',
             // 'widget.description.*.required' => 'Có {number} tên widget chưa được nhập',
             // 'widget.canonical.*.required' => 'Có {number} đường dẫn chưa được nhập',
             // 'widget.canonical.*.unique' => 'Có {number} đường dẫn bị trùng vui lòng kiểm tra lại',

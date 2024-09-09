@@ -183,3 +183,14 @@ if(!function_exists('buildMenu')){
         return $output;
     }
 }
+
+//V90
+if(!function_exists('loadClassInterface')){
+    function loadClassInterface(string $model = '', $folder = 'Repositories', $interface = 'Repository'){
+        $repositoryInterfaceNamespace='\App\\'.$folder.'\\'.ucfirst($model).$interface;
+        if(class_exists($repositoryInterfaceNamespace)){
+            $repositoryInstance=app($repositoryInterfaceNamespace);
+        }
+        return $repositoryInstance;
+    }
+}

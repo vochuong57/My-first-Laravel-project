@@ -14,17 +14,35 @@ use App\Repositories\Interfaces\WidgetRepositoryInterface as WidgetRepository;
 //chèn thêm thư viện tự tạo request để kiểm tra dữ liệu đầu vào khi edit widget
 use App\Http\Requests\UpdateWidgetRequest;
 //use App\Models\Widget;
-
+use App\Models\Language;
 
 
 class WidgetController extends Controller
 {
     protected $widgetService;
     protected $widgetRepository;
+    protected $language;
 
     public function __construct(WidgetService $widgetService, WidgetRepository $widgetRepository){
         $this->widgetService=$widgetService;//định nghĩa  $this->widgetService=$widgetService để biến này nó có thể trỏ tới các phương tức của WidgetService
         $this->widgetRepository=$widgetRepository;
+
+        $this->middleware(function($request, $next) {
+            try {
+                $locale = app()->getLocale(); // vn cn en
+                $language = Language::where('canonical', $locale)->first();
+
+                if (!$language) {
+                    throw new \Exception('Vui lòng chọn ngôn ngữ trước khi truy cập bài viết.');
+                }
+
+                $this->language = $language->id;
+                // $this->initialize();
+            } catch (\Exception $e) {
+                return redirect()->route('dashboard.index')->with('error', $e->getMessage());
+            }
+            return $next($request);
+        });
     }
     //giao diện tổng
     public function index(Request $request){//Request $request để tiến hành chức năng tìm kiếm
@@ -64,7 +82,7 @@ class WidgetController extends Controller
 
     //xử lý thêm widget
     public function create(StoreWidgetRequest $request){
-        if($this->widgetService->createWidget($request)){
+        if($this->widgetService->createWidget($request, $this->language)){
             return redirect()->route('widget.index')->with('success','Thêm mới widget thành công');
         }
            return redirect()->route('widget.index')->with('error','Thêm mới widget thất bại. Hãy thử lại');
@@ -72,7 +90,7 @@ class WidgetController extends Controller
     }
     //giao diện sửa widget
     public function edit($id){
-        //echo $id;
+        // echo $id;
         $template='Backend.widget.widget.store';
 
         $config=$this->configCUD();
@@ -83,17 +101,64 @@ class WidgetController extends Controller
 
         //truy vấn thông tin
         $widget=$this->widgetRepository->findById($id);
-        //dd($widget); die();
+        // dd($widget); die();
+
+        // dd($widget->description);
+        $widget->description = $widget->description[$this->language]; // Truy cập vào key 1 trong mảng description
+        // dd($widget);
+        // dd($widget->description);
+
+        $repositoryInstance = loadClassInterface($widget->model);
+        // dd($repositoryInstance); 
+        
+        $listModelId = $widget->model_id;
+        // dd($listModelId);
+
+        $widgetItemsCollection = [];
+        foreach($listModelId as $modelId){
+            $condition = [
+                ['id', '=', $modelId]
+            ];
+            $languageId = $this->language;
+            // dd($languageId);
+            $relation = [
+                'languages' => function($query) use ($languageId){
+                    $query->where('language_id', $languageId);
+                }
+            ];
+            $result = $repositoryInstance->findByConditionsWithRelation($condition, $relation);
+            // dd($result);
+            $widgetItemsCollection[] = $result;
+        }
+        // dd($widgetItemsCollection);
+
+        $widgetItems = [
+            'name' => [],
+            'canonical' => [],
+            'image' => [],
+            'id' => []
+        ];
+        foreach($widgetItemsCollection as $widgetItemCollection){
+            $result = $this->widgetService->convertWidget($widgetItemCollection);
+            // dd($result);
+            // Gộp kết quả vào mảng $widgetItems
+
+            foreach ($result as $key => $values) {
+                $widgetItems[$key] = array_merge($widgetItems[$key], $values);
+            }
+        }
+        
+        // dd($widgetItems);
 
         $this->authorize('modules', 'widget.edit');//phân quyền
 
-        return view('Backend.dashboard.layout', compact('template','config','widget'));
+        return view('Backend.dashboard.layout', compact('template','config', 'widget', 'widgetItems'));
     }
     //xử lý sửa widget
     public function update($id, UpdateWidgetRequest $request){
         //echo $id; die();
         //dd($request);
-        if($this->widgetService->updateWidget($id, $request)){
+        if($this->widgetService->updateWidget($id, $request, $this->language)){
             return redirect()->route('widget.index')->with('success','Cập nhật widget thành công');
         }
            return redirect()->route('widget.index')->with('error','Cập nhật widget thất bại. Hãy thử lại');
