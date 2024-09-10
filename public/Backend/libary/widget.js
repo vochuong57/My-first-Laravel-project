@@ -159,7 +159,7 @@
     // V88 sườn HTML để đỗ dữ liệu cho hàm HT.addModel
     HT.modelTemplate = (data) => {
         let html = '';
-        html += '<div class="search-result-item '+data.canonical+'">';
+        html += '<div class="search-result-item '+data.canonical+' ui-state-default-widget">';
         html += '  <div class="uk-flex uk-flex-middle uk-flex-space-between">';
         html += '    <div class="uk-flex uk-flex-middle">';
         html += '      <span class="image img-cover">';
