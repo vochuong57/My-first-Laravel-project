@@ -247,6 +247,8 @@
         $(".sortable-list").sortable();
         $(".sortable-list").disableSelection();        // Áp dụng sortable cho tất cả các phần tử có class 'sortable-list' dùng trong table
         $('#sortable').disableSelection()
+        $('#sortable2').sortable()
+        $('#sortable2').disableSelection()
     }
 
     $document.ready(function(){

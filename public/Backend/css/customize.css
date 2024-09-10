@@ -693,3 +693,16 @@ input[type=checkbox]{
 .ajax-search-result button:hover{
     background: #eff9fd;
 }
+
+.sortui .ui-state-default-widget {
+    width: 100% !important;
+    width: calc(20% - 2px);
+    /* float: left; */
+    /* padding-right: 10px; */
+    margin: 0 0 5px 0;
+    /* margin-bottom: 10px; */
+    cursor: move;
+    background: transparent;
+    box-shadow: none;
+    border: 0;
+}

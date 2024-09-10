@@ -55,10 +55,10 @@
                             //print_r($widgets);
                         @endphp
                         </div>
-                        <div class="search-model-result">
+                        <div id="sortable2" class="search-model-result sortui ui-sortable">
                             @if(!empty($widgets))
                             @foreach($widgets['image'] as $key => $val)
-                                <div class="search-result-item {{ $widgets['canonical'][$key] }}">
+                                <div class="search-result-item {{ $widgets['canonical'][$key] }} ui-state-default-widget">
                                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
                                         <div class="uk-flex uk-flex-middle">
                                             <span class="image img-cover">
