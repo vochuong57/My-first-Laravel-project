@@ -10,7 +10,7 @@
     </div>
 @endif
 
-<form action="{{ route('user.delete',$user->id) }}" method="post" class="box">
+<form action="{{ route('widget.delete',$widget->id) }}" method="post" class="box">
     @csrf
     <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
@@ -18,8 +18,8 @@
                 <div class="panel-head">
                     <div class="panel-title">Thông tin chung</div>
                     <div class="panel-description">
-                        <p>- Bạn đang muốn xóa thành viên có email là: <span style="color: red">{{ $user->email }}</span></p>
-                        <p>- Lưu ý <span class="text-danger">KHÔNG THỂ</span> khôi phục thành viên sau khi xóa. <br> Hãy chắc chắn bạn muốn thực hiện chức năng này</p>
+                        <p>- Bạn đang muốn xóa widget có tên là: <span style="color: red">{{ $widget->name }}</span></p>
+                        <p>- Lưu ý <span class="text-danger">KHÔNG THỂ</span> khôi phục widget sau khi xóa. <br> Hãy chắc chắn bạn muốn thực hiện chức năng này</p>
                     </div>
                 </div>
             </div>
@@ -32,11 +32,11 @@
                         <div class="row mb15">
                             <div class="col-lg-6">
                                 <div class="form-row">
-                                    <label for="" class="control-label text-left">Email: <span class="text-danger">(*)</span></label>
+                                    <label for="" class="control-label text-left">Tên widget: <span class="text-danger">(*)</span></label>
                                     <input 
                                     type="text"
-                                    name="email"
-                                    value="{{ old('email', ($user->email)??'') }}"
+                                    name="name"
+                                    value="{{ old('name', ($widget->name)??'') }}"
                                     class="form-control"
                                     placeholder=""
                                     autocomplete="off"
@@ -46,11 +46,11 @@
                             </div>
                             <div class="col-lg-6">
                                 <div class="form-row">
-                                    <label for="" class="control-label text-left">Họ tên: <span class="text-danger">(*)</span></label>
+                                    <label for="" class="control-label text-left">Keyword: <span class="text-danger">(*)</span></label>
                                     <input 
                                     type="text"
-                                    name="name"
-                                    value="{{ old('name', ($user->name)??'') }}"
+                                    name="keyword"
+                                    value="{{ old('keyword', ($widget->keyword)??'') }}"
                                     class="form-control"
                                     placeholder=""
                                     autocomplete="off"
@@ -71,9 +71,3 @@
         </div>
     </div>
 </form>
-<!-- XỬ LÝ HUYỆN XẢ KHI NHẬP SAI BỊ LOAD LẠI TRANG -->
-<script>
-    var province_id='{{ (isset($user->province_id)) ? $user->province_id : old('province_id') }}'
-    var district_id='{{ (isset($user->district_id)) ? $user->district_id : old('district_id') }}'
-    var ward_id='{{ (isset($user->ward_id)) ? $user->ward_id : old('ward _id') }}'
-</script>

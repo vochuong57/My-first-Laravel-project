@@ -107,7 +107,12 @@ class WidgetController extends Controller
         // dd($widget); die();
 
         // dd($widget->description);
-        $widget->description = $widget->description[$this->language]; // Truy cập vào key 1 trong mảng description
+        if (isset($widget->description[$this->language])) {
+            $widget->description = $widget->description[$this->language]; // Truy cập vào key 1 trong mảng description
+        }else{
+            $widget->description = null;
+        }
+        
         // dd($widget);
         // dd($widget->description);
 
@@ -181,7 +186,11 @@ class WidgetController extends Controller
 
         $widgetSession = $this->widgetRepository->findById($id);
 
-        $widgetSession->description = $widgetSession->description[$this->language];
+        if (isset($widgetSession->description[$this->language])) {
+            $widgetSession->description = $widgetSession->description[$this->language];
+        } else {
+            $widgetSession->description = null;
+        }    
 
         // dd($widgetSession);
 
@@ -226,7 +235,7 @@ class WidgetController extends Controller
     //xử lý xóa widget
     public function delete($id){
         //echo $id;
-        if($this->widgetService->deleteWidget($id)){
+        if($this->widgetService->deleteWidget($id, $this->language)){
             return redirect()->route('widget.index')->with('success','Xóa widget thành công');
         }
            return redirect()->route('widget.index')->with('error','Xóa widget thất bại. Hãy thử lại');

@@ -112,16 +112,28 @@ class WidgetService extends BaseService implements WidgetServiceInterface
             return false;
         }
     }
-    public function deleteWidget($id){
+    public function deleteWidget($id, $languageId){
         DB::beginTransaction();
         try{
-            $widget=$this->widgetRepository->forceDelete($id);
+            $widget = $this->widgetRepository->findById($id);
+            // dd($widget);
+            $widgetItem = $widget->description;
+            // dd($widgetItem);
+            // dd($languageId);
+            unset($widgetItem[$languageId]);
+            // dd($widgetItem);
 
+            $payload['description'] = json_encode($widgetItem);
+            $this->widgetRepository->update($id, $payload);
+
+            if(empty($widgetItem)){
+                $widget=$this->widgetRepository->forceDelete($id);
+            }
             DB::commit();
             return true;
         }catch(\Exception $ex){
             DB::rollBack();
-            echo $ex->getMessage();//die();
+            echo $ex->getMessage();die();
             return false;
         }
     }
