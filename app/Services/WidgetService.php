@@ -85,11 +85,20 @@ class WidgetService extends BaseService implements WidgetServiceInterface
             // dd($payload);
             $payload['album'] = $this->formatJson($request, 'album');
             // dd($payload);
+
+            $widget = $this->widgetRepository->findById($id);
+            // dd($widget);
+            $widgetItem = $widget->description;
+            // dd($widgetItem);
+            // dd($languageId);
+            unset($widgetItem[$languageId]);
+
             $payload['description'] = [
                 $languageId => $payload['description']
             ];
-            $payload['description'] = json_encode($payload['description']);
+            $payload['description'] = json_encode($payload['description'] + $widgetItem);
             // dd($payload);
+
             $payload['user_id']=Auth::id();
             // dd($payload);
 
@@ -133,6 +142,50 @@ class WidgetService extends BaseService implements WidgetServiceInterface
                 }
             }
         }
+        return $temp;
+    }
+
+    // V92
+    public function saveTranslateWidget($request, $languageTranslateId, $id){
+        DB::beginTransaction();
+        try{
+            $payload = $request->only('translate_description');
+            // dd($payload);
+
+            $widget = $this->widgetRepository->findById($id);
+            // dd($widget);
+            $widgetItem = $widget->description;
+            // dd($widgetItem);
+            // dd($languageTranslateId);
+            unset($widgetItem[$languageTranslateId]);
+            // dd($languageTranslateId);
+            // dd($widgetItem);
+
+            $widgets = $this->handleWidgetItem($payload['translate_description'], $languageTranslateId)+$widgetItem;
+            // dd($widgets);
+
+            $payload['description'] = json_encode($widgets);
+            // dd($payload);
+    
+            $widget = $this->widgetRepository->update($id, $payload);
+            // echo 1; die();
+            DB::commit();
+            return true;
+        }catch(\Exception $ex){
+            DB::rollBack();
+            echo $ex->getMessage();die();
+            return false;
+        }
+    }
+
+    // V92
+    private function handleWidgetItem($widget, $languageTranslateId){
+        // dd($slides);
+        $temp = [
+            $languageTranslateId => $widget
+        ];
+        
+        // dd($temp);
         return $temp;
     }
 
@@ -187,7 +240,7 @@ class WidgetService extends BaseService implements WidgetServiceInterface
     }
     private function paginateSelect(){
         return [
-            'id','name','keyword','short_code','user_id', 'model' ,'publish'
+            'id','name','keyword','short_code','user_id', 'model' ,'publish', 'description'
         ];
     }
 }
