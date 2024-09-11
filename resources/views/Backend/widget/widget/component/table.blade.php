@@ -7,6 +7,7 @@
             <th>Tên widget</th>
             <th>Từ khóa</th>
             <th>Model</th>
+            @include('Backend.dashboard.component.languageTh')
             <th class="text-center">Tình trạng</th>
             <th class="text-center">Thao tác</th>
         </tr>
@@ -28,6 +29,20 @@
             <td>
                 <div class="info-item email">{{ $widget->model }}</div>
             </td>
+            @foreach($languages as $language)
+                @if(session('app_locale') == $language->canonical) 
+                    @continue 
+                @endif
+                @php
+                    $translated = (isset($widget->description[$language->id])) ? 1 : 0;
+                @endphp
+                <td style="width: 100px;" class="text-center">
+                    <a  class="{{ ($translated == 1) ? '' : 'text-danger' }}"
+                        href="{{ route('widget.translate', ['languageId' => $language->id, 'id' => $widget->id]) }}">
+                        {{ ($translated == 1) ? 'Đã dịch' : 'Chưa dịch' }}
+                    </a>
+                </td>
+            @endforeach
             <td class="text-center js-switch-{{ $widget->id }}">
                 <input type="checkbox" class="js-switch status" value="{{ $widget->publish }}" data-field="publish" data-model="{{ $config['model'] }}" data-modelId="{{ $widget->id }}" {{ ($widget->publish==2)?'checked':'' }} >
             </td>

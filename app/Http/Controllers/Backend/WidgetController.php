@@ -15,6 +15,7 @@ use App\Repositories\Interfaces\WidgetRepositoryInterface as WidgetRepository;
 use App\Http\Requests\UpdateWidgetRequest;
 //use App\Models\Widget;
 use App\Models\Language;
+use App\Repositories\Interfaces\LanguageRepositoryInterface as LanguageRepository;
 
 
 class WidgetController extends Controller
@@ -22,10 +23,12 @@ class WidgetController extends Controller
     protected $widgetService;
     protected $widgetRepository;
     protected $language;
+    protected $languageRepository;
 
-    public function __construct(WidgetService $widgetService, WidgetRepository $widgetRepository){
+    public function __construct(WidgetService $widgetService, WidgetRepository $widgetRepository, LanguageRepository $languageRepository){
         $this->widgetService=$widgetService;//định nghĩa  $this->widgetService=$widgetService để biến này nó có thể trỏ tới các phương tức của WidgetService
         $this->widgetRepository=$widgetRepository;
+        $this->languageRepository=$languageRepository;
 
         $this->middleware(function($request, $next) {
             try {
@@ -163,6 +166,47 @@ class WidgetController extends Controller
         }
            return redirect()->route('widget.index')->with('error','Cập nhật widget thất bại. Hãy thử lại');
     }
+
+    //giao diện Dịch widget
+    public function translate($languageTranslateId, $id){   
+        $template='Backend.widget.widget.translate';
+
+        $config=$this->configCUD();
+
+        $config['seo']=__('messages.widget.translate');
+
+        $config['method']='create';
+
+        $languageTranslate = $this->languageRepository->findById($languageTranslateId);
+
+        $widgetSession = $this->widgetRepository->findById($id);
+
+        $widgetSession->description = $widgetSession->description[$this->language];
+
+        // dd($widgetSession);
+
+        $widgetTranslate = $this->widgetRepository->findById($id);
+
+        if (isset($widgetTranslate->description[$languageTranslateId])) {
+            $widgetTranslate->description = $widgetTranslate->description[$languageTranslateId];
+        } else {
+            $widgetTranslate->description = null;
+        }        
+
+        // dd($widgetTranslate);
+
+        $this->authorize('modules', 'widget.translate');//phân quyền
+
+        return view('Backend.dashboard.layout', compact('template','config', 'languageTranslate', 'widgetSession', 'widgetTranslate'));
+    }
+
+    public function saveTranslate(Request $request, $languageTranslateId, $id){
+        if($this->widgetService->saveTranslateWidget($request, $languageTranslateId, $id)){
+            return redirect()->route('widget.index')->with('success','Cập nhật bản dịch widget thành công');
+        }
+           return redirect()->route('widget.index')->with('error','Cập nhật bản dịch widget thất bại. Hãy thử lại');
+    }
+
     //giao diện xóa widget
     public function destroy($id){
         $template='Backend.widget.widget.destroy';

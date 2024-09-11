@@ -468,6 +468,10 @@ return[
             'title'=>'Cập nhật widget',
             'btnTitle'=>'Cập nhật'
         ],
+        'translate'=>[
+            'title'=>'Tạo bản dịch {language} cho widget',
+            'btnTitleSave'=>'Lưu lại',
+        ],
     ],
 
 ];
