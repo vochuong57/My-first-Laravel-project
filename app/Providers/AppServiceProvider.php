@@ -41,6 +41,8 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\SlideServiceInterface' => 'App\Services\SlideService',
 
         'App\Services\Interfaces\WidgetServiceInterface' => 'App\Services\WidgetService',
+
+        'App\Services\Interfaces\PromotionServiceInterface' => 'App\Services\PromotionService',
     ];
     /**
      * Register any application services.
