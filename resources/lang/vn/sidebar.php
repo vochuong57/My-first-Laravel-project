@@ -112,5 +112,20 @@
                     ]
                 ]
             ],
+            [
+                'title'=>'Quản lý Marketing',
+                'icon'=>'fa fa-bullhorn',
+                'name'=>['promotion', 'coupon'],
+                'subModule'=>[
+                    [
+                        'title'=>'QL Khuyến mãi',
+                        'route'=>'promotion/index'
+                    ],
+                    // [
+                    //     'title'=>'QL mã giảm giá',
+                    //     'route'=>'coupon/index'
+                    // ],
+                ]
+            ],
         ]
     ];

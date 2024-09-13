@@ -473,5 +473,23 @@ return[
             'btnTitleSave'=>'Lưu lại',
         ],
     ],
-
+    //PROMOTION
+    'promotion' => [
+        'index'=>[
+            'title'=> 'Quản lý Promotion',
+        ],
+        'delete'=>[
+            'title'=>'Xóa vị trí Promotion ',
+            'btnDelete'=>'Xóa dữ liệu'
+        ],
+        'create'=>[
+            'title'=>'Thêm mới Promotion',
+            'btnTitle'=>'Thêm mới'
+        ],
+        'edit'=>[
+            'title'=>'Cập nhật Promotion',
+            'btnTitle'=>'Cập nhật'
+        ],
+       
+    ],
 ];
