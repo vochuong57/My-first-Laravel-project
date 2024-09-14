@@ -263,9 +263,11 @@ class PromotionController extends Controller
                 'Backend/libary/finder.js',
                 'Backend/plugins/ckeditor/ckeditor.js',
                 'Backend/libary/promotion.js',
+                'Backend/plugins/datetimepicker-master/build/jquery.datetimepicker.full.js'
             ],
             'css'=>[
                 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css',
+                'Backend/plugins/datetimepicker-master/build/jquery.datetimepicker.min.css'
             ]
         ];
     }
