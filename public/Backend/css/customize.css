@@ -706,3 +706,49 @@ input[type=checkbox]{
     box-shadow: none;
     border: 0;
 }
+/* CSS CHO PROMOTION/PROMOTION/STORE */
+.form-date{
+    position: relative;
+}
+.form-date input{
+    padding-right: 30px;
+}
+.form-date span{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+.form-date span > * {
+    color: #777;
+}
+.fix-label{
+    font-weight: normal;
+    margin: 0;
+    cursor: pointer;
+}
+.ml5{
+    margin-left: 5px;
+}
+.promotion-wrapper input[type=radio]{
+    margin: 0;
+}
+.promotion-wrapper input[type=radio],
+.promotion-wrapper input[type=checkbox]{
+    width: 17px;
+    height: 17px;
+    cursor: pointer;
+}
+.promotion-wrapper .select2-container--default{
+    width: 100% !important;
+    height: 40px !important;
+}
+
+.promotion-wrapper .select2-container .select2-selection--single{
+    height: 40px !important;
+}
+.promotion-wrapper .select2-container--default .select2-selection--single .select2-selection__rendered{
+    line-height: 37px !important;
+}
+.promotion-wrapper .select2-container--default .select2-selection--single .select2-selection__arrow b{
+    margin-top: 4px;
+}

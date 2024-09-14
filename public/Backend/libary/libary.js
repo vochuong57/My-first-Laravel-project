@@ -251,6 +251,18 @@
         $('#sortable2').disableSelection()
     }
 
+    HT.setupDatePicker = () => {
+        $('.datepicker').datetimepicker({
+            
+            // minDate:'-1970/01/2',
+            // maxDate:'+1970/01/2',
+            timepicker:true,
+            format:'d/m/Y H:i',
+            value: new Date(),
+            minDate: new Date(),
+        });
+    }
+
     $document.ready(function(){
         console.log(123);
         //gọi function lặp switchery (giao diện)
@@ -279,6 +291,8 @@
         HT.deleteAll();
 
         HT.sortui();
+
+        HT.setupDatePicker();
     })
 
 })(jQuery)
