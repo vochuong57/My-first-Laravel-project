@@ -740,7 +740,7 @@ input[type=checkbox]{
 }
 .promotion-wrapper .select2-container--default{
     width: 100% !important;
-    height: 40px !important;
+    /* height: 40px !important; */
 }
 
 .promotion-wrapper .select2-container .select2-selection--single{
@@ -751,4 +751,17 @@ input[type=checkbox]{
 }
 .promotion-wrapper .select2-container--default .select2-selection--single .select2-selection__arrow b{
     margin-top: 4px;
+}
+.mt10{
+    margin-top: 10px;
+}
+.wrapperConditionItem{
+    padding-top: 10px;
+    border-top: 1px solid #eaeaea;
+}
+.wrapper-condition{
+    margin-top: 20px;
+}
+.conditionLabel{
+    color: blue;
 }

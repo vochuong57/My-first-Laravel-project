@@ -131,22 +131,25 @@
                             <div class="nav-setting-item uk-flex uk-flex-middle">
                                 <input 
                                     type="radio"
-                                    value="hide"
+                                    value="all"
                                     name="source"
-                                    id="navitate_hide"
+                                    id="allSource"
+                                    class="chooseSource"
+                                    checked
                                 >
-                                <label class="fix-label ml5" for="navitate_hide">Áp dụng cho toàn bộ nguồn khách</label>
+                                <label class="fix-label ml5" for="allSource">Áp dụng cho toàn bộ nguồn khách</label>
                             </div>
                             <div class="nav-setting-item uk-flex uk-flex-middle">
                                 <input 
                                     type="radio"
-                                    value="dots"
+                                    value="choose"
                                     name="source"
-                                    id="navitate_dots"
-                                    checked
+                                    id="chooseSource"
+                                    class="chooseSource"
                                 >
-                                <label class="fix-label ml5" for="navitate_dots">Chọn nguồn khách áp dụng</label>
+                                <label class="fix-label ml5" for="chooseSource">Chọn nguồn khách áp dụng</label>
                             </div>
+                            
                         </div>
                     </div>
                 </div>
@@ -159,23 +162,26 @@
                             <div class="nav-setting-item uk-flex uk-flex-middle">
                                 <input 
                                     type="radio"
-                                    value="hide"
-                                    name="source"
-                                    id="navitate_hide"
+                                    value="all"
+                                    name="apply"
+                                    id="allApply"
+                                    class="chooseApply"
+                                    checked
                                 >
-                                <label class="fix-label ml5" for="navitate_hide">Áp dụng cho toàn bộ nguồn khách</label>
+                                <label class="fix-label ml5" for="allApply">Áp dụng cho toàn bộ nguồn khách</label>
                             </div>
                             <div class="nav-setting-item uk-flex uk-flex-middle">
                                 <input 
                                     type="radio"
-                                    value="dots"
-                                    name="source"
-                                    id="navitate_dots"
-                                    checked
+                                    value="choose"
+                                    name="apply"
+                                    id="chooseApply"
+                                    class="chooseApply"
                                 >
-                                <label class="fix-label ml5" for="navitate_dots">Chọn đối tượng khách hàng</label>
+                                <label class="fix-label ml5" for="chooseApply">Chọn đối tượng khách hàng áp dụng</label>
                             </div>
                         </div>
+                        
                     </div>
                 </div>
             </div>

@@ -35,6 +35,7 @@
                 typingTimer = setTimeout(function(){
                     // console.log(keyword)
                     let arrayModelItemExists = HT.checkModelExists()
+                    console.log(arrayModelItemExists)
                     HT.sendAjax(option, arrayModelItemExists)
                 }, doneTypingInterval)
             }else{
@@ -183,7 +184,7 @@
     // V88 kiểm tra các div.search-result-item trong vùng div.search-model-result nào đa được chọn và hiển thị và lưu nó vào thành 1 mảng
     HT.checkModelExists = () => {
         let arrayModelItem = $('.search-result-item').map(function(){//Lấy ra danh sách search-result-item đã được chọn và hiện thị ở .search-model-result
-            let allClasses = $(this).attr('class').split(' ').slice(1).join(' ')//tạo một mảng gồm các class của vị trí thứ 2
+            let allClasses = $(this).attr('class').split(' ')[1]//tạo một mảng gồm các class của vị trí thứ 2
 
             return allClasses
         }).get()
