@@ -68,8 +68,52 @@
                         <div class="form-row">
                             <div class="fix-label ml5" for="">Chọn hình thức khuyến mãi</div>
                             <select name="" id="" class="setupSelect2">
-                                <option value="">Chọn hình thức</option>
+                                <option value="0">Chọn hình thức</option>
+                                @foreach(__('module.promotion') as $key => $val)
+                                    <option value="{{ $key }}">{{ $val }}</option>
+                                @endforeach
                             </select>
+                        </div>
+                        <div class="promotion-container">
+                            <div class="order-amount-range">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Giá trị từ</th>
+                                            <th>Giá trị đến</th>
+                                            <th>Chiết khấu</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="text" class="form-control int" name="" placeholder="0" value="0">
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control int" name="" placeholder="0" value="0">
+                                            </td>
+                                            <td class="discountType">
+                                                <div class="uk-flex uk-flex-middle">
+                                                    <input type="text" class="form-control int" name="" placeholder="0" value="0">
+                                                    <select name="" class="setupSelect2">
+                                                        <option value="cash">đ</option>
+                                                        <option value="percent">%</option>
+                                                    </select>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="delete-some-item delete-order-amount-range-condition">
+                                                    <a class="delete-menu img-scaledown" style="width: 15%; height: 30px; margin-left: 6px">
+                                                        <img src="Backend/img/close.png" alt="">
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <button class="btn btn-success btn-custom btn-js-100" value="" type="button">Thêm điều kiện</button>
+                            </div>
                         </div>
                     </div>
                 </div>

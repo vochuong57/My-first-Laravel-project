@@ -765,3 +765,13 @@ input[type=checkbox]{
 .conditionLabel{
     color: blue;
 }
+.discountType .select2-container{
+    width: 60px !important;
+    margin-left: 10px;
+}
+.delete-some-item{
+    cursor: pointer;
+}
+.btn-custom{
+    background-color: #0088FF;
+}
