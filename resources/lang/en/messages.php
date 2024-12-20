@@ -398,4 +398,67 @@ return[
         ],
     ],
 
+    //SLIDE
+    'slide' => [
+        'index'=>[
+            'title'=> 'Slide Management',
+        ],
+        'delete'=>[
+            'title'=>'Delete slide position',
+            'btnDelete'=>'Delete data'
+        ],
+        'create'=>[
+            'title'=>'Add new slide',
+            'btnTitle'=>'Add new'
+        ],
+        'edit'=>[
+            'title'=>'Update slide',
+            'btnTitle'=>'Update'
+        ],
+        'translate'=>[
+            'title'=>'Create {language} translation for slide',
+            'btnTitleSave'=>'Save',
+        ],
+    ],
+    //WIDGET
+    'widget' => [
+        'index'=>[
+            'title'=> 'Widget Management',
+        ],
+        'delete'=>[
+            'title'=>'Delete widget position',
+            'btnDelete'=>'Delete data'
+        ],
+        'create'=>[
+            'title'=>'Add new widget',
+            'btnTitle'=>'Add new'
+        ],
+        'edit'=>[
+            'title'=>'Update widget',
+            'btnTitle'=>'Update'
+        ],
+        'translate'=>[
+            'title'=>'Create {language} translation for widget',
+            'btnTitleSave'=>'Save',
+        ],
+    ],
+    //PROMOTION
+    'promotion' => [
+        'index'=>[
+            'title'=> 'Promotion Management',
+        ],
+        'delete'=>[
+            'title'=>'Delete promotion position',
+            'btnDelete'=>'Delete data'
+        ],
+        'create'=>[
+            'title'=>'Add new promotion',
+            'btnTitle'=>'Add new'
+        ],
+        'edit'=>[
+            'title'=>'Update promotion',
+            'btnTitle'=>'Update'
+        ],
+    ],
+
 ];

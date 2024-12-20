@@ -257,6 +257,282 @@
         return this.length > 0
     }
 
+    HT.renderOrderRangeConditionContainer = () => {
+        $(document).on('change', '.promotionMethod', function(){
+            let _this = $(this)
+            let option = _this.val()
+            switch (option){
+                case "order_amount_range":
+                    HT.renderAmountRange()
+                    console.log("order_amount_range")
+                    break
+                // case "product_and_quantity":
+                //     console.log("product_and_quantity")
+                //     break
+                // case "product_quantity_range":
+                //     console.log("product_quantity_range")
+                //     break
+                // case "goods_discount_by_quantity":
+                //     console.log("goods_discount_by_quantity")
+                //     break
+                default:
+                    HT.removePromotionContainer()
+            }
+        })
+    }
+
+    HT.removePromotionContainer = () => {
+        $('.promotion-container').html('')
+        ranges = [];
+    }
+
+    HT.select2=()=>{
+        if($('.setupSelect2').length){
+            $('.setupSelect2').select2();
+        }
+    }
+
+    HT.renderAmountRange = () => {
+        let html = `
+            <div class="order-amount-range">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Giá trị từ</th>
+                            <th>Giá trị đến</th>
+                            <th>Chiết khấu</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="tr">
+                            <td class="order-amount-range-from">
+                                <input type="text" class="form-control int" name="amountFrom[]" placeholder="0" value="0">
+                            </td>
+                            <td class="order-amount-range-to">
+                                <input type="text" class="form-control int" name="amountTo[]" placeholder="0" value="0">
+                            </td>
+                            <td class="discountType">
+                                <div class="uk-flex uk-flex-middle">
+                                    <input type="text" class="form-control int" name="amountValue[]" placeholder="0" value="0">
+                                    <select name="amountType" class="setupSelect2">
+                                        <option value="cash">đ</option>
+                                        <option value="percent">%</option>
+                                    </select>
+                                </div>
+                            </td>
+                            <td>
+                                <!-- <div class="delete-some-item delete-order-amount-range-condition">
+                                    <a class="delete-menu img-scaledown" style="width: 15%; height: 30px; margin-left: 6px">
+                                        <img src="Backend/img/close.png" alt="">
+                                    </a>
+                                </div> -->
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button class="btn btn-success btn-custom btn-js-100" value="" type="button">Thêm điều kiện</button>
+            </div>
+        `
+        $('.promotion-container').html(html)
+        HT.select2()
+    }
+
+    // V98
+    HT.btnJs100 = () => {
+        $(document).on('click', '.btn-js-100', function(){
+            let _button = $(this)
+
+            let trLastChild = $('.order-amount-range').find('tbody tr:last-child');
+            let from = parseInt(trLastChild.find('.order-amount-range-from input').val().replace(/\./g, ''));
+            let to = parseInt(trLastChild.find('.order-amount-range-to input').val().replace(/\./g, ''));
+            let currentPosition = trLastChild.data('position') || null;
+            
+            if (!HT.isValidRange(from, to)) {
+                alert('Khoảng điều kiện không hợp lệ, giá trị tới phải lớn hơn giá trị từ');
+                return;
+            }
+            
+            // Kiểm tra xung đột
+            let conflictResult = HT.checkBtnJs100ConflictRange(from, to, currentPosition);
+            if (conflictResult.conflict) {
+                trLastChild.addClass('errorLine');
+                alert(`Có xung đột với khoảng điều kiện tại vị trí: ${conflictResult.position}`);
+                return;
+            }
+            
+            // Xóa class lỗi nếu thêm thành công
+            $('.order-amount-range').find('tr').removeClass('errorLine');
+            
+            // Nếu hàng này chưa có `position`, thêm mới
+            if (!currentPosition) {
+                currentPosition = ranges.length + 1;
+                trLastChild.data('position', currentPosition);
+            }
+            
+            // Thêm hoặc cập nhật mảng ranges
+            let existingIndex = ranges.findIndex(range => range.position === currentPosition);
+            if (existingIndex !== -1) {
+                // Cập nhật khoảng đã tồn tại
+                ranges[existingIndex] = { newFrom: from, newTo: to, position: currentPosition };
+            } else {
+                // Thêm mới
+                ranges.push({ newFrom: from, newTo: to, position: currentPosition });
+            }
+
+            let $tr = $('<tr>')
+            let tdList = [
+                {class: 'order-amount-range-from td-range', name: '', value: 0},
+                {class: 'order-amount-range-to td-range', name: '', value: 0},
+            ]
+
+            for(let i = 0; i < tdList.length; i++){
+                let $td = $('<td>').addClass(tdList[i].class)
+                let $input = $('<input>').addClass('form-control int').attr('name', tdList[i].name).attr('value', tdList[i].value)
+
+                $td.append($input)
+                $tr.append($td)
+            }
+
+            let $discountTypeTd = $('<td>').addClass('discountType')
+
+            $discountTypeTd
+                .append(
+                    $('<div>',{
+                        class: 'uk-flex uk-flex-middle'
+                    })
+                    .append(
+                        $('<input>', {
+                            type: 'text',
+                            name: '',
+                            class: 'form-control int',
+                            placeholder: 0,
+                            value: 0
+                        })
+                    )
+                    .append(
+                        $('<select>', {
+                            class: 'setupSelect2'
+                        })
+                            .append(
+                                $('<option>', {
+                                    value: 'cash',
+                                    text: 'đ'
+                                })
+                            )
+                            .append(
+                                $('<option>', {
+                                    value: 'percent',
+                                    text: '%'
+                                })
+                            )
+                    )
+                )
+            $tr.append($discountTypeTd)
+
+            let $deleteButtonTd = $('<td>')
+            
+            $deleteButtonTd
+                .append(
+                    $('<div>', {
+                        class: 'delete-some-item delete-order-amount-range-condition',
+                    })
+                        .append(
+                            $('<a>', {
+                                class: 'delete-menu img-scaledown',
+                            }).css({
+                                width: '15%',
+                                height: '30px',
+                                marginLeft: '6px'
+                            })
+                            .append(
+                                $('<img>', {
+                                    src: 'Backend/img/close.png',
+                                    alt: '',
+                                })
+                            )
+                        )
+                )
+            $tr.append($deleteButtonTd)
+            $('.order-amount-range table tbody').append($tr)
+            HT.select2()
+
+            // let html = `
+            //     <tr>
+            //         <td>
+            //             <input type="text" class="form-control int" name="" placeholder="0" value="0">
+            //         </td>
+            //         <td>
+            //             <input type="text" class="form-control int" name="" placeholder="0" value="0">
+            //         </td>
+            //         <td class="discountType">
+            //             <div class="uk-flex uk-flex-middle">
+            //                 <input type="text" class="form-control int" name="" placeholder="0" value="0">
+            //                 <select name="" class="setupSelect2">
+            //                     <option value="cash">đ</option>
+            //                     <option value="percent">%</option>
+            //                 </select>
+            //             </div>
+            //         </td>
+            //         <td>
+            //             <div class="delete-some-item delete-order-amount-range-condition">
+            //                 <a class="delete-menu img-scaledown" style="width: 15%; height: 30px; margin-left: 6px">
+            //                     <img src="Backend/img/close.png" alt="">
+            //                 </a>
+            //             </div>
+            //         </td>
+            //     </tr>
+            // `
+        })
+    }
+    var ranges = [];
+
+    HT.checkBtnJs100ConflictRange = (newFrom, newTo, currentPosition = null) => {
+        console.log("Kiểm tra xung đột với khoảng:", ranges);
+    
+        for (let i = 0; i < ranges.length; i++) {
+            let existRange = ranges[i];
+    
+            // Bỏ qua kiểm tra nếu cùng vị trí (cập nhật chính nó)
+            if (currentPosition && currentPosition === existRange.position) {
+                continue;
+            }
+    
+            // Kiểm tra các trường hợp chồng lấn
+            if (
+                (newFrom >= existRange.newFrom && newFrom <= existRange.newTo) || // Điểm đầu mới nằm trong khoảng cũ
+                (newTo >= existRange.newFrom && newTo <= existRange.newTo) ||     // Điểm cuối mới nằm trong khoảng cũ
+                (newFrom <= existRange.newFrom && newTo >= existRange.newTo)      // Khoảng mới bao trùm khoảng cũ
+            ) {
+                return { conflict: true, position: existRange.position }; // Có xung đột
+            }
+        }
+    
+        return { conflict: false }; // Không có xung đột
+    };
+    
+    HT.isValidRange = (newFrom, newTo) => {
+        if(newTo <= newFrom){
+            return false
+        }
+        return true
+    }
+
+    HT.deleteAmountRangeCondition = () => {
+        $(document).on('click', '.delete-order-amount-range-condition', function(){
+            let _row = $(this).closest('tr');
+            let position = _row.data('position');
+
+            // Xóa hàng khỏi giao diện
+            _row.remove();
+
+            // Xóa khoảng tương ứng trong mảng ranges
+            ranges = ranges.filter(range => range.position !== position);
+
+            console.log("Dữ liệu ranges sau khi xóa:", ranges);
+        })
+    }
+
     $(document).ready(function(){
         // V96
         HT.promotionNeverDate()
@@ -264,6 +540,15 @@
         HT.promotionMultipleSelect2()
         HT.chooseCustomerCondition()
         HT.deleteCondition()
+
+        // V98
+        HT.select2()
+        HT.renderOrderRangeConditionContainer()
+
+        // V98 order_amount_range
+        HT.btnJs100()
+        HT.deleteAmountRangeCondition()
+
     })
 
 })(jQuery)

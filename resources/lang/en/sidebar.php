@@ -109,6 +109,21 @@
                         'route' => 'widget/index'
                     ]
                 ]
-            ],                      
+            ], 
+            [
+                'title'=>'Marketing Management',
+                'icon'=>'fa fa-bullhorn',
+                'name'=>['promotion', 'coupon'],
+                'subModule'=>[
+                    [
+                        'title'=>'Promotion Management',
+                        'route'=>'promotion/index'
+                    ],
+                    // [
+                    //     'title'=>'Coupon Management',
+                    //     'route'=>'coupon/index'
+                    // ],
+                ]
+            ],                                 
         ]
     ];
