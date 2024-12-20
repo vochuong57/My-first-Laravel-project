@@ -109,7 +109,22 @@
                         'route' => 'widget/index'
                     ]
                 ]
-            ],                     
+            ],   
+            [
+                'title'=>'营销管理',
+                'icon'=>'fa fa-bullhorn',
+                'name'=>['promotion', 'coupon'],
+                'subModule'=>[
+                    [
+                        'title'=>'促销管理',
+                        'route'=>'promotion/index'
+                    ],
+                    // [
+                    //     'title'=>'优惠券管理',
+                    //     'route'=>'coupon/index'
+                    // ],
+                ]
+            ],                              
         ]
     ];
 

@@ -399,5 +399,67 @@ return [
         ],
     ],
 
+    //SLIDE
+    'slide' => [
+        'index'=>[
+            'title'=> '幻灯片管理',
+        ],
+        'delete'=>[
+            'title'=>'删除幻灯片位置',
+            'btnDelete'=>'删除数据'
+        ],
+        'create'=>[
+            'title'=>'添加新幻灯片',
+            'btnTitle'=>'添加新'
+        ],
+        'edit'=>[
+            'title'=>'更新幻灯片',
+            'btnTitle'=>'更新'
+        ],
+        'translate'=>[
+            'title'=>'为幻灯片创建 {language} 翻译',
+            'btnTitleSave'=>'保存',
+        ],
+    ],
+    //WIDGET
+    'widget' => [
+        'index'=>[
+            'title'=> '小部件管理',
+        ],
+        'delete'=>[
+            'title'=>'删除小部件位置',
+            'btnDelete'=>'删除数据'
+        ],
+        'create'=>[
+            'title'=>'添加新小部件',
+            'btnTitle'=>'添加新'
+        ],
+        'edit'=>[
+            'title'=>'更新小部件',
+            'btnTitle'=>'更新'
+        ],
+        'translate'=>[
+            'title'=>'为小部件创建 {language} 翻译',
+            'btnTitleSave'=>'保存',
+        ],
+    ],
+    //PROMOTION
+    'promotion' => [
+        'index'=>[
+            'title'=> '促销管理',
+        ],
+        'delete'=>[
+            'title'=>'删除促销位置',
+            'btnDelete'=>'删除数据'
+        ],
+        'create'=>[
+            'title'=>'添加新促销',
+            'btnTitle'=>'添加新'
+        ],
+        'edit'=>[
+            'title'=>'更新促销',
+            'btnTitle'=>'更新'
+        ],
+    ],
 
 ];
