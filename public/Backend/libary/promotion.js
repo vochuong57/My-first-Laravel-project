@@ -322,11 +322,11 @@
                                 </div>
                             </td>
                             <td>
-                                <!-- <div class="delete-some-item delete-order-amount-range-condition">
+                                <div class="delete-some-item delete-order-amount-range-condition">
                                     <a class="delete-menu img-scaledown" style="width: 15%; height: 30px; margin-left: 6px">
                                         <img src="Backend/img/close.png" alt="">
                                     </a>
-                                </div> -->
+                                </div>
                             </td>
                         </tr>
                     </tbody>
@@ -344,40 +344,46 @@
             let _button = $(this)
 
             let trLastChild = $('.order-amount-range').find('tbody tr:last-child');
-            let from = parseInt(trLastChild.find('.order-amount-range-from input').val().replace(/\./g, ''));
-            let to = parseInt(trLastChild.find('.order-amount-range-to input').val().replace(/\./g, ''));
-            let currentPosition = trLastChild.data('position') || null;
-            
-            if (!HT.isValidRange(from, to)) {
-                alert('Khoảng điều kiện không hợp lệ, giá trị tới phải lớn hơn giá trị từ');
-                return;
-            }
-            
-            // Kiểm tra xung đột
-            let conflictResult = HT.checkBtnJs100ConflictRange(from, to, currentPosition);
-            if (conflictResult.conflict) {
-                trLastChild.addClass('errorLine');
-                alert(`Có xung đột với khoảng điều kiện tại vị trí: ${conflictResult.position}`);
-                return;
-            }
-            
-            // Xóa class lỗi nếu thêm thành công
-            $('.order-amount-range').find('tr').removeClass('errorLine');
-            
-            // Nếu hàng này chưa có `position`, thêm mới
-            if (!currentPosition) {
-                currentPosition = ranges.length + 1;
-                trLastChild.data('position', currentPosition);
-            }
-            
-            // Thêm hoặc cập nhật mảng ranges
-            let existingIndex = ranges.findIndex(range => range.position === currentPosition);
-            if (existingIndex !== -1) {
-                // Cập nhật khoảng đã tồn tại
-                ranges[existingIndex] = { newFrom: from, newTo: to, position: currentPosition };
-            } else {
-                // Thêm mới
-                ranges.push({ newFrom: from, newTo: to, position: currentPosition });
+            if(trLastChild.length){
+
+                let from = parseInt(trLastChild.find('.order-amount-range-from input').val().replace(/\./g, ''));
+                let to = parseInt(trLastChild.find('.order-amount-range-to input').val().replace(/\./g, ''));
+                let currentPosition = trLastChild.data('position') || null;
+                
+                if (!HT.isValidRange(from, to)) {
+                    alert('Khoảng điều kiện không hợp lệ, giá trị tới phải lớn hơn giá trị từ');
+                    return;
+                }
+                
+                // Kiểm tra xung đột
+                let conflictResult = HT.checkBtnJs100ConflictRange(from, to, currentPosition);
+                if (conflictResult.conflict) {
+                    trLastChild.addClass('errorLine');
+                    alert(`Có xung đột với khoảng điều kiện tại vị trí: ${conflictResult.position}`);
+                    return;
+                }
+                
+                // Xóa class lỗi nếu thêm thành công
+                $('.order-amount-range').find('tr').removeClass('errorLine');
+                
+                // Nếu hàng này chưa có `position`, thêm mới
+                if (!currentPosition) {
+                    currentPosition = ranges.length + 1;
+                    trLastChild.data('position', currentPosition);
+                }
+
+                trLastChild.find('.order-amount-range-from input').attr('readonly', true)
+                trLastChild.find('.order-amount-range-to input').attr('readonly', true)
+                
+                // Thêm hoặc cập nhật mảng ranges
+                let existingIndex = ranges.findIndex(range => range.position === currentPosition);
+                if (existingIndex !== -1) {
+                    // Cập nhật khoảng đã tồn tại
+                    ranges[existingIndex] = { newFrom: from, newTo: to, position: currentPosition };
+                } else {
+                    // Thêm mới
+                    ranges.push({ newFrom: from, newTo: to, position: currentPosition });
+                }
             }
 
             let $tr = $('<tr>')
