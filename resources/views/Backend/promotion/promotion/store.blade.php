@@ -75,7 +75,56 @@
                             </select>
                         </div>
                         <div class="promotion-container">
-                            
+                            <div class="product-and-quantity">
+                                <div class="choose-module mt20">
+                                    <div class="fix-label" style="color:blue" for="">Sản phẩm áp dụng</div>
+                                    <select name="" id="" class="setupSelect2 select-product-and-quantity">
+                                        @foreach(__('module.item') as $key => $val)
+                                            <option value="{{ $key }}">{{ $val }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <table class="table table-striped mt20">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 400px;">Sản phẩm mua</th>
+                                            <th style="width: 80px;">SL tối thiểu</th>
+                                            <th>Giới hạn KM</th>
+                                            <th class="text-right">Chiết khấu</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="tr">
+                                            <td class="order-amount-range-from">
+                                                <select type="text" class="form-control int ajaxSearch" name="amountFrom[]" placeholder="" value="" data-model="Product"></select>
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control int" name="amountValue[]" placeholder="0" value="1">
+                                            </td>
+                                            <td class="order-amount-range-to">
+                                                <input type="text" class="form-control int" name="amountTo[]" placeholder="0" value="0">
+                                            </td>
+                                            <td class="discountType">
+                                                <div class="uk-flex uk-flex-middle">
+                                                    <input type="text" class="form-control int" name="amountValue[]" placeholder="0" value="0">
+                                                    <select name="amountType" class="setupSelect2">
+                                                        <option value="cash">đ</option>
+                                                        <option value="percent">%</option>
+                                                    </select>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="delete-some-item delete-order-amount-range-condition">
+                                                    <a class="delete-menu img-scaledown" style="width: 15px; height: 30px; margin-left: 6px">
+                                                        <img src="Backend/img/close.png" alt="">
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
