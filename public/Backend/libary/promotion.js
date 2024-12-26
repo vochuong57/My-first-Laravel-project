@@ -266,9 +266,10 @@
                     HT.renderAmountRange()
                     console.log("order_amount_range")
                     break
-                // case "product_and_quantity":
-                //     console.log("product_and_quantity")
-                //     break
+                case "product_and_quantity":
+                    HT.renderProductAndQuantity()
+                    console.log("product_and_quantity")
+                    break
                 // case "product_quantity_range":
                 //     console.log("product_quantity_range")
                 //     break
@@ -337,6 +338,8 @@
         $('.promotion-container').html(html)
         HT.select2()
     }
+
+    // -------------------------------------Method order_amount_range-------------------------------------
 
     // V98
     HT.btnJs100 = () => {
@@ -539,6 +542,96 @@
         })
     }
 
+    // -------------------------------------Method product_and_quantity-------------------------------------
+
+    HT.renderProductAndQuantity = () => {
+        let selectData = JSON.parse($('.input-product-and-quantity').val())
+        // console.log(selectData)
+        let selectHtml = ''
+        for(let key in selectData){
+            selectHtml += '<option value="'+key+'">'+selectData[key]+'</option>'
+        }
+        let html = `
+            <div class="product-and-quantity">
+                <div class="choose-module mt20">
+                    <div class="fix-label" style="color:blue" for="">Sản phẩm áp dụng</div>
+                    <select name="" id="" class="setupSelect2 select-product-and-quantity">
+                        ${selectHtml}
+                    </select>
+                </div>
+                <table class="table table-striped mt20">
+                    <thead>
+                        <tr>
+                            <th style="width: 400px;">Sản phẩm mua</th>
+                            <th style="width: 80px;">SL tối thiểu</th>
+                            <th>Giới hạn KM</th>
+                            <th class="text-right">Chiết khấu</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="tr">
+                            <td class="order-amount-range-from">
+                                <select type="text" class="form-control ajaxSearch" multiple name="amountFrom[]" placeholder="" value="" data-model="Product"></select>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control int" name="amountValue[]" placeholder="0" value="1">
+                            </td>
+                            <td class="order-amount-range-to">
+                                <input type="text" class="form-control int" name="amountTo[]" placeholder="0" value="0">
+                            </td>
+                            <td class="discountType">
+                                <div class="uk-flex uk-flex-middle">
+                                    <input type="text" class="form-control int" name="amountValue[]" placeholder="0" value="0">
+                                    <select name="amountType" class="setupSelect2">
+                                        <option value="cash">đ</option>
+                                        <option value="percent">%</option>
+                                    </select>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        `
+        $('.promotion-container').html(html)
+        HT.select2()
+        HT.setupAjaxSearch()
+    }
+
+    HT.setupAjaxSearch = () => {
+        $('.ajaxSearch').each(function(){
+            let _this = $(this)
+            let option = {
+                model: _this.attr('data-model'),
+            }
+            _this.select2({
+                minimumInputLength: 2,
+                placeholder: 'Nhập vào 2 từ để tìm kiếm...',
+                ajax: {
+                    url: 'ajax/dashboard/getPromotionObject',
+                    type: 'GET',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params){
+                        return{
+                            search: params.term,
+                            option: option,
+                        }
+                    },
+                    processResults: function(data){
+                        // console.log(data)
+                        return {
+                            results: $.map(data, function(obj, i){
+                                return obj
+                            })
+                        }
+                    },
+                    cache: true
+                }
+            })
+        })
+    }
+
     $(document).ready(function(){
         // V96
         HT.promotionNeverDate()
@@ -555,6 +648,9 @@
         HT.btnJs100()
         HT.deleteAmountRangeCondition()
 
+        // V101 product_and_quantity
+        // HT.setupAjaxSearch()
+        // HT.renderProductAndQuantity()
     })
 
 })(jQuery)
