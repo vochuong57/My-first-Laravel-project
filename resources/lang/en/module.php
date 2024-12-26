@@ -32,6 +32,10 @@ return [
         'product_and_quantity' => 'Discount by individual product',
         'product_quantity_range' => 'Discount by product quantity',
         'goods_discount_by_quantity' => 'Buy product - discount product'
+    ],
+    // V100
+    'item' => [
+    'Product' => 'Product Version',
+    'ProductCatalogue' => 'Product Category',
     ]
-
 ];

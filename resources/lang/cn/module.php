@@ -32,6 +32,10 @@ return [
         'product_and_quantity' => '按单个产品折扣',
         'product_quantity_range' => '按产品数量折扣',
         'goods_discount_by_quantity' => '购买产品 - 产品折扣'
+    ],
+    // V100
+    'item' => [
+    'Product' => '产品版本',
+    'ProductCatalogue' => '产品类别',
     ]
-
 ];
