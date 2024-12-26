@@ -134,4 +134,35 @@ class DashboardController extends Controller
         // dd($object);
         return response()->json($object);
     }
+    // V101
+    public function getPromotionObject(Request $request){
+        $get = $request->input();
+        // dd($get);
+        $repositoryInstance = $this->loadClassInterface($get['option']['model'], 'Repositories', 'Repository');
+        // dd($repositoryInstance);
+
+        $condition = [];
+        $languageId = $this->language;
+        $relation = [
+            'languages' => function($query) use ($languageId, $get){
+                $query->where('language_id', $languageId);
+                $query->where(Str::snake($get['option']['model']).'_language.name', 'LIKE', '%'.$get['search'].'%');
+            }
+        ];
+        // $order = ['order', 'desc'];
+        $object = $repositoryInstance->findByConditionsWithRelation($condition, $relation);
+        // dd($object);
+
+        $temp = [];
+        if(count($object)){
+            foreach($object as $item){
+                $temp[] = [
+                    'id' => $item->id,
+                    'text' => $item->languages->first()->pivot->name
+                ];
+            }
+        }
+        // dd($temp);
+        return response()->json(array('items' => $temp));
+    }
 }
