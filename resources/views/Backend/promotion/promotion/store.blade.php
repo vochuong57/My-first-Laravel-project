@@ -87,13 +87,13 @@
                                 <tbody>
                                     <tr class="tr">
                                         <td class="order-amount-range-from">
-                                            <div class="product-quantity">
+                                            <div class="product-quantity" data-toggle="modal" data-target="#findProduct">
                                                 <div class="boxWrapper">
-                                                    <div class="boxSearchIcon">
+                                                    <div class="boxSearchIcon hidden">
                                                         <i class="fa fa-search"></i>
                                                     </div>
                                                     @for($i = 0; $i <= 10; $i++)
-                                                    <div class="fixGrid6 hidden">
+                                                    <div class="fixGrid6">
                                                         <div class="goods-item">
                                                             <span class="goods-item-name">Macbook thế hệ mới ra mắt năm 2023</span>
                                                             <button class="delete-goods-item">
@@ -248,4 +248,5 @@
         </div>
     </div>
 </form>
+@include('Backend.promotion.promotion.component.popup')
 <input type="hidden" class="input-product-and-quantity" value="{{ json_encode(__('module.item')) }}">

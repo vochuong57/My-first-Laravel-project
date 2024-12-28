@@ -706,7 +706,7 @@ input[type=checkbox]{
     box-shadow: none;
     border: 0;
 }
-/* CSS CHO PROMOTION/PROMOTION/STORE */
+/* ---------------------------------------------------- CSS CHO PROMOTION/PROMOTION/STORE */
 .form-date{
     position: relative;
 }
@@ -819,7 +819,7 @@ input[type=checkbox]{
     white-space: nowrap;
 }
 
-/* CSS cho phần promotion/item product */
+/* CSS cho phần promotion/item product được chọn khuyến mãi phương thức product-and-quantity*/
 .product-quantity{
     border: 1px solid #c4cdd5;
     background: #fff;
@@ -876,4 +876,80 @@ input[type=checkbox]{
     flex-grow: 0;
     flex-basis: 50%;
     padding: 0 6px;
+}
+
+/* CSS cho phần hiện popup chọn sản phẩm khuyến mãi phương thức 2 product-and-quantity */
+.modal-dialog-promotion .modal-title{
+    text-transform: uppercase;
+    font-weight: 600;
+}
+.modal-dialog-promotion .modal-body .search-model-box{
+    margin-top: 0;
+}
+.search-object-item{
+    cursor: pointer;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e3e9ed;
+}
+.search-object-item .image{
+    width: 52px;
+    height: 52px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+.object-name .name{
+    margin-bottom: 4px;
+}
+.object-name .jscode{
+    color: blue;
+    font-size: 12px;
+}
+.object-extract-info{
+    text-align: right;
+}
+.object-extract-info .price{
+    font-weight: 700;
+    font-size: 18px;
+    margin-bottom: 6px;
+}
+.object-extract-info .slash{
+    margin-right: 5px;
+    margin-left: 5px;
+}
+.object-extract-info .text-value{
+    color: blue;
+}
+.object-extract-info .text-1{
+    color: #888;
+}
+.modal-dialog-promotion{
+    width: 800px;
+}
+.search-list{
+    margin-top: 10px;
+    overflow: auto;
+    height: auto;
+    max-height: calc(100vh - 300px);
+    padding-right: 20px;
+}
+/* width */
+.search-list::-webkit-scrollbar {
+    width: 7px;
+}
+
+/* Track */
+.search-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+/* Handle */
+.search-list::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+/* Handle on hover */
+.search-list::-webkit-scrollbar-thumb:hover {
+    background: #555;
 }
