@@ -632,6 +632,164 @@
         })
     }
 
+    
+    HT.productQuantityListProduct = () => {
+        $(document).on('click', '.product-quantity', function(e){
+            e.preventDefault()
+            let option = {
+                model: $('.select-product-and-quantity').val(),
+            }
+            HT.loadProduct(option)
+        })
+    }
+    
+    HT.loadProduct = (option) => {
+        $.ajax({
+            url: 'ajax/product/loadProductPromotion',
+            type: 'GET',
+            data: option,
+            dataType: 'json',
+            success: function(res){
+                console.log(res)
+                HT.fillToObjectList(res)
+            },
+        })
+    }
+    
+    HT.fillToObjectList = (data) =>{
+        switch (data.model){
+            case "Product":
+                HT.fillProductToList(data.objects)
+                console.log("fillProductToList")
+                break
+            case "ProductCatalogue":
+                HT.fillProductCatalogueToList(data.objects)
+                console.log("fillProductCatalogueToList")
+                break
+        }
+    }
+
+    HT.fillProductToList = (objects) => {
+        console.log(objects)
+        let html = ''
+        if(objects.data.length){
+            for(let i = 0; i < objects.data.length; i++){
+                let image = objects.data[i].image ?? 'Backend/img/not-found.png'
+                let name = objects.data[i].name
+                let variant_name = objects.data[i].variant_name ?? 'null'
+                let product_variant_id = objects.data[i].product_variant_id ?? 'null'
+                let product_id = objects.data[i].product_id
+                let inventory = objects.data[i].inventory ? objects.data[i].inventory : '0'
+                let couldSale = objects.data[i].couldSale ? objects.data[i].couldSale : '0'
+                let sku = objects.data[i].sku
+                let price = objects.data[i].price
+
+                html += `
+                    <div class="search-object-item" data-productId = "${product_id+'-'+product_variant_id}" data-productVariantId = "${product_variant_id}" data-name = "${name}">
+                        <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                            <div class="object-info">
+                                <div class="uk-flex uk-flex-middle">
+                                    <input type="checkbox" name="" value="${product_id}" class="input-checkbox">
+                                    <span class="image img-scaledown">
+                                        <img src="${image}" alt="">
+                                    </span>
+                                    <div class="object-name">
+                                        <div class="m0">${variant_name}</div>
+                                        <div class="jscode">Mã SP: ${sku}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="object-extract-info">
+                                <div class="price">Giá: ${addCommas(price)}đ</div>
+                                <div class="object-inventory">
+                                    <div class="uk-flex uk-flex-middle">
+                                        <span class="text-1">Tồn kho:</span>
+                                        <span class="text-value">${inventory}</span>
+                                        <span class="text-1 slash">|</span>
+                                        <span class="text-value">Có thể bán: ${couldSale}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            }
+        }
+        html = html + HT.paginationLinks(objects.links)
+        $('.search-list').html(html)
+    }
+
+    HT.paginationLinks = (links) => {
+        let html = '';
+        if(links.length > 3){
+            html += '<nav><ul class="pagination">';
+            $.each(links, function(index, link) {
+                let liClass = 'page-item';
+                
+                if (link.active) {
+                    liClass += ' active';
+                } else if (!link.url) {
+                    liClass += ' disabled';
+                }
+                
+                html += '<li class="' + liClass + '">';
+                
+                if (link.label === 'pagination.previous') {
+                    if (link.url) {
+                        html += '<a class="page-link" aria-label="pagination.previous" href="' + link.url + '">‹</a>';
+                    } else {
+                        html += '<span class="page-link" aria-hidden="true">‹</span>';
+                    }
+                } 
+                else if (link.label === 'pagination.next') {
+                    if (link.url) {
+                        html += '<a class="page-link" aria-label="pagination.next" href="' + link.url + '">›</a>';
+                    } else {
+                        html += '<span class="page-link" aria-hidden="true">›</span>';
+                    }
+                } 
+                else if (link.url) {
+                    html += '<a class="page-link" href="' + link.url + '">' + link.label + '</a>';
+                } 
+                else {
+                    html += '<span class="page-link">' + link.label + '</span>';
+                }
+                
+                html += '</li>';
+            });
+            html += '</ul></nav>';
+        }
+        
+        return html;
+
+        // <nav>
+        //     <ul class="pagination">
+    
+        //         <li class="page-item disabled" aria-disabled="true" aria-label="pagination.previous">
+        //             <span class="page-link" aria-hidden="true">‹</span>
+        //         </li>
+        //         <li class="page-item active" aria-current="page"><span class="page-link">1</span></li>
+        //         <li class="page-item"><a class="page-link" href="http://127.0.0.1:8000/product/index?page=2">2</a></li>
+                                                                
+        //         <li class="page-item">
+        //             <a class="page-link" href="http://127.0.0.1:8000/product/index?page=2" rel="next" aria-label="pagination.next">›</a>
+        //         </li>
+        //     </ul>
+        // </nav>
+    };
+
+    HT.getPaginationMenu = () => {
+        $(document).on('click', '.page-link', function(e){
+            e.preventDefault()
+            let _this = $(this)
+            let option = {
+                model: $('.select-product-and-quantity').val(),
+                page: _this.text()
+            }
+            HT.loadProduct(option)
+        })
+    }
+
     $(document).ready(function(){
         // V96
         HT.promotionNeverDate()
@@ -651,6 +809,10 @@
         // V101 product_and_quantity
         // HT.setupAjaxSearch()
         // HT.renderProductAndQuantity()
+
+        // V104
+        HT.productQuantityListProduct()
+        HT.getPaginationMenu()
     })
 
 })(jQuery)

@@ -298,13 +298,14 @@
 })(jQuery)
 
 addCommas = (nStr) => {
+    // Đảm bảo đầu vào là một chuỗi
     nStr = String(nStr);
-    nStr = nStr.replace(/\./g, '');
-    let str = '';
-    for (let i = nStr.length; i > 0; i -= 3) {
-        let a = (i - 3) < 0 ? 0 : (i - 3);
-        str = nStr.slice(a, i) + '.' + str;
+
+    // Loại bỏ phần thập phân và `.00` nếu tồn tại
+    if (nStr.includes('.')) {
+        nStr = nStr.split('.')[0];
     }
-    str = str.slice(0, str.length - 1);
-    return str;
+
+    // Sử dụng biểu thức chính quy để thêm dấu chấm phân cách hàng nghìn
+    return nStr.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 };

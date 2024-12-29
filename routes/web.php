@@ -35,6 +35,7 @@ use App\Http\Controllers\Ajax\DashboardController as AjaxDashboardController;
 use App\Http\Controllers\Ajax\AttributeController as AjaxAttributeController;
 use App\Http\Controllers\Ajax\MenuController as AjaxMenuController;
 use App\Http\Controllers\Ajax\SlideController as AjaxSlideController;
+use App\Http\Controllers\Ajax\ProductController as AjaxProductController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -89,6 +90,7 @@ Route::group(['middleware' => ['admin','locale','backend_default_locale']], func
     Route::post('ajax/slide/drag',[AjaxSlideController::class, 'drag'])->name('ajax.slide.drag');//Trang thực thi chuyển đổi ... đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
     Route::get('ajax/dashboard/getModelObject',[AjaxDashboardController::class, 'getModelObject'])->name('ajax.dashboard.getModelObject');//Trang thực thi chuyển đổi ... đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
     Route::get('ajax/dashboard/getPromotionObject',[AjaxDashboardController::class, 'getPromotionObject'])->name('ajax.dashboard.getPromotionObject');//Trang thực thi chuyển đổi ... đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+    Route::get('ajax/product/loadProductPromotion',[AjaxProductController::class, 'loadProductPromotion'])->name('ajax/product/loadProductPromotion');//Trang thực thi chuyển đổi ... đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
 
     //UserCatalogueController (Trang quản lí nhóm người dùng)
     Route::group(['prefix'=>'user/catalogue'], function(){

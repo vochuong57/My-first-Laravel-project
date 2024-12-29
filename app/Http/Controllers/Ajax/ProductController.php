@@ -1,0 +1,43 @@
+<?php
+
+namespace App\Http\Controllers\Ajax;
+
+use App\Http\Controllers\Controller;
+//chèn thêm thư viện có sẵn Request để lấy thông tin value của input mà ajax đã thiết lập
+use Illuminate\Http\Request;
+//thêm thư viện tự tạo
+use App\Repositories\Interfaces\ProductRepositoryInterface as ProductRepository;
+use App\Models\Language;
+
+class ProductController extends Controller
+{
+    protected $productRepository;
+    protected $language;
+    
+
+    public function __construct(ProductRepository $productRepository){
+       $this->productRepository=$productRepository;
+
+        $this->middleware(function($request, $next) {
+            $locale = app()->getLocale(); // vn cn en
+            $language = Language::where('canonical', $locale)->first();
+            $this->language = $language->id;
+            return $next($request);
+        });
+
+    }
+
+    public function loadProductPromotion(Request $request){
+        $get = $request->input();
+        $condition = [
+            ['tb2.language_id', '=', $this->language]
+        ];
+        $objects = $this->productRepository->findProductPromotion($condition);
+        // dd($objects->toArray());
+
+        return response()->json([
+            'model' => $get['model'] ?? 'Product',
+            'objects' => $objects
+        ]);
+    }
+}
