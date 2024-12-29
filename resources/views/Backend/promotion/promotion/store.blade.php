@@ -93,7 +93,7 @@
                                                         <i class="fa fa-search"></i>
                                                     </div>
                                                     @for($i = 0; $i <= 10; $i++)
-                                                    <div class="fixGrid6">
+                                                    <div class="fixGrid6 hidden">
                                                         <div class="goods-item">
                                                             <span class="goods-item-name">Macbook thế hệ mới ra mắt năm 2023</span>
                                                             <button class="delete-goods-item">

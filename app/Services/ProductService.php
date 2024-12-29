@@ -90,11 +90,9 @@ class ProductService extends BaseService implements ProductServiceInterface
                 $product->product_catalogues()->sync($catalogue);//product_catalogues() là function của Model/Product
 
 
-                if (!empty($request->input('attribute', []))) {
-                    // Đảm bảo rằng hàm createVariant chỉ được gọi khi `attribute` không rỗng
-                    if (!empty($request->input('attribute', []))) {
-                        $this->createVariant($product, $request, $languageId);
-                    }
+                // Đảm bảo rằng hàm createVariant chỉ được gọi khi `attribute` không rỗng
+                if ($request->input('attribute')) {
+                    $this->createVariant($product, $request, $languageId);
                 }
                 
             }
@@ -126,11 +124,9 @@ class ProductService extends BaseService implements ProductServiceInterface
                     $variant->attributes()->detach();
                     $variant->delete();
                 });
-                if (!empty($request->input('attribute', []))) {
-                    // Đảm bảo rằng hàm createVariant chỉ được gọi khi `attribute` không rỗng
-                    if (!empty($request->input('attribute', []))) {
-                        $this->createVariant($product, $request, $languageId);
-                    }
+                // Đảm bảo rằng hàm createVariant chỉ được gọi khi `attribute` không rỗng
+                if ($request->input('attribute')) {
+                    $this->createVariant($product, $request, $languageId);
                 }
                 
             }
