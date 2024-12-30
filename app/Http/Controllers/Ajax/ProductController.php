@@ -29,9 +29,14 @@ class ProductController extends Controller
 
     public function loadProductPromotion(Request $request){
         $get = $request->input();
+        // dd($get);
         $condition = [
             ['tb2.language_id', '=', $this->language]
         ];
+        if(isset($get['keyword'])){
+            $condition[] = ['tb2.name', 'like', '%'.$get['keyword'].'%'];
+        }
+        // dd($condition);
         $objects = $this->productRepository->findProductPromotion($condition);
         // dd($objects->toArray());
 

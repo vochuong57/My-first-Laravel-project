@@ -784,9 +784,39 @@
             let _this = $(this)
             let option = {
                 model: $('.select-product-and-quantity').val(),
-                page: _this.text()
+                page: _this.text(),
+                keyword: $('.search-model').val(),
             }
             HT.loadProduct(option)
+        })
+    }
+
+    HT.searchModel = () =>{
+        let typingTimer;
+        let doneTypingInterval = 1000; //1s
+        $(document).on('keyup', '.search-model', function(){
+            // console.log(123)
+            let _this = $(this)
+            let keyword = _this.val()
+            let option = {
+                model: $('.select-product-and-quantity').val(),
+                keyword: keyword
+            }
+            // console.log(option)
+
+            let specialKeys = [9, 16, 17, 18, 27]; // Tab, Shift, Ctrl, Alt, Esc
+            // Kiểm tra xem mã phím có thuộc danh sách các phím đặc biệt không
+            if (specialKeys.includes(event.which)) {
+                return; // Nếu đúng, thoát khỏi hàm mà không thực hiện AJAX
+            }
+           
+            clearTimeout(typingTimer)
+            typingTimer = setTimeout(function(){
+                // console.log(keyword)
+
+                HT.loadProduct(option)
+            }, doneTypingInterval)
+             
         })
     }
 
@@ -813,6 +843,9 @@
         // V104
         HT.productQuantityListProduct()
         HT.getPaginationMenu()
+
+        // V105
+        HT.searchModel()
     })
 
 })(jQuery)
