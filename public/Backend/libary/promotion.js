@@ -544,6 +544,7 @@
 
     // -------------------------------------Method product_and_quantity-------------------------------------
 
+    // V101 hàm render giao diện của hình thức khuyến mãi chiết khấu theo sản phẩm và số lượng (product_and_quantity)
     HT.renderProductAndQuantity = () => {
         let selectData = JSON.parse($('.input-product-and-quantity').val())
         // console.log(selectData)
@@ -562,16 +563,26 @@
                 <table class="table table-striped mt20">
                     <thead>
                         <tr>
-                            <th style="width: 400px;">Sản phẩm mua</th>
-                            <th style="width: 80px;">SL tối thiểu</th>
+                            <th>Sản phẩm mua</th>
+                            <th style="width: 90px;">SL tối thiểu</th>
                             <th>Giới hạn KM</th>
                             <th class="text-right">Chiết khấu</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr class="tr">
-                            <td class="order-amount-range-from">
-                                <select type="text" class="form-control ajaxSearch" multiple name="amountFrom[]" placeholder="" value="" data-model="Product"></select>
+                            <td class="chooseProductPromotionTd">
+                                <div class="product-quantity" data-toggle="modal" data-target="#findProduct">
+                                    <div class="boxWrapper">
+                                        <div class="boxSearchIcon">
+                                            <i class="fa fa-search"></i>
+                                        </div>
+                                        
+                                        <div class="boxSearchInput fixGrid6">
+                                            <p>Tìm theo tên, mã sản phẩm</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </td>
                             <td>
                                 <input type="text" class="form-control int" name="amountValue[]" placeholder="0" value="1">
@@ -632,64 +643,142 @@
         })
     }
 
-    
+    // V104 106 mở popup chọn sản phẩm khuyến mãi và kiểm tra xem sản phẩm đã được checked chưa
     HT.productQuantityListProduct = () => {
         $(document).on('click', '.product-quantity', function(e){
             e.preventDefault()
+
+            // xây dựng lại mảng objectList dựa vào giao diện fixGrid6
+            objectList = []
+            $('.fixGrid6').each(function() {
+                let classList = $(this).attr('class').split(/\s+/);
+                let classBox = classList.find(cls => cls.startsWith($('.select-product-and-quantity').val() + '-'));
+                if (classBox) {
+                    let parts = classBox.split('-');
+
+                    let product_id = parts[1];
+                    let product_variant_id = parts[2] || null;
+                    let name = $(this).find('.goods-item-name').attr('title');
+                    let variant_name = $(this).find('.goods-item-name').data('variantname') || null;
+
+                    objectList.push({
+                        product_id: product_id,
+                        product_variant_id: product_variant_id,
+                        name: name,
+                        variant_name: variant_name
+                    });
+                }
+            });
+
             let option = {
                 model: $('.select-product-and-quantity').val(),
             }
-            HT.loadProduct(option)
+            HT.loadProduct(option, objectList)
+            
         })
     }
     
-    HT.loadProduct = (option) => {
+    // V104 106 hàm gọi ajax lấy dữ liệu sản phẩm khuyến mãi
+    HT.loadProduct = (option, objectList) => {
         $.ajax({
             url: 'ajax/product/loadProductPromotion',
             type: 'GET',
             data: option,
             dataType: 'json',
             success: function(res){
-                console.log(res)
-                HT.fillToObjectList(res)
+                // console.log(res)
+                HT.fillToObjectList(res, objectList)
             },
         })
     }
     
-    HT.fillToObjectList = (data) =>{
+    // V104 106 hàm xử lý dữ liệu trả về từ ajax theo model của select option .select-product-and-quantity
+    HT.fillToObjectList = (data, objectList) =>{
         switch (data.model){
             case "Product":
-                HT.fillProductToList(data.objects)
+                HT.fillProductToList(data.objects, objectList)
                 console.log("fillProductToList")
                 break
             case "ProductCatalogue":
-                HT.fillProductCatalogueToList(data.objects)
+                HT.fillProductCatalogueToList(data.objects, objectList)
                 console.log("fillProductCatalogueToList")
                 break
         }
     }
 
-    HT.fillProductToList = (objects) => {
-        console.log(objects)
+    // V104 V106 Hiển thị sản phẩm khuyến mãi khi mở popup chạy ajax lấy dữ liệu và kiểm tra xem sản phẩm nào đã được checked chưa
+    HT.fillProductToList = (objects, objectList) => {
+        // console.log(objects)
+        console.log(objectList)
         let html = ''
         if(objects.data.length){
             for(let i = 0; i < objects.data.length; i++){
                 let image = objects.data[i].image ?? 'Backend/img/not-found.png'
                 let name = objects.data[i].name
-                let variant_name = objects.data[i].variant_name ?? 'null'
-                let product_variant_id = objects.data[i].product_variant_id ?? 'null'
-                let product_id = objects.data[i].product_id
+                let variant_name = objects.data[i].variant_name ?? null
+                let product_variant_id = objects.data[i].product_variant_id ?? null
+                let product_id = objects.data[i].id
                 let inventory = objects.data[i].inventory ? objects.data[i].inventory : '0'
                 let couldSale = objects.data[i].couldSale ? objects.data[i].couldSale : '0'
                 let sku = objects.data[i].sku
                 let price = objects.data[i].price
 
+                let classBox = ''
+                let model = $('.select-product-and-quantity').val()
+
+                if(objectList.length){
+                    for(let j = 0; j < objectList.length; j++){
+                        if(objectList[j].product_id == product_id){
+                            classBox = model +'-'+ product_id
+                            if(objectList[j].product_variant_id == product_variant_id){
+                                classBox += '-'+ product_variant_id
+                                console.log(classBox)
+                                break
+                            }
+                        }
+                    }
+                }
+
+                // xử lý giao diện fixGrid6 item
+                // $('.fixGrid6').each(function() {
+                //     let classList = $(this).attr('class').split(/\s+/);
+                //     let classBoxCandidate = classList.find(cls => cls.startsWith(model + '-'));
+                //     if (classBoxCandidate) {
+                //         let parts = classBoxCandidate.split('-');
+                //         let product_id_candidate = parts[1];
+                //         let product_variant_id_candidate = parts[2] || null;
+                
+                //         if (product_id_candidate == product_id && product_variant_id_candidate == product_variant_id) {
+                //             classBox = classBoxCandidate;
+                //             console.log(classBox);
+                //             return false; // break the loop
+                //         }
+                //     }
+                // });
+                
+                // xử lý mảng objectList
+                if (!objectList) {
+                    objectList = [];
+                }
+                let existsInObjectList = objectList.some(item => 
+                    item.product_id == product_id && (item.product_variant_id == product_variant_id || item.product_variant_id == null)
+                );
+                
+                // kiểm tra xem sản phẩm đã được checked chưa
+                let isChecked = ''
+                if(classBox != ''){ // kiểm tra xem sản phẩm đã được checked chưa so với giao diện
+                    let existsInDOM = $(`.boxWrapper .${classBox}`).length > 0;
+                    isChecked = (existsInDOM || existsInObjectList) ? 'checked' : ''
+                } else { // kiểm tra xem sản phẩm đã được checked chưa tại những trang khác khi di chuyển qua lại các trang
+                    isChecked = existsInObjectList ? 'checked' : ''
+                }
+
                 html += `
-                    <div class="search-object-item" data-productId = "${product_id+'-'+product_variant_id}" data-productVariantId = "${product_variant_id}" data-name = "${name}">
+                    <div class="search-object-item" data-productId = "${product_id}" data-productVariantId = "${product_variant_id}" data-name = "${name}" data-variantName = "${variant_name}">
                         <div class="uk-flex uk-flex-middle uk-flex-space-between">
                             <div class="object-info">
                                 <div class="uk-flex uk-flex-middle">
-                                    <input type="checkbox" name="" value="${product_id}" class="input-checkbox">
+                                    <input type="checkbox" name="" value="${product_id}" class="input-checkbox" ${isChecked}>
                                     <span class="image img-scaledown">
                                         <img src="${image}" alt="">
                                     </span>
@@ -719,6 +808,7 @@
         $('.search-list').html(html)
     }
 
+    // V104 hiển thị giao diện phân trang
     HT.paginationLinks = (links) => {
         let html = '';
         if(links.length > 3){
@@ -778,6 +868,7 @@
         // </nav>
     };
 
+    // V104 xử lý đổ dữ liệu khi chọn phân trang
     HT.getPaginationMenu = () => {
         $(document).on('click', '.page-link', function(e){
             e.preventDefault()
@@ -787,10 +878,11 @@
                 page: _this.text(),
                 keyword: $('.search-model').val(),
             }
-            HT.loadProduct(option)
+            HT.loadProduct(option, objectList)
         })
     }
 
+    // V105 hàm tìm kiếm sản phẩm
     HT.searchModel = () =>{
         let typingTimer;
         let doneTypingInterval = 1000; //1s
@@ -820,6 +912,160 @@
         })
     }
 
+    var objectList = []
+    
+    // V106 click chọn các sản phẩm khuyến mãi popup-item
+    HT.chooseProductPromotion = () => {
+        $(document).on('click', '.search-object-item', function(e){
+            // e.preventDefault()
+            let _this = $(this)
+            let isChecked = _this.find('.input-checkbox').prop('checked')
+            console.log(isChecked)
+            let objectItem = {
+                product_id: _this.data('productid'),
+                product_variant_id: _this.data('productvariantid'),
+                name: _this.data('name'),
+                variant_name: _this.data('variantname'),
+            }
+            if(isChecked){
+                console.log(objectList);
+                console.log(objectItem);
+                if(objectItem.product_variant_id != null){
+                    objectList = objectList.filter(item => 
+                        !(item.product_id == objectItem.product_id && item.product_variant_id == objectItem.product_variant_id)
+                    );
+                } else {
+                    objectList = objectList.filter(item => 
+                        !(item.product_id == objectItem.product_id && item.product_variant_id == null)
+                    );
+                }
+                _this.find('.input-checkbox').prop('checked', false);
+                console.log(objectList);
+            }else{
+                objectList.push(objectItem)
+                _this.find('.input-checkbox').prop('checked', true)
+                console.log(objectList);
+            }
+        })
+    }
+
+    // V106 Xác nhận sản phẩm đã chọn từ popup chọn sản phẩm khuyến mãi
+    HT.confirmProductPromotion = () => {
+        $(document).on('click', '.confirm-product-promotion', function(e){
+            e.preventDefault()
+            console.log(objectList)
+            
+            let model = $('.select-product-and-quantity').val()
+
+            // xóa đi những sản phẩm (div fixGrid6) không còn trong objectList
+            $('.fixGrid6').each(function() {
+                let classList = $(this).attr('class').split(/\s+/);
+                let classBox = classList.find(cls => cls.startsWith(model + '-'));
+                // console.log(classBox)
+                if (classBox) {
+                    let parts = classBox.split('-');
+                    let product_id = parts[1];
+                    let product_variant_id = parts[2] || null;
+
+                    // Những item nào ở objectList mà không còn tìm thấy tương ứng ở div fixGrid6 giao diện tương ứng thì tiến hành xóa div đó đi
+                    let existsInObjectList = objectList.some(item => 
+                        item.product_id == product_id && (item.product_variant_id == product_variant_id || item.product_variant_id == null)
+                    );
+
+                    if (!existsInObjectList) {
+                        $(this).remove();
+                    }
+                }
+            });
+            
+            let html = ''
+            
+            // Hiển thị lại những sản phẩm (div fixGrid6) ra giao diện đã chọn từ objectList ở popup
+            if(objectList.length){
+                for(let i = 0; i<objectList.length; i++){
+                    let product_id = objectList[i].product_id
+                    let product_variant_id = objectList[i].product_variant_id ?? null
+                    let name = objectList[i].variant_name ?? objectList[i].name
+
+                    let classBox = model +'-'+ product_id
+
+                    if(product_variant_id){
+                        classBox += '-'+ product_variant_id
+                    }
+
+                    if(!$(`.boxWrapper .${classBox}`).elExist()){
+                        html+=`
+                            <div class="fixGrid6 ${classBox}">
+                                <div class="goods-item" >
+                                    <a class="goods-item-name" title="${name}">${name}</a>
+                                    <button class="delete-goods-item">
+                                        <img src="Backend/img/close.png" alt="">
+                                    </button>
+                                </div>
+                                <div class="hidden">
+                                    <input type="hidden" name="object[id][]" value="${product_id}">
+                                    <input type="hidden" name="object[product_variant_id][]" value="${product_variant_id}">
+                                </div>
+                            </div>
+                        `
+                    }
+                    
+                }
+            }
+            HT.checkFixGrid6(html, objectList)
+        })
+    }
+
+    HT.checkFixGrid6 = (html, objectList) => {
+        if(objectList.length > 0){
+            $('.boxSearchIcon').remove();
+            $('.boxWrapper').prepend(html);
+        }else{
+            $('.boxWrapper').prepend(HT.boxSearchIcon());
+        }
+    }
+    
+    HT.boxSearchIcon = () => {
+        return `
+                <div class="boxSearchIcon">
+                    <i class="fa fa-search"></i>
+                </div>
+                `
+    }
+
+    // V106 Xây dựng hàm xóa sản phẩm khỏi danh sách
+    HT.deleteGoodsItem = () => {
+        $(document).on('click', '.delete-goods-item', function(e){
+            e.stopPropagation(); // ngăn không cho sự kiện click của div cha nó xảy ra
+
+            let _this = $(this)
+            // let deleted_item = _this.closest('.fixGrid6').attr('class').split(' ')[1]
+            _this.closest('.fixGrid6').remove()
+            console.log('fixGrid6 length:', $('.boxWrapper .fixGrid6').length);
+            if($('.boxWrapper .fixGrid6').length == 1){
+                console.log('Prepending HT.boxSearchIcon');
+                $('.boxWrapper').prepend(HT.boxSearchIcon());
+            }
+            
+            // let parts = deleted_item.split('-');
+            // let product_id = parts[1];
+            // let product_variant_id = parts[2] || null;
+    
+            // // xóa phần tử khỏi objectList
+            // objectList = objectList.filter(item => 
+            //     !(item.product_id == product_id && item.product_variant_id == product_variant_id)
+            // );
+            // console.log(objectList)
+        })
+    }
+
+    // V106 Đóng popup chọn sản phẩm khuyến mãi
+    HT.closeProductPromotion = () => {
+        $(document).on('click', '.close-product-promotion', function(){
+            objectList = []
+        })
+    }
+
     $(document).ready(function(){
         // V96
         HT.promotionNeverDate()
@@ -846,6 +1092,12 @@
 
         // V105
         HT.searchModel()
+
+        // V106
+        HT.chooseProductPromotion()
+        HT.confirmProductPromotion()
+        HT.deleteGoodsItem()
+        HT.closeProductPromotion()
     })
 
 })(jQuery)
