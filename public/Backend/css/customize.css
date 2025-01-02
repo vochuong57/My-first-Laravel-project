@@ -844,13 +844,14 @@ input[type=checkbox]{
     border-radius: 100px;
     padding: 4px 10px;
 }
-.goods-item span{
+.goods-item a{
     font-size: 13px;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
     display: block;
     width: 90%;
+    color: #000;
 }
 .goods-item button{
     background: transparent;
@@ -952,4 +953,12 @@ input[type=checkbox]{
 /* Handle on hover */
 .search-list::-webkit-scrollbar-thumb:hover {
     background: #555;
+}
+.chooseProductPromotionTd{
+    width: 400px;
+    max-width: 400px;
+    min-width: 400px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }

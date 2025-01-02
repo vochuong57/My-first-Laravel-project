@@ -75,57 +75,7 @@
                             </select>
                         </div>
                         <div class="promotion-container">
-                            <table class="table table-striped mt20">
-                                <thead>
-                                    <tr>
-                                        <th style="width: 400px;">Sản phẩm mua</th>
-                                        <th style="width: 80px;">SL tối thiểu</th>
-                                        <th>Giới hạn KM</th>
-                                        <th class="text-right">Chiết khấu</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="tr">
-                                        <td class="order-amount-range-from">
-                                            <div class="product-quantity" data-toggle="modal" data-target="#findProduct">
-                                                <div class="boxWrapper">
-                                                    <div class="boxSearchIcon hidden">
-                                                        <i class="fa fa-search"></i>
-                                                    </div>
-                                                    @for($i = 0; $i <= 10; $i++)
-                                                    <div class="fixGrid6 hidden">
-                                                        <div class="goods-item">
-                                                            <span class="goods-item-name">Macbook thế hệ mới ra mắt năm 2023</span>
-                                                            <button class="delete-goods-item">
-                                                                <img src="Backend/img/close.png" alt="">
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                    @endfor
-                                                    <div class="boxSearchInput fixGrid6">
-                                                        <p>Tìm theo tên, mã sản phẩm</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <input type="text" class="form-control int" name="amountValue[]" placeholder="0" value="1">
-                                        </td>
-                                        <td class="order-amount-range-to">
-                                            <input type="text" class="form-control int" name="amountTo[]" placeholder="0" value="0">
-                                        </td>
-                                        <td class="discountType">
-                                            <div class="uk-flex uk-flex-middle">
-                                                <input type="text" class="form-control int" name="amountValue[]" placeholder="0" value="0">
-                                                <select name="amountType" class="setupSelect2">
-                                                    <option value="cash">đ</option>
-                                                    <option value="percent">%</option>
-                                                </select>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            
                         </div>
                     </div>
                 </div>
