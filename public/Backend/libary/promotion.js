@@ -606,44 +606,45 @@
         `
         $('.promotion-container').html(html)
         HT.select2()
-        HT.setupAjaxSearch()
+        // HT.setupAjaxSearch()
     }
 
-    HT.setupAjaxSearch = () => {
-        $('.ajaxSearch').each(function(){
-            let _this = $(this)
-            let option = {
-                model: _this.attr('data-model'),
-            }
-            _this.select2({
-                minimumInputLength: 2,
-                placeholder: 'Nhập vào 2 từ để tìm kiếm...',
-                ajax: {
-                    url: 'ajax/dashboard/getPromotionObject',
-                    type: 'GET',
-                    dataType: 'json',
-                    delay: 250,
-                    data: function (params){
-                        return{
-                            search: params.term,
-                            option: option,
-                        }
-                    },
-                    processResults: function(data){
-                        // console.log(data)
-                        return {
-                            results: $.map(data, function(obj, i){
-                                return obj
-                            })
-                        }
-                    },
-                    cache: true
-                }
-            })
-        })
-    }
+    // // V101 không dùng tìm kiếm theo tên sản phẩm (đã bõ)
+    // HT.setupAjaxSearch = () => {
+    //     $('.ajaxSearch').each(function(){
+    //         let _this = $(this)
+    //         let option = {
+    //             model: _this.attr('data-model'),
+    //         }
+    //         _this.select2({
+    //             minimumInputLength: 2,
+    //             placeholder: 'Nhập vào 2 từ để tìm kiếm...',
+    //             ajax: {
+    //                 url: 'ajax/dashboard/getPromotionObject',
+    //                 type: 'GET',
+    //                 dataType: 'json',
+    //                 delay: 250,
+    //                 data: function (params){
+    //                     return{
+    //                         search: params.term,
+    //                         option: option,
+    //                     }
+    //                 },
+    //                 processResults: function(data){
+    //                     // console.log(data)
+    //                     return {
+    //                         results: $.map(data, function(obj, i){
+    //                             return obj
+    //                         })
+    //                     }
+    //                 },
+    //                 cache: true
+    //             }
+    //         })
+    //     })
+    // }
 
-    // V104 106 mở popup chọn sản phẩm khuyến mãi và kiểm tra xem sản phẩm đã được checked chưa
+    // V104 106 107 mở popup chọn sản phẩm khuyến mãi và kiểm tra xem sản phẩm, loại sản phẩm đã được checked chưa
     HT.productQuantityListProduct = () => {
         $(document).on('click', '.product-quantity', function(e){
             e.preventDefault()
@@ -678,7 +679,7 @@
         })
     }
     
-    // V104 106 hàm gọi ajax lấy dữ liệu sản phẩm khuyến mãi
+    // V104 106 107 hàm gọi ajax lấy dữ liệu sản phẩm, loại sản phẩm khuyến mãi
     HT.loadProduct = (option, objectList) => {
         $.ajax({
             url: 'ajax/product/loadProductPromotion',
@@ -692,7 +693,7 @@
         })
     }
     
-    // V104 106 hàm xử lý dữ liệu trả về từ ajax theo model của select option .select-product-and-quantity
+    // V104 106 107 hàm xử lý dữ liệu trả về từ ajax theo model của select option .select-product-and-quantity
     HT.fillToObjectList = (data, objectList) =>{
         switch (data.model){
             case "Product":
@@ -808,6 +809,98 @@
         $('.search-list').html(html)
     }
 
+    // V107 Hiển thị loại sản phẩm khuyến mãi khi mở popup chạy ajax lấy dữ liệu và kiểm tra xem loại sản phẩm nào đã được checked chưa
+    HT.fillProductCatalogueToList = (objects, objectList) => {
+        // console.log(objects)
+        console.log(objectList)
+        let html = ''
+        if(objects.data.length){
+            for(let i = 0; i < objects.data.length; i++){
+                let image = objects.data[i].image ?? 'Backend/img/not-found.png'
+                let name = objects.data[i].name
+                let product_id = objects.data[i].id
+
+                let classBox = ''
+                let model = $('.select-product-and-quantity').val()
+
+                if(objectList.length){
+                    for(let j = 0; j < objectList.length; j++){
+                        if(objectList[j].product_id == product_id){
+                            classBox = model +'-'+ product_id
+                            break
+                        }
+                    }
+                }
+                
+                // xử lý mảng objectList
+                if (!objectList) {
+                    objectList = [];
+                }
+                let existsInObjectList = objectList.some(item => 
+                    item.product_id == product_id
+                );
+                
+                // kiểm tra xem loại sản phẩm đã được checked chưa
+                let isChecked = ''
+                if(classBox != ''){ // kiểm tra xem loại sản phẩm đã được checked chưa so với giao diện
+                    let existsInDOM = $(`.boxWrapper .${classBox}`).length > 0;
+                    isChecked = (existsInDOM || existsInObjectList) ? 'checked' : ''
+                } else { // kiểm tra xem loại sản phẩm đã được checked chưa tại những trang khác khi di chuyển qua lại các trang
+                    isChecked = existsInObjectList ? 'checked' : ''
+                }
+
+                html += `
+                    <div class="search-object-item" data-productId = "${product_id}" data-name = "${name}">
+                        <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                            <div class="object-info">
+                                <div class="uk-flex uk-flex-middle">
+                                    <input type="checkbox" name="" value="${product_id}" class="input-checkbox" ${isChecked}>
+                                    <span class="image img-scaledown">
+                                        <img src="${image}" alt="">
+                                    </span>
+                                    <div class="object-name">
+                                        <div class="m0">${name}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            }
+        }
+        html = html + HT.paginationLinks(objects.links)
+        $('.search-list').html(html)
+    }
+
+    // V107 hàm chọn kiểu sản phẩm khuyến mãi
+    HT.selectProductAndQuantity = () => {
+        $(document).on('change', '.select-product-and-quantity', function(){
+            $('.search-model').val('')
+            let _this = $(this)
+            objectList = []
+            $('.boxWrapper').html('')
+            $('.boxWrapper')
+            .append(
+                $('<div>', {
+                    class: 'boxSearchIcon'
+                }).append(
+                    $('<i>', {
+                        class: 'fa fa-search'
+                    })
+                )
+            ).append(
+                $('<div>', {
+                    class: 'boxSearchInput fixGrid6'
+                }).append(
+                    $('<p>').text('Tìm theo tên, mã sản phẩm')
+                )
+            )
+
+            // cách 2 viết append gọn hơn
+            // $('.boxWrapper').append('<div class="boxSearchIcon"><i class="fa fa-search"></i></div><div class="boxSearchInput fixGrid6"><p>Tìm theo tên, mã sản phẩm</p></div>')
+        })
+    }
+
     // V104 hiển thị giao diện phân trang
     HT.paginationLinks = (links) => {
         let html = '';
@@ -906,7 +999,7 @@
             typingTimer = setTimeout(function(){
                 // console.log(keyword)
 
-                HT.loadProduct(option)
+                HT.loadProduct(option, objectList)
             }, doneTypingInterval)
              
         })
@@ -1098,6 +1191,7 @@
         HT.confirmProductPromotion()
         HT.deleteGoodsItem()
         HT.closeProductPromotion()
+        HT.selectProductAndQuantity()
     })
 
 })(jQuery)

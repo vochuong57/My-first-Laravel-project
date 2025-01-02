@@ -37,7 +37,36 @@ class ProductController extends Controller
             $condition[] = ['tb2.name', 'like', '%'.$get['keyword'].'%'];
         }
         // dd($condition);
-        $objects = $this->productRepository->findProductPromotion($condition);
+        $loadClass = loadClassInterface($get['model']);
+        // dd($loadClass);
+        if($get['model'] == 'Product'){
+            $objects = $loadClass->findProductPromotion($condition);
+        }elseif($get['model'] == 'ProductCatalogue'){
+
+            $conditionArray['keyword'] = $get['keyword'] ?? null;
+            $conditionArray['where'] = [
+                ['tb2.language_id', '=', $this->language]
+            ];
+
+            $objects = $loadClass->pagination(
+                [
+                    'product_catalogues.id',
+                    'tb2.name',
+                ],
+                $conditionArray,
+                20,
+                [
+                    'path' => '/admin/ajax/product/loadProductPromotion'
+                ],
+                [
+                    'product_catalogues.id', 'desc'
+                ],
+                [
+                    ['product_catalogue_language as tb2', 'tb2.product_catalogue_id', '=', 'product_catalogues.id']
+                ],
+            );
+            // dd($objects);
+        }
         // dd($objects->toArray());
 
         return response()->json([
