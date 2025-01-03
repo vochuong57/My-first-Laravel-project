@@ -115,7 +115,7 @@
             [
                 'title'=>'Quản lý Marketing',
                 'icon'=>'fa fa-bullhorn',
-                'name'=>['promotion', 'coupon'],
+                'name'=>['promotion', 'coupon', 'source'],
                 'subModule'=>[
                     [
                         'title'=>'QL Khuyến mãi',
@@ -125,6 +125,10 @@
                     //     'title'=>'QL mã giảm giá',
                     //     'route'=>'coupon/index'
                     // ],
+                    [
+                        'title'=>'QL nguồn khách',
+                        'route'=>'source/index'
+                    ]
                 ]
             ],
         ]

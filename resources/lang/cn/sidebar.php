@@ -113,7 +113,7 @@
             [
                 'title'=>'营销管理',
                 'icon'=>'fa fa-bullhorn',
-                'name'=>['promotion', 'coupon'],
+                'name'=>['promotion', 'coupon', 'source'],
                 'subModule'=>[
                     [
                         'title'=>'促销管理',
@@ -123,6 +123,10 @@
                     //     'title'=>'优惠券管理',
                     //     'route'=>'coupon/index'
                     // ],
+                    [
+                        'title' => '管理客户来源',
+                        'route' => 'source/index'
+                    ]                    
                 ]
             ],                              
         ]

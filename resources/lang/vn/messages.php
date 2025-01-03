@@ -492,4 +492,22 @@ return[
         ],
        
     ],
+    //SOURCE
+    'source' => [
+        'index'=>[
+            'title'=> 'Quản lý source',
+        ],
+        'delete'=>[
+            'title'=>'Xóa vị trí source ',
+            'btnDelete'=>'Xóa dữ liệu'
+        ],
+        'create'=>[
+            'title'=>'Thêm mới source',
+            'btnTitle'=>'Thêm mới'
+        ],
+        'edit'=>[
+            'title'=>'Cập nhật source',
+            'btnTitle'=>'Cập nhật'
+        ],
+    ],
 ];

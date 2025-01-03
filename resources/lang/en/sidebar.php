@@ -113,7 +113,7 @@
             [
                 'title'=>'Marketing Management',
                 'icon'=>'fa fa-bullhorn',
-                'name'=>['promotion', 'coupon'],
+                'name'=>['promotion', 'coupon', 'source'],
                 'subModule'=>[
                     [
                         'title'=>'Promotion Management',
@@ -123,6 +123,10 @@
                     //     'title'=>'Coupon Management',
                     //     'route'=>'coupon/index'
                     // ],
+                    [
+                        'title' => 'Manage Customer Sources',
+                        'route' => 'source/index'
+                    ]                    
                 ]
             ],                                 
         ]
