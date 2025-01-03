@@ -461,5 +461,23 @@ return [
             'btnTitle'=>'更新'
         ],
     ],
+    // SOURCE
+    'source' => [
+        'index' => [
+            'title' => '管理来源',
+        ],
+        'delete' => [
+            'title' => '删除来源位置',
+            'btnDelete' => '删除数据',
+        ],
+        'create' => [
+            'title' => '新增来源',
+            'btnTitle' => '新增',
+        ],
+        'edit' => [
+            'title' => '更新来源',
+            'btnTitle' => '更新',
+        ],
+    ],
 
 ];

@@ -460,5 +460,23 @@ return[
             'btnTitle'=>'Update'
         ],
     ],
+    // SOURCE
+    'source' => [
+        'index' => [
+            'title' => 'Manage Source',
+        ],
+        'delete' => [
+            'title' => 'Delete Source Position',
+            'btnDelete' => 'Delete Data',
+        ],
+        'create' => [
+            'title' => 'Add New Source',
+            'btnTitle' => 'Add New',
+        ],
+        'edit' => [
+            'title' => 'Update Source',
+            'btnTitle' => 'Update',
+        ],
+    ],
 
 ];

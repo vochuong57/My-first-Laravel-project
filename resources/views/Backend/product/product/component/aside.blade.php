@@ -75,7 +75,7 @@
             <div class="col-lg-12">
                 <div class="form-row">
                    
-                <div class="mb15">
+                    <div class="mb15">
                         <select name="publish" class="form-control setupSelect2" id="">
                             @foreach(__('messages.publish') as $key => $val)
                                 <option 
