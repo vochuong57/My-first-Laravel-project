@@ -510,4 +510,87 @@ return[
             'btnTitle'=>'Cập nhật'
         ],
     ],
+    //CUSTOMER CATALOGUE
+    'customerCatalogue' => [
+        'index'=>[
+            'title'=> 'Quản lý nhóm khách hàng',
+        ],
+        'create'=>[
+            'title'=>'Thêm mới nhóm khách hàng',
+            'btnTitle'=>'Thêm mới'
+        ],
+        'edit'=>[
+            'title'=>'Cập nhật nhóm khách hàng',
+            'btnTitle'=>'Cập nhật'
+        ],
+        'delete'=>[
+            'title'=>'Xóa nhóm khách hàng',
+            'btnDelete'=>'Xóa dữ liệu'
+        ],
+        'permission'=>[
+            'title'=>'Cập nhật quyền',
+            'btnTitle'=>'Cập nhật'
+        ]
+    ],
+
+    //table
+    'tableCustomerCatalogue_brand'=>'Danh sách nhóm người dùng',
+    'tableCustomerCatalogue_name'=>'Tên nhóm',
+    'tableCustomerCatalogue_count'=>'Số khách hàng',
+    'tableCustomerCatalogue_description'=>'Mô tả',
+    'tableCustomerCatalogue_publish'=>'Tình trạng',
+    'tableCustomerCatalogue_action'=>'Thao tác',
+
+    //toolbox
+    'toolboxDestroyCustomerCatalogue'=>'Bạn có chắc nhắn muốn xóa những nhóm khách hàng này?',
+
+    //store
+    'note_customerCatalogue' => '- Nhập thông tin chung của nhóm khách hàng',
+    'customerCatalogue_title' => 'Tên nhóm:',
+    'note' => 'Ghi chú:',
+
+    // destroy
+    'destroy_panel_description_customerCatalogue_1'=>'- Bạn đang muốn xóa nhóm khách hàng có tên là:',
+    'destroy_panel_description_customerCatalogue_2'=>'khôi phục nhóm khách hàng sau khi xóa.',
+
+    //CUSTOMER
+    'customer' => [
+        'index'=>[
+            'title'=> 'Quản lý khách hàng',
+        ],
+        'create'=>[
+            'title'=>'Thêm mới khách hàng',
+            'btnTitle'=>'Thêm mới'
+        ],
+        'edit'=>[
+            'title'=>'Cập nhật khách hàng',
+            'btnTitle'=>'Cập nhật'
+        ],
+        'delete'=>[
+            'title'=>'Xóa khách hàng',
+            'btnDelete'=>'Xóa dữ liệu'
+        ],
+        'permission'=>[
+            'title'=>'Cập nhật quyền',
+            'btnTitle'=>'Cập nhật'
+        ]
+    ],
+
+    //table
+    'tableCustomer_brand'=>'Danh sách khách hàng',
+    'tableCustomer_image'=>'Ảnh',
+    'tableCustomer_name'=>'Tên Khách hàng',
+    'tableCustomer_phone'=>'Số điện thoại',
+    'tableCustomer_address'=>'Địa chỉ',
+    'tableCustomer_catalogue'=>'Nhóm khách hàng',
+    'tableCustomer_source'=>'Nguồn khách',
+    'tableCustomer_publish'=>'Tình trạng',
+    'tableCustomer_action'=>'Thao tác',
+
+    //filter
+    'tableCustomer_chooseCatalogue'=>'Chọn nhóm khách hàng',
+    'tableCustomer_chooseSource'=>'Chọn nguồn khách hàng',
+
+    //toolbox
+    'toolboxDestroyCustomer'=>'Bạn có chắc nhắn muốn xóa những khách hàng này?',
 ];

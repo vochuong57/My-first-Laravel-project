@@ -479,5 +479,88 @@ return [
             'btnTitle' => '更新',
         ],
     ],
+    // CUSTOMER CATALOGUE
+    'customerCatalogue' => [
+        'index' => [
+            'title' => '管理客户群组',
+        ],
+        'create' => [
+            'title' => '新增客户群组',
+            'btnTitle' => '新增',
+        ],
+        'edit' => [
+            'title' => '更新客户群组',
+            'btnTitle' => '更新',
+        ],
+        'delete' => [
+            'title' => '删除客户群组',
+            'btnDelete' => '删除数据',
+        ],
+        'permission' => [
+            'title' => '更新权限',
+            'btnTitle' => '更新',
+        ],
+    ],
+
+    // table
+    'tableCustomerCatalogue_brand' => '客户群组列表',
+    'tableCustomerCatalogue_name' => '群组名称',
+    'tableCustomerCatalogue_count' => '客户数量',
+    'tableCustomerCatalogue_description' => '描述',
+    'tableCustomerCatalogue_publish' => '状态',
+    'tableCustomerCatalogue_action' => '操作',
+
+    // toolbox
+    'toolboxDestroyCustomerCatalogue' => '您确定要删除这些客户群组吗？',
+
+    // store
+    'note_customerCatalogue' => '- 输入客户群组的基本信息',
+    'customerCatalogue_title' => '群组名称：',
+    'note' => '备注：',
+
+    // destroy
+    'destroy_panel_description_customerCatalogue_1' => '- 您将要删除名为：',
+    'destroy_panel_description_customerCatalogue_2' => '的客户群组，删除后无法恢复。',
+
+    // CUSTOMER
+    'customer' => [
+        'index' => [
+            'title' => '管理客户',
+        ],
+        'create' => [
+            'title' => '新增客户',
+            'btnTitle' => '新增',
+        ],
+        'edit' => [
+            'title' => '更新客户',
+            'btnTitle' => '更新',
+        ],
+        'delete' => [
+            'title' => '删除客户',
+            'btnDelete' => '删除数据',
+        ],
+        'permission' => [
+            'title' => '更新权限',
+            'btnTitle' => '更新',
+        ],
+    ],
+
+    //table
+    'tableCustomer_brand' => '客户列表',
+    'tableCustomer_image' => '图片',
+    'tableCustomer_name' => '客户名称',
+    'tableCustomer_phone' => '电话号码',
+    'tableCustomer_address' => '地址',
+    'tableCustomer_catalogue' => '客户组',
+    'tableCustomer_source' => '客户来源',
+    'tableCustomer_publish' => '状态',
+    'tableCustomer_action' => '操作',
+
+    //filter
+    'tableCustomer_chooseCatalogue' => '选择客户组',
+    'tableCustomer_chooseSource' => '选择客户来源',
+
+    //toolbox
+    'toolboxDestroyCustomer' => '您确定要删除这些客户吗？',
 
 ];

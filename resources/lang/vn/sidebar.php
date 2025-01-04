@@ -131,5 +131,20 @@
                     ]
                 ]
             ],
+            [
+                'title'=>'Quản lý khách hàng',
+                'icon'=>'fa fa-user',
+                'name'=>['customer'],
+                'subModule'=>[
+                    [
+                        'title'=>'QL Nhóm Khách Hàng',
+                        'route'=>'customer/catalogue/index'
+                    ],
+                    [
+                        'title'=>'QL Khách Hàng',
+                        'route'=>'customer/index'
+                    ]
+                ]
+            ],
         ]
     ];

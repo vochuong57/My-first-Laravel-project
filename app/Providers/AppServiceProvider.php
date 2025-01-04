@@ -45,6 +45,10 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\PromotionServiceInterface' => 'App\Services\PromotionService',
 
         'App\Services\Interfaces\SourceServiceInterface' => 'App\Services\SourceService',
+
+        'App\Services\Interfaces\CustomerCatalogueServiceInterface' => 'App\Services\CustomerCatalogueService',
+
+        'App\Services\Interfaces\CustomerServiceInterface' => 'App\Services\CustomerService',
     ];
     /**
      * Register any application services.
