@@ -128,6 +128,22 @@
                         'route' => 'source/index'
                     ]                    
                 ]
-            ],                                 
+            ],
+            [
+                'title' => 'Customer Management',
+                'icon' => 'fa fa-user',
+                'name' => ['customer'],
+                'subModule' => [
+                    [
+                        'title' => 'Manage Customer Groups',
+                        'route' => 'customer/catalogue/index',
+                    ],
+                    [
+                        'title' => 'Manage Customers',
+                        'route' => 'customer/index',
+                    ],
+                ],
+            ],
+                                        
         ]
     ];

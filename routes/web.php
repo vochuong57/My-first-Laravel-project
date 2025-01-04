@@ -27,6 +27,8 @@ use App\Http\Controllers\Backend\SlideController;
 use App\Http\Controllers\Backend\WidgetController;
 use App\Http\Controllers\Backend\PromotionController;
 use App\Http\Controllers\Backend\SourceController;
+use App\Http\Controllers\Backend\CustomerController;
+use App\Http\Controllers\Backend\CustomerCatalogueController;
 //@@useController@@
 
 
@@ -325,6 +327,32 @@ Route::group(['middleware' => ['admin','locale','backend_default_locale']], func
 
         Route::get('{id}/destroy',[SourceController::class, 'destroy'])->name('source.destroy')->where(['id'=>'[0-9]+']);//hiển thị form xóa user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
         Route::post('{id}/delete',[SourceController::class, 'delete'])->name('source.delete')->where(['id'=>'[0-9]+']);//Thực thi xử lý xóa user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+    });
+
+    Route::group(['prefix'=>'customer/catalogue'], function(){
+        Route::get('index',[CustomerCatalogueController::class, 'index'])->name('customer.catalogue.index');//hiển thị form customer khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+        
+        Route::get('store',[CustomerCatalogueController::class, 'store'])->name('customer.catalogue.store');//hiển thị form thêm customer khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+        Route::post('create',[CustomerCatalogueController::class, 'create'])->name('customer.catalogue.create');//thực thi xử lý thêm customer khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+        
+        Route::get('{id}/edit',[CustomerCatalogueController::class, 'edit'])->name('customer.catalogue.edit')->where(['id'=>'[0-9]+']);//hiển thị form cập nhật customer khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+        Route::post('{id}/update',[CustomerCatalogueController::class, 'update'])->name('customer.catalogue.update')->where(['id'=>'[0-9]+']);//Thực thi xử lý cập nhật customer khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+
+        Route::get('{id}/destroy',[CustomerCatalogueController::class, 'destroy'])->name('customer.catalogue.destroy')->where(['id'=>'[0-9]+']);//hiển thị form xóa customer khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+        Route::post('{id}/delete',[CustomerCatalogueController::class, 'delete'])->name('customer.catalogue.delete')->where(['id'=>'[0-9]+']);//Thực thi xử lý xóa customer khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+    });
+
+    Route::group(['prefix'=>'customer'], function(){
+        Route::get('index',[CustomerController::class, 'index'])->name('customer.index');//hiển thị form customer khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+        
+        Route::get('store',[CustomerController::class, 'store'])->name('customer.store');//hiển thị form thêm customer khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+        Route::post('create',[CustomerController::class, 'create'])->name('customer.create');//thực thi xử lý thêm customer khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+        
+        Route::get('{id}/edit',[CustomerController::class, 'edit'])->name('customer.edit')->where(['id'=>'[0-9]+']);//hiển thị form cập nhật customer khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+        Route::post('{id}/update',[CustomerController::class, 'update'])->name('customer.update')->where(['id'=>'[0-9]+']);//Thực thi xử lý cập nhật customer khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+
+        Route::get('{id}/destroy',[CustomerController::class, 'destroy'])->name('customer.destroy')->where(['id'=>'[0-9]+']);//hiển thị form xóa customer khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+        Route::post('{id}/delete',[CustomerController::class, 'delete'])->name('customer.delete')->where(['id'=>'[0-9]+']);//Thực thi xử lý xóa customer khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
     });
 
     //@@new-module@@

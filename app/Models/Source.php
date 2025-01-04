@@ -23,5 +23,7 @@ class Source extends Model
         'user_id',
     ];
 
-    
+    public function customers(){
+        return $this->hasMany(Customer::class, 'source_id', 'id');
+    }
 }

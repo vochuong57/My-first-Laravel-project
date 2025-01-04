@@ -1,0 +1,165 @@
+<?php
+
+namespace App\Services;
+
+use App\Services\Interfaces\CustomerServiceInterface;
+use App\Repositories\Interfaces\CustomerRepositoryInterface as CustomerRepository;
+//thêm thư viện cho việc xử lý INSERT
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+//thêm thư viện xử lý xử lý DATE
+use Illuminate\Support\Carbon;
+//thêm thư viện xử lý password
+use Illuminate\Support\Facades\Hash;
+
+
+/**
+ * Class CustomerService
+ * @package App\Services
+ */
+class CustomerService implements CustomerServiceInterface
+{
+    protected $customerRepository;
+
+    public function __construct(CustomerRepository $customerRepository){
+        $this->customerRepository=$customerRepository;
+    }
+
+    public function paginate($request){//$request để tiến hành chức năng tìm kiếm
+        $condition['keyword']=addslashes($request->input('keyword'));
+        $condition['publish']=$request->input('publish');
+        $condition['customer_catalogue_id']=$request->input('customer_catalogue_id');
+        $condition['source_id']=$request->input('source_id');
+        // Kiểm tra nếu giá trị publish là 0, thì gán lại thành null
+        if ($condition['publish'] == '0') {
+            $condition['publish'] = null;
+        }
+        if($condition['customer_catalogue_id']=='0'){
+            $condition['customer_catalogue_id']=null;
+        }
+        if($condition['source_id']=='0'){
+            $condition['source_id']=null;
+        }
+        //dd($condition);
+        $perpage=$request->integer('perpage', 20);
+        $customers=$this->customerRepository->pagination(
+            $this->paginateSelect(), 
+            $condition, 
+            $perpage, 
+            ['path'=> 'customer/index'],
+            []
+        );
+        // dd($customers);
+        return $customers;
+    }
+    public function createCustomer($request){
+        DB::beginTransaction();
+        try{
+            $payload = $request->except('_token','send','repassword');//lấy tất cả ngoại trừ hai trường này thay vì dùng input là lấy tất cả
+            //$payload['birthday']=$this->convertBirthdayDate($payload['birthday']);
+            $payload['password']=Hash::make($payload['password']);
+            //dd($payload);
+
+            $customer=$this->customerRepository->create($payload);
+            //dd($customer);
+
+            DB::commit();
+            return true;
+        }catch(\Exception $ex){
+            DB::rollBack();
+            echo $ex->getMessage();//die();
+            return false;
+        }
+    }
+
+    public function updateCustomer($id, $request){
+        DB::beginTransaction();
+        try{
+            $payload = $request->except('_token','send');//lấy tất cả ngoại trừ hai trường này thay vì dùng input là lấy tất cả
+            //$payload['birthday']=$this->convertBirthdayDate($payload['birthday']);
+            //dd($payload);
+
+            $customer=$this->customerRepository->update($id, $payload);
+            //dd($customer);
+
+            DB::commit();
+            return true;
+        }catch(\Exception $ex){
+            DB::rollBack();
+            echo $ex->getMessage();//die();
+            return false;
+        }
+    }
+    public function convertBirthdayDate($birthday=''){
+        $carbonDate=Carbon::createFromFormat('Y-m-d', $birthday);
+        $birthday=$carbonDate->format('Y-m-d H:i:s');
+        return $birthday;
+    }
+    public function deleteCustomer($id){
+        DB::beginTransaction();
+        try{
+            $customer=$this->customerRepository->forceDelete($id);
+
+            DB::commit();
+            return true;
+        }catch(\Exception $ex){
+            DB::rollBack();
+            echo $ex->getMessage();//die();
+            return false;
+        }
+    }
+    public function updateStatus($post=[]){
+        //echo 123; die();
+        DB::beginTransaction();
+        try{
+            $payload[$post['field']]=(($post['value']==1)?2:1);
+            
+            //dd($payload);
+            $customer=$this->customerRepository->update($post['modelId'], $payload);
+            //echo 1; die();
+            DB::commit();
+            return true;
+        }catch(\Exception $ex){
+            DB::rollBack();
+            echo $ex->getMessage();//die();
+            return false;
+        }
+        
+    }
+    public function updateStatusAll($post=[]){
+        //echo 123; die();
+        DB::beginTransaction();
+        try{
+            //dd($post);
+            $payload[$post['field']]=$post['value'];
+            
+            //dd($payload);
+            $customer=$this->customerRepository->updateByWhereIn('id', $post['id'], $payload);
+            //echo 1; die();
+            DB::commit();
+            return true;
+        }catch(\Exception $ex){
+            DB::rollBack();
+            echo $ex->getMessage();//die();
+            return false;
+        }
+    }
+    public function deleteAll($post=[]){
+        DB::beginTransaction();
+        try{
+            $customer=$this->customerRepository->deleteByWhereIn('id',$post['id']);
+            //echo 1; die();
+            DB::commit();
+            return true;
+        }catch(\Exception $ex){
+            DB::rollBack();
+            echo $ex->getMessage();//die();
+            return false;
+        }
+    }
+    private function paginateSelect(){
+        return [
+            'id','email','phone','address','name','image','publish','customer_catalogue_id','source_id'
+        ];
+    }
+}

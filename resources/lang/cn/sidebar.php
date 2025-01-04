@@ -128,7 +128,23 @@
                         'route' => 'source/index'
                     ]                    
                 ]
-            ],                              
+            ],
+            [
+                'title' => '客户管理',
+                'icon' => 'fa fa-user',
+                'name' => ['customer'],
+                'subModule' => [
+                    [
+                        'title' => '管理客户组',
+                        'route' => 'customer/catalogue/index',
+                    ],
+                    [
+                        'title' => '管理客户',
+                        'route' => 'customer/index',
+                    ],
+                ],
+            ],
+                                   
         ]
     ];
 

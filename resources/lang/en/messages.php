@@ -478,5 +478,88 @@ return[
             'btnTitle' => 'Update',
         ],
     ],
+    // CUSTOMER CATALOGUE
+    'customerCatalogue' => [
+        'index' => [
+            'title' => 'Manage Customer Groups',
+        ],
+        'create' => [
+            'title' => 'Add New Customer Group',
+            'btnTitle' => 'Add New',
+        ],
+        'edit' => [
+            'title' => 'Update Customer Group',
+            'btnTitle' => 'Update',
+        ],
+        'delete' => [
+            'title' => 'Delete Customer Group',
+            'btnDelete' => 'Delete Data',
+        ],
+        'permission' => [
+            'title' => 'Update Permissions',
+            'btnTitle' => 'Update',
+        ],
+    ],
+
+    // table
+    'tableCustomerCatalogue_brand' => 'Customer Group List',
+    'tableCustomerCatalogue_name' => 'Group Name',
+    'tableCustomerCatalogue_count' => 'Number of Customers',
+    'tableCustomerCatalogue_description' => 'Description',
+    'tableCustomerCatalogue_publish' => 'Status',
+    'tableCustomerCatalogue_action' => 'Actions',
+
+    // toolbox
+    'toolboxDestroyCustomerCatalogue' => 'Are you sure you want to delete these customer groups?',
+
+    // store
+    'note_customerCatalogue' => '- Enter the general information of the customer group',
+    'customerCatalogue_title' => 'Group Name:',
+    'note' => 'Note:',
+
+    // destroy
+    'destroy_panel_description_customerCatalogue_1' => '- You are about to delete the customer group named:',
+    'destroy_panel_description_customerCatalogue_2' => 'recover the customer group after deletion.',
+
+    // CUSTOMER
+    'customer' => [
+        'index' => [
+            'title' => 'Manage Customers',
+        ],
+        'create' => [
+            'title' => 'Add New Customer',
+            'btnTitle' => 'Add New',
+        ],
+        'edit' => [
+            'title' => 'Update Customer',
+            'btnTitle' => 'Update',
+        ],
+        'delete' => [
+            'title' => 'Delete Customer',
+            'btnDelete' => 'Delete Data',
+        ],
+        'permission' => [
+            'title' => 'Update Permissions',
+            'btnTitle' => 'Update',
+        ],
+    ],
+
+    //table
+    'tableCustomer_brand' => 'Customer List',
+    'tableCustomer_image' => 'Image',
+    'tableCustomer_name' => 'Customer Name',
+    'tableCustomer_phone' => 'Phone Number',
+    'tableCustomer_address' => 'Address',
+    'tableCustomer_catalogue' => 'Customer Group',
+    'tableCustomer_source' => 'Customer source',
+    'tableCustomer_publish' => 'Status',
+    'tableCustomer_action' => 'Actions',
+
+    //filter
+    'tableCustomer_chooseCatalogue' => 'Choose customer group',
+    'tableCustomer_chooseSource' => 'Choose customer source',
+
+    //toolbox
+    'toolboxDestroyCustomer' => 'Are you sure you want to delete these customers?',
 
 ];
