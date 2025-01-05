@@ -2,7 +2,7 @@
     var HT={};
     var _token = $('meta[name="csrf-token"]').attr('content')
 
-    // P1. V96 Tạo sự kiện change cho input:checkbox #neverDate không có ngày kết thúc (trái)
+    // P1. V96 Tạo sự kiện change cho input:checkbox #neverDate không có ngày kết thúc (Phải)
     HT.promotionNeverDate = () => {
         $(document).on('change', '#neverDate', function(){
             let _this = $(this)
@@ -17,7 +17,7 @@
         })
     }
 
-    // P2.1 V96 tạo sự kiện click ở input:radio .chooseSource để chọn dạng (nguồn khách áp dụng) (trái)
+    // P2.1 V96 V110 tạo sự kiện click ở input:radio .chooseSource để chọn dạng (nguồn khách áp dụng) (phải)
     HT.promotionSource = () => {
         $(document).on('click', '.chooseSource', function(){
             let _this = $(this)
@@ -26,20 +26,31 @@
                 _this.parents('.ibox-content').find('.source-wrapper').remove()
             }else{
                 _this.parents('.ibox-content').find('.source-wrapper').remove()
-                let sourceData = [
-                    {
-                        id: 1,
-                        name: 'TikTok'
+
+                $.ajax({
+                    url: 'ajax/source/getAllSource',
+                    type: 'GET',
+                    // data: option,
+                    dataType: 'json',
+                    success: function(res){
+                        console.log(res)
+                        let sourceData = res.data
+                        // let sourceData = [
+                        //     {
+                        //         id: 1,
+                        //         name: 'TikTok'
+                        //     },
+                        //     {
+                        //         id: 2,
+                        //         name: 'Shopee'
+                        //     },
+                        // ]
+                        let sourceHtml = HT.renderPromotionSource(sourceData)
+                        // console.log(sourceHtml)
+                        _this.parents('.ibox-content').append(sourceHtml)
+                        HT.promotionMultipleSelect2()
                     },
-                    {
-                        id: 2,
-                        name: 'Shopee'
-                    },
-                ]
-                let sourceHtml = HT.renderPromotionSource(sourceData)
-                // console.log(sourceHtml)
-                _this.parents('.ibox-content').append(sourceHtml)
-                HT.promotionMultipleSelect2()
+                })
             }
         })
     }
@@ -208,34 +219,48 @@
         // </div>
     }
 
-    // P3.5 V96 Hàm đỗ ra giao diện select2 dạng multiple cấp 2 tương ứng theo từng conditionItem đã chọn (select.conditionItem) cấp 1
+    // P3.5 V96 V110 Hàm đỗ ra giao diện select2 dạng multiple cấp 2 tương ứng theo từng conditionItem đã chọn (select.conditionItem) cấp 1
     HT.createConditionItem = (value, label) => {
-
-        let optionData = [
-            {
-                id: 1,
-                name: 'Khach Vip'
-            },
-            {
-                id: 2,
-                name: 'Khách bán buôn'
+        if(!$('.wrapper-condition').find('.'+value).elExist()){
+            
+            let option = {
+                value: value,
             }
-        ]
-        let conditionItem = $('<div>').addClass('wrapperConditionItem mt10 '+value)
-        let select = $('<select>').addClass('multipleSelect2 objectItem').attr('name', 'customerGroup').attr('multiple', true)
-        for(let i = 0; i < optionData.length; i++){
-            let option = $('<option>').attr('value', optionData[i].id).text(optionData[i].name)
-            select.append(option)
+            $.ajax({
+                url: 'ajax/dashboard/getPromotionConditionValue',
+                type: 'GET',
+                data: option,
+                dataType: 'json',
+                success: function(res){
+                    console.log(res)
+                    let optionData = res.data
+                    // let optionData = [
+                    //     {
+                    //         id: 1,
+                    //         name: 'Khach Vip'
+                    //     },
+                    //     {
+                    //         id: 2,
+                    //         name: 'Khách bán buôn'
+                    //     }
+                    // ]
+                    let conditionItem = $('<div>').addClass('wrapperConditionItem mt10 '+value)
+                    let select = $('<select>').addClass('multipleSelect2 objectItem').attr('name', value).attr('multiple', true)
+                    for(let i = 0; i < optionData.length; i++){
+                        let option = $('<option>').attr('value', optionData[i].id).text(optionData[i].text)
+                        select.append(option)
+                    }
+                    const conditionLabel = HT.createConditionLabel(label, value)
+                    conditionItem.append(conditionLabel)
+                    conditionItem.append(select)
+            
+                   
+                    $('.wrapper-condition').append(conditionItem)
+                    HT.promotionMultipleSelect2()
+                },
+            })
         }
-        const conditionLabel = HT.createConditionLabel(label, value)
-        conditionItem.append(conditionLabel)
-        conditionItem.append(select)
 
-        if($('.wrapper-condition').find('.'+value).elExist()){
-            return
-        }
-        $('.wrapper-condition').append(conditionItem)
-        HT.promotionMultipleSelect2()
     }
 
     // P3.6 V96 Hàm xóa div.delete để xóa các wrapperConditionItem (cấp 2) tương ứng

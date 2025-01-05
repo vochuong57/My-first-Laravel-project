@@ -37,5 +37,19 @@ return [
     'item' => [
     'Product' => '产品版本',
     'ProductCatalogue' => '产品类别',
-    ]
+    ],
+    // V110
+    'gender' => [
+        [
+            'id' => 1,
+            'name' => '男'
+        ],
+        [
+            'id' => 2,
+            'name' => '女'
+        ],
+    ],
+    'day' => array_map(function($value){
+        return ['id' => $value - 1, 'name' => $value];
+    }, range(1, 31))
 ];
