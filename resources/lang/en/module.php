@@ -37,5 +37,20 @@ return [
     'item' => [
     'Product' => 'Product Version',
     'ProductCatalogue' => 'Product Category',
-    ]
+    ],
+    // V110
+   'gender' => [
+        [
+            'id' => 1,
+            'name' => 'Male'
+        ],
+        [
+            'id' => 2,
+            'name' => 'Female'
+        ],
+    ],
+    'day' => array_map(function($value){
+        return ['id' => $value - 1, 'name' => $value];
+    }, range(1, 31))
+
 ];

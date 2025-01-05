@@ -165,4 +165,51 @@ class DashboardController extends Controller
         // dd($temp);
         return response()->json(array('items' => $temp));
     }
+
+    // V110
+    public function getPromotionConditionValue(Request $request){
+        try {
+            $get = $request->input();
+            // dd($get);
+            // dd(__('module.day'));
+            switch ($get['value']) {
+                case 'staff_take_care_customer':
+                    $class = loadClassInterface('User');
+                    $object = $class->all()->toArray();
+                    break;
+                case 'customer_group':
+                    $class = loadClassInterface('CustomerCatalogue');
+                    $object = $class->all()->toArray();
+                    break;
+                case 'customer_gender':
+                    $object = __('module.gender');
+                    break;
+                case 'customer_birthday':
+                    $object = __('module.day');
+                    break;
+            }
+            // dd($object);
+            $temp=[];
+            if(!is_null($object) && count($object)){
+                foreach($object as $Key => $val){
+                    $temp[]=[
+                        'id' => $val['id'],
+                        'text' => $val['name'],
+                    ];
+                }
+            }
+            // dd($temp);
+    
+            return response()->json([
+                'error' => false,
+                'data' => $temp,
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => true,
+                'messages' => $e->getMessage(),
+            ]);
+        }
+    }
 }
