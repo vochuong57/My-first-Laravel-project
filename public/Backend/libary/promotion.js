@@ -9,10 +9,10 @@
             let isChecked = _this.prop('checked')
             // console.log(isChecked)
             if(isChecked){
-                $('input[name=endDate]').val('').attr('readonly', true)
+                $('input[name=endDate]').val('').attr('disabled', true)
             }else{
                 let endDate = $('input[name=startDate]').val()
-                $('input[name=endDate]').val(endDate).attr('readonly', false)
+                $('input[name=endDate]').val(endDate).attr('disabled', false)
             }
         })
     }

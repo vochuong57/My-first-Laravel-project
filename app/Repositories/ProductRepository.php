@@ -84,6 +84,7 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
         ->find($id);
     }
 
+    // V104 dùng để custom lại dữ liệu hiển thị product hoặc product có variant trong promotion trong trường hợp chiết khâu theo từng sản phẩm
     public function findProductPromotion($condition = [], $relation = []){
         $query = $this->model->newQuery();
         $query->select([

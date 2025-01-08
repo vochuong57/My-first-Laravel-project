@@ -3,6 +3,9 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Validator;
+use DateTime;
+use Carbon\Carbon;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -68,5 +71,19 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //
+        Validator::extend('custom_date_format', function($attribute, $value, $parameters, $validator){
+            return Datetime::createFromFormat('d/m/Y H:i', $value) !== false;
+        });
+
+        Validator::extend('custom_date_after', function($attribute, $value, $parameters, $validator){
+            // dd($validator);
+            // dd($validator->getData());
+            // dd($validator->getData()[$parameters[0]]);
+            $startDate = Carbon::createFromFormat('d/m/Y H:i', $validator->getData()[$parameters[0]]);
+            $endDate = Carbon::createFromFormat('d/m/Y H:i', $value);
+            // dd($startDate, $endDate);
+            // dd($endDate->greaterThan($startDate));
+            return $endDate->greaterThan($startDate);
+        });
     }
 }
