@@ -10,7 +10,7 @@
     </div>
 @endif
 @php
-    $url=($config['method']=='create')?route('widget.create'):route('widget.update', $widget->id)
+    $url=($config['method']=='create')?route('promotion.create'):route('promotion.update', $promotion->id)
 @endphp
 <form action="{{ $url }}" method="post" class="box">
     @csrf
@@ -110,6 +110,11 @@
                                     class="form-control datepicker"
                                     placeholder="dd/mm/yyyy H:i"
                                     autocomplete="off"
+                                    @php
+                                        // Lấy giá trị 'neverDate' từ DB hoặc từ old
+                                        $neverDate = old('neverDate', $promotion->neverDate ?? 'noData');
+                                    @endphp
+                                    {{ ($neverDate == 'noData') ? '' : 'disabled' }}
                                 >
                                 <span><i class="fa fa-calendar"></i></span>
                             </div>
@@ -118,10 +123,15 @@
                             <div class="uk-flex uk-flex-middle">
                                 <input 
                                     type="checkbox"
-                                    name=""
+                                    name="neverDate"
                                     value="accept"
                                     class=""
                                     id="neverDate"
+                                    @php
+                                        // Lấy giá trị 'neverDate' từ DB hoặc từ old
+                                        $neverDate = old('neverDate', $promotion->neverDate ?? 'noData');
+                                    @endphp
+                                    {{ ($neverDate == 'noData') ? '' : 'checked'  }}
                                 >
                                 <label class="fix-label ml5" for="neverDate">Không có ngày kết thúc</label>
                             </div>
