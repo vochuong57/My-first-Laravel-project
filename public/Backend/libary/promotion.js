@@ -59,7 +59,7 @@
     HT.renderPromotionSource = (sourceData) => {
         let wrapper = $('<div>').addClass('source-wrapper')
         if(sourceData.length){
-            let select = $('<select>').addClass('multipleSelect2').attr('name', 'source').attr('multiple', true)
+            let select = $('<select>').addClass('multipleSelect2').attr('name', 'sourceValue[]').attr('multiple', true)
 
             for(let i = 0; i < sourceData.length; i++){
                 let option = $('<option>').attr('value', sourceData[i].id).text(sourceData[i].name)

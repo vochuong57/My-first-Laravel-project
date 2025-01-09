@@ -30,17 +30,20 @@ class StorePromotionRequest extends FormRequest
             'name' => 'required',
             'code' => 'required|unique:promotions',
             'startDate' => 'required|custom_date_format',
-            // 'promotion.description.*' => 'required|string',
-            // 'promotion.canonical.*' => ['required', 'distinct'],
         ];
 
         if(!$this->input('neverDate')){
             $rules['endDate'] = 'required|custom_date_format|custom_date_after:startDate';
             // $rules['endDate'] = 'required|custom_date_format|after:startDate';
         }
-
         // Y-m-d H:i đỉnh dạng của check after dạng time của hệ thống
         // d/m/Y H:i
+        
+        if($this->input('source') == 'choose'){
+            $rules['sourceValue'] = 'required|array|min:1'; // Ensure at least one option is selected
+            $rules['sourceValue.*'] = 'required|string'; // Optional: Validate each selected value
+        }
+
 
         return $rules;
     }
@@ -54,12 +57,18 @@ class StorePromotionRequest extends FormRequest
             'startDate.custom_date_format' => 'Ngày bắt đầu khuyến mại không đúng đinh dạng d/m/Y H:i',
             'endDate.required' => 'Bạn chưa nhập vào ngày kết thúc khuyến mại',
             'endDate.custom_date_format' => 'Ngày kết thúc khuyến mại không đúng đinh dạng d/m/Y H:i',
-           
         ];
 
         if(!$this->input('neverDate')){
             $messages['endDate.required'] = 'Bạn chưa chọn ngày kết thúc của khuyến mãi';
             $messages['endDate.custom_date_after'] = 'Ngày kết thúc khuyến mại phải lớn hơn ngày bắt đầu khuyến mại';
+        }
+
+        if($this->input('source') == 'choose'){
+            $messages['sourceValue.required'] = 'Bạn chưa chọn ít nhất một nguồn khách áp dụng';
+            $messages['sourceValue.array'] = 'Giá trị nguồn nguồn khách áp dụng không hợp lệ';
+            $messages['sourceValue.min'] = 'Bạn phải chọn ít nhất một nguồn khách áp dụng';
+            $messages['sourceValue.*.required'] = 'Giá trị nguồn khách áp dụng không hợp lệ';
         }
 
         return $messages;
