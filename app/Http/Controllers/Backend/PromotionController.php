@@ -16,6 +16,7 @@ use App\Http\Requests\UpdatePromotionRequest;
 //use App\Models\Promotion;
 use App\Models\Language;
 use App\Repositories\Interfaces\LanguageRepositoryInterface as LanguageRepository;
+use App\Repositories\Interfaces\SourceRepositoryInterface as SourceRepository;
 
 
 class PromotionController extends Controller
@@ -24,11 +25,13 @@ class PromotionController extends Controller
     protected $promotionRepository;
     protected $language;
     protected $languageRepository;
+    protected $sourceRepository;
 
-    public function __construct(PromotionService $promotionService, PromotionRepository $promotionRepository, LanguageRepository $languageRepository){
+    public function __construct(PromotionService $promotionService, PromotionRepository $promotionRepository, LanguageRepository $languageRepository, SourceRepository $sourceRepository){
         $this->promotionService=$promotionService;//định nghĩa  $this->promotionService=$promotionService để biến này nó có thể trỏ tới các phương tức của PromotionService
         $this->promotionRepository=$promotionRepository;
         $this->languageRepository=$languageRepository;
+        $this->sourceRepository=$sourceRepository;
 
         $this->middleware(function($request, $next) {
             try {
@@ -78,9 +81,11 @@ class PromotionController extends Controller
 
         $config['method']='create';
 
+        $sources =  $this->sourceRepository->all();
+
         $this->authorize('modules', 'promotion.store');//phân quyền
 
-        return view('Backend.dashboard.layout', compact('template','config'));
+        return view('Backend.dashboard.layout', compact('template','config', 'sources'));
     }
 
     //xử lý thêm promotion

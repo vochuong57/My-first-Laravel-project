@@ -151,7 +151,7 @@
                                     name="source"
                                     id="allSource"
                                     class="chooseSource"
-                                    checked
+                                    {{ (old('source', $promotion->sourceStatus ?? '') || !old('source') ) == 'all' ? 'checked' : '' }}
                                 >
                                 <label class="fix-label ml5" for="allSource">Áp dụng cho toàn bộ nguồn khách</label>
                             </div>
@@ -162,10 +162,31 @@
                                     name="source"
                                     id="chooseSource"
                                     class="chooseSource"
+                                    {{ (old('source', $promotion->sourceStatus ?? '')) == 'choose' ? 'checked' : '' }}
                                 >
                                 <label class="fix-label ml5" for="chooseSource">Chọn nguồn khách áp dụng</label>
                             </div>
-                            
+                            @php
+                                // V112 save form Source
+                                $sourceStatus = old('source', $promotion->sourceStatus ?? null)
+                            @endphp
+                            @if($sourceStatus == 'choose')
+                                @php
+                                    $sourceValue = old('sourceValue', $promotion->sourceValue ?? []); 
+                                @endphp
+                                <div class="source-wrapper">
+                                    <select name="sourceValue[]" id="" class="multipleSelect2" multiple>
+                                        @foreach($sources as $key => $val)
+                                        <option 
+                                            value="{{ $val->id }}"
+                                            {{ (in_array($val->id, $sourceValue)) ? 'selected' : '' }}
+                                        >
+                                        {{ $val->name }}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
