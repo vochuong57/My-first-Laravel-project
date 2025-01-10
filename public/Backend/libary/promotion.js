@@ -122,24 +122,27 @@
                 _this.parents('.ibox-content').find('.apply-wrapper').remove()
             }else{
                 _this.parents('.ibox-content').find('.apply-wrapper').remove()
-                let applyData = [
-                    {
-                        id: 'staff_take_care_customer',
-                        name: 'Nhân viên phụ trách'
-                    },
-                    {
-                        id: 'customer_group',
-                        name: 'Nhóm khách hàng'
-                    },
-                    {
-                        id: 'customer_gender',
-                        name: 'Giới tính'
-                    },
-                    {
-                        id: 'customer_birthday',
-                        name: 'Ngày sinh'
-                    },
-                ]
+                let applyData = JSON.parse($('.applyValueList').val())
+                // console.log(applyData)
+                
+                // let applyData = [
+                //     {
+                //         id: 'staff_take_care_customer',
+                //         name: 'Nhân viên phụ trách'
+                //     },
+                //     {
+                //         id: 'customer_group',
+                //         name: 'Nhóm khách hàng'
+                //     },
+                //     {
+                //         id: 'customer_gender',
+                //         name: 'Giới tính'
+                //     },
+                //     {
+                //         id: 'customer_birthday',
+                //         name: 'Ngày sinh'
+                //     },
+                // ]
                 let applyHtml = HT.renderApplyCondition(applyData)
                 // console.log(sourceHtml)
                 _this.parents('.ibox-content').append(applyHtml)
@@ -154,7 +157,7 @@
         let wrapper = $('<div>').addClass('apply-wrapper')
         let wrapperConditionItem = $('<div>').addClass('wrapper-condition')
         if(applyData.length){
-            let select = $('<select>').addClass('multipleSelect2 conditionItem').attr('name', 'apply').attr('multiple', true)
+            let select = $('<select>').addClass('multipleSelect2 conditionItem').attr('name', 'applyValue[]').attr('multiple', true)
 
             for(let i = 0; i < applyData.length; i++){
                 let option = $('<option>').attr('value', applyData[i].id).text(applyData[i].name)
@@ -244,12 +247,25 @@
                     //         name: 'Khách bán buôn'
                     //     }
                     // ]
+
                     let conditionItem = $('<div>').addClass('wrapperConditionItem mt10 '+value)
-                    let select = $('<select>').addClass('multipleSelect2 objectItem').attr('name', value).attr('multiple', true)
+                    let select = $('<select>').addClass('multipleSelect2 objectItem').attr('name', value + "[]").attr('multiple', true)
+
+                    // V113 save form objectItem - 1
+                    let conditionHiddenInput = $('.condition_input_'+value) // from file blade
+                    let conditionHiddenInputValue = []
+                    if(conditionHiddenInput.length){
+                        conditionHiddenInputValue = JSON.parse(conditionHiddenInput.val())
+                    }
+
                     for(let i = 0; i < optionData.length; i++){
                         let option = $('<option>').attr('value', optionData[i].id).text(optionData[i].text)
                         select.append(option)
                     }
+
+                    // V113 save form objectItem - 2
+                    select.val(conditionHiddenInputValue).trigger('change')//
+
                     const conditionLabel = HT.createConditionLabel(label, value)
                     conditionItem.append(conditionLabel)
                     conditionItem.append(select)
@@ -1184,6 +1200,17 @@
         })
     }
 
+    // V113 save form select condition lv.1
+    HT.checkConditionItemSet = () => {
+        let checkedValue = $('.conditionItemSelected').val()
+        if(checkedValue.length && $('.conditionItem').length){
+            checkedValue = JSON.parse(checkedValue)
+            console.log(checkedValue)
+            HT.chooseApplyItem()
+            $('.conditionItem').val(checkedValue).trigger('change')
+        }
+    }
+
     $(document).ready(function(){
         // V96
         HT.promotionNeverDate()
@@ -1217,6 +1244,9 @@
         HT.deleteGoodsItem()
         HT.closeProductPromotion()
         HT.selectProductAndQuantity()
+
+        // V113
+        HT.checkConditionItemSet()
     })
 
 })(jQuery)

@@ -51,5 +51,25 @@ return [
     ],
     'day' => array_map(function($value){
         return ['id' => $value - 1, 'name' => $value];
-    }, range(1, 31))
+    }, range(1, 31)),
+    // V113
+    'applyValue' => [
+        [
+            'id' => 'staff_take_care_customer',
+            'name' => '负责人',
+        ],
+        [
+            'id' => 'customer_group',
+            'name' => '客户组',
+        ],
+        [
+            'id' => 'customer_gender',
+            'name' => '性别',
+        ],
+        [
+            'id' => 'customer_birthday',
+            'name' => '生日',
+        ],
+    ],
+
 ];

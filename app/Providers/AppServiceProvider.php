@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
 use DateTime;
 use Carbon\Carbon;
+use App\Rules\NotEmptyJsonArray;
 
 class AppServiceProvider extends ServiceProvider
 {

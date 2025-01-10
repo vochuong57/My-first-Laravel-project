@@ -44,6 +44,16 @@ class StorePromotionRequest extends FormRequest
             $rules['sourceValue.*'] = 'required|string'; // Optional: Validate each selected value
         }
 
+        if($this->input('apply') == 'choose'){
+            $rules['applyValue'] = 'required|array|min:1'; // Ensure at least one option is selected
+            $rules['applyValue.*'] = 'required|string'; // Optional: Validate each selected value
+
+            foreach ($this->input('applyValue', []) as $key => $val) {
+                $rules[$val] = 'required|array|min:1'; // Ensure at least one option is selected
+                $rules[$val.'.*'] = 'required|string'; // Optional: Validate each selected value
+            }
+        }
+        // dd($this->input('applyValue'));
 
         return $rules;
     }
@@ -69,6 +79,20 @@ class StorePromotionRequest extends FormRequest
             $messages['sourceValue.array'] = 'Giá trị nguồn nguồn khách áp dụng không hợp lệ';
             $messages['sourceValue.min'] = 'Bạn phải chọn ít nhất một nguồn khách áp dụng';
             $messages['sourceValue.*.required'] = 'Giá trị nguồn khách áp dụng không hợp lệ';
+        }
+
+        if($this->input('apply') == 'choose'){
+            $messages['applyValue.required'] = 'Bạn chưa chọn ít nhất một đối tượng áp dụng';
+            $messages['applyValue.array'] = 'Giá trị nguồn đối tượng áp dụng không hợp lệ';
+            $messages['applyValue.min'] = 'Bạn phải chọn ít nhất một đối tượng áp dụng';
+            $messages['applyValue.*.required'] = 'Giá trị đối tượng áp dụng không hợp lệ';
+
+            foreach ($this->input('applyValue', []) as $key => $val) {
+                $messages[$val.'.required'] = 'Giá trị đối tượng áp dụng cụ thể '.$val.' không được để trống';
+                $messages[$val.'.array'] = 'Giá trị nguồn đối tượng áp dụng cụ thể '.$val.' không hợp lệ';
+                $messages[$val.'.min'] = 'Bạn phải chọn ít nhất một đối tượng áp dụng cụ thể '.$val;
+                $messages[$val.'.*.required'] = 'Giá trị đối tượng áp dụng cụ thể '.$val.' không hợp lệ';
+            }
         }
 
         return $messages;
