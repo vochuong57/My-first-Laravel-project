@@ -203,9 +203,9 @@
                                     name="apply"
                                     id="allApply"
                                     class="chooseApply"
-                                    checked
+                                    {{ (old('apply', $promotion->applyStatus ?? '') || !old('apply') ) == 'all' ? 'checked' : '' }}
                                 >
-                                <label class="fix-label ml5" for="allApply">Áp dụng cho toàn bộ nguồn khách</label>
+                                <label class="fix-label ml5" for="allApply">Áp dụng cho toàn bộ đối tượng</label>
                             </div>
                             <div class="nav-setting-item uk-flex uk-flex-middle">
                                 <input 
@@ -214,11 +214,25 @@
                                     name="apply"
                                     id="chooseApply"
                                     class="chooseApply"
+                                    {{ (old('apply', $promotion->applyStatus ?? '')) == 'choose' ? 'checked' : '' }}
                                 >
-                                <label class="fix-label ml5" for="chooseApply">Chọn đối tượng khách hàng áp dụng</label>
+                                <label class="fix-label ml5" for="chooseApply">Chọn đối tượng áp dụng</label>
                             </div>
                         </div>
-                        
+                        @php
+                            $applyStatus = old('apply', $promotion->applyStatus ?? null);
+                        @endphp
+                        @if($applyStatus == 'choose')
+                            <div class="apply-wrapper">
+                                <select class="multipleSelect2 conditionItem" name="applyValue[]" id="" multiple>
+                                    @foreach(__('module.applyValue') as $key => $val)
+                                    <option value="{{ $val['id'] }}">{{ $val['name'] }}</option>
+                                    @endforeach
+                                </select>
+
+                               <div class="wrapper-condition"></div>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -230,4 +244,17 @@
     </div>
 </form>
 @include('Backend.promotion.promotion.component.popup')
+<!-- Đổ ra dữ liệu sản phẩm áp dụng select cho hình thức khuyến mãi product_and_quantity -->
 <input type="hidden" class="input-product-and-quantity" value="{{ json_encode(__('module.item')) }}">
+
+<!-- Xử lý save form cho đối tượng áp dụng -->
+<input type="hidden" class="applyValueList" value="{{ json_encode(__('module.applyValue')) }}">
+@php
+    $applyValue = old('applyValue', $promotion->applyValue ?? []);
+@endphp
+@if(count($applyValue))
+    <input type="hidden" class="conditionItemSelected" value="{{ json_encode($applyValue) }}">
+    @foreach($applyValue as $key => $val)
+        <input type="hidden" class="condition_input_{{ $val }}" value="{{ json_encode(old($val)) }}">
+    @endforeach
+@endif

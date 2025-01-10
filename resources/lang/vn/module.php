@@ -52,5 +52,24 @@ return [
     ],
     'day' => array_map(function($value){
         return ['id' => $value - 1, 'name' => $value];
-    }, range(1, 31))
+    }, range(1, 31)),
+    // V113
+    'applyValue' => [
+        [
+            'id'=> 'staff_take_care_customer',
+            'name'=> 'Nhân viên phụ trách',
+        ],
+        [
+            'id'=> 'customer_group',
+            'name'=> 'Nhóm khách hàng',
+        ],
+        [
+            'id'=> 'customer_gender',
+            'name'=> 'Giới tính',
+        ],
+        [
+            'id'=> 'customer_birthday',
+            'name'=> 'Ngày sinh',
+        ],
+    ],
 ];
