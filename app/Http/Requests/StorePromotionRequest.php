@@ -30,6 +30,7 @@ class StorePromotionRequest extends FormRequest
             'name' => 'required',
             'code' => 'required|unique:promotions',
             'startDate' => 'required|custom_date_format',
+            'promotionMethod' => 'gt:0',
         ];
 
         if(!$this->input('neverDate')){
@@ -53,6 +54,8 @@ class StorePromotionRequest extends FormRequest
                 $rules[$val.'.*'] = 'required|string'; // Optional: Validate each selected value
             }
         }
+
+        $rules['promotionMethod'] = 'required|not_in:default';
         // dd($this->input('applyValue'));
 
         return $rules;
@@ -94,6 +97,9 @@ class StorePromotionRequest extends FormRequest
                 $messages[$val.'.*.required'] = 'Giá trị đối tượng áp dụng cụ thể '.$val.' không hợp lệ';
             }
         }
+
+        $messages['promotionMethod.required'] = 'Bạn chưa chọn hình thức khuyến mại';
+        $messages['promotionMethod.not_in'] = 'Bạn chưa chọn hình thức khuyến mại hợp lệ';
 
         return $messages;
     }
