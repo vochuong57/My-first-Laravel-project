@@ -67,8 +67,8 @@
                     <div class="ibox-content">
                         <div class="form-row">
                             <div class="fix-label ml5" for="">Chọn hình thức khuyến mãi</div>
-                            <select name="" id="" class="setupSelect2 promotionMethod">
-                                <option value="0">Chọn hình thức</option>
+                            <select name="promotionMethod" id="" class="setupSelect2 promotionMethod">
+                                <option value="default">Chọn hình thức</option>
                                 @foreach(__('module.promotion') as $key => $val)
                                     <option value="{{ $key }}">{{ $val }}</option>
                                 @endforeach
@@ -239,7 +239,7 @@
         </div>
        
         <div class="text-right mb15">
-            <button class="btn btn-primary" type="submit" name="send" value="send">{{ $config['seo']['btnTitle'] }}</button>
+            <button class="btn btn-primary btn-submit-promotion" type="submit" name="send" value="send">{{ $config['seo']['btnTitle'] }}</button>
         </div>
     </div>
 </form>
@@ -258,3 +258,10 @@
         <input type="hidden" class="condition_input_{{ $val }}" value="{{ json_encode(old($val)) }}">
     @endforeach
 @endif
+
+<!-- xử lý save form select hình thức khuyến mại -->
+<input type="hidden" class="preload_promotionMethod" value="{{ json_encode(old('promotionMethod', $promotion->method ?? null)) }}">
+<!-- xử lý save form cho sản phẩm áp dụng loại khuyến mại product_and_quantity (select lv2 của product_and_quantity) -->
+<input type="hidden" class="preload_select-product-and-quantity" value="{{ json_encode(old('chooseModule', $promotion->chooseModule ?? null)) }}">
+<!-- xử lý save form cho hình thức khuyến mại order_amount_range -->
+<input type="hidden" class="input_order_amount_range" value="{{ json_encode(old('promotion_order_amount_range', $promotion->promotion_order_amount_range ?? null)) }}">

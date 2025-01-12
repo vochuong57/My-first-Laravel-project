@@ -321,6 +321,13 @@
                     HT.removePromotionContainer()
             }
         })
+
+        // V114 save form .promotionMethod 'product_and_quantity'
+        let method = JSON.parse($('.preload_promotionMethod').val())
+        console.log(method)
+        if(method !== null){
+            $('.promotionMethod').val(method).trigger('change')
+        }
     }
 
     HT.removePromotionContainer = () => {
@@ -335,6 +342,69 @@
     }
 
     HT.renderAmountRange = () => {
+        // V114 save form promotion method order_amount_range
+        let order_amount_range = JSON.parse($('.input_order_amount_range').val()) ?? {
+            amountFrom: ['0'],
+            amountTo: ['0'],
+            amountValue: ['0'],
+            amountType: ['default'],
+        }
+        console.log(order_amount_range)
+        
+        let $tr = ''
+
+        ranges = []
+
+        console.log(ranges)
+        
+        for(let i = 0; i < order_amount_range.amountFrom.length; i++){
+            let $amountFrom = order_amount_range.amountFrom[i]
+            let $amountTo = order_amount_range.amountTo[i]
+            let $amountValue = order_amount_range.amountValue[i]
+            let $amountType = order_amount_range.amountType[i]
+
+            // Bỏ qua lần lặp cuối cùng và nếu độ dài lớn hơn hoặc bằng 2 thì mới thêm vào mảng ranges
+            if (order_amount_range.amountFrom.length >= 1 && i !== order_amount_range.amountFrom.length - 1) {
+                ranges.push({
+                    newFrom: $amountFrom,
+                    newTo: $amountTo,
+                    position: i,
+                });
+            }
+
+            // Kiểm tra nếu không phải là lần lặp cuối cùng thì thêm thuộc tính readonly
+            let readonlyFrom = ($amountFrom != '0' || ($amountFrom == '0' && $amountTo != '0')) ? 'readonly' : '';
+            let readonlyTo =  ($amountTo != '0') ? 'readonly' : '';
+
+            $tr += `
+            <tr class="tr">
+                <td class="order-amount-range-from">
+                    <input type="text" class="form-control int" name="promotion_order_amount_range[amountFrom][]" placeholder="0" value="${$amountFrom}" ${ readonlyFrom }>
+                </td>
+                <td class="order-amount-range-to">
+                    <input type="text" class="form-control int" name="promotion_order_amount_range[amountTo][]" placeholder="0" value="${$amountTo}" ${ readonlyTo }>
+                </td>
+                <td class="discountType">
+                    <div class="uk-flex uk-flex-middle">
+                        <input type="text" class="form-control int" name="promotion_order_amount_range[amountValue][]" placeholder="0" value="${$amountValue}">
+                        <select name="promotion_order_amount_range[amountType][]" class="setupSelect2">
+                            <option ${ ($amountType == 'cash' || $amountType == 'default') ? 'selected' : '' } value="cash">đ</option>
+                            <option ${ ($amountType == 'percent') ? 'selected' : '' } value="percent">%</option>
+                        </select>
+                    </div>
+                </td>
+                <td>
+                    <div class="delete-some-item delete-order-amount-range-condition">
+                        <a class="delete-menu img-scaledown" style="width: 15%; height: 30px; margin-left: 6px">
+                            <img src="Backend/img/close.png" alt="">
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            `
+        }
+        
+        
         let html = `
             <div class="order-amount-range">
                 <table class="table table-striped">
@@ -347,30 +417,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="tr">
-                            <td class="order-amount-range-from">
-                                <input type="text" class="form-control int" name="amountFrom[]" placeholder="0" value="0">
-                            </td>
-                            <td class="order-amount-range-to">
-                                <input type="text" class="form-control int" name="amountTo[]" placeholder="0" value="0">
-                            </td>
-                            <td class="discountType">
-                                <div class="uk-flex uk-flex-middle">
-                                    <input type="text" class="form-control int" name="amountValue[]" placeholder="0" value="0">
-                                    <select name="amountType" class="setupSelect2">
-                                        <option value="cash">đ</option>
-                                        <option value="percent">%</option>
-                                    </select>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="delete-some-item delete-order-amount-range-condition">
-                                    <a class="delete-menu img-scaledown" style="width: 15%; height: 30px; margin-left: 6px">
-                                        <img src="Backend/img/close.png" alt="">
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
+                        ${$tr}
                     </tbody>
                 </table>
                 <button class="btn btn-success btn-custom btn-js-100" value="" type="button">Thêm điều kiện</button>
@@ -432,8 +479,8 @@
 
             let $tr = $('<tr>')
             let tdList = [
-                {class: 'order-amount-range-from td-range', name: '', value: 0},
-                {class: 'order-amount-range-to td-range', name: '', value: 0},
+                {class: 'order-amount-range-from td-range', name: 'promotion_order_amount_range[amountFrom][]', value: 0},
+                {class: 'order-amount-range-to td-range', name: 'promotion_order_amount_range[amountTo][]', value: 0},
             ]
 
             for(let i = 0; i < tdList.length; i++){
@@ -454,7 +501,7 @@
                     .append(
                         $('<input>', {
                             type: 'text',
-                            name: '',
+                            name: 'promotion_order_amount_range[amountValue][]',
                             class: 'form-control int',
                             placeholder: 0,
                             value: 0
@@ -462,7 +509,8 @@
                     )
                     .append(
                         $('<select>', {
-                            class: 'setupSelect2'
+                            class: 'setupSelect2',
+                            name: 'promotion_order_amount_range[amountType][]',
                         })
                             .append(
                                 $('<option>', {
@@ -590,14 +638,17 @@
         let selectData = JSON.parse($('.input-product-and-quantity').val())
         // console.log(selectData)
         let selectHtml = ''
+        let moduleType = JSON.parse($('.preload_select-product-and-quantity').val()) // V114 save form .select-product-and-quantity
+        console.log(moduleType)
+        
         for(let key in selectData){
-            selectHtml += '<option value="'+key+'">'+selectData[key]+'</option>'
+            selectHtml += '<option '+((moduleType !== null && moduleType == key) ? 'selected' : '')+' value="'+key+'">'+selectData[key]+'</option>'
         }
         let html = `
             <div class="product-and-quantity">
                 <div class="choose-module mt20">
                     <div class="fix-label" style="color:blue" for="">Sản phẩm áp dụng</div>
-                    <select name="" id="" class="setupSelect2 select-product-and-quantity">
+                    <select name="chooseModule" id="" class="setupSelect2 select-product-and-quantity">
                         ${selectHtml}
                     </select>
                 </div>
@@ -1203,12 +1254,38 @@
     // V113 save form select condition lv.1
     HT.checkConditionItemSet = () => {
         let checkedValue = $('.conditionItemSelected').val()
-        if(checkedValue.length && $('.conditionItem').length){
+        if (Array.isArray(checkedValue) && checkedValue.length > 0) {
             checkedValue = JSON.parse(checkedValue)
             console.log(checkedValue)
             HT.chooseApplyItem()
             $('.conditionItem').val(checkedValue).trigger('change')
         }
+    }
+
+    // V114 bắt request cho phần method order_amount_range
+    HT.btnSubmitPromotion = () => {
+        $(document).on('click', '.btn-submit-promotion', function(e){
+            let trLastChild = $('.order-amount-range').find('tbody tr:last-child');
+            if(trLastChild.length){
+                let from = parseInt(trLastChild.find('.order-amount-range-from input').val().replace(/\./g, ''));
+                let to = parseInt(trLastChild.find('.order-amount-range-to input').val().replace(/\./g, ''));
+                let currentPosition = trLastChild.data('position') || null;
+
+                if (!HT.isValidRange(from, to)) {
+                    e.preventDefault();
+                    alert('Khoảng điều kiện không hợp lệ, giá trị tới phải lớn hơn giá trị từ');
+                    return;
+                }
+
+                let conflictResult = HT.checkBtnJs100ConflictRange(from, to, currentPosition);
+                if (conflictResult.conflict) {
+                    e.preventDefault();
+                    trLastChild.addClass('errorLine');
+                    alert(`Có xung đột với khoảng điều kiện tại vị trí: ${conflictResult.position}`);
+                    return;
+                }
+            }
+        });
     }
 
     $(document).ready(function(){
@@ -1247,6 +1324,9 @@
 
         // V113
         HT.checkConditionItemSet()
+
+        //V114
+        HT.btnSubmitPromotion()
     })
 
 })(jQuery)
