@@ -644,6 +644,15 @@
         for(let key in selectData){
             selectHtml += '<option '+((moduleType !== null && moduleType == key) ? 'selected' : '')+' value="'+key+'">'+selectData[key]+'</option>'
         }
+
+        // V115 save form 4 columns condition end for product_and_quantity method
+        let preloadData = JSON.parse($('.input_product_and_quantity').val()) ?? {
+            quantity: ['1'],
+            maxDiscountValue: ['0'],
+            discountValue: ['0'],
+            discountType: ['cash'],
+        }
+
         let html = `
             <div class="product-and-quantity">
                 <div class="choose-module mt20">
@@ -677,17 +686,17 @@
                                 </div>
                             </td>
                             <td>
-                                <input type="text" class="form-control int" name="amountValue[]" placeholder="0" value="1">
+                                <input type="text" class="form-control int" name="product_and_quantity[quantity]" placeholder="0" value="${preloadData.quantity}">
                             </td>
                             <td class="order-amount-range-to">
-                                <input type="text" class="form-control int" name="amountTo[]" placeholder="0" value="0">
+                                <input type="text" class="form-control int" name="product_and_quantity[maxDiscountValue]" placeholder="0" value="${preloadData.maxDiscountValue}">
                             </td>
                             <td class="discountType">
                                 <div class="uk-flex uk-flex-middle">
-                                    <input type="text" class="form-control int" name="amountValue[]" placeholder="0" value="0">
-                                    <select name="amountType" class="setupSelect2">
-                                        <option value="cash">đ</option>
-                                        <option value="percent">%</option>
+                                    <input type="text" class="form-control int" name="product_and_quantity[discountValue]" placeholder="0" value="${preloadData.discountValue}">
+                                    <select name="product_and_quantity[discountType]" class="setupSelect2">
+                                        <option ${ (preloadData.discountType == 'cash') ? 'selected' : '' } value="cash">đ</option>
+                                        <option ${ (preloadData.discountType == 'percent') ? 'selected' : '' } value="percent">%</option>
                                     </select>
                                 </div>
                             </td>
@@ -823,6 +832,7 @@
                     for(let j = 0; j < objectList.length; j++){
                         if(objectList[j].product_id == product_id){
                             classBox = model +'-'+ product_id
+                            console.log(objectList[j].product_variant_id)
                             if(objectList[j].product_variant_id == product_variant_id){
                                 classBox += '-'+ product_variant_id
                                 console.log(classBox)
@@ -848,7 +858,7 @@
                 //         }
                 //     }
                 // });
-                
+
                 // xử lý mảng objectList
                 if (!objectList) {
                     objectList = [];
@@ -1136,6 +1146,59 @@
 
     // V106 Xác nhận sản phẩm đã chọn từ popup chọn sản phẩm khuyến mãi
     HT.confirmProductPromotion = () => {
+
+        // V115 save form objectItem for product_and_quantity method
+        let preloadObject = JSON.parse($('.input_object').val())
+        // console.log(preloadObject)
+        if(preloadObject != null){
+            
+            for(let i = 0; i < preloadObject.id.length; i++){
+                objectList.push({
+                    product_id: preloadObject.id[i],
+                    product_variant_id: preloadObject.product_variant_id[i] ?? null,
+                    name: preloadObject.name[i]
+                })
+            }
+
+            let model = $('.select-product-and-quantity').val()
+            let html = ''
+            // Hiển thị lại những sản phẩm (div fixGrid6) ra giao diện đã chọn từ objectList ở popup (save form)
+            if(objectList.length){
+                for(let i = 0; i<objectList.length; i++){
+                    let product_id = objectList[i].product_id
+                    let product_variant_id = (objectList[i].product_variant_id == 'null') ? null : objectList[i].product_variant_id
+                    let name = objectList[i].variant_name ?? objectList[i].name
+
+                    let classBox = model +'-'+ product_id
+
+                    if(product_variant_id){
+                        classBox += '-'+ product_variant_id
+                    }
+
+                    if(!$(`.boxWrapper .${classBox}`).elExist()){
+                        html+=`
+                            <div class="fixGrid6 ${classBox}">
+                                <div class="goods-item" >
+                                    <a class="goods-item-name" title="${name}">${name}</a>
+                                    <button class="delete-goods-item">
+                                        <img src="Backend/img/close.png" alt="">
+                                    </button>
+                                </div>
+                                <div class="hidden">
+                                    <input type="hidden" name="object[id][]" value="${product_id}">
+                                    <input type="hidden" name="object[product_variant_id][]" value="${product_variant_id}">
+                                    <input type="hidden" name="object[name][]" value="${name}">
+                                </div>
+                            </div>
+                        `
+                    }
+                }
+            }
+            HT.checkFixGrid6(html, objectList)
+            
+            console.log(objectList)
+        }
+
         $(document).on('click', '.confirm-product-promotion', function(e){
             e.preventDefault()
             console.log(objectList)
@@ -1190,6 +1253,7 @@
                                 <div class="hidden">
                                     <input type="hidden" name="object[id][]" value="${product_id}">
                                     <input type="hidden" name="object[product_variant_id][]" value="${product_variant_id}">
+                                    <input type="hidden" name="object[name][]" value="${name}">
                                 </div>
                             </div>
                         `
@@ -1265,6 +1329,7 @@
     // V114 bắt request cho phần method order_amount_range
     HT.btnSubmitPromotion = () => {
         $(document).on('click', '.btn-submit-promotion', function(e){
+            // V114 Bắt request cho order_amount_range method
             let trLastChild = $('.order-amount-range').find('tbody tr:last-child');
             if(trLastChild.length){
                 let from = parseInt(trLastChild.find('.order-amount-range-from input').val().replace(/\./g, ''));
@@ -1284,6 +1349,13 @@
                     alert(`Có xung đột với khoảng điều kiện tại vị trí: ${conflictResult.position}`);
                     return;
                 }
+            }
+
+            // V115 Bắt request cho product_and_quantity method
+            if ($('.boxWrapper').length && $('.boxWrapper').find('.boxSearchIcon').length) {
+                e.preventDefault();
+                alert(`Vui lòng chọn ít nhất một sản phẩm cho phương thức khuyến mại theo từng sản phẩm`);
+                return;
             }
         });
     }
