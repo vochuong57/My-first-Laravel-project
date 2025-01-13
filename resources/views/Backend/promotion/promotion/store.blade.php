@@ -244,6 +244,8 @@
     </div>
 </form>
 @include('Backend.promotion.promotion.component.popup')
+
+<!-- V113 -->
 <!-- Đổ ra dữ liệu sản phẩm áp dụng select cho hình thức khuyến mãi product_and_quantity -->
 <input type="hidden" class="input-product-and-quantity" value="{{ json_encode(__('module.item')) }}">
 
@@ -259,9 +261,16 @@
     @endforeach
 @endif
 
+<!-- V114 -->
 <!-- xử lý save form select hình thức khuyến mại -->
 <input type="hidden" class="preload_promotionMethod" value="{{ json_encode(old('promotionMethod', $promotion->method ?? null)) }}">
 <!-- xử lý save form cho sản phẩm áp dụng loại khuyến mại product_and_quantity (select lv2 của product_and_quantity) -->
 <input type="hidden" class="preload_select-product-and-quantity" value="{{ json_encode(old('chooseModule', $promotion->chooseModule ?? null)) }}">
 <!-- xử lý save form cho hình thức khuyến mại order_amount_range -->
 <input type="hidden" class="input_order_amount_range" value="{{ json_encode(old('promotion_order_amount_range', $promotion->promotion_order_amount_range ?? null)) }}">
+
+<!-- V115 -->
+<!-- xử lý save form 4 columns end product_and_quantity method  -->
+<input type="hidden" class="input_product_and_quantity" value="{{ json_encode(old('product_and_quantity', $promotion->product_and_quantity ?? null)) }}">
+<!-- xử lý save form column first nơi chưa các sản phẩm (.objectItem) -->
+<input type="hidden" class="input_object" value="{{ json_encode(old('object', $promotion->object ?? null)) }}">
