@@ -1318,7 +1318,7 @@
     // V113 save form select condition lv.1
     HT.checkConditionItemSet = () => {
         let checkedValue = $('.conditionItemSelected').val()
-        if (Array.isArray(checkedValue) && checkedValue.length > 0) {
+        if (checkedValue.length > 0) {
             checkedValue = JSON.parse(checkedValue)
             console.log(checkedValue)
             HT.chooseApplyItem()
