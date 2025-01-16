@@ -5,6 +5,8 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use App\Rules\Promotion\OrderAmountRangeRule;
+use App\Rules\Promotion\ProductAndQuantityRule;
 
 class StorePromotionRequest extends FormRequest
 {
@@ -57,6 +59,21 @@ class StorePromotionRequest extends FormRequest
 
         $rules['promotionMethod'] = 'required|not_in:default';
         // dd($this->input('applyValue'));
+
+        // dd($this->input('promotionMethod'));
+        $promotionMethod = $this->input('promotionMethod');
+        switch ($promotionMethod) {
+            case 'order_amount_range':
+                $rules['promotionMethod'] = [new OrderAmountRangeRule($this->input('promotion_order_amount_range'))];
+                break;
+            case 'product_and_quantity':
+                $rules['promotionMethod'] = [new ProductAndQuantityRule($this->only('product_and_quantity', 'object'))];
+                break;
+            
+            default:
+                # code...
+                break;
+        }
 
         return $rules;
     }
