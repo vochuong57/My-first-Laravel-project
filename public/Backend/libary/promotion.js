@@ -440,40 +440,45 @@
                 let from = parseInt(trLastChild.find('.order-amount-range-from input').val().replace(/\./g, ''));
                 let to = parseInt(trLastChild.find('.order-amount-range-to input').val().replace(/\./g, ''));
                 let currentPosition = trLastChild.data('position') || null;
-                
-                if (!HT.isValidRange(from, to)) {
-                    alert('Khoảng điều kiện không hợp lệ, giá trị tới phải lớn hơn giá trị từ');
-                    return;
-                }
-                
-                // Kiểm tra xung đột
-                let conflictResult = HT.checkBtnJs100ConflictRange(from, to, currentPosition);
-                if (conflictResult.conflict) {
-                    trLastChild.addClass('errorLine');
-                    alert(`Có xung đột với khoảng điều kiện tại vị trí: ${conflictResult.position}`);
-                    return;
-                }
-                
-                // Xóa class lỗi nếu thêm thành công
-                $('.order-amount-range').find('tr').removeClass('errorLine');
-                
-                // Nếu hàng này chưa có `position`, thêm mới
-                if (!currentPosition) {
-                    currentPosition = ranges.length + 1;
-                    trLastChild.data('position', currentPosition);
-                }
 
-                trLastChild.find('.order-amount-range-from input').attr('readonly', true)
-                trLastChild.find('.order-amount-range-to input').attr('readonly', true)
-                
-                // Thêm hoặc cập nhật mảng ranges
-                let existingIndex = ranges.findIndex(range => range.position === currentPosition);
-                if (existingIndex !== -1) {
-                    // Cập nhật khoảng đã tồn tại
-                    ranges[existingIndex] = { newFrom: from, newTo: to, position: currentPosition };
-                } else {
-                    // Thêm mới
-                    ranges.push({ newFrom: from, newTo: to, position: currentPosition });
+                // V118
+                if (!ranges.some(item => item.newFrom == from && item.newTo == to)) {
+                    // ------ V99
+                    if (!HT.isValidRange(from, to)) {
+                        alert('Khoảng điều kiện không hợp lệ, giá trị tới phải lớn hơn giá trị từ');
+                        return;
+                    }
+                    
+                    // ------- V99 Kiểm tra xung đột
+                    let conflictResult = HT.checkBtnJs100ConflictRange(from, to, currentPosition);
+                    if (conflictResult.conflict) {
+                        trLastChild.addClass('errorLine');
+                        alert(`Có xung đột với khoảng điều kiện tại vị trí: ${conflictResult.position}`);
+                        return;
+                    }
+                    
+                    // ------ V99
+                    // Xóa class lỗi nếu thêm thành công
+                    $('.order-amount-range').find('tr').removeClass('errorLine');
+                    
+                    // Nếu hàng này chưa có `position`, thêm mới
+                    if (!currentPosition) {
+                        currentPosition = ranges.length + 1;
+                        trLastChild.data('position', currentPosition);
+                    }
+
+                    trLastChild.find('.order-amount-range-from input').attr('readonly', true)
+                    trLastChild.find('.order-amount-range-to input').attr('readonly', true)
+                    
+                    // Thêm hoặc cập nhật mảng ranges
+                    let existingIndex = ranges.findIndex(range => range.position === currentPosition);
+                    if (existingIndex !== -1) {
+                        // Cập nhật khoảng đã tồn tại
+                        ranges[existingIndex] = { newFrom: from, newTo: to, position: currentPosition };
+                    } else {
+                        // Thêm mới
+                        ranges.push({ newFrom: from, newTo: to, position: currentPosition });
+                    }
                 }
             }
 
