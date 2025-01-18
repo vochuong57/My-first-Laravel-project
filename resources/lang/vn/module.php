@@ -1,4 +1,5 @@
 <?php
+use App\Enums\PromotionEnum;
 
 return [
     // V63
@@ -29,8 +30,8 @@ return [
     ],
     // V97
     'promotion'=>[
-        'order_amount_range' => 'Chiết khấu theo tổng giá trị đơn hàng',
-        'product_and_quantity' => 'Chiết khấu theo từng sản phẩm',
+        PromotionEnum::ORDER_AMOUNT_RANGE => 'Chiết khấu theo tổng giá trị đơn hàng',
+        PromotionEnum::PRODUCT_AND_QUANTITY => 'Chiết khấu theo từng sản phẩm',
         'product_quantity_range' => 'Chiết khấu theo số lượng sản phẩm',
         'goods_discount_by_quantity' => 'Mua sản phẩm - giảm giá sản phẩm'
     ],

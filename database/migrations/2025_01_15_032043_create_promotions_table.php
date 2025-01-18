@@ -18,7 +18,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('method');
             $table->json('discountInformation')->nullable();
-            $table->integer('neverEndDate')->nullable();
+            $table->string('neverEndDate')->nullable();
             $table->timestamp('startDate')->nullable();
             $table->timestamp('endDate')->nullable();
             $table->tinyInteger('publish')->default(1);

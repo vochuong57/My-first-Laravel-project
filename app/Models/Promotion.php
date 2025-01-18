@@ -17,8 +17,18 @@ class Promotion extends Model
     protected $fillable =[
         'id',
         'name',
-        
+        'code',
+        'description',
+        'method',
+        'discountInformation',
+        'neverEndDate',
+        'startDate',
+        'endDate',
+        'publish',
+        'order',
     ];
 
-    
+    protected $casts = [
+        'discountInformation' => 'json',
+    ];
 }

@@ -1,4 +1,5 @@
 <?php
+use App\Enums\PromotionEnum;
 
 return [
     'model' => [
@@ -28,8 +29,8 @@ return [
 
     // V97
     'promotion' => [
-        'order_amount_range' => '按订单总金额折扣',
-        'product_and_quantity' => '按单个产品折扣',
+        PromotionEnum::ORDER_AMOUNT_RANGE => '按订单总金额折扣',
+        PromotionEnum::PRODUCT_AND_QUANTITY => '按单个产品折扣',
         'product_quantity_range' => '按产品数量折扣',
         'goods_discount_by_quantity' => '购买产品 - 产品折扣'
     ],

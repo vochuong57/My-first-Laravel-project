@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use App\Rules\Promotion\OrderAmountRangeRule;
 use App\Rules\Promotion\ProductAndQuantityRule;
+use App\Enums\PromotionEnum;
 
 class StorePromotionRequest extends FormRequest
 {
@@ -32,7 +33,6 @@ class StorePromotionRequest extends FormRequest
             'name' => 'required',
             // 'code' => 'required|unique:promotions',
             'startDate' => 'required|custom_date_format',
-            'promotionMethod' => 'gt:0',
         ];
 
         if(!$this->input('neverDate')){
@@ -57,17 +57,17 @@ class StorePromotionRequest extends FormRequest
             }
         }
 
-        $rules['promotionMethod'] = 'required|not_in:default';
+        $rules['method'] = 'required|not_in:default';
         // dd($this->input('applyValue'));
 
-        // dd($this->input('promotionMethod'));
-        $promotionMethod = $this->input('promotionMethod');
-        switch ($promotionMethod) {
-            case 'order_amount_range':
-                $rules['promotionMethod'] = [new OrderAmountRangeRule($this->input('promotion_order_amount_range'))];
+        // dd($this->input('method'));
+        $method = $this->input('method');
+        switch ($method) {
+            case PromotionEnum::ORDER_AMOUNT_RANGE:
+                $rules['method'] = [new OrderAmountRangeRule($this->input('promotion_order_amount_range'))];
                 break;
-            case 'product_and_quantity':
-                $rules['promotionMethod'] = [new ProductAndQuantityRule($this->only('product_and_quantity', 'object'))];
+            case PromotionEnum::ORDER_AMOUNT_RANGE:
+                $rules['method'] = [new ProductAndQuantityRule($this->only('product_and_quantity', 'object'))];
                 break;
             
             default:
@@ -115,8 +115,8 @@ class StorePromotionRequest extends FormRequest
             }
         }
 
-        $messages['promotionMethod.required'] = 'Bạn chưa chọn hình thức khuyến mại';
-        $messages['promotionMethod.not_in'] = 'Bạn chưa chọn hình thức khuyến mại hợp lệ';
+        $messages['method.required'] = 'Bạn chưa chọn hình thức khuyến mại';
+        $messages['method.not_in'] = 'Bạn chưa chọn hình thức khuyến mại hợp lệ';
 
         return $messages;
     }

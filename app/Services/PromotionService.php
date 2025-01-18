@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Services\Interfaces\PromotionServiceInterface;
 use App\Repositories\Interfaces\PromotionRepositoryInterface as PromotionRepository;
+use App\Repositories\Interfaces\PromotionObjectVariantRepositoryInterface as PromotionObjectVariantRepository;
 //thêm thư viện cho việc xử lý INSERT
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -12,7 +13,7 @@ use Illuminate\Support\Carbon;
 //thêm thư viện xử lý password
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-
+use App\Enums\PromotionEnum;
 
 /**
  * Class PromotionService
@@ -21,9 +22,11 @@ use Illuminate\Support\Facades\Auth;
 class PromotionService extends BaseService implements PromotionServiceInterface
 {
     protected $promotionRepository;
+    protected $promotionObjectVariantRepository;
 
-    public function __construct(PromotionRepository $promotionRepository){
+    public function __construct(PromotionRepository $promotionRepository, PromotionObjectVariantRepository $promotionObjectVariantRepository){
         $this->promotionRepository=$promotionRepository;
+        $this->promotionObjectVariantRepository=$promotionObjectVariantRepository;
     }
 
     public function paginate($request){//$request để tiến hành chức năng tìm kiếm
@@ -51,21 +54,43 @@ class PromotionService extends BaseService implements PromotionServiceInterface
     public function createPromotion($request, $languageId){
         DB::beginTransaction();
         try{
-            $payload = $request->only('name', 'keyword', 'description', 'short_code', 'model');
-            // dd($payload);
-            $payload['model_id'] = $this->formatJson($request, 'promotion.id');
-            // dd($payload);
-            $payload['album'] = $this->formatJson($request, 'album');
-            // dd($payload);
-            $payload['description'] = [
-                $languageId => $payload['description']
-            ];
-            $payload['description'] = json_encode($payload['description']);
-            // dd($payload);
-            $payload['user_id']=Auth::id();
-            // dd($payload);
+            // dd($request->input());
+            // dd(PromotionEnum::ORDER_AMOUNT_RANGE);
+            $payload = $request->only('name', 'code', 'description', 'method', 'startDate', 'endDate');
+            $payload['startDate'] = Carbon::createFromFormat('d/m/Y H:i', $payload['startDate']);
+            if(isset($payload['endDate'])){
+                $payload['endDate'] = Carbon::createFromFormat('d/m/Y H:i', $payload['endDate']);
+            }
+            $payload['code'] = (empty($payload['code'])) ? time() : $payload['code']; 
 
+            switch ($payload['method']) {
+                case PromotionEnum::ORDER_AMOUNT_RANGE:
+                    $payload['discountInformation'] = $this->orderAmountRange($request);
+                    break;
+                case PromotionEnum::PRODUCT_AND_QUANTITY:
+                    $payload['discountInformation'] = $this->productAndQuantity($request);
+                    break;
+            }
+                
+            // dd($payload);
             $promotion = $this->promotionRepository->create($payload);
+
+            if($promotion->id > 0 && $payload['method'] == PromotionEnum::PRODUCT_AND_QUANTITY){
+                $object = $request->input('object');
+                $payloadRelation = [];
+                foreach($object['id'] as $key => $val){
+                    $payloadRelation[]=[
+                        'promotion_id' => $promotion->id,
+                        'object_id' => $val,
+                        'object_variant_id' => ($object['product_variant_id'][$key] == 'null') ? null : $object['product_variant_id'][$key],
+                        'model' => $request->input('chooseModule')
+                    ];
+                }
+                // dd($payloadRelation);
+                $this->promotionObjectVariantRepository->createBatch($payloadRelation);
+            }
+            
+
             // echo 1; die();
             DB::commit();
             return true;
@@ -138,67 +163,39 @@ class PromotionService extends BaseService implements PromotionServiceInterface
         }
     }
 
-    // V90
-    public function convertPromotion($menuArray = null):array{
-        $temp = [];
-        $fields = ['name', 'canonical', 'image', 'id'];
-        if(count($menuArray)){
-            foreach($menuArray as $key => $val){
-                foreach($fields as $field){
-                    if($field == 'name' || $field == 'canonical'){
-                        $temp[$field][] = $val->languages->first()->pivot->{$field};
-                        // $temp[$field][] = $val->languages->first()->getOriginal('pivot_'.$field);
-                    }else{
-                        $temp[$field][] = $val->{$field};
-                    }
-                }
+    // V119
+    private function orderAmountRange($request){
+        $data['info'] = $request->input('promotion_order_amount_range');
+        // dd($data + $this->handleSourceAndCondition($request));
+        return $data + $this->handleSourceAndCondition($request);
+    }
+
+    // V119
+    private function productAndQuantity($request){
+        $data['info'] = $request->input('product_and_quantity');
+        $data['info']['model'] = $request->input('chooseModule');
+        $data['info']['object'] = $request->input('object');
+        return $data + $this->handleSourceAndCondition($request);
+    }
+
+    // V119
+    private function handleSourceAndCondition($request){
+        $data = [
+            'source' => [
+                'status' => $request->input('source'),
+                'data' => $request->input('sourceValue'),
+            ],
+            'apply' => [
+                'status' => $request->input('apply'),
+                'data' => $request->input('applyValue'),
+            ]
+        ];
+        if(!is_null($data['apply']['data'])){
+            foreach($data['apply']['data'] as $key => $val){
+                $data['apply']['condition'][$val] = $request->input($val);
             }
         }
-        return $temp;
-    }
-
-    // V92
-    public function saveTranslatePromotion($request, $languageTranslateId, $id){
-        DB::beginTransaction();
-        try{
-            $payload = $request->only('translate_description');
-            // dd($payload);
-
-            $promotion = $this->promotionRepository->findById($id);
-            // dd($promotion);
-            $promotionItem = $promotion->description;
-            // dd($promotionItem);
-            // dd($languageTranslateId);
-            unset($promotionItem[$languageTranslateId]);
-            // dd($languageTranslateId);
-            // dd($promotionItem);
-
-            $promotions = $this->handlePromotionItem($payload['translate_description'], $languageTranslateId)+$promotionItem;
-            // dd($promotions);
-
-            $payload['description'] = json_encode($promotions);
-            // dd($payload);
-    
-            $promotion = $this->promotionRepository->update($id, $payload);
-            // echo 1; die();
-            DB::commit();
-            return true;
-        }catch(\Exception $ex){
-            DB::rollBack();
-            echo $ex->getMessage();die();
-            return false;
-        }
-    }
-
-    // V92
-    private function handlePromotionItem($promotion, $languageTranslateId){
-        // dd($slides);
-        $temp = [
-            $languageTranslateId => $promotion
-        ];
-        
-        // dd($temp);
-        return $temp;
+        return $data;
     }
 
     public function updateStatus($post=[]){

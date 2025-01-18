@@ -40,8 +40,8 @@ class OrderAmountRangeRule implements ValidationRule
 
         $conflict = false;
         for($i = 0; $i < count($this->data['amountFrom']); $i++){
-            $amountFrom_1 = floatval($this->data['amountFrom'][$i]);
-            $amountTo_1 = floatval($this->data['amountTo'][$i]);
+            $amountFrom_1 = intval(str_replace('.', '',$this->data['amountFrom'][$i]));
+            $amountTo_1 = intval(str_replace('.', '',$this->data['amountTo'][$i]));
 
             if($amountFrom_1 >= $amountTo_1){
                 $conflict = true;
@@ -50,8 +50,8 @@ class OrderAmountRangeRule implements ValidationRule
 
             for($j = 0; $j < count($this->data['amountFrom']); $j++){
                 if($i !== $j){
-                    $amountFrom_2 = floatval($this->data['amountFrom'][$j]);
-                    $amountTo_2 = floatval($this->data['amountTo'][$j]);
+                    $amountFrom_2 = intval(str_replace('.', '',$this->data['amountFrom'][$j]));
+                    $amountTo_2 = intval(str_replace('.', '',$this->data['amountTo'][$j]));
 
                     if($amountFrom_1 <= $amountTo_2 && $amountTo_1 >= $amountFrom_2){
                         $conflict = true;
