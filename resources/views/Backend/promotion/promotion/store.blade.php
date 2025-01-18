@@ -50,7 +50,7 @@
 
 <!-- V114 -->
 <!-- xử lý save form select hình thức khuyến mại -->
-<input type="hidden" class="preload_promotionMethod" value="{{ json_encode(old('promotionMethod', $promotion->method ?? null)) }}">
+<input type="hidden" class="preload_promotionMethod" value="{{ json_encode(old('method', $promotion->method ?? null)) }}">
 <!-- xử lý save form cho sản phẩm áp dụng loại khuyến mại product_and_quantity (select lv2 của product_and_quantity) -->
 <input type="hidden" class="preload_select-product-and-quantity" value="{{ json_encode(old('chooseModule', $promotion->chooseModule ?? null)) }}">
 <!-- xử lý save form cho hình thức khuyến mại order_amount_range -->

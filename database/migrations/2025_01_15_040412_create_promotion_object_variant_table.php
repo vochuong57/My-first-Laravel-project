@@ -16,7 +16,7 @@ return new class extends Migration
             $table->bigInteger('promotion_id')->unsigned();
             $table->foreign('promotion_id')->references('id')->on('promotions')->onDelete('cascade');
             $table->bigInteger('object_id')->unsigned();
-            $table->bigInteger('object_variant_id')->unsigned()->default(0);
+            $table->bigInteger('object_variant_id')->unsigned()->nullable();
             $table->string('model');
             $table->timestamp('deleted_at')->nullable();
             $table->timestamps();

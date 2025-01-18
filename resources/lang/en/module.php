@@ -1,4 +1,5 @@
 <?php
+use App\Enums\PromotionEnum;
 
 return [
     'model' => [
@@ -28,8 +29,8 @@ return [
 
     // V97
     'promotion' => [
-        'order_amount_range' => 'Discount by total order value',
-        'product_and_quantity' => 'Discount by individual product',
+        PromotionEnum::ORDER_AMOUNT_RANGE => 'Discount by total order value',
+        PromotionEnum::PRODUCT_AND_QUANTITY => 'Discount by individual product',
         'product_quantity_range' => 'Discount by product quantity',
         'goods_discount_by_quantity' => 'Buy product - discount product'
     ],

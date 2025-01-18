@@ -78,6 +78,8 @@ class AppRepositoryProvider extends ServiceProvider
         'App\Repositories\Interfaces\CustomerCatalogueRepositoryInterface' => 'App\Repositories\CustomerCatalogueRepository',
 
         'App\Repositories\Interfaces\CustomerRepositoryInterface' => 'App\Repositories\CustomerRepository',
+
+        'App\Repositories\Interfaces\PromotionObjectVariantRepositoryInterface' => 'App\Repositories\PromotionObjectVariantRepository',
     ];
     public function register(): void
     {
