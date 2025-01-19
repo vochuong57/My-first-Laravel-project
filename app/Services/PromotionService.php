@@ -249,7 +249,7 @@ class PromotionService extends BaseService implements PromotionServiceInterface
     }
     private function paginateSelect(){
         return [
-            'id','name','keyword','short_code','user_id', 'model' ,'publish', 'description'
+            'id','name', 'code', 'description', 'method', 'discountInformation', 'neverEndDate', 'startDate', 'endDate', 'publish'
         ];
     }
 }
