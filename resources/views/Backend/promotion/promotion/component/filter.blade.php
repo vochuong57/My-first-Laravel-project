@@ -1,4 +1,4 @@
-<form action="{{ route('widget.index') }}">
+<form action="{{ route('promotion.index') }}">
 <div class="filter-wrapper">
     <div class="uk-flex uk-flex-middle uk-flex-space-between">
         <div class="perpage">
@@ -31,7 +31,7 @@
                         </span>
                     </div>
                 </div>
-                <a href="{{ route('widget.store') }}" class="btn btn-danger ml10"><i class="fa fa-plus mr5"></i>{{ __('messages.widget.create.title') }}</a>
+                <a href="{{ route('promotion.store') }}" class="btn btn-danger ml10"><i class="fa fa-plus mr5"></i>{{ __('messages.promotion.create.title') }}</a>
             </div>
         </div>
     </div>

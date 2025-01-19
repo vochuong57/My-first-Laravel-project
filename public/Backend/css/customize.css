@@ -962,3 +962,8 @@ input[type=checkbox]{
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+/* V120 css cho promorion/table */
+.text-small{
+    font-size: 12px;
+    font-weight: 600;
+}
