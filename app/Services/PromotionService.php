@@ -56,10 +56,14 @@ class PromotionService extends BaseService implements PromotionServiceInterface
         try{
             // dd($request->input());
             // dd(PromotionEnum::ORDER_AMOUNT_RANGE);
-            $payload = $request->only('name', 'code', 'description', 'method', 'startDate', 'endDate');
+            $payload = $request->only('name', 'code', 'description', 'method', 'startDate', 'endDate', 'neverDate');
             $payload['startDate'] = Carbon::createFromFormat('d/m/Y H:i', $payload['startDate']);
             if(isset($payload['endDate'])){
                 $payload['endDate'] = Carbon::createFromFormat('d/m/Y H:i', $payload['endDate']);
+            }
+            if(isset($payload['neverDate'])){
+                $payload['neverEndDate'] = $payload['neverDate'];
+                // unset($payload['neverDate']);
             }
             $payload['code'] = (empty($payload['code'])) ? time() : $payload['code']; 
 
@@ -72,7 +76,7 @@ class PromotionService extends BaseService implements PromotionServiceInterface
                     break;
             }
                 
-            // dd($payload);
+            dd($payload);
             $promotion = $this->promotionRepository->create($payload);
 
             if($promotion->id > 0 && $payload['method'] == PromotionEnum::PRODUCT_AND_QUANTITY){
