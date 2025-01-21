@@ -110,62 +110,15 @@ class PromotionController extends Controller
         //truy vấn thông tin
         $promotion=$this->promotionRepository->findById($id);
         // dd($promotion); die();
-
-        // dd($promotion->description);
-        if (isset($promotion->description[$this->language])) {
-            $promotion->description = $promotion->description[$this->language]; // Truy cập vào key 1 trong mảng description
-        }else{
-            $promotion->description = null;
-        }
-        
-        // dd($promotion);
-        // dd($promotion->description);
-
-        $repositoryInstance = loadClassInterface($promotion->model);
-        // dd($repositoryInstance); 
-        
-        $listModelId = $promotion->model_id;
-        // dd($listModelId);
-
-        $promotionItemsCollection = [];
-        foreach($listModelId as $modelId){
-            $condition = [
-                ['id', '=', $modelId]
-            ];
-            $languageId = $this->language;
-            // dd($languageId);
-            $relation = [
-                'languages' => function($query) use ($languageId){
-                    $query->where('language_id', $languageId);
-                }
-            ];
-            $result = $repositoryInstance->findByConditionsWithRelation($condition, $relation);
-            // dd($result);
-            $promotionItemsCollection[] = $result;
-        }
-        // dd($promotionItemsCollection);
-
-        $promotionItems = [
-            'name' => [],
-            'canonical' => [],
-            'image' => [],
-            'id' => []
-        ];
-        foreach($promotionItemsCollection as $promotionItemCollection){
-            $result = $this->promotionService->convertPromotion($promotionItemCollection);
-            // dd($result);
-            // Gộp kết quả vào mảng $promotionItems
-
-            foreach ($result as $key => $values) {
-                $promotionItems[$key] = array_merge($promotionItems[$key], $values);
-            }
-        }
+        // dd($promotion->discountInformation);
         
         // dd($promotionItems);
 
+        $sources =  $this->sourceRepository->all();
+
         $this->authorize('modules', 'promotion.edit');//phân quyền
 
-        return view('Backend.dashboard.layout', compact('template','config', 'promotion', 'promotionItems'));
+        return view('Backend.dashboard.layout', compact('template','config', 'promotion', 'sources'));
     }
     //xử lý sửa promotion
     public function update($id, UpdatePromotionRequest $request){

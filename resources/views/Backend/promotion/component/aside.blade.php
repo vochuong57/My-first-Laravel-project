@@ -9,7 +9,7 @@
                 <input 
                     type="text"
                     name="startDate"
-                    value="{{ old('startDate', ($model->startDate)??'') }}"
+                    value="{{ old('startDate', isset($model->startDate) ? convertDateTime($model->startDate) : '') }}"
                     class="form-control datepicker"
                     placeholder="dd/mm/yyyy H:i"
                     autocomplete="off"
@@ -23,7 +23,7 @@
                 <input 
                     type="text"
                     name="endDate"
-                    value="{{ old('endDate', ($model->endDate)??'') }}"
+                    value="{{ old('endDate', isset($model->endDate) ? convertDateTime($model->endDate) : '') }}"
                     class="form-control datepicker"
                     placeholder="dd/mm/yyyy H:i"
                     autocomplete="off"
@@ -68,7 +68,7 @@
                     name="source"
                     id="allSource"
                     class="chooseSource"
-                    {{ (old('source', $model->sourceStatus ?? '') || !old('source') ) == 'all' ? 'checked' : '' }}
+                    {{ (old('source', $model->discountInformation['source']['status'] ?? '') || !old('source') ) == 'all' ? 'checked' : '' }}
                 >
                 <label class="fix-label ml5" for="allSource">Áp dụng cho toàn bộ nguồn khách</label>
             </div>
@@ -79,17 +79,17 @@
                     name="source"
                     id="chooseSource"
                     class="chooseSource"
-                    {{ (old('source', $model->sourceStatus ?? '')) == 'choose' ? 'checked' : '' }}
+                    {{ (old('source', $model->discountInformation['source']['status'] ?? '')) == 'choose' ? 'checked' : '' }}
                 >
                 <label class="fix-label ml5" for="chooseSource">Chọn nguồn khách áp dụng</label>
             </div>
             @php
                 // V112 save form Source
-                $sourceStatus = old('source', $model->sourceStatus ?? null)
+                $sourceStatus = old('source', $model->discountInformation['source']['status'] ?? null)
             @endphp
             @if($sourceStatus == 'choose')
                 @php
-                    $sourceValue = old('sourceValue', $model->sourceValue ?? []); 
+                    $sourceValue = old('sourceValue', $model->discountInformation['source']['data'] ?? []); 
                 @endphp
                 <div class="source-wrapper">
                     <select name="sourceValue[]" id="" class="multipleSelect2" multiple>
@@ -120,7 +120,7 @@
                     name="apply"
                     id="allApply"
                     class="chooseApply"
-                    {{ (old('apply', $model->applyStatus ?? '') || !old('apply') ) == 'all' ? 'checked' : '' }}
+                    {{ (old('apply', $model->discountInformation['apply']['status'] ?? '') || !old('apply') ) == 'all' ? 'checked' : '' }}
                 >
                 <label class="fix-label ml5" for="allApply">Áp dụng cho toàn bộ đối tượng</label>
             </div>
@@ -131,13 +131,13 @@
                     name="apply"
                     id="chooseApply"
                     class="chooseApply"
-                    {{ (old('apply', $model->applyStatus ?? '')) == 'choose' ? 'checked' : '' }}
+                    {{ (old('apply', $model->discountInformation['apply']['status'] ?? '')) == 'choose' ? 'checked' : '' }}
                 >
                 <label class="fix-label ml5" for="chooseApply">Chọn đối tượng áp dụng</label>
             </div>
         </div>
         @php
-            $applyStatus = old('apply', $model->applyStatus ?? null);
+            $applyStatus = old('apply', $model->discountInformation['apply']['status'] ?? null);
         @endphp
         @if($applyStatus == 'choose')
             <div class="apply-wrapper">

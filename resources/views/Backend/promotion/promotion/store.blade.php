@@ -39,25 +39,27 @@
 <!-- Xử lý save form cho đối tượng áp dụng -->
 <input type="hidden" class="applyValueList" value="{{ json_encode(__('module.applyValue')) }}">
 @php
-    $applyValue = old('applyValue', $promotion->applyValue ?? []);
+    $applyValue = old('applyValue', $promotion->discountInformation['apply']['data'] ?? []);
 @endphp
 @if(count($applyValue))
     <input type="hidden" class="conditionItemSelected" value="{{ json_encode($applyValue) }}">
     @foreach($applyValue as $key => $val)
-        <input type="hidden" class="condition_input_{{ $val }}" value="{{ json_encode(old($val)) }}">
+        <input type="hidden" class="condition_input_{{ $val }}" value="{{ json_encode(old($val, $promotion->discountInformation['apply']['condition'][$val])) }}">
     @endforeach
 @endif
 
 <!-- V114 -->
 <!-- xử lý save form select hình thức khuyến mại -->
 <input type="hidden" class="preload_promotionMethod" value="{{ json_encode(old('method', $promotion->method ?? null)) }}">
+
 <!-- xử lý save form cho sản phẩm áp dụng loại khuyến mại product_and_quantity (select lv2 của product_and_quantity) -->
-<input type="hidden" class="preload_select-product-and-quantity" value="{{ json_encode(old('chooseModule', $promotion->chooseModule ?? null)) }}">
+<input type="hidden" class="preload_select-product-and-quantity" value="{{ json_encode(old('chooseModule', $promotion->discountInformation['info']['model'] ?? null)) }}">
+
 <!-- xử lý save form cho hình thức khuyến mại order_amount_range -->
-<input type="hidden" class="input_order_amount_range" value="{{ json_encode(old('promotion_order_amount_range', $promotion->promotion_order_amount_range ?? null)) }}">
+<input type="hidden" class="input_order_amount_range" value="{{ json_encode(old('promotion_order_amount_range', $promotion->discountInformation['info'] ?? null)) }}">
 
 <!-- V115 -->
 <!-- xử lý save form 4 columns end product_and_quantity method  -->
-<input type="hidden" class="input_product_and_quantity" value="{{ json_encode(old('product_and_quantity', $promotion->product_and_quantity ?? null)) }}">
+<input type="hidden" class="input_product_and_quantity" value="{{ json_encode(old('product_and_quantity', $promotion->discountInformation['info'] ?? null)) }}">
 <!-- xử lý save form column first nơi chưa các sản phẩm (.objectItem) -->
-<input type="hidden" class="input_object" value="{{ json_encode(old('object', $promotion->object ?? null)) }}">
+<input type="hidden" class="input_object" value="{{ json_encode(old('object', $promotion->discountInformation['info']['object'] ?? null)) }}">
