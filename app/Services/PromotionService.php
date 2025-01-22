@@ -76,7 +76,7 @@ class PromotionService extends BaseService implements PromotionServiceInterface
                     break;
             }
                 
-            dd($payload);
+            // dd($payload);
             $promotion = $this->promotionRepository->create($payload);
 
             if($promotion->id > 0 && $payload['method'] == PromotionEnum::PRODUCT_AND_QUANTITY){
@@ -108,30 +108,50 @@ class PromotionService extends BaseService implements PromotionServiceInterface
     public function updatePromotion($id, $request, $languageId){
         DB::beginTransaction();
         try{
-            $payload = $request->only('name', 'keyword', 'description', 'short_code', 'model');
-            // dd($payload);
-            $payload['model_id'] = $this->formatJson($request, 'promotion.id');
-            // dd($payload);
-            $payload['album'] = $this->formatJson($request, 'album');
+            // dd(PromotionEnum::ORDER_AMOUNT_RANGE);
+            $payload = $request->only('name', 'code', 'description', 'method', 'startDate', 'endDate', 'neverDate');
+            $payload['startDate'] = Carbon::createFromFormat('d/m/Y H:i', $payload['startDate']);
+            if(isset($payload['endDate'])){
+                $payload['endDate'] = Carbon::createFromFormat('d/m/Y H:i', $payload['endDate']);
+            }
+            if(isset($payload['neverDate'])){
+                $payload['neverEndDate'] = $payload['neverDate'];
+                // unset($payload['neverDate']);
+            }
+            $payload['code'] = (empty($payload['code'])) ? time() : $payload['code']; 
+
+            switch ($payload['method']) {
+                case PromotionEnum::ORDER_AMOUNT_RANGE:
+                    $payload['discountInformation'] = $this->orderAmountRange($request);
+                    break;
+                case PromotionEnum::PRODUCT_AND_QUANTITY:
+                    $payload['discountInformation'] = $this->productAndQuantity($request);
+                    break;
+            }
+                
             // dd($payload);
 
-            $promotion = $this->promotionRepository->findById($id);
-            // dd($promotion);
-            $promotionItem = $promotion->description;
-            // dd($promotionItem);
-            // dd($languageId);
-            unset($promotionItem[$languageId]);
+            $promotion = $this->promotionRepository->updateReturn($id, $payload);
 
-            $payload['description'] = [
-                $languageId => $payload['description']
-            ];
-            $payload['description'] = json_encode($payload['description'] + $promotionItem);
-            // dd($payload);
+            $this->promotionObjectVariantRepository->deleteByWhere([
+                ['promotion_id', '=', $promotion->id],
+            ]);
 
-            $payload['user_id']=Auth::id();
-            // dd($payload);
-
-            $promotion = $this->promotionRepository->update($id, $payload);
+            if($promotion->id > 0 && $payload['method'] == PromotionEnum::PRODUCT_AND_QUANTITY){
+                $object = $request->input('object');
+                $payloadRelation = [];
+                foreach($object['id'] as $key => $val){
+                    $payloadRelation[]=[
+                        'promotion_id' => $promotion->id,
+                        'object_id' => $val,
+                        'object_variant_id' => ($object['product_variant_id'][$key] == 'null') ? null : $object['product_variant_id'][$key],
+                        'model' => $request->input('chooseModule')
+                    ];
+                }
+                // dd($payloadRelation);
+               
+                $this->promotionObjectVariantRepository->createBatch($payloadRelation);
+            }
             // echo 1; die();
             DB::commit();
             return true;
