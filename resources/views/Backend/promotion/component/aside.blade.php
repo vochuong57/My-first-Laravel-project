@@ -29,7 +29,7 @@
                     autocomplete="off"
                     @php
                         // Lấy giá trị 'neverDate' từ DB hoặc từ old
-                        $neverDate = old('neverDate', $model->neverDate ?? 'noData');
+                        $neverDate = old('neverDate', $model->neverEndDate ?? 'noData');
                     @endphp
                     {{ ($neverDate == 'noData') ? '' : 'disabled' }}
                 >
@@ -46,7 +46,7 @@
                     id="neverDate"
                     @php
                         // Lấy giá trị 'neverDate' từ DB hoặc từ old
-                        $neverDate = old('neverDate', $model->neverDate ?? 'noData');
+                        $neverDate = old('neverDate', $model->neverEndDate ?? 'noData');
                     @endphp
                     {{ ($neverDate == 'noData') ? '' : 'checked'  }}
                 >

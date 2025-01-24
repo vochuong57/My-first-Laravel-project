@@ -10,7 +10,7 @@
     </div>
 @endif
 
-<form action="{{ route('widget.delete',$widget->id) }}" method="post" class="box">
+<form action="{{ route('promotion.delete',$promotion->id) }}" method="post" class="box">
     @csrf
     <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
@@ -18,8 +18,8 @@
                 <div class="panel-head">
                     <div class="panel-title">Thông tin chung</div>
                     <div class="panel-description">
-                        <p>- Bạn đang muốn xóa widget có tên là: <span style="color: red">{{ $widget->name }}</span></p>
-                        <p>- Lưu ý <span class="text-danger">KHÔNG THỂ</span> khôi phục widget sau khi xóa. <br> Hãy chắc chắn bạn muốn thực hiện chức năng này</p>
+                        <p>- Bạn đang muốn xóa promotion có tên là: <span style="color: red">{{ $promotion->name }}</span></p>
+                        <p>- Lưu ý <span class="text-danger">KHÔNG THỂ</span> khôi phục promotion sau khi xóa. <br> Hãy chắc chắn bạn muốn thực hiện chức năng này</p>
                     </div>
                 </div>
             </div>
@@ -32,11 +32,11 @@
                         <div class="row mb15">
                             <div class="col-lg-6">
                                 <div class="form-row">
-                                    <label for="" class="control-label text-left">Tên widget: <span class="text-danger">(*)</span></label>
+                                    <label for="" class="control-label text-left">Tên promotion: <span class="text-danger">(*)</span></label>
                                     <input 
                                     type="text"
                                     name="name"
-                                    value="{{ old('name', ($widget->name)??'') }}"
+                                    value="{{ old('name', ($promotion->name)??'') }}"
                                     class="form-control"
                                     placeholder=""
                                     autocomplete="off"
@@ -46,11 +46,11 @@
                             </div>
                             <div class="col-lg-6">
                                 <div class="form-row">
-                                    <label for="" class="control-label text-left">Keyword: <span class="text-danger">(*)</span></label>
+                                    <label for="" class="control-label text-left">Code: <span class="text-danger">(*)</span></label>
                                     <input 
                                     type="text"
-                                    name="keyword"
-                                    value="{{ old('keyword', ($widget->keyword)??'') }}"
+                                    name="code"
+                                    value="{{ old('code', ($promotion->code)??'') }}"
                                     class="form-control"
                                     placeholder=""
                                     autocomplete="off"

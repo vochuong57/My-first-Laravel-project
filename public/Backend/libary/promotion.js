@@ -7,7 +7,7 @@
         $(document).on('change', '#neverDate', function(){
             let _this = $(this)
             let isChecked = _this.prop('checked')
-            // console.log(isChecked)
+            console.log(isChecked)
             if(isChecked){
                 $('input[name=endDate]').val('').attr('disabled', true)
             }else{

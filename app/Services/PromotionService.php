@@ -164,20 +164,7 @@ class PromotionService extends BaseService implements PromotionServiceInterface
     public function deletePromotion($id, $languageId){
         DB::beginTransaction();
         try{
-            $promotion = $this->promotionRepository->findById($id);
-            // dd($promotion);
-            $promotionItem = $promotion->description;
-            // dd($promotionItem);
-            // dd($languageId);
-            unset($promotionItem[$languageId]);
-            // dd($promotionItem);
-
-            $payload['description'] = json_encode($promotionItem);
-            $this->promotionRepository->update($id, $payload);
-
-            if(empty($promotionItem)){
-                $promotion=$this->promotionRepository->forceDelete($id);
-            }
+            $promotion=$this->promotionRepository->forceDelete($id);
             DB::commit();
             return true;
         }catch(\Exception $ex){
