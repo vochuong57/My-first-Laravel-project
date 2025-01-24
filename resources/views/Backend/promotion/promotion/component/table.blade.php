@@ -42,7 +42,7 @@
             </td>
             @php
                 $startDate = convertDateTime($promotion->startDate);
-                $endDate = convertDateTime($promotion->endDate);
+                $endDate = ($promotion->neverEndDate == null) ? convertDateTime($promotion->endDate) : '';
             @endphp
             <td>
                 <div class="info-item email">{{ $startDate }}</div>
