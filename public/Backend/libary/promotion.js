@@ -764,18 +764,19 @@
                     let parts = classBox.split('-');
 
                     let product_id = parts[1];
-                    let product_variant_id = parts[2] || null;
+                    let variant_uuid = parts.slice(2).join('-') || null;
                     let name = $(this).find('.goods-item-name').attr('title');
                     let variant_name = $(this).find('.goods-item-name').data('variantname') || null;
 
                     objectList.push({
                         product_id: product_id,
-                        product_variant_id: product_variant_id,
+                        variant_uuid: variant_uuid,
                         name: name,
                         variant_name: variant_name
                     });
                 }
             });
+            // console.log(objectList)
 
             let option = {
                 model: $('.select-product-and-quantity').val(),
@@ -823,7 +824,7 @@
                 let image = objects.data[i].image ?? 'Backend/img/not-found.png'
                 let name = objects.data[i].name
                 let variant_name = objects.data[i].variant_name ?? null
-                let product_variant_id = objects.data[i].product_variant_id ?? null
+                let variant_uuid = objects.data[i].variant_uuid ?? null
                 let product_id = objects.data[i].id
                 let inventory = objects.data[i].inventory ? objects.data[i].inventory : '0'
                 let couldSale = objects.data[i].couldSale ? objects.data[i].couldSale : '0'
@@ -837,9 +838,9 @@
                     for(let j = 0; j < objectList.length; j++){
                         if(objectList[j].product_id == product_id){
                             classBox = model +'-'+ product_id
-                            console.log(objectList[j].product_variant_id)
-                            if(objectList[j].product_variant_id == product_variant_id){
-                                classBox += '-'+ product_variant_id
+                            console.log(objectList[j].variant_uuid)
+                            if(objectList[j].variant_uuid == variant_uuid){
+                                classBox += '-'+ variant_uuid
                                 console.log(classBox)
                                 break
                             }
@@ -854,9 +855,9 @@
                 //     if (classBoxCandidate) {
                 //         let parts = classBoxCandidate.split('-');
                 //         let product_id_candidate = parts[1];
-                //         let product_variant_id_candidate = parts[2] || null;
+                //         let variant_uuid_candidate = parts[2] || null;
                 
-                //         if (product_id_candidate == product_id && product_variant_id_candidate == product_variant_id) {
+                //         if (product_id_candidate == product_id && variant_uuid_candidate == variant_uuid) {
                 //             classBox = classBoxCandidate;
                 //             console.log(classBox);
                 //             return false; // break the loop
@@ -869,7 +870,7 @@
                     objectList = [];
                 }
                 let existsInObjectList = objectList.some(item => 
-                    item.product_id == product_id && (item.product_variant_id == product_variant_id || item.product_variant_id == null)
+                    item.product_id == product_id && (item.variant_uuid == variant_uuid || item.variant_uuid == null)
                 );
                 
                 // kiểm tra xem sản phẩm đã được checked chưa
@@ -882,7 +883,7 @@
                 }
 
                 html += `
-                    <div class="search-object-item" data-productId = "${product_id}" data-productVariantId = "${product_variant_id}" data-name = "${name}" data-variantName = "${variant_name}">
+                    <div class="search-object-item" data-productId = "${product_id}" data-variantUuId = "${variant_uuid}" data-name = "${name}" data-variantName = "${variant_name}">
                         <div class="uk-flex uk-flex-middle uk-flex-space-between">
                             <div class="object-info">
                                 <div class="uk-flex uk-flex-middle">
@@ -1123,20 +1124,20 @@
             console.log(isChecked)
             let objectItem = {
                 product_id: _this.data('productid'),
-                product_variant_id: _this.data('productvariantid'),
+                variant_uuid: _this.data('variantuuid'),
                 name: _this.data('name'),
                 variant_name: _this.data('variantname'),
             }
             if(isChecked){
                 console.log(objectList);
                 console.log(objectItem);
-                if(objectItem.product_variant_id != null){
+                if(objectItem.variant_uuid != null){
                     objectList = objectList.filter(item => 
-                        !(item.product_id == objectItem.product_id && item.product_variant_id == objectItem.product_variant_id)
+                        !(item.product_id == objectItem.product_id && item.variant_uuid == objectItem.variant_uuid)
                     );
                 } else {
                     objectList = objectList.filter(item => 
-                        !(item.product_id == objectItem.product_id && item.product_variant_id == null)
+                        !(item.product_id == objectItem.product_id && item.variant_uuid == null)
                     );
                 }
                 _this.find('.input-checkbox').prop('checked', false);
@@ -1160,7 +1161,7 @@
             for(let i = 0; i < preloadObject.id.length; i++){
                 objectList.push({
                     product_id: preloadObject.id[i],
-                    product_variant_id: preloadObject.product_variant_id[i] ?? null,
+                    variant_uuid: preloadObject.variant_uuid[i] ?? null,
                     name: preloadObject.name[i]
                 })
             }
@@ -1171,13 +1172,13 @@
             if(objectList.length){
                 for(let i = 0; i<objectList.length; i++){
                     let product_id = objectList[i].product_id
-                    let product_variant_id = (objectList[i].product_variant_id == 'null') ? null : objectList[i].product_variant_id
+                    let variant_uuid = (objectList[i].variant_uuid == 'null') ? null : objectList[i].variant_uuid
                     let name = objectList[i].variant_name ?? objectList[i].name
 
                     let classBox = model +'-'+ product_id
 
-                    if(product_variant_id){
-                        classBox += '-'+ product_variant_id
+                    if(variant_uuid){
+                        classBox += '-'+ variant_uuid
                     }
 
                     if(!$(`.boxWrapper .${classBox}`).elExist()){
@@ -1191,7 +1192,7 @@
                                 </div>
                                 <div class="hidden">
                                     <input type="hidden" name="object[id][]" value="${product_id}">
-                                    <input type="hidden" name="object[product_variant_id][]" value="${product_variant_id}">
+                                    <input type="hidden" name="object[variant_uuid][]" value="${variant_uuid}">
                                     <input type="hidden" name="object[name][]" value="${name}">
                                 </div>
                             </div>
@@ -1218,11 +1219,11 @@
                 if (classBox) {
                     let parts = classBox.split('-');
                     let product_id = parts[1];
-                    let product_variant_id = parts[2] || null;
+                    let variant_uuid = parts[2] || null;
 
                     // Những item nào ở objectList mà không còn tìm thấy tương ứng ở div fixGrid6 giao diện tương ứng thì tiến hành xóa div đó đi
                     let existsInObjectList = objectList.some(item => 
-                        item.product_id == product_id && (item.product_variant_id == product_variant_id || item.product_variant_id == null)
+                        item.product_id == product_id && (item.variant_uuid == variant_uuid || item.variant_uuid == null)
                     );
 
                     if (!existsInObjectList) {
@@ -1237,13 +1238,13 @@
             if(objectList.length){
                 for(let i = 0; i<objectList.length; i++){
                     let product_id = objectList[i].product_id
-                    let product_variant_id = objectList[i].product_variant_id ?? null
+                    let variant_uuid = objectList[i].variant_uuid ?? null
                     let name = objectList[i].variant_name ?? objectList[i].name
 
                     let classBox = model +'-'+ product_id
 
-                    if(product_variant_id){
-                        classBox += '-'+ product_variant_id
+                    if(variant_uuid){
+                        classBox += '-'+ variant_uuid
                     }
 
                     if(!$(`.boxWrapper .${classBox}`).elExist()){
@@ -1257,7 +1258,7 @@
                                 </div>
                                 <div class="hidden">
                                     <input type="hidden" name="object[id][]" value="${product_id}">
-                                    <input type="hidden" name="object[product_variant_id][]" value="${product_variant_id}">
+                                    <input type="hidden" name="object[variant_uuid][]" value="${variant_uuid}">
                                     <input type="hidden" name="object[name][]" value="${name}">
                                 </div>
                             </div>
@@ -1303,11 +1304,11 @@
             
             // let parts = deleted_item.split('-');
             // let product_id = parts[1];
-            // let product_variant_id = parts[2] || null;
+            // let variant_uuid = parts[2] || null;
     
             // // xóa phần tử khỏi objectList
             // objectList = objectList.filter(item => 
-            //     !(item.product_id == product_id && item.product_variant_id == product_variant_id)
+            //     !(item.product_id == product_id && item.variant_uuid == variant_uuid)
             // );
             // console.log(objectList)
         })

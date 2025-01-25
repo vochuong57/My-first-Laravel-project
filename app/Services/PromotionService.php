@@ -86,7 +86,7 @@ class PromotionService extends BaseService implements PromotionServiceInterface
                     $payloadRelation[]=[
                         'promotion_id' => $promotion->id,
                         'object_id' => $val,
-                        'object_variant_id' => ($object['product_variant_id'][$key] == 'null') ? null : $object['product_variant_id'][$key],
+                        'object_variant_uuid' => ($object['variant_uuid'][$key] == 'null') ? null : $object['variant_uuid'][$key],
                         'model' => $request->input('chooseModule')
                     ];
                 }
@@ -144,7 +144,7 @@ class PromotionService extends BaseService implements PromotionServiceInterface
                     $payloadRelation[]=[
                         'promotion_id' => $promotion->id,
                         'object_id' => $val,
-                        'object_variant_id' => ($object['product_variant_id'][$key] == 'null') ? null : $object['product_variant_id'][$key],
+                        'object_variant_uuid' => ($object['variant_uuid'][$key] == 'null') ? null : $object['variant_uuid'][$key],
                         'model' => $request->input('chooseModule')
                     ];
                 }

@@ -22,6 +22,7 @@ use App\Repositories\Interfaces\RouterRepositoryInterface as RouterRepository;
 use App\Repositories\Interfaces\ProductLanguageRepositoryInterface as ProductLanguageRepository;
 use App\Repositories\Interfaces\ProductVariantLanguageRepositoryInterface as ProductVariantLanguageRepository;
 use App\Repositories\Interfaces\ProductVariantAttributeRepositoryInterface as ProductVariantAttributeRepository;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Class UserService
@@ -394,7 +395,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         // dd($payload);
         
         // 1. Create product_variants
-        $variant = $this->createVariantArray($payload);
+        $variant = $this->createVariantArray($payload, $product);
         $variants = $product->product_variants()->createMany($variant);
 
         // 2. Create product_variant_language
@@ -435,11 +436,13 @@ class ProductService extends BaseService implements ProductServiceInterface
         $variantAttribute = $this->productVariantAttributeRepository->createBatch($variantAttribute);
     }
 
-    private function createVariantArray(array $payload = []): array{
+    private function createVariantArray(array $payload = [], $product): array{
         $variant = [];
         if(isset($payload['variant']['sku']) && count($payload['variant']['sku'])){
             foreach($payload['variant']['sku'] as $key => $val){
+                $variant_uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, 'Product, '.$product->id.', '.$payload['productVariant']['id'][$key]);
                 $variant[]=[
+                    'variant_uuid' => $variant_uuid,
                     'code' => ($payload['productVariant']['id'][$key]) ?? '',
                     'quantity' => ($payload['variant']['quantity'][$key]) ?? 0,
                     'sku' => $val,

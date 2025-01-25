@@ -25,7 +25,8 @@ class ProductVariant extends Model
         'file_path',
         'album',
         'publish',
-        'user_id'
+        'user_id',
+        'variant_uuid',
     ];
 
     protected $table='product_variants';

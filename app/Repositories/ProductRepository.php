@@ -91,7 +91,7 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             'products.id',
             'products.image',
             'tb2.name',
-            'tb3.id as product_variant_id',
+            'tb3.variant_uuid',
             DB::raw('CONCAT(tb2.name, " - ", COALESCE(tb4.name, "Default")) as variant_name'),
             DB::raw('COALESCE(tb3.sku, products.code) as sku'),
             DB::raw('COALESCE(tb3.price, products.price) as price'),

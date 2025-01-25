@@ -18,7 +18,7 @@ class PromotionObjectVariant extends Model
         'id',
         'promotion_id',
         'object_id',
-        'object_variant_id',
+        'object_variant_uuid',
         'model',
     ];
 }
