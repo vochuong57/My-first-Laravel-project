@@ -29,6 +29,7 @@ use App\Http\Controllers\Backend\PromotionController;
 use App\Http\Controllers\Backend\SourceController;
 use App\Http\Controllers\Backend\CustomerController;
 use App\Http\Controllers\Backend\CustomerCatalogueController;
+use App\Http\Controllers\Frontend\HomeController;
 //@@useController@@
 
 
@@ -51,9 +52,10 @@ use App\Http\Controllers\Ajax\SourceController as AjaxSourceController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// FRONTEND ROUTES
+Route::get('/', [HomeController::class, 'index'])->name('home.index');
+
+// BACKEND ROUTES
 
 //định nghĩa được một cái đưuòng dẫn và đưa cái đường dẫn đó vào route tương ứng
 //chạy nó bằng http://127.0.0.1:8000/login
