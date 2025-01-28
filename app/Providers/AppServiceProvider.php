@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Validator;
 use DateTime;
 use Carbon\Carbon;
 use App\Rules\NotEmptyJsonArray;
+use App\Http\ViewComposers\SystemComposer;
+use Illuminate\Support\Facades\Schema;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -86,5 +88,8 @@ class AppServiceProvider extends ServiceProvider
             // dd($endDate->greaterThan($startDate));
             return $endDate->greaterThan($startDate);
         });
+
+        view()->composer('Frontend.homepage.layout', SystemComposer::class);
+        Schema::defaultStringLength(191);
     }
 }

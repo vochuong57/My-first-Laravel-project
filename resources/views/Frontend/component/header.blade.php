@@ -1,3 +1,6 @@
+@php
+    //dd($systems);
+@endphp
 <div id="header" class="pc-header">
     <div class="header-upper">
         <div class="uk-container uk-container-center">
@@ -10,10 +13,10 @@
                         <?php }  ?>
                     </ul>
                 </div>
-                <div class="slogan">Siêu khuyến mãi, tiết kiệm tới 35% ngay hôm nay</div>
+                <div class="slogan">{{ $systems['homepage_slogan'] }}</div>
                 <div class="header-widget">
                     <div class="uk-flex uk-flex-middle">
-                        <div class="call-us">Cần hỗ trợ? Gọi cho chúng tôi: <a href="tel:098 236 5824" title="">098 236 5824</a></div>
+                        <div class="call-us">Cần hỗ trợ? Gọi cho chúng tôi: <a href="tel:{{ $systems['contact_hotline'] }}" title="">{{ $systems['contact_hotline'] }}</a></div>
                         <div class="language">
                             <a href="" class="active">Tiếng Việt</a>
                             <i class="fa fa-caret-down ml5" aria-hidden="true"></i>
