@@ -215,3 +215,49 @@ if(!function_exists('renderDiscountInformation')){
         return '<div><a href="'.route('promotion.edit', $promotion->id).'">Xem chi tiết</a></div>';
     }
 }
+
+// V127
+if(!function_exists('frontend_recursive_menu')){
+    function frontend_recursive_menu($data, $count = 2){
+        $html = '';
+        if(count($data)){
+            foreach($data as $key => $val){
+                $name = $val['item']->languages->first()->getOriginal('pivot_name');
+                $canonical = write_url($val['item']->languages->first()->getOriginal('pivot_canonical'));
+                
+                $ulClass = 'menu-level__'.$count;
+
+                if (count($val['children']) && $count - 1 == 1) {
+                    $class = 'children';
+                } elseif (count($val['children']) && $count - 1 > 1) {
+                    $class = 'sub-children';
+                } else {
+                    $class = '';
+                }
+                
+                $html .= '<li ' . (!empty($class) ? 'class="' . $class . '"' : '') . '>';
+                $html .=    '<a href="'.$canonical.'" title="'.$name.'">'.$name.'</a>';
+                if(count($val['children'])){
+    $html .= ($count == 2 ? '<div class="dropdown-menu">' : '');
+                    $html .=    '<ul class="uk-list uk-clearfix menu-style '.$ulClass.'">';
+                    $html .=        frontend_recursive_menu($val['children'], $count+1);
+                    $html .=    '</ul>';
+    $html .= ($count == 2 ? '</div>' : '');
+                }
+                $html .= '</li>';
+            }
+        }
+        return $html;
+    }
+}
+
+// V127
+if(!function_exists('write_url')){
+    function write_url(string $canonical = '', bool $fullDomain = true, $suffix = true){
+        if(strpos($canonical, 'http') == true){
+            return $canonical;
+        }
+        $url = (($fullDomain == true) ? config('app.url') : '').$canonical.(($suffix == true) ? config('apps.general.suffix') : '');
+        return $url;
+    }
+}

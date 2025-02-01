@@ -6,11 +6,22 @@
         <div class="uk-container uk-container-center">
             <div class="uk-flex uk-flex-middle uk-flex-space-between">
                 <div class="sitelink">
-                    <?php $sitelink = ['About Us','My Account','Wishlist','Order Tracking'];  ?>    
+                    <!-- <?php //$sitelink = ['About Us','My Account','Wishlist','Order Tracking'];  ?>    
                     <ul class="uk-list uk-clearfix uk-flex uk-flex-middle">
-                        <?php for($i = 0; $i < count($sitelink); $i++){  ?>
-                        <li><a href="" title=""><?php echo $sitelink[$i] ?></a></li>
-                        <?php }  ?>
+                        <?php //for($i = 0; $i < count($sitelink); $i++){  ?>
+                        <li><a href="" title=""><?php //echo $sitelink[$i] ?></a></li>
+                        <?php //}  ?>
+                    </ul> -->
+                    <ul class="uk-list uk-clearfix uk-flex uk-flex-middle">
+                    @if(isset($menus['topbar-menu']))
+                    @foreach($menus['topbar-menu'] as $key => $val)
+                    @php
+                        $name = $val['item']->languages->first()->getOriginal('pivot_name');
+                        $canonical = write_url($val['item']->languages->first()->getOriginal('pivot_canonical'));
+                    @endphp
+                        <li><a href="{{ $canonical }}" title="{{ $name }}">{{ $name }}</a></li>
+                    @endforeach
+                    @endif
                     </ul>
                 </div>
                 <div class="slogan">{{ $systems['homepage_slogan'] }}</div>

@@ -8,6 +8,7 @@ use DateTime;
 use Carbon\Carbon;
 use App\Rules\NotEmptyJsonArray;
 use App\Http\ViewComposers\SystemComposer;
+use App\Http\ViewComposers\MenuComposer;
 use Illuminate\Support\Facades\Schema;
 
 class AppServiceProvider extends ServiceProvider
@@ -89,7 +90,15 @@ class AppServiceProvider extends ServiceProvider
             return $endDate->greaterThan($startDate);
         });
 
-        view()->composer('Frontend.homepage.layout', SystemComposer::class);
+        // view()->composer('Frontend.homepage.layout', SystemComposer::class);
+        // view()->composer('Frontend.homepage.layout', MenuComposer::class);
+        $composerClasses = [
+            SystemComposer::class,
+            MenuComposer::class,
+        ];
+        foreach($composerClasses as $class){
+            view()->composer('Frontend.homepage.layout', $class);
+        }
         Schema::defaultStringLength(191);
     }
 }
