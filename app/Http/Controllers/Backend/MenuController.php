@@ -267,7 +267,13 @@ class MenuController extends Controller
         // dd($listMenus);
 
         // V72
-        $listCanonicalInRouter = DB::table('routers')->whereIn('canonical', $listMenus['canonical'])->pluck('canonical')->toArray();
+        // $listCanonicalInRouter = DB::table('routers')->whereIn('canonical', $listMenus['canonical'])->pluck('canonical')->toArray();
+
+        if(!empty($listMenus)){
+            $listCanonicalInRouter = DB::table('routers')->whereIn('canonical', $listMenus['canonical'])->pluck('canonical')->toArray();
+        }else{
+            $listCanonicalInRouter = [];
+        }
         // dd($listCanonicalInRouter);
 
         $this->authorize('modules', 'menu.store');//phân quyền

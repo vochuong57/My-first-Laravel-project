@@ -867,7 +867,9 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover,
     background: var(--hover-cover);
     color:#fff;
 }
-.menu-level__3{
+.menu-level__3, 
+.menu-level__4,
+.menu-level__5{
     position: absolute;
     width:220px;
     background: #fff;
@@ -876,8 +878,21 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover,
     border-left:0;
     display: none;
 }
-.menu-level__2 > li:hover .menu-level__3{
+.menu-level__2 > li:hover .menu-level__3, 
+.menu-level__3 > li:hover .menu-level__4,
+.menu-level__4 > li:hover .menu-level__5{
     display: block;
+}
+.navigation .sub-children::before{
+    content:'\f0d7';
+    display: block;
+    position: absolute;
+    right:12px;
+    top:11px;
+    font-family: 'FontAwesome';
+    color:#000;
+    font-size:15px;
+    z-index: 1;
 }
 .btn-buynow,
 .btn-addtocart{

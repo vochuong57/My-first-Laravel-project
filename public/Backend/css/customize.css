@@ -642,9 +642,9 @@ input[type=checkbox]{
 .search-model{
     border-radius: 5px;
     height: 42px;
-    padding-left: 35px;
+    /* padding-left: 35px; */
     font-size: 14px;
-    border: 1px solid #e3e9ed;
+    /* border: 1px solid #e3e9ed; */
     outline: 0;
 }
 .search-model-box{
