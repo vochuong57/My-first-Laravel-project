@@ -79,6 +79,14 @@ class BaseRepository implements BaseRepositoryInterface
         }
         return $query->get();
     }
+    public function findByConditionsWithOrder(array $condition = [], array $orderBy = ['id', 'desc']) {
+        $query = $this->model->newQuery();
+        foreach ($condition as $key => $val) {
+            $query->where($val[0], $val[1], $val[2]);
+        }
+        $query->orderBy($orderBy[0], $orderBy[1]);
+        return $query->get();
+    }
     public function findByConditionsWithRelation(array $condition = [], array $relation = [], array $orderBy = ['id', 'desc'])
     {
         $query = $this->model->newQuery();

@@ -28,14 +28,21 @@
                 <div class="header-widget">
                     <div class="uk-flex uk-flex-middle">
                         <div class="call-us">Cần hỗ trợ? Gọi cho chúng tôi: <a href="tel:{{ $systems['contact_hotline'] }}" title="">{{ $systems['contact_hotline'] }}</a></div>
+                        @if(isset($languages))
                         <div class="language">
-                            <a href="" class="active">Tiếng Việt</a>
+                            @foreach($languages as $key => $val)
+                            @if($key > 0) @break; @endif
+                            <a href="" class="active">{{ $val->name }}</a>
+                            @endforeach
                             <i class="fa fa-caret-down ml5" aria-hidden="true"></i>
                             <ul class="uk-list uk-clearfix language-dropdown">
-                                <li><a href="" title="">Tiếng Anh</a></li>
-                                <li><a href="" title="">Tiếng Trung</a></li>
+                                @foreach($languages as $key => $val)
+                                @if($key == 0) @continue; @endif
+                                <li><a href="" title="" class="change-language">{{ $val->name }}</a></li>
+                                @endforeach
                             </ul>
                         </div>
+                        @endif
                     </div>
                 </div>
             </div>
