@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use App\Rules\NotEmptyJsonArray;
 use App\Http\ViewComposers\SystemComposer;
 use App\Http\ViewComposers\MenuComposer;
+use App\Http\ViewComposers\LanguageComposer;
 use Illuminate\Support\Facades\Schema;
 
 class AppServiceProvider extends ServiceProvider
@@ -95,6 +96,7 @@ class AppServiceProvider extends ServiceProvider
         $composerClasses = [
             SystemComposer::class,
             MenuComposer::class,
+            LanguageComposer::class,
         ];
         foreach($composerClasses as $class){
             view()->composer('Frontend.homepage.layout', $class);
