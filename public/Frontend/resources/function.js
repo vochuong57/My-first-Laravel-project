@@ -5,36 +5,50 @@
 	var $carousel = $(".owl-slide");
 
 	HT.swiperOption = (setting) => {
-		// console.log(setting);
-		let option = {}
-		if(setting.animation.length){
-			option.effect = setting.animation;
-		}	
-		if(setting.arrow === 'accept'){
-			option.navigation = {
-				nextEl: '.swiper-button-next',
-				prevEl: '.swiper-button-prev',
-			}
-		}
-		if(setting.autoplay === 'accept'){
-			option.autoplay = {
-			    delay: 2000,
-			    disableOnInteraction: false,
-			}
-		}
-		if(setting.navigate === 'dots'){
-			option.pagination = {
-				el: '.swiper-pagination',
-			}
-		}
-		return option
-	}
+        // console.log(setting);
+        let option = {};
+        if (setting.animation.length) {
+            option.effect = setting.animation;
+        }
+        if (setting.arrow === 'accept') {
+            option.navigation = {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            };
+        }
+        if (setting.autoplay === 'accept') {
+            option.autoplay = {
+                delay: parseInt(setting.animationDelay) || 2000,
+                disableOnInteraction: false,
+            };
+        }
+        if (setting.navigate === 'dots') {
+            option.pagination = {
+                el: '.swiper-pagination',
+            };
+        }
+        if (setting.width) {
+            option.width = parseInt(setting.width);
+        }
+        if (setting.height) {
+            option.height = parseInt(setting.height);
+        }
+        if (setting.pauseHover === 'accept') {
+            option.autoplay = option.autoplay || {};
+            option.autoplay.pauseOnMouseEnter = true;
+        }
+        if (setting.animationSpeed) {
+            option.speed = parseInt(setting.animationSpeed);
+        }
+        return option;
+    };
 	
 	/* MAIN VARIABLE */
 	HT.swiper = () => {
 		if($('.panel-slide').length){
 			let setting = JSON.parse($('.panel-slide').attr('data-setting'))
 			let option = HT.swiperOption(setting)
+			console.log(option);
 			var swiper = new Swiper(".panel-slide .swiper-container", option);
 		}
 		
