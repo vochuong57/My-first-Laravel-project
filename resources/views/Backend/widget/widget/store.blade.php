@@ -41,7 +41,7 @@
 
                         <div class="search-model-box">
                             <i class="fa fa-search"></i>
-                            <input type="text" class="form-control search-model">
+                            <input type="text" class="form-control search-model" style="padding-left: 35px;">
 
                             <div class="ajax-search-result">
                                 

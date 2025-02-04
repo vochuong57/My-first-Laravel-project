@@ -21,6 +21,7 @@ interface BaseRepositoryInterface
     );
     public function findById(int $id, array $column=['*'], array $relation =[]);
     public function findWhereIn(string $column='', array $ids = []);
+    public function findWhereInWithRelation(string $column = '', array $ids = [], array $condition = [], array $relation = []);
     public function findByCondition(array $condition = []);
     public function findByConditions(array $condition = []);
     public function findByConditionsWithOrder(array $condition = []);

@@ -683,6 +683,8 @@ input[type=checkbox]{
     box-shadow: 0 3px 6px 0 rgb(33 33 33 / 10%);
     z-index: 100;
     width: 100%;
+    max-height: 250px; /* Chiều cao tối đa */
+    overflow-y: auto; /* Cho phép cuộn dọc */
 }
 .ajax-search-result button{
     width: 100%;

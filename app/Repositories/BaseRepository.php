@@ -65,6 +65,30 @@ class BaseRepository implements BaseRepositoryInterface
     public function findWhereIn(string $column='', array $ids = []){//dùng khi có một mảng id
         return $this->model->whereIn($column, $ids)->get();
     }
+    public function findWhereInWithRelation(string $column = '', array $ids = [], array $condition = [], array $relation = [], array $orderBy = ['id', 'desc']) {
+        $query = $this->model->newQuery();
+        
+        // Thêm điều kiện whereIn
+        $query->whereIn($column, $ids);
+
+        // Thêm các điều kiện khác vào query
+        foreach ($condition as $val) {
+            $query->where($val[0], $val[1], $val[2]);
+        }
+    
+        // Thêm điều kiện kiểm tra quan hệ tồn tại
+        // foreach ($relation as $rel => $closure) {
+        //     $query->whereHas($rel, $closure);
+        // }
+    
+        // Load các mối quan hệ
+        $query->with($relation);
+    
+        // Sắp xếp
+        $query->orderBy($orderBy[0], $orderBy[1]);
+    
+        return $query->get();
+    }
     public function findByCondition(array $condition = []){
         $query = $this->model->newQuery();
         foreach($condition as $key => $val){
