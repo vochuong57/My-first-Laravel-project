@@ -5,14 +5,17 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\FrontendController;
 use Illuminate\Http\Request;
 use App\Repositories\Interfaces\SlideRepositoryInterface as SlideRepository;
+use App\Services\Interfaces\WidgetServiceInterface as WidgetService;
 
 class HomeController extends FrontendController
 {
     protected $slideRepository;
+    protected $widgetService;
 
-    public function __construct(SlideRepository $slideRepository){
+    public function __construct(SlideRepository $slideRepository, WidgetService $widgetService){
         parent::__construct();
         $this->slideRepository = $slideRepository;
+        $this->widgetService = $widgetService;
     }
 
     public function index(){
@@ -27,6 +30,13 @@ class HomeController extends FrontendController
             $slideItems = [];
         }
         // dd($slideItems);
+
+        $widgets = [
+            'category' => $this->widgetService->findWidgetByKeyword('category', $this->language, $children = true),
+            'news' => $this->widgetService->findWidgetByKeyword('news', $this->language),
+        ];
+        // dd($widgets['news']);
+        
         return view('frontend.homepage.home.index', compact('config', 'slides', 'slideItems'));
     }
 

@@ -12,6 +12,7 @@ use Illuminate\Support\Carbon;
 //thêm thư viện xử lý password
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 
 /**
@@ -254,5 +255,51 @@ class WidgetService extends BaseService implements WidgetServiceInterface
         return [
             'id','name','keyword','short_code','user_id', 'model' ,'publish', 'description'
         ];
+    }
+
+    // fontend widget
+    public function findWidgetByKeyword(string $keyword = '', int $language, $extend = false){
+        $condition = [
+            ['keyword', '=', $keyword],
+            ['publish', '=', 2],
+        ];
+
+        $widget = $this->widgetRepository->findByCondition($condition);
+        // dd($widget);
+       
+        $repositoryInstance = loadClassInterface($widget->model);
+        // dd($repositoryInstance);
+
+        $condition = [
+            ['publish', '=', 2]
+        ];
+
+        $paramRelation = explode('_', Str::snake($widget->model))[0].'s';
+        // dd($paramRelation);
+
+        if(strpos($widget->model, 'Catalogue') && isset($extend) && $extend == true){
+            $relation = [
+                'languages' => function($query) use ($language){
+                    $query->where('language_id', $language);
+                },
+                $paramRelation => function($query) use ($language) {
+                    $query->where('publish', '=', 2)
+                    ->with(['languages' => function($query) use ($language) {
+                        $query->where('language_id', $language);
+                    }]);
+                }
+            ];
+        }else{
+            $relation = [
+                'languages' => function($query) use ($language){
+                    $query->where('language_id', $language);
+                },
+            ];
+        }
+
+        $widgetItems = $repositoryInstance->findWhereInWithRelation('id', $widget->model_id, $condition, $relation);
+        dd($widgetItems);
+        
+        return $widgetItems;
     }
 }
