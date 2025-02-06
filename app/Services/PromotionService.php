@@ -75,10 +75,15 @@ class PromotionService extends BaseService implements PromotionServiceInterface
                     $payload['discountInformation'] = $this->productAndQuantity($request);
                     break;
             }
-                
+            
+            $payload['maxDiscountValue'] = intval(str_replace('.', '', $request->input(PromotionEnum::PRODUCT_AND_QUANTITY.'.maxDiscountValue')));
+            $payload['discountValue'] = intval(str_replace('.', '', $request->input(PromotionEnum::PRODUCT_AND_QUANTITY.'.discountValue')));
+            $payload['discountType'] = $request->input(PromotionEnum::PRODUCT_AND_QUANTITY.'.discountType');
+
             // dd($payload);
             $promotion = $this->promotionRepository->create($payload);
 
+            // promotion_object_variant
             if($promotion->id > 0 && $payload['method'] == PromotionEnum::PRODUCT_AND_QUANTITY){
                 $object = $request->input('object');
                 $payloadRelation = [];
@@ -128,7 +133,9 @@ class PromotionService extends BaseService implements PromotionServiceInterface
                     $payload['discountInformation'] = $this->productAndQuantity($request);
                     break;
             }
-                
+            $payload['maxDiscountValue'] = intval(str_replace('.', '', $request->input(PromotionEnum::PRODUCT_AND_QUANTITY.'.maxDiscountValue')));
+            $payload['discountValue'] = intval(str_replace('.', '', $request->input(PromotionEnum::PRODUCT_AND_QUANTITY.'.discountValue')));
+            $payload['discountType'] = $request->input(PromotionEnum::PRODUCT_AND_QUANTITY.'.discountType');
             // dd($payload);
 
             $promotion = $this->promotionRepository->updateReturn($id, $payload);
@@ -137,6 +144,7 @@ class PromotionService extends BaseService implements PromotionServiceInterface
                 ['promotion_id', '=', $promotion->id],
             ]);
 
+            // promotion_object_variant
             if($promotion->id > 0 && $payload['method'] == PromotionEnum::PRODUCT_AND_QUANTITY){
                 $object = $request->input('object');
                 $payloadRelation = [];

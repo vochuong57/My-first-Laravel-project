@@ -65,4 +65,11 @@ class ProductCatalogue extends Model
         return true;
     }
 
+    public function relationChildrends()
+    {
+        return $this->hasMany(ProductCatalogue::class, 'parent_id')
+                    ->whereColumn('publish', '=', 2)
+                    ->whereColumn('lft', '>', 'parent.lft')
+                    ->whereColumn('rgt', '<', 'parent.rgt');
+    }
 }

@@ -58,4 +58,8 @@ class Product extends Model
     public function product_variants(){
         return $this->hasMany(ProductVariant::class, 'product_id', 'id');
     }
+
+    public function promotions(){
+        return $this->belongsToMany(Promotion::class, 'promotion_object_variant', 'object_id', 'promotion_id');
+    }
 }

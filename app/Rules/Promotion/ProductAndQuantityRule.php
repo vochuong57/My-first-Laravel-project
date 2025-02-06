@@ -44,6 +44,10 @@ class ProductAndQuantityRule implements ValidationRule
         if($this->data['product_and_quantity']['discountType'] == 'percent' && $discountValue == 100 && $this->data['product_and_quantity']['maxDiscountValue'] > 0){
             $fail('Nếu giá trị chiết khấu là 100 và loại chiết khẩu là % thì không nhập dữ liệu vào giới hạn khuyễn mại');
         }
+
+        if($this->data['product_and_quantity']['discountType'] == 'cash' && $this->data['product_and_quantity']['maxDiscountValue'] > 0){
+            $fail('Nếu loại chiết khẩu là đ thì không nhập dữ liệu vào giới hạn khuyễn mại');
+        }
         
         if(!isset($this->data['object'])){
             $fail('Bạn chưa chọn đối tượng áp dụng chiết khấu');
