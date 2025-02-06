@@ -35,7 +35,7 @@ class HomeController extends FrontendController
             'category' => $this->widgetService->findWidgetByKeyword('category', $this->language, $children = true),
             'news' => $this->widgetService->findWidgetByKeyword('news', $this->language),
         ];
-        // dd($widgets['news']);
+        // dd($widgets);
         
         return view('frontend.homepage.home.index', compact('config', 'slides', 'slideItems'));
     }

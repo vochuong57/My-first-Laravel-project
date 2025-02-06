@@ -265,7 +265,7 @@ class WidgetService extends BaseService implements WidgetServiceInterface
         ];
 
         $widget = $this->widgetRepository->findByCondition($condition);
-        // dd($widget);
+        // dd($widget->model);
        
         $repositoryInstance = loadClassInterface($widget->model);
         // dd($repositoryInstance);
@@ -277,7 +277,16 @@ class WidgetService extends BaseService implements WidgetServiceInterface
         $paramRelation = explode('_', Str::snake($widget->model))[0].'s';
         // dd($paramRelation);
 
-        if(strpos($widget->model, 'Catalogue') && isset($extend) && $extend == true){
+        if($widget->model == 'ProductCatalogue' && isset($extend) && $extend == true){
+            $relation = [
+                'languages' => function($query) use ($language){
+                    $query->where('language_id', $language);
+                },
+                $paramRelation => function($query) use ($language) {
+                    $this->applyLanguagesAndPromotions($query, $language);
+                }
+            ];
+        }elseif(strpos($widget->model, 'Catalogue') && isset($extend) && $extend == true){
             $relation = [
                 'languages' => function($query) use ($language){
                     $query->where('language_id', $language);
@@ -289,7 +298,8 @@ class WidgetService extends BaseService implements WidgetServiceInterface
                     }]);
                 }
             ];
-        }else{
+        }
+        else{
             $relation = [
                 'languages' => function($query) use ($language){
                     $query->where('language_id', $language);
@@ -298,8 +308,83 @@ class WidgetService extends BaseService implements WidgetServiceInterface
         }
 
         $widgetItems = $repositoryInstance->findWhereInWithRelation('id', $widget->model_id, $condition, $relation);
-        dd($widgetItems);
+        // dd($widgetItems->toArray());
+
+        if($widget->model == 'ProductCatalogue' && isset($extend) && $extend == true){
+            foreach($widgetItems as $widgetItem){
+                // dd($widgetItem->id);
+                $widgetItem->childrens = $this->getAllChildrenCatalogue($widgetItem, $language, $widget->model);
+            }
+        }
+        // dd($widgetItems->toArray());
         
         return $widgetItems;
+    }
+
+
+    private function getAllChildrenCatalogue($widgetItem, $language, string $model = ''){
+        $repositoryInstance = loadClassInterface($model);
+        // dd($repositoryInstance);
+
+        $condition = [
+            ['publish', '=', 2],
+            ['lft', '>', $widgetItem->lft],
+            ['rgt', '<', $widgetItem->rgt],
+        ];
+        $childrens = $repositoryInstance->findByConditions($condition);
+        // dd($childrens);
+
+        $temp = [];
+        foreach($childrens as $children){
+            // dd($children->id);
+            $condition = [
+                ['publish', '=', 2],
+                ['id', '=', $children->id],
+            ];
+    
+            $paramRelation = explode('_', Str::snake($model))[0].'s';
+            // dd($paramRelation);
+            $relation = [
+                $paramRelation => function($query) use ($language) {
+                    $this->applyLanguagesAndPromotions($query, $language);
+                }
+            ];
+    
+            $widgetItems = $repositoryInstance->findByConditionsWithRelation($condition, $relation);
+            $temp[] = $widgetItems;
+        }
+        // dd($temp);
+        return $temp;
+    }
+
+
+    private function applyLanguagesAndPromotions($query, $language)
+    {
+        $query->where('publish', '=', 2)
+        ->with(['languages' => function($query) use ($language) {
+            $query->where('language_id', $language);
+        }])
+        ->with('promotions', function($query) {
+            $query->select(
+                'promotions.id',
+                'promotions.maxDiscountValue',
+                'promotions.discountValue',
+                'promotions.discountType',
+                DB::raw(
+                    "CASE
+                        WHEN promotions.discountType = 'cash' THEN (SELECT price FROM products WHERE products.id = promotion_object_variant.object_id) - promotions.discountValue
+                        WHEN promotions.discountType = 'percent' THEN (SELECT price FROM products WHERE products.id = promotion_object_variant.object_id) - LEAST((SELECT price FROM products WHERE products.id = promotion_object_variant.object_id) * promotions.discountValue / 100, promotions.maxDiscountValue)
+                        ELSE (SELECT price FROM products WHERE products.id = promotion_object_variant.object_id)
+                    END as discount"
+                )
+            );
+            $query->where('publish', '=', 2);
+            $query->where(function($query) {
+                $query->where('endDate', '>', now())
+                    ->orWhereNull('endDate');
+            });
+            $query->orderBy('discount', 'ASC');
+            // $query->limit(1);
+        });
     }
 }

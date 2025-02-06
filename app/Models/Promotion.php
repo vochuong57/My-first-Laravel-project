@@ -26,6 +26,9 @@ class Promotion extends Model
         'endDate',
         'publish',
         'order',
+        'maxDiscountValue',
+        'discountValue',
+        'discountType',
     ];
 
     protected $casts = [

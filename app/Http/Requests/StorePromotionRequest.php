@@ -31,7 +31,7 @@ class StorePromotionRequest extends FormRequest
        
         $rules = [
             'name' => 'required',
-            'code' => 'required|unique:promotions',
+            'code' => 'unique:promotions',
             'startDate' => 'required|custom_date_format',
         ];
 
@@ -62,11 +62,13 @@ class StorePromotionRequest extends FormRequest
 
         // dd($this->input('method'));
         $method = $this->input('method');
+        // dd($method);
+        
         switch ($method) {
             case PromotionEnum::ORDER_AMOUNT_RANGE:
                 $rules['method'] = [new OrderAmountRangeRule($this->input('promotion_order_amount_range'))];
                 break;
-            case PromotionEnum::ORDER_AMOUNT_RANGE:
+            case PromotionEnum::PRODUCT_AND_QUANTITY:
                 $rules['method'] = [new ProductAndQuantityRule($this->only('product_and_quantity', 'object'))];
                 break;
             
@@ -81,7 +83,7 @@ class StorePromotionRequest extends FormRequest
     {
         $messages = [
             'name.required' => 'Bạn chưa nhập tên khuyến mại',
-            'code.required' => 'Bạn chưa nhập mã khuyến mại',
+            // 'code.required' => 'Bạn chưa nhập mã khuyến mại',
             'code.unique'=>'Mã khuyến mại đã tồn tại, hãy nhập mã khuyến mại khác',
             'startDate.required' => 'Bạn chưa nhập vào ngày bắt đầu khuyến mại',
             'startDate.custom_date_format' => 'Ngày bắt đầu khuyến mại không đúng đinh dạng d/m/Y H:i',
