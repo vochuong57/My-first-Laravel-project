@@ -82,25 +82,54 @@
             </div> -->
         </div>
     </div>
+    @php
+        $banner = App\Enums\SlideEnum::BANNER;
+    @endphp
+    @if(!is_null($slides[$banner]))
     <div class="panel-banner">
         <div class="uk-container uk-container-center">
             <div class="panel-body">
                 <div class="uk-grid uk-grid-medium">
-                    <?php for($i = 1; $i<= 3; $i++){  ?>
+                    @foreach($slides[$banner]->slideItems as $key => $val)
+                    @php
+                        $description = $val[0]['description'];
+                        $image = $val[0]['image'];
+                        $canonical = $val[0]['canonical'] != null ? write_url($val[0]['canonical']) : '#';
+                    @endphp
                     <div class="uk-width-large-1-3">
                         <div class="banner-item">
-                            <span class="image"><img src="resources/img/banner-<?php echo $i; ?>.png" alt=""></span>
+                            <span class="image"><img src="{{ $image }}" alt=""></span>
+                            <div class="banner-overlay">
+                                <div class="banner-title">{!! $description !!}</div>
+                                <a href="{{ $canonical }}" class="btn-shop" title="">Mua ngay</a>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+    <!-- <div class="panel-banner">
+        <div class="uk-container uk-container-center">
+            <div class="panel-body">
+                <div class="uk-grid uk-grid-medium">
+                    <?php //for($i = 1; $i<= 3; $i++){  ?>
+                    <div class="uk-width-large-1-3">
+                        <div class="banner-item">
+                            <span class="image"><img src="resources/img/banner-<?php //echo $i; ?>.png" alt=""></span>
                             <div class="banner-overlay">
                                 <div class="banner-title">Make your Breakfast healthy and Easy</div>
                                 <a class="btn-shop" title="">Mua ngay</a>
                             </div>
                         </div>
                     </div>
-                    <?php }  ?>
+                    <?php //}  ?>
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
     <div class="panel-popular">
         <div class="uk-container uk-container-center">
             <div class="panel-head">

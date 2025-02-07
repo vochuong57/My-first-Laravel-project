@@ -377,5 +377,30 @@ class SlideService extends BaseService implements SlideServiceInterface
         return $output;
     }
 
+
+    public function findSlideByKeyword($arraySlides, $languageId){
+        $condition = [
+            ['publish', '=', 2],        
+        ];
+
+        $slides = $this->slideRepository->findWhereInWithRelation('keyword', $arraySlides, $condition, []);
+        // dd($slides);
+       
+        $temp = [];
+        foreach($slides as $slide){
+            $slideItems = $slide->album;
+            // dd($slideItems);
+            if(isset($slideItems[$languageId])){
+                $slide->slideItems = $slideItems[$languageId];
+            }else{
+                $slide->slideItems = [];
+            }
+            $temp[$slide->keyword] = $slide;
+        }
+
+        // dd($temp);
+        return $temp;
+    }
+
 }
 
