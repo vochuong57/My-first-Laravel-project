@@ -317,8 +317,28 @@ class WidgetService extends BaseService implements WidgetServiceInterface
             }
         }
         // dd($widgetItems->toArray());
+
+        // Tính toán products_count cho từng widgetItem và các children của nó
+        if($widget->model == 'ProductCatalogue' && isset($extend) && $extend == true){
+            foreach ($widgetItems as $widgetItem) {            
+                $widgetItem->products_count = $this->productsCount($widgetItem);
+            }
+        }
+
+        // dd($widgetItems->toArray());
         
         return $widgetItems;
+    }
+
+
+    private function productsCount($widgetItem){
+        $productsCount = isset($widgetItem->products) ? count($widgetItem->products) : 0;
+        if (isset($widgetItem->childrens)) {
+            foreach ($widgetItem->childrens as $key => $val) {
+                $productsCount += isset($val[0]->products) ? count($val[0]->products) : 0;
+            }
+        }
+        return $productsCount;
     }
 
 
