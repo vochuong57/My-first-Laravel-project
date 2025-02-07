@@ -1,5 +1,5 @@
-@if(count($slideItems))
-<div class="panel-slide page-setup" data-setting="{{ json_encode($slides->setting) }}">
+@if(!is_null($slides['main-slide']))
+<div class="panel-slide page-setup" data-setting="{{ json_encode($slides['main-slide']->setting) }}">
     <div class="uk-container uk-container-center">
         <div class="swiper-container">
             <div class="swiper-button-next"></div>
@@ -23,13 +23,15 @@
                     
                 </div>
                 <?php //}  ?> -->
-                @foreach($slideItems as $parentId => $items)
-                @foreach($items as $key => $val)
+                @php
+                    $main = App\Enums\SlideEnum::MAIN;
+                @endphp
+                @foreach($slides[$main]->slideItems as $key => $val)
                 <div class="swiper-slide">
                     <div class="slide-item">
                         <div class="slide-overlay">
-                            <div class="slide-title">{!! $val['name'] !!}</div>
-                            <div class="slide-description">{!! $val['description'] !!} </div>
+                            <div class="slide-title">{!! $val[0]['name'] !!}</div>
+                            <div class="slide-description">{!! $val[0]['description'] !!} </div>
                         </div>
                         <div class="subcribe-form">
                             <form action="" class="uk-form form">
@@ -37,11 +39,10 @@
                                 <button type="submit" name="submit" class="btn-send">Subcribe</button>
                             </form>
                         </div>
-                        <span class="image"><img src="{{ asset($val['image']) }}" alt=""></span>
+                        <span class="image"><img src="{{ asset($val[0]['image']) }}" alt=""></span>
                     </div>
                     
                 </div>
-                @endforeach
                 @endforeach
             </div>
             <div class="swiper-pagination"></div>

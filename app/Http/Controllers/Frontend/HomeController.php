@@ -6,30 +6,27 @@ use App\Http\Controllers\FrontendController;
 use Illuminate\Http\Request;
 use App\Repositories\Interfaces\SlideRepositoryInterface as SlideRepository;
 use App\Services\Interfaces\WidgetServiceInterface as WidgetService;
+use App\Services\Interfaces\SlideServiceInterface as SlideService;
+use App\Enums\SlideEnum;
 
 class HomeController extends FrontendController
 {
     protected $slideRepository;
     protected $widgetService;
+    protected $slideService;
 
-    public function __construct(SlideRepository $slideRepository, WidgetService $widgetService){
+    public function __construct(SlideRepository $slideRepository, WidgetService $widgetService, SlideService $slideService){
         parent::__construct();
         $this->slideRepository = $slideRepository;
         $this->widgetService = $widgetService;
+        $this->slideService = $slideService;
     }
 
     public function index(){
         // dd($this->language);
         $config = $this->config();
 
-        $slides = $this->slideRepository->findByCondition(...$this->slideArgument());
-        // dd($slides);
-        if($slides != null){
-            $slideItems = $slides->album[$this->language];
-        }else{
-            $slideItems = [];
-        }
-        // dd($slideItems);
+        $slides = $this->slideService->findSlideByKeyword([SlideEnum::MAIN, SlideEnum::BANNER], $this->language);
 
         $widgets = [
             'category' => $this->widgetService->findWidgetByKeyword('category', $this->language, $children = true),
@@ -38,17 +35,9 @@ class HomeController extends FrontendController
         ];
         // dd($widgets['category']);
         
-        return view('frontend.homepage.home.index', compact('config', 'slides', 'slideItems', 'widgets'));
+        return view('frontend.homepage.home.index', compact('config', 'slides', 'widgets'));
     }
 
-    private function slideArgument(){
-        return [
-            $condition = [
-                ['publish', '=', 2],
-                ['keyword', '=', 'main-slide'],
-            ],
-        ];
-    }
 
     private function config(){
         return [];
