@@ -34,10 +34,11 @@ class HomeController extends FrontendController
         $widgets = [
             'category' => $this->widgetService->findWidgetByKeyword('category', $this->language, $children = true),
             'news' => $this->widgetService->findWidgetByKeyword('news', $this->language),
+            'category-highlight' => $this->widgetService->findWidgetByKeyword('category-highlight', $this->language),
         ];
-        // dd($widgets);
+        // dd($widgets['category']);
         
-        return view('frontend.homepage.home.index', compact('config', 'slides', 'slideItems'));
+        return view('frontend.homepage.home.index', compact('config', 'slides', 'slideItems', 'widgets'));
     }
 
     private function slideArgument(){

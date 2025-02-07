@@ -5,7 +5,25 @@
     @include('Frontend.component.slide')
     <div class="panel-category page-setup">
         <div class="uk-container uk-container-center">
+            @if(!is_null($widgets['category-highlight']))
             <div class="panel-head">
+                <div class="uk-flex uk-flex-middle">
+                    <h2 class="heading-1"><span>Danh mục sản phẩm</span></h2>
+                    <div class="category-children">
+                        <ul class="uk-list uk-clearfix uk-flex uk-flex-middle">
+                            @foreach($widgets['category-highlight'] as $key => $val)
+                            @php
+                                $name = $val->languages->first()->pivot->name;
+                                $canonical = write_url($val->languages->first()->getOriginal('pivot_canonical'));
+                            @endphp
+                            <li class=""><a href="{{ $canonical }}" title="{{ $name }}">{{ $name }}</a></li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            @endif
+            <!-- <div class="panel-head">
                 <div class="uk-flex uk-flex-middle">
                     <h2 class="heading-1"><span>Danh mục sản phẩm</span></h2>
                     <div class="category-children">
@@ -18,25 +36,50 @@
                         </ul>
                     </div>
                 </div>
-            </div>
+            </div> -->
+            @if(!is_null($widgets['category']))
             <div class="panel-body">
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-container">
+                    <div class="swiper-wrapper">
+                        @foreach($widgets['category'] as $key => $val)
+                        @php
+                            $name = $val->languages->first()->pivot->name;
+                            $canonical = write_url($val->languages->first()->getOriginal('pivot_canonical'));
+                            $image = $val->image;
+                            $productCount = $val->products_count;
+                        @endphp
+                        <div class="swiper-slide">
+                            <div class="category-item bg-<?php echo rand(1,7) ?>">
+                                <a href="{{ $canonical }}" class="image img-scaledown img-zoomin"><img src="{{ $image }}" alt=""></a>
+                                <div class="title"><a href="{{ $canonical }}" title="{{ $name }}">{{ $name }}</a></div>
+                                <div class="total-product">{{ $productCount }} sản phẩm</div>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+            @endif
+            <!-- <div class="panel-body">
                 <?php $category = ['Cake & Milk','Oganic Kiwi','Peach','Read Apple','Snacks','Vegetables','Strawbery','Black plum','Custard apple','Coffe & Tea','Headphone','Kiwi','Iphone']  ?>
                 <div class="swiper-button-next"></div>
                 <div class="swiper-button-prev"></div>
                 <div class="swiper-container">
                     <div class="swiper-wrapper">
-                        <?php for($i = 0; $i < count($category); $i++){  ?>
+                        <?php //for($i = 0; $i < count($category); $i++){  ?>
                         <div class="swiper-slide">
-                            <div class="category-item bg-<?php echo rand(1,7) ?>">
-                                <a href="" class="image img-scaledown img-zoomin"><img src="resources/img/cat-<?php echo $i + 1; ?>.png" alt=""></a>
-                                <div class="title"><a href="" title=""><?php echo $category[$i] ?></a></div>
-                                <div class="total-product"><?php echo rand(0, 100) ?> sản phẩm</div>
+                            <div class="category-item bg-<?php //echo rand(1,7) ?>">
+                                <a href="" class="image img-scaledown img-zoomin"><img src="resources/img/cat-<?php //echo $i + 1; ?>.png" alt=""></a>
+                                <div class="title"><a href="" title=""><?php //echo $category[$i] ?></a></div>
+                                <div class="total-product"><?php //echo rand(0, 100) ?> sản phẩm</div>
                             </div>
                         </div>
-                        <?php }  ?>
+                        <?php //}  ?>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
     <div class="panel-banner">
