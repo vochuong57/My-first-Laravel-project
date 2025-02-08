@@ -28,12 +28,13 @@ class HomeController extends FrontendController
 
         $slides = $this->slideService->findSlideByKeyword([SlideEnum::MAIN, SlideEnum::BANNER], $this->language);
 
-        $widgets = [
-            'category' => $this->widgetService->findWidgetByKeyword('category', $this->language, $children = true),
-            'news' => $this->widgetService->findWidgetByKeyword('news', $this->language),
-            'category-highlight' => $this->widgetService->findWidgetByKeyword('category-highlight', $this->language),
-        ];
-        // dd($widgets['category']);
+        $widgets = $this->widgetService->getWidgetForFrontend([
+            ['category', $this->language, $children = true],
+            ['news', $this->language],
+            ['category-highlight', $this->language],
+            ['category-home', $this->language, $children = true],
+        ]);
+        // dd($widgets['category-home']->toArray());
         
         return view('frontend.homepage.home.index', compact('config', 'slides', 'widgets'));
     }
