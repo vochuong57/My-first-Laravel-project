@@ -365,6 +365,9 @@ class WidgetService extends BaseService implements WidgetServiceInterface
             $paramRelation = explode('_', Str::snake($model))[0].'s';
             // dd($paramRelation);
             $relation = [
+                'languages' => function($query) use ($language){
+                    $query->where('language_id', $language);
+                },
                 $paramRelation => function($query) use ($language) {
                     $this->applyLanguagesAndPromotions($query, $language);
                 }
@@ -406,5 +409,19 @@ class WidgetService extends BaseService implements WidgetServiceInterface
             $query->orderBy('discount', 'ASC');
             // $query->limit(1);
         });
+    }
+
+    public function getWidgetForFrontend($widgets = []){
+        $temp = [];
+        foreach($widgets as $widget){
+            // dd($widget);
+            if(isset($widget[2])){
+                $temp[$widget[0]] = $this->findWidgetByKeyword($widget[0], $widget[1], $widget[2]);
+            }else{
+                $temp[$widget[0]] = $this->findWidgetByKeyword($widget[0], $widget[1]);
+            }
+        }
+        // dd($temp);
+        return $temp;
     }
 }

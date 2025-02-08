@@ -132,7 +132,33 @@
     </div> -->
     <div class="panel-popular">
         <div class="uk-container uk-container-center">
+            @if(!is_null($widgets['category-home']))
             <div class="panel-head">
+                <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                    @php
+                        $mainName = $widgets['category-home'][0]->languages->first()->pivot->name;
+                        $mainCanonical = write_url($widgets['category-home'][0]->languages->first()->getOriginal('pivot_canonical'));
+                        $childrens = $widgets['category-home'][0]->childrens ?? null;
+                    @endphp
+                    <h2 class="heading-1"><span>{{ $mainName }}</span></h2>
+                    @if(!is_null($childrens))
+                    <div class="category-children">
+                        <ul class="uk-list uk-clearfix uk-flex uk-flex-middle">
+                        <li class=""><a href="{{ $mainCanonical }}" title="">Tất cả</a></li>
+                            @foreach($childrens as $key => $val)
+                            @php
+                                $name = $val[0]->languages->first()->pivot->name;
+                                $canonical = write_url($val[0]->languages->first()->getOriginal('pivot_canonical'));
+                            @endphp
+                            <li class=""><a href="{{ $canonical }}" title="">{{ $name }}</a></li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    @endif
+                </div>
+            </div>
+            @endif
+            <!-- <div class="panel-head">
                 <div class="uk-flex uk-flex-middle uk-flex-space-between">
                     <h2 class="heading-1"><span>Sản phẩm nổi bật</span></h2>
                     <div class="category-children">
@@ -146,7 +172,7 @@
                         </ul>
                     </div>
                 </div>
-            </div>
+            </div> -->
             <div class="panel-body">
                 <div class="uk-grid uk-grid-medium">
                     <?php for($i = 0; $i<=14; $i++){  ?>
