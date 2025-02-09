@@ -261,3 +261,67 @@ if(!function_exists('write_url')){
         return $url;
     }
 }
+
+// V135
+if(!function_exists('getCategory')){
+    function getCategory($val){
+        $category = [];
+        $category['name'] = $val['product_catalogues'][0]['languages'][0]['pivot']['name'];
+        $category['canonical'] = write_url($val['product_catalogues'][0]['languages'][0]['pivot']['canonical']);
+        return $category;
+    }
+}
+
+use Illuminate\Support\Str;
+if(!function_exists('getProduct')){
+    function getProduct($val){
+        $product = [];
+        $product['name'] = Str::limit($val['languages'][0]['pivot']['name'], 50);
+        $product['canonical'] = write_url($val['languages'][0]['pivot']['canonical']);
+        return $product;
+    }
+}
+
+
+if(!function_exists('image')){
+    function image(string $image = ''){
+        return $image;
+    }
+}
+
+if(!function_exists('getPrice')){
+    function getPrice($val){
+        $price = [];
+        $price['price_old'] = number_format($val['price']);
+        // dd($price);
+        if(!empty($val['promotions'])){
+            $price['price_sale'] = (number_format($val['promotions'][0]['discount']) <= 0) ? '0' : number_format($val['promotions'][0]['discount']);
+        }else{
+            $price['price_sale'] = $price['price_old'];
+        }
+        // dd($price);
+        return $price;
+    }
+}
+
+if(!function_exists('getPromotion')){
+    function getPromotion($val){
+
+        if(!empty($val['promotions'])){
+            $promotion = ($val['promotions'][0]['discountType'] == 'cash') ? '-'.number_format($val['promotions'][0]['discountValue']).'đ' : '-'.$val['promotions'][0]['discountValue'].'%';
+        }else{
+            $promotion = '';
+        }
+    
+        return $promotion;
+    }
+}
+
+if(!function_exists('getReview')){
+    function getReview($val){
+        return [
+            'star' => rand(1, 5),
+            'count' => rand(0, 100),
+        ];
+    }
+}

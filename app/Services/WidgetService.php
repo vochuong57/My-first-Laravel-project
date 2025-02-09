@@ -325,6 +325,13 @@ class WidgetService extends BaseService implements WidgetServiceInterface
             }
         }
 
+        // Tính toán data all_products cho từng widgetItem và các children của nó
+        if($widget->model == 'ProductCatalogue' && isset($extend) && $extend == true){
+            foreach ($widgetItems as $widgetItem) {            
+                $widgetItem->all_products = $this->getAllProducts($widgetItem);
+            }
+        }
+
         // dd($widgetItems->toArray());
         
         return $widgetItems;
@@ -339,6 +346,20 @@ class WidgetService extends BaseService implements WidgetServiceInterface
             }
         }
         return $productsCount;
+    }
+
+    private function getAllProducts($widgetItem)
+    {
+        $allProducts = isset($widgetItem->products) ? $widgetItem->products->toArray() : [];
+        if (isset($widgetItem->childrens)) {
+            foreach ($widgetItem->childrens as $key => $val) {
+                if (isset($val[0]->products)) {
+                    // dd($val[0]->products->toArray());
+                    $allProducts = array_merge($allProducts, $val[0]->products->toArray());
+                }
+            }
+        }
+        return $allProducts;
     }
 
 
@@ -408,6 +429,11 @@ class WidgetService extends BaseService implements WidgetServiceInterface
             });
             $query->orderBy('discount', 'ASC');
             // $query->limit(1);
+        })
+        ->with('product_catalogues', function($query) use($language) {
+            $query->with(['languages' => function($query) use ($language) {
+                $query->where('language_id', $language);
+            }]);
         });
     }
 
