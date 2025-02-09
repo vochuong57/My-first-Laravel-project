@@ -157,7 +157,7 @@
                     @endif
                 </div>
             </div>
-            @endif
+           
             <!-- <div class="panel-head">
                 <div class="uk-flex uk-flex-middle uk-flex-space-between">
                     <h2 class="heading-1"><span>Sản phẩm nổi bật</span></h2>
@@ -173,15 +173,27 @@
                     </div>
                 </div>
             </div> -->
+            @if(count($widgets['category-home'][0]->all_products))
             <div class="panel-body">
                 <div class="uk-grid uk-grid-medium">
-                    <?php for($i = 0; $i<=14; $i++){  ?>
+                    @foreach($widgets['category-home'][0]->all_products as $key => $val)
+                    <div class="uk-width-large-1-5 mb20">
+                        @include('Frontend/component/product-item', ['val' => $val])
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+            <!-- <div class="panel-body">
+                <div class="uk-grid uk-grid-medium">
+                    <?php //for($i = 0; $i<=14; $i++){  ?>
                     <div class="uk-width-large-1-5 mb20">
                         @include('Frontend/component/product-item')
                     </div>
-                    <?php }  ?>
+                    <?php //}  ?>
                 </div>
-            </div>
+            </div> -->
+            @endif
+            @endif
         </div>
     </div>
     <div class="panel-bestseller">
@@ -215,11 +227,11 @@
                             <div class="swiper-button-prev"></div>
                             <div class="swiper-container">
                                 <div class="swiper-wrapper">
-                                    <?php for($i = 0; $i < count($category); $i++){  ?>
+                                    <?php //for($i = 0; $i < count($category); $i++){  ?>
                                     <div class="swiper-slide">
-                                        @include('Frontend/component/product-item')
+                                        <!-- @include('Frontend/component/product-item') -->
                                     </div>
-                                    <?php }  ?>
+                                    <?php //}  ?>
                                 </div>
                             </div>
                         </div>

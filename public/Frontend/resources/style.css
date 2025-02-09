@@ -4578,6 +4578,9 @@ time.woocommerce-review__published-date {
     cursor: pointer;
     /* margin-left:20px; */
 }
+.addcart{
+    margin-top: 15px;
+}
 .product-short-description{
     height:46px;
     overflow: hidden;
