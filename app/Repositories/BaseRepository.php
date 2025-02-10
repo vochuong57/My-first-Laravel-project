@@ -65,7 +65,7 @@ class BaseRepository implements BaseRepositoryInterface
     public function findWhereIn(string $column='', array $ids = []){//dùng khi có một mảng id
         return $this->model->whereIn($column, $ids)->get();
     }
-    public function findWhereInWithRelation(string $column = '', array $ids = [], array $condition = [], array $relation = [], array $orderBy = ['id', 'desc']) {
+    public function findWhereInWithRelation(string $column = '', array $ids = [], array $condition = [], array $relation = [], $order = false) {
         $query = $this->model->newQuery();
         
         // Thêm điều kiện whereIn
@@ -84,8 +84,9 @@ class BaseRepository implements BaseRepositoryInterface
         // Load các mối quan hệ
         $query->with($relation);
     
-        // Sắp xếp
-        $query->orderBy($orderBy[0], $orderBy[1]);
+        if ($order) {
+            $query->orderByRaw('FIELD(' . $column . ', ' . implode(',', $ids) . ')');
+        }
     
         return $query->get();
     }
