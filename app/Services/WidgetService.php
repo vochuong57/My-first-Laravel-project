@@ -307,7 +307,7 @@ class WidgetService extends BaseService implements WidgetServiceInterface
             ];
         }
 
-        $widgetItems = $repositoryInstance->findWhereInWithRelation('id', $widget->model_id, $condition, $relation);
+        $widgetItems = $repositoryInstance->findWhereInWithRelation('id', $widget->model_id, $condition, $relation, $order = true);
         // dd($widgetItems->toArray());
 
         if($widget->model == 'ProductCatalogue' && isset($extend) && $extend == true){
@@ -434,6 +434,9 @@ class WidgetService extends BaseService implements WidgetServiceInterface
             $query->with(['languages' => function($query) use ($language) {
                 $query->where('language_id', $language);
             }]);
+        })
+        ->with('product_variants', function($query) {
+            // $query->where('publish', '=', 2);
         });
     }
 

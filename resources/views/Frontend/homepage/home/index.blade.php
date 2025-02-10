@@ -23,20 +23,7 @@
                 </div>
             </div>
             @endif
-            <!-- <div class="panel-head">
-                <div class="uk-flex uk-flex-middle">
-                    <h2 class="heading-1"><span>Danh mục sản phẩm</span></h2>
-                    <div class="category-children">
-                        <ul class="uk-list uk-clearfix uk-flex uk-flex-middle">
-                            <li class=""><a href="" title="">Bánh & Sữa</a></li>
-                            <li class=""><a href="" title="">Cà phê & Trà</a></li>
-                            <li class=""><a href="" title="">Thức ăn cho vật nuôi</a></li>
-                            <li class=""><a href="" title="">Rau củ</a></li>
-                            <li class=""><a href="" title="">Hoa Quả</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div> -->
+
             @if(!is_null($widgets['category']))
             <div class="panel-body">
                 <div class="swiper-button-next"></div>
@@ -62,24 +49,7 @@
                 </div>
             </div>
             @endif
-            <!-- <div class="panel-body">
-                <?php $category = ['Cake & Milk','Oganic Kiwi','Peach','Read Apple','Snacks','Vegetables','Strawbery','Black plum','Custard apple','Coffe & Tea','Headphone','Kiwi','Iphone']  ?>
-                <div class="swiper-button-next"></div>
-                <div class="swiper-button-prev"></div>
-                <div class="swiper-container">
-                    <div class="swiper-wrapper">
-                        <?php //for($i = 0; $i < count($category); $i++){  ?>
-                        <div class="swiper-slide">
-                            <div class="category-item bg-<?php //echo rand(1,7) ?>">
-                                <a href="" class="image img-scaledown img-zoomin"><img src="resources/img/cat-<?php //echo $i + 1; ?>.png" alt=""></a>
-                                <div class="title"><a href="" title=""><?php //echo $category[$i] ?></a></div>
-                                <div class="total-product"><?php //echo rand(0, 100) ?> sản phẩm</div>
-                            </div>
-                        </div>
-                        <?php //}  ?>
-                    </div>
-                </div>
-            </div> -->
+
         </div>
     </div>
     @php
@@ -111,37 +81,20 @@
         </div>
     </div>
     @endif
-    <!-- <div class="panel-banner">
-        <div class="uk-container uk-container-center">
-            <div class="panel-body">
-                <div class="uk-grid uk-grid-medium">
-                    <?php //for($i = 1; $i<= 3; $i++){  ?>
-                    <div class="uk-width-large-1-3">
-                        <div class="banner-item">
-                            <span class="image"><img src="resources/img/banner-<?php //echo $i; ?>.png" alt=""></span>
-                            <div class="banner-overlay">
-                                <div class="banner-title">Make your Breakfast healthy and Easy</div>
-                                <a class="btn-shop" title="">Mua ngay</a>
-                            </div>
-                        </div>
-                    </div>
-                    <?php //}  ?>
-                </div>
-            </div>
-        </div>
-    </div> -->
+
     <div class="panel-popular">
         <div class="uk-container uk-container-center">
             @if(!is_null($widgets['category-home']))
+            @foreach($widgets['category-home'] as $widget)
             <div class="panel-head">
                 <div class="uk-flex uk-flex-middle uk-flex-space-between">
                     @php
-                        $mainName = $widgets['category-home'][0]->languages->first()->pivot->name;
-                        $mainCanonical = write_url($widgets['category-home'][0]->languages->first()->getOriginal('pivot_canonical'));
-                        $childrens = $widgets['category-home'][0]->childrens ?? null;
+                        $mainName = $widget->languages->first()->pivot->name;
+                        $mainCanonical = write_url($widget->languages->first()->getOriginal('pivot_canonical'));
+                        $childrens = $widget->childrens ?? null;
                     @endphp
                     <h2 class="heading-1"><span>{{ $mainName }}</span></h2>
-                    @if(!is_null($childrens))
+                    @if(count($childrens[0]))
                     <div class="category-children">
                         <ul class="uk-list uk-clearfix uk-flex uk-flex-middle">
                         <li class=""><a href="{{ $mainCanonical }}" title="">Tất cả</a></li>
@@ -154,45 +107,35 @@
                             @endforeach
                         </ul>
                     </div>
+                    @else
+                    <div class="category-children">
+                        <ul class="uk-list uk-clearfix uk-flex uk-flex-middle">
+                            <li class=""><a href="{{ $mainCanonical }}" title="">Tất cả</a></li>
+                        </ul>
+                    </div>
                     @endif
                 </div>
             </div>
-           
-            <!-- <div class="panel-head">
-                <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                    <h2 class="heading-1"><span>Sản phẩm nổi bật</span></h2>
-                    <div class="category-children">
-                        <ul class="uk-list uk-clearfix uk-flex uk-flex-middle">
-                            <li class=""><a href="" title="">Tất cả</a></li>
-                            <li class=""><a href="" title="">Bánh & Sữa</a></li>
-                            <li class=""><a href="" title="">Cà phê & Trà</a></li>
-                            <li class=""><a href="" title="">Thức ăn cho vật nuôi</a></li>
-                            <li class=""><a href="" title="">Rau củ</a></li>
-                            <li class=""><a href="" title="">Hoa Quả</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div> -->
-            @if(count($widgets['category-home'][0]->all_products))
+            @if(count($widget->all_products))
             <div class="panel-body">
                 <div class="uk-grid uk-grid-medium">
-                    @foreach($widgets['category-home'][0]->all_products as $key => $val)
+                    @foreach($widget->all_products as $key => $val)
                     <div class="uk-width-large-1-5 mb20">
                         @include('Frontend/component/product-item', ['val' => $val])
                     </div>
                     @endforeach
                 </div>
             </div>
-            <!-- <div class="panel-body">
+            @else
+            <div class="panel-body">
                 <div class="uk-grid uk-grid-medium">
-                    <?php //for($i = 0; $i<=14; $i++){  ?>
                     <div class="uk-width-large-1-5 mb20">
-                        @include('Frontend/component/product-item')
+                        <div class="no-data">Không có sản phẩm nào</div>
                     </div>
-                    <?php //}  ?>
                 </div>
-            </div> -->
+            </div>
             @endif
+            @endforeach
             @endif
         </div>
     </div>
@@ -229,7 +172,7 @@
                                 <div class="swiper-wrapper">
                                     <?php //for($i = 0; $i < count($category); $i++){  ?>
                                     <div class="swiper-slide">
-                                        <!-- @include('Frontend/component/product-item') -->
+                                        {{-- @include('Frontend/component/product-item') --}}
                                     </div>
                                     <?php //}  ?>
                                 </div>
