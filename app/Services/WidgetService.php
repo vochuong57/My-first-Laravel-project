@@ -276,6 +276,7 @@ class WidgetService extends BaseService implements WidgetServiceInterface
 
         $paramRelation = explode('_', Str::snake($widget->model))[0].'s';
         // dd($paramRelation);
+        $paramCatalogueRelation = Str::snake($widget->model).'_catalogues';
 
         if($widget->model == 'ProductCatalogue' && isset($extend) && $extend == true){
             $relation = [
@@ -285,6 +286,12 @@ class WidgetService extends BaseService implements WidgetServiceInterface
                 $paramRelation => function($query) use ($language) {
                     $this->applyLanguagesAndPromotions($query, $language);
                 }
+            ];
+        }elseif($widget->model == 'ProductCatalogue' && $extend == false){
+            $relation = [
+                'languages' => function($query) use ($language){
+                    $query->where('language_id', $language);
+                },
             ];
         }elseif(strpos($widget->model, 'Catalogue') && isset($extend) && $extend == true){
             $relation = [
@@ -299,16 +306,64 @@ class WidgetService extends BaseService implements WidgetServiceInterface
                 }
             ];
         }
+        elseif($widget->model == 'Product' && isset($extend) && $extend == true){
+            $relation = [
+                'languages' => function($query) use ($language){
+                    $query->where('language_id', $language);
+                },
+                'promotions'=> function($query) {
+                    $query->select(
+                        'promotions.id',
+                        'promotions.maxDiscountValue',
+                        'promotions.discountValue',
+                        'promotions.discountType',
+                        DB::raw(
+                            "CASE
+                                WHEN promotions.discountType = 'cash' THEN (SELECT price FROM products WHERE products.id = promotion_object_variant.object_id) - promotions.discountValue
+                                WHEN promotions.discountType = 'percent' THEN (SELECT price FROM products WHERE products.id = promotion_object_variant.object_id) - LEAST((SELECT price FROM products WHERE products.id = promotion_object_variant.object_id) * promotions.discountValue / 100, promotions.maxDiscountValue)
+                                ELSE (SELECT price FROM products WHERE products.id = promotion_object_variant.object_id)
+                            END as discount"
+                        )
+                    );
+                    $query->where('publish', '=', 2);
+                    $query->where(function($query) {
+                        $query->where('endDate', '>', now())
+                            ->orWhereNull('endDate');
+                    });
+                    $query->orderBy('discount', 'ASC');
+                    // $query->limit(1);
+                },
+                'product_catalogues'=> function($query) use($language) {
+                    $query->with(['languages' => function($query) use ($language) {
+                        $query->where('language_id', $language);
+                    }]);
+                },
+                'product_variants'=> function($query) {
+                    // $query->where('publish', '=', 2);
+                },
+            ];
+        }
         else{
             $relation = [
                 'languages' => function($query) use ($language){
                     $query->where('language_id', $language);
                 },
+                $paramCatalogueRelation => function($query) use ($language) {
+                    $query->where('publish', '=', 2)
+                    ->with(['languages' => function($query) use ($language) {
+                        $query->where('language_id', $language);
+                    }]);
+                }
             ];
         }
 
         $widgetItems = $repositoryInstance->findWhereInWithRelation('id', $widget->model_id, $condition, $relation, $order = true);
         // dd($widgetItems->toArray());
+
+        foreach($widgetItems as $widgetItem){
+            // dd($widgetItem->id);
+            $widgetItem->widgets = $widget->toArray();
+        }
 
         if($widget->model == 'ProductCatalogue' && isset($extend) && $extend == true){
             foreach($widgetItems as $widgetItem){
