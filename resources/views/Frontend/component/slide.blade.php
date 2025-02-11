@@ -1,4 +1,4 @@
-@if(!is_null($slides['main-slide']))
+@if(isset($slides['main-slide']) && !is_null($slides['main-slide']))
 <div class="panel-slide page-setup" data-setting="{{ json_encode($slides['main-slide']->setting) }}">
     <div class="uk-container uk-container-center">
         <div class="swiper-container">

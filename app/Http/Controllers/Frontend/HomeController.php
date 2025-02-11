@@ -33,10 +33,13 @@ class HomeController extends FrontendController
             ['news', $this->language],
             ['category-highlight', $this->language],
             ['category-home', $this->language, $children = true],
+            ['bestseller', $this->language, $children = true],
         ]);
-        // dd($widgets['category-home']->toArray());
+        // dd($widgets['bestseller']->toArray());
+
+        $languageId = $this->language;
         
-        return view('frontend.homepage.home.index', compact('config', 'slides', 'widgets'));
+        return view('frontend.homepage.home.index', compact('config', 'slides', 'widgets', 'languageId'));
     }
 
 

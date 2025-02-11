@@ -5,10 +5,13 @@
     @include('Frontend.component.slide')
     <div class="panel-category page-setup">
         <div class="uk-container uk-container-center">
-            @if(!is_null($widgets['category-highlight']))
+            @if(isset($widgets['category-highlight']) && !is_null($widgets['category-highlight']))
+            @php
+                $widgetName = $widgets['category-highlight'][0]->widgets['name'];
+            @endphp
             <div class="panel-head">
                 <div class="uk-flex uk-flex-middle">
-                    <h2 class="heading-1"><span>Danh mục sản phẩm</span></h2>
+                    <h2 class="heading-1"><span>{{ $widgetName }}</span></h2>
                     <div class="category-children">
                         <ul class="uk-list uk-clearfix uk-flex uk-flex-middle">
                             @foreach($widgets['category-highlight'] as $key => $val)
@@ -24,7 +27,7 @@
             </div>
             @endif
 
-            @if(!is_null($widgets['category']))
+            @if(isset($widgets['category']) && !is_null($widgets['category']))
             <div class="panel-body">
                 <div class="swiper-button-next"></div>
                 <div class="swiper-button-prev"></div>
@@ -55,7 +58,7 @@
     @php
         $banner = App\Enums\SlideEnum::BANNER;
     @endphp
-    @if(!is_null($slides[$banner]))
+    @if(isset($slides[$banner]) && !is_null($slides[$banner]))
     <div class="panel-banner">
         <div class="uk-container uk-container-center">
             <div class="panel-body">
@@ -84,7 +87,7 @@
 
     <div class="panel-popular">
         <div class="uk-container uk-container-center">
-            @if(!is_null($widgets['category-home']))
+            @if(isset($widgets['category-home']) && !is_null($widgets['category-home']))
             @foreach($widgets['category-home'] as $widget)
             <div class="panel-head">
                 <div class="uk-flex uk-flex-middle uk-flex-space-between">
@@ -139,29 +142,49 @@
             @endif
         </div>
     </div>
+
+    
     <div class="panel-bestseller">
         <div class="uk-container uk-container-center">
+            @if(isset($widgets['category-highlight']) && 
+                isset($widgets['bestseller']) && 
+                !is_null($widgets['category-highlight']) && 
+                !is_null($widgets['bestseller'])
+            )
             <div class="panel-head">
                 <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                    <h2 class="heading-1"><span>Sản phẩm bán chạy</span></h2>
+                    @php
+                        
+                        $widgetName = $widgets['bestseller'][0]->widgets['name'];
+                        
+                    @endphp
+                    <h2 class="heading-1"><span>{{ $widgetName }}</span></h2>
                     <div class="category-children">
                         <ul class="uk-list uk-clearfix uk-flex uk-flex-middle">
-                            <li class=""><a href="" title="">Tất cả</a></li>
-                            <li class=""><a href="" title="">Bánh & Sữa</a></li>
-                            <li class=""><a href="" title="">Cà phê & Trà</a></li>
-                            <li class=""><a href="" title="">Thức ăn cho vật nuôi</a></li>
-                            <li class=""><a href="" title="">Rau củ</a></li>
-                            <li class=""><a href="" title="">Hoa Quả</a></li>
+                            @foreach($widgets['category-highlight'] as $key => $val)
+                            @php
+                                $name = $val->languages->first()->pivot->name;
+                                $canonical = write_url($val->languages->first()->getOriginal('pivot_canonical'));
+                            @endphp
+                            <li class=""><a href="{{ $canonical }}" title="{{ $name }}">{{ $name }}</a></li>
+                            @endforeach
                         </ul>
                     </div>
                 </div>
             </div>
+            @endif
             <div class="panel-body">
                 <div class="uk-grid uk-grid-medium">
+                    @if(isset($widgets['bestseller']) && !is_null($widgets['bestseller']))
+                   
+                    @php
+                        $widgetDescription = $widgets['bestseller'][0]->widgets['description'][$languageId];
+                        $widgetAlbum = $widgets['bestseller'][0]->widgets['album'][0];
+                    @endphp
                     <div class="uk-width-large-1-4">
                         <div class="best-seller-banner">
-                            <a href="" class="image img-cover"><img src="resources/img/bestseller.png" alt=""></a>
-                            <div class="banner-title">Bring Natural<br> Into Your<br> Home</div>
+                            <a href="" class="image img-cover"><img src="{{ $widgetAlbum }}" alt=""></a>
+                            <div class="banner-title">{!! $widgetDescription !!}</div>
                         </div>
                     </div>
                     <div class="uk-width-large-3-4">
@@ -170,15 +193,16 @@
                             <div class="swiper-button-prev"></div>
                             <div class="swiper-container">
                                 <div class="swiper-wrapper">
-                                    <?php //for($i = 0; $i < count($category); $i++){  ?>
+                                    @foreach($widgets['bestseller']->toArray() as $key => $val)
                                     <div class="swiper-slide">
-                                        {{-- @include('Frontend/component/product-item') --}}
+                                        @include('Frontend/component/product-item', ['val' => $val])
                                     </div>
-                                    <?php //}  ?>
+                                    @endforeach
                                 </div>
                             </div>
                         </div>
                     </div>
+                    @endif
                 </div>
             </div>
         </div>
