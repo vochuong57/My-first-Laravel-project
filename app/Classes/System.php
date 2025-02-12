@@ -43,7 +43,7 @@ class System{
             'value' => [
                 'meta_title' => ['type' => 'text', 'label' => 'Tiêu đề SEO'],
                 'meta_keyword' => ['type' => 'text', 'label' => 'Từ khóa SEO'],
-                'meta_description' => ['type' => 'text', 'label' => 'Mô tả SEO'],
+                'meta_description' => ['type' => 'textarea', 'label' => 'Mô tả SEO'],
                 'meta_images' => ['type' => 'images', 'label' => 'Ảnh SEO'],
             ]
         ];

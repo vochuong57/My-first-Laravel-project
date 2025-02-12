@@ -249,7 +249,7 @@ $config['ResourceType'][] = Array(
 		'url' => $baseUrl . 'image',
 		'directory' => $baseDir . 'image',
 		'maxSize' => 0,
-		'allowedExtensions' => 'bmp,gif,jpeg,jpg,png, webp, mp4',
+		'allowedExtensions' => 'bmp,gif,jpeg,jpg,png, webp, svg',
 		'deniedExtensions' => '');
 
 $config['ResourceType'][] = Array(

@@ -284,7 +284,8 @@ if(!function_exists('getProduct')){
 
 
 if(!function_exists('image')){
-    function image(string $image = ''){
+    function image($image = ''){
+        $image = $image ?? 'Backend/img/not-found.png';
         return $image;
     }
 }

@@ -62,7 +62,8 @@ class SlideService extends BaseService implements SlideServiceInterface
         try{
             $payload = $request->only('name', 'keyword', 'setting', 'short_code');
             // dd($payload);
-            $payload['setting'] = $this->formatJson($request, 'setting');
+            $payloadSetting = $this->convertPayloadSetting($payload);
+            $payload['setting'] = json_encode($payloadSetting);
             // dd($payload);
             $payload['album'] = json_encode($this->handleSlideItem($request->input('slide'), $languageId));
             // dd($payload);
@@ -84,7 +85,11 @@ class SlideService extends BaseService implements SlideServiceInterface
         try{
             $payload = $request->only('name', 'keyword', 'setting', 'short_code');
             // dd($payload);
-            $payload['setting'] = $this->formatJson($request, 'setting');
+            // dd($payload['setting']);
+            $payloadSetting = $this->convertPayloadSetting($payload);
+
+            // $payload['setting'] = $this->formatJson($request, 'setting');
+            $payload['setting'] = json_encode($payloadSetting);
             // dd($payload);
            
             $payload['user_id']=Auth::id();
@@ -107,6 +112,30 @@ class SlideService extends BaseService implements SlideServiceInterface
             echo $ex->getMessage();die();
             return false;
         }
+    }
+
+    private function convertPayloadSetting($payload){
+        $valueConverts = [
+            'width' => $payload['setting']['width'],
+            'height' => $payload['setting']['height'],
+            'animation' => $payload['setting']['animation'],
+            'arrow' => $payload['setting']['arrow'],
+            'navigate' => $payload['setting']['navigate'],
+            'autoplay' => $payload['setting']['autoplay'],
+            'pauseHover' => $payload['setting']['pauseHover'],
+            'animationDelay' => $payload['setting']['animationDelay'],
+            'animationSpeed' => $payload['setting']['animationSpeed'],
+        ];
+        $temp = [];
+        foreach($valueConverts as $key => $val){
+            if($key == 'width' || $key == 'height' || $key == 'animationDelay' || $key == 'animationSpeed'){
+                $temp[$key] = intval(str_replace('.', '',$val));
+            }else{
+                $temp[$key] = $val;
+            }
+        }
+        // dd($temp);
+        return $temp;
     }
    
     // V83

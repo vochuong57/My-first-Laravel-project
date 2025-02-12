@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Language;
+use App\Models\System;
 
 class FrontendController extends Controller
 {
@@ -28,5 +29,13 @@ class FrontendController extends Controller
             }
             return $next($request);
         });
+
+    }
+
+    public function getSystem(){
+        $systems = System::where('language_id', $this->language)->get();
+        $systems = convert_array($systems, 'keyword', 'content');
+        // dd($systems);
+        return $systems;
     }
 }
