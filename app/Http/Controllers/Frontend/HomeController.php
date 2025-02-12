@@ -35,11 +35,22 @@ class HomeController extends FrontendController
             ['category-home', $this->language, $children = true],
             ['bestseller', $this->language, $children = true],
         ]);
-        // dd($widgets['bestseller']->toArray());
+        // dd($widgets['category-home']->toArray());
 
         $languageId = $this->language;
+
+        $systems = $this->getSystem();
+        // dd($systems);
+        $seo = [
+            'meta_title' => $systems['seo_meta_title'],
+            'meta_keyword' => $systems['seo_meta_keyword'],
+            'meta_description' => $systems['seo_meta_description'],
+            'canonical' => config('app.url'),
+            'meta_images' => $systems['seo_meta_images'],
+        ];
+        // dd($seo);
         
-        return view('frontend.homepage.home.index', compact('config', 'slides', 'widgets', 'languageId'));
+        return view('frontend.homepage.home.index', compact('config', 'slides', 'widgets', 'languageId', 'seo'));
     }
 
 
