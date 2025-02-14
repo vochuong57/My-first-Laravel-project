@@ -264,10 +264,12 @@ if(!function_exists('write_url')){
 
 // V135
 if(!function_exists('getCategory')){
-    function getCategory($val){
+    function getCategory($val, string $model_catalogues = ''){
         $category = [];
-        $category['name'] = $val['product_catalogues'][0]['languages'][0]['pivot']['name'];
-        $category['canonical'] = write_url($val['product_catalogues'][0]['languages'][0]['pivot']['canonical']);
+        if(count($val[$model_catalogues])){
+            $category['name'] = $val[$model_catalogues][0]['languages'][0]['pivot']['name'];
+            $category['canonical'] = write_url($val[$model_catalogues][0]['languages'][0]['pivot']['canonical']);
+        }
         return $category;
     }
 }
@@ -278,6 +280,7 @@ if(!function_exists('getProduct')){
         $product = [];
         $product['name'] = Str::limit($val['languages'][0]['pivot']['name'], 50);
         $product['canonical'] = write_url($val['languages'][0]['pivot']['canonical']);
+        $product['description'] = Str::limit($val['languages'][0]['pivot']['description'], 120);
         return $product;
     }
 }
