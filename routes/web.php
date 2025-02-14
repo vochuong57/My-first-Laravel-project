@@ -30,6 +30,7 @@ use App\Http\Controllers\Backend\SourceController;
 use App\Http\Controllers\Backend\CustomerController;
 use App\Http\Controllers\Backend\CustomerCatalogueController;
 use App\Http\Controllers\Frontend\HomeController;
+use App\Http\Controllers\Frontend\RouterController;
 //@@useController@@
 
 
@@ -54,6 +55,7 @@ use App\Http\Controllers\Ajax\SourceController as AjaxSourceController;
 
 // FRONTEND ROUTES
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
+Route::get('{canonical}'.config('apps.general.suffix'), [RouterController::class, 'index'])->name('router.index')->where('canonical', '[a-zA-Z0-9-]+');
 
 // BACKEND ROUTES
 
