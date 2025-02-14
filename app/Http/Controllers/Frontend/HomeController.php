@@ -26,7 +26,7 @@ class HomeController extends FrontendController
         // dd($this->language);
         $config = $this->config();
 
-        $slides = $this->slideService->findSlideByKeyword([SlideEnum::MAIN, SlideEnum::BANNER], $this->language);
+        $slides = $this->slideService->findSlideByKeyword([SlideEnum::MAIN, SlideEnum::BANNER, SlideEnum::BANNER_2, SlideEnum::BANNER_3], $this->language);
 
         $widgets = $this->widgetService->getWidgetForFrontend([
             ['category', $this->language, $children = true],
@@ -35,7 +35,7 @@ class HomeController extends FrontendController
             ['category-home', $this->language, $children = true],
             ['bestseller', $this->language, $children = true],
         ]);
-        // dd($widgets['category-home']->toArray());
+        // dd($widgets['news']->toArray());
 
         $languageId = $this->language;
 

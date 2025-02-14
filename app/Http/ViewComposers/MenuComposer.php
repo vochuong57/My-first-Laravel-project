@@ -52,7 +52,7 @@ class MenuComposer
             // dd($menus);
             $temp[$menuCatalogue->keyword] = $menus;
         }
-        // dd($temp);
+        // dd($temp['menu-footer']);
 
         $view->with('menus', $temp);
     }

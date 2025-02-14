@@ -28,6 +28,7 @@ class System{
                 'hotline' => ['type' => 'text', 'label' => 'Hotline'],
                 'technical_phone' => ['type' => 'text', 'label' => 'Hotline kỹ thuật'],
                 'sell_phone' => ['type' => 'text', 'label' => 'Hotline kinh doand'],
+                'work_hour' => ['type' => 'text', 'label' => 'Giờ làm việc'],
                 'phone' => ['type' => 'text', 'label' => 'Số cố định'],
                 'fax' => ['type' => 'text', 'label' => 'Fax'],
                 'email' => ['type' => 'text', 'label' => 'Email'],
@@ -45,6 +46,18 @@ class System{
                 'meta_keyword' => ['type' => 'text', 'label' => 'Từ khóa SEO'],
                 'meta_description' => ['type' => 'textarea', 'label' => 'Mô tả SEO'],
                 'meta_images' => ['type' => 'images', 'label' => 'Ảnh SEO'],
+            ]
+        ];
+
+        $data['social'] = [
+            'label' => 'Cấu hình Mạng xã hội dành cho trang chủ',
+            'description' => 'Cài đặt đầy đủ thông tin về Mạng xã hội của trang chủ Website. Bao gồm tiêu đề Mạng xã hội, từ khóa Mạng xã hội, Mô tả Mạng xã hội, Meta images',
+            'value' => [
+                'facebook' => ['type' => 'text', 'label' => 'Facebook'],
+                'youtube' => ['type' => 'text', 'label' => 'Youtube'],
+                'twitter' => ['type' => 'text', 'label' => 'Twitter'],
+                'tiktok' => ['type' => 'text', 'label' => 'Tiktok'],
+                'instagram' => ['type' => 'text', 'label' => 'Instagram'],
             ]
         ];
 

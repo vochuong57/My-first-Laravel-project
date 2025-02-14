@@ -16,7 +16,7 @@ use Illuminate\Support\Str;
     // ];
 
     // dd($val);
-    $category = getCategory($val);
+    $category = getCategory($val, 'product_catalogues');
 
     $product = getProduct($val);
 

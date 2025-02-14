@@ -36,10 +36,12 @@
                     // V72
                     $isReadonly = '';
 
-                    foreach($listCanonicalInRouter as $valRouter){
-                        if($menu['canonical'][$key] == $valRouter){
-                            $isReadonly = 'readonly';
-                            break;
+                    if(isset($listCanonicalInRouter)){
+                        foreach($listCanonicalInRouter as $valRouter){
+                            if($menu['canonical'][$key] == $valRouter){
+                                $isReadonly = 'readonly';
+                                break;
+                            }
                         }
                     }
                 @endphp
