@@ -359,3 +359,22 @@ if(!function_exists('renderQuickBuy')){
         return $html;
     }
 }
+
+// V140
+if(!function_exists('cutnchar')){
+    function cutnchar($str = null, $n = 200){
+        if(strlen($str) < $n) return $str;
+        $html = substr($str, 0, $n);
+        $html = substr($html, 0, strpos($html, ' '));
+        return $html.'...';
+    }
+}
+
+if(!function_exists('cut_string_and_decode')){
+    function cut_string_and_decode($str = null, $n = 200){
+        $str = html_entity_decode($str);
+        $str = strip_tags($str);
+        $str = cutnchar($str, $n);
+        return $str;
+    }
+}
