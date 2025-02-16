@@ -211,4 +211,19 @@ class BaseRepository implements BaseRepositoryInterface
         return $model->{$relation}()->attach($model->id, $payload);
     }
 
+    public function breadcrumb($model, $language){
+        // dd($model);
+        $condition = [
+            ['lft', '<=', $model->lft],
+            ['rgt', '>=', $model->rgt],
+            ['publish', '=', 2],
+        ];
+        $relation = [
+            'languages' => function($query) use ($language){
+                $query->where('language_id', $language);
+            },
+        ];
+        $order = ['lft', 'asc'];
+        return $this->findByConditionsWithRelation($condition, $relation, $order);
+    }
 }

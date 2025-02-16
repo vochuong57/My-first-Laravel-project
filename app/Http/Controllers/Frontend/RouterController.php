@@ -14,7 +14,7 @@ class RouterController extends FrontendController
         $this->routerRepository = $routerRepository;
     }
 
-    public function index($canonical){
+    public function index($canonical, Request $request){
         // dd($canonical);
         // dd($this->language);
         $condition = [
@@ -25,7 +25,7 @@ class RouterController extends FrontendController
         // dd($router);
         if(!is_null($router) && !empty($router)){
             $method = 'index';
-            echo app($router->controller)->{$method}($router->module_id, $this->language);
+            echo app($router->controller)->{$method}($router->module_id, $request);
         }
     }
 

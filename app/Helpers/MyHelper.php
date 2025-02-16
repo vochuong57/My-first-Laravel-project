@@ -298,6 +298,7 @@ if(!function_exists('getPrice')){
         $price = [];
         $price['price_old'] = number_format($val['price']);
         // dd($price);
+        // dd($val['promotions']);
         if(!empty($val['promotions'])){
             $price['price_sale'] = (number_format($val['promotions'][0]['discount']) <= 0) ? '0' : number_format($val['promotions'][0]['discount']);
         }else{
@@ -376,5 +377,17 @@ if(!function_exists('cut_string_and_decode')){
         $str = strip_tags($str);
         $str = cutnchar($str, $n);
         return $str;
+    }
+}
+
+if(!function_exists('seo')){
+    function seo($model = null){
+        return [
+            'meta_title' => (!is_null($model->languages->first()->pivot->meta_title)) ? $model->languages->first()->pivot->meta_title : $model->name,
+            'meta_keyword' => $model->languages->first()->pivot->meta_keyword ?? '',
+            'meta_description' => (!is_null($model->languages->first()->pivot->meta_description)) ? $model->languages->first()->pivot->meta_description : cut_string_and_decode($model->description, 168),
+            'canonical' => write_url($model->languages->first()->pivot->canonical),
+            'meta_images' => (!is_null($model->image)) ? $model->image : 'Backend/img/not-found.png',
+        ];
     }
 }

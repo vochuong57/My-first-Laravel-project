@@ -38,4 +38,11 @@ class FrontendController extends Controller
         // dd($systems);
         return $systems;
     }
+
+    public function getLanguage(){
+        $locale = app()->getLocale();
+        $language = Language::where('canonical', $locale)->first();
+        $languageId = $language->id;
+        return $languageId;
+    }
 }

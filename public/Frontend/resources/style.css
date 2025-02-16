@@ -1989,7 +1989,8 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover,
 }
 .page-breadcrumb.background{
     background: var(--primary-color);
-    padding:10px 20px;
+    /* background-image: url(https://themepanthers.com/wp/nest/d1/wp-content/uploads/2022/02/banner-10-min.png); */
+    padding:40px 20px;
     position: relative;
 }
 .page-breadcrumb.background:before{

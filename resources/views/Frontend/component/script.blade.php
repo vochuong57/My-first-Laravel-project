@@ -4,6 +4,7 @@
         'Frontend/resources/uikit/js/uikit.min.js',
         'Frontend/resources/uikit/js/components/sticky.min.js',
         'Frontend/resources/function.js',
+        'Frontend/core/plugins/jquery-nice-select-1.1.0/js/jquery.nice-select.min.js',
     ];
 @endphp
 @foreach($coreScript as $item)
