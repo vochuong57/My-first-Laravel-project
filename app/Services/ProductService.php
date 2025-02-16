@@ -45,7 +45,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         $this->productVariantAttributeRepository = $productVariantAttributeRepository;
     }
 
-    public function paginate($request, $languageId){//$request để tiến hành chức năng tìm kiếm
+    public function paginate($request, $languageId, $productCatalogue = null, $extend = []){//$request để tiến hành chức năng tìm kiếm
         //dd($request);
         //echo 123; die();
         $condition['keyword']=addslashes($request->input('keyword'));
@@ -53,6 +53,9 @@ class ProductService extends BaseService implements ProductServiceInterface
         // Kiểm tra nếu giá trị publish là 0, thì gán lại thành null
         if ($condition['publish'] == '0') {
             $condition['publish'] = null;
+        }
+        if(!is_null($productCatalogue)){
+            $condition['publish'] = 2;
         }
         $condition['where']=[
             ['tb2.language_id', '=', $languageId],
@@ -63,14 +66,14 @@ class ProductService extends BaseService implements ProductServiceInterface
             $this->paginateSelect(),
             $condition,
             $perpage,
-            ['path'=> 'product/index', 'groupBy' => $this->paginateSelect()],
+            ['path'=> ($extend['path']) ?? 'product/index', 'groupBy' => $this->paginateSelect()],
             ['products.id', 'DESC'],
             [
                 ['product_language as tb2','tb2.product_id','=','products.id'],//dùng cho hiển thị nội dung table
                 ['product_catalogue_product as tb3','products.id', '=', 'tb3.product_id']//dùng cho whereRaw lọc tìm kiếm bài viết theo nhóm bài viêt
             ],
             ['product_catalogues'],//là function product_catalogues của Model/Product
-            $this->whereRaw($request),
+            $this->whereRaw($request, $productCatalogue),
         );
         //dd($products);
         
@@ -259,6 +262,7 @@ class ProductService extends BaseService implements ProductServiceInterface
             'products.publish',
             'products.image',
             'products.order',
+            'products.price',
             'tb2.name',
             'tb2.canonical',
             'tb2.language_id',
@@ -307,9 +311,10 @@ class ProductService extends BaseService implements ProductServiceInterface
     
 
     //whereRaw tìm kiếm bài viết theo nhóm bài viết mở rộng
-    private function whereRaw($request){
+    private function whereRaw($request, $productCatalogue = null){
         $rawCondition = [];
-        if($request->integer('product_catalogue_id')>0){
+        if($request->integer('product_catalogue_id')>0 || !is_null($productCatalogue)){
+            $catId = ($request->integer('product_catalogue_id') > 0) ? $request->integer('product_catalogue_id') : $productCatalogue->id;
             $rawCondition['whereRaw']=[
                 [
                     'tb3.product_catalogue_id IN (
@@ -318,7 +323,7 @@ class ProductService extends BaseService implements ProductServiceInterface
                         WHERE lft >= (SELECT lft FROM product_catalogues as pc WHERE pc.id = ?)
                         AND rgt <= (SELECT rgt FROM product_catalogues as pc WHERE pc.id = ?)
                     )',
-                    [$request->integer('product_catalogue_id'), $request->integer('product_catalogue_id')]
+                    [$catId, $catId]
                 ]
             ];
         }
@@ -477,6 +482,58 @@ class ProductService extends BaseService implements ProductServiceInterface
         // Sử dụng str_replace để thay thế dấu chấm bằng chuỗi rỗng
         $converted_price = str_replace('.', '', $price);
         return $converted_price;
+    }
+
+    public function combineProductWithPromotion($productIds, $language, $products){
+        // dd($products);
+        $condition = [
+            ['publish', '=', 2]
+        ];
+        $relation = [
+            'languages' => function($query) use ($language){
+                $query->where('language_id', $language);
+            },
+            'promotions'=> function($query) {
+                $query->select(
+                    'promotions.id',
+                    'promotions.maxDiscountValue',
+                    'promotions.discountValue',
+                    'promotions.discountType',
+                    DB::raw(
+                        "CASE
+                            WHEN promotions.discountType = 'cash' THEN (SELECT price FROM products WHERE products.id = promotion_object_variant.object_id) - promotions.discountValue
+                            WHEN promotions.discountType = 'percent' THEN (SELECT price FROM products WHERE products.id = promotion_object_variant.object_id) - LEAST((SELECT price FROM products WHERE products.id = promotion_object_variant.object_id) * promotions.discountValue / 100, promotions.maxDiscountValue)
+                            ELSE (SELECT price FROM products WHERE products.id = promotion_object_variant.object_id)
+                        END as discount"
+                    )
+                );
+                $query->where('publish', '=', 2);
+                $query->where(function($query) {
+                    $query->where('endDate', '>', now())
+                        ->orWhereNull('endDate');
+                });
+                $query->orderBy('discount', 'ASC');
+                // $query->limit(1);
+            },
+            'product_catalogues'=> function($query) use($language) {
+                $query->with(['languages' => function($query) use ($language) {
+                    $query->where('language_id', $language);
+                }]);
+            },
+            'product_variants'=> function($query) {
+                // $query->where('publish', '=', 2);
+            },
+        ];
+        $items = $this->productRepository->findWhereInWithRelation('id', $productIds, $condition, $relation, $order = true);
+        // dd($items);
+        foreach($products as $key => $val){
+            // dd($items[$key]->promotions);
+            $val->languages = $items[$key]->languages->toArray();
+            $val->promotions = $items[$key]->promotions->toArray();
+            $val->product_catalogues = $items[$key]->product_catalogues->toArray();
+            $val->product_variants = $items[$key]->product_variants->toArray();
+        }
+        return $products;
     }
 }
 
