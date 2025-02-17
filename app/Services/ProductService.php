@@ -23,6 +23,7 @@ use App\Repositories\Interfaces\ProductLanguageRepositoryInterface as ProductLan
 use App\Repositories\Interfaces\ProductVariantLanguageRepositoryInterface as ProductVariantLanguageRepository;
 use App\Repositories\Interfaces\ProductVariantAttributeRepositoryInterface as ProductVariantAttributeRepository;
 use Ramsey\Uuid\Uuid;
+use Illuminate\Pagination\Paginator;
 
 /**
  * Class UserService
@@ -45,7 +46,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         $this->productVariantAttributeRepository = $productVariantAttributeRepository;
     }
 
-    public function paginate($request, $languageId, $productCatalogue = null, $extend = []){//$request để tiến hành chức năng tìm kiếm
+    public function paginate($request, $languageId, $productCatalogue = null, $extend = [], $page = 1){//$request để tiến hành chức năng tìm kiếm
         //dd($request);
         //echo 123; die();
         $condition['keyword']=addslashes($request->input('keyword'));
@@ -61,7 +62,12 @@ class ProductService extends BaseService implements ProductServiceInterface
             ['tb2.language_id', '=', $languageId],
         ];
         //dd($condition);
-        $perpage=$request->integer('perpage', 20);
+        $perpage=$request->integer('perpage', (!is_null($productCatalogue)) ? 15 : 20);
+        if(!is_null($productCatalogue)){
+            Paginator::currentPageResolver(function () use ($page){
+                return $page;
+            });
+        }
         $products=$this->productRepository->pagination(
             $this->paginateSelect(),
             $condition,

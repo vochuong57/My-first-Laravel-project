@@ -381,12 +381,13 @@ if(!function_exists('cut_string_and_decode')){
 }
 
 if(!function_exists('seo')){
-    function seo($model = null){
+    function seo($model = null, $page = 1){
+        $canonical = ($page == 1) ? write_url($model->languages->first()->pivot->canonical) : write_url($model->languages->first()->pivot->canonical, true, false).'/trang-'.$page.config('apps.general.suffix');
         return [
             'meta_title' => (!is_null($model->languages->first()->pivot->meta_title)) ? $model->languages->first()->pivot->meta_title : $model->name,
             'meta_keyword' => $model->languages->first()->pivot->meta_keyword ?? '',
             'meta_description' => (!is_null($model->languages->first()->pivot->meta_description)) ? $model->languages->first()->pivot->meta_description : cut_string_and_decode($model->description, 168),
-            'canonical' => write_url($model->languages->first()->pivot->canonical),
+            'canonical' => $canonical,
             'meta_images' => (!is_null($model->image)) ? $model->image : 'Backend/img/not-found.png',
         ];
     }

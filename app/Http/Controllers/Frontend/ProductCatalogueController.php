@@ -17,7 +17,7 @@ class ProductCatalogueController extends FrontendController
         $this->productService = $productService;
     }
 
-    public function index($id, $request){
+    public function index($id, $request, $page){
         // dd($id);
         // dd($this->language);
         // dd($this->getLanguage());
@@ -32,12 +32,12 @@ class ProductCatalogueController extends FrontendController
         // dd($productCatalogue);
 
         $config = $this->config();
-        $seo = seo($productCatalogue);
+        $seo = seo($productCatalogue, $page);
         // dd($seo);
         $breadcrumb = $this->productCatalogueRepository->breadcrumb($productCatalogue, $languageId);
         // dd($breadcrumb);
 
-        $products = $this->productService->paginate($request, $languageId, $productCatalogue, ['path' => $productCatalogue->canonical]);
+        $products = $this->productService->paginate($request, $languageId, $productCatalogue, ['path' => $productCatalogue->languages->first()->pivot->canonical], $page);
         // dd($products);
         $productIds = $products->pluck('id')->toArray();
         // dd($productIds);

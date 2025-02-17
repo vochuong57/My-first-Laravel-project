@@ -25,8 +25,27 @@ class RouterController extends FrontendController
         // dd($router);
         if(!is_null($router) && !empty($router)){
             $method = 'index';
-            echo app($router->controller)->{$method}($router->module_id, $request);
+            echo app($router->controller)->{$method}($router->module_id, $request, $page = 1);
         }
+    }
+
+    public function page($canonical, Request $request, $page){
+        // dd($canonical);
+        // dd($this->language);
+        $router = $this->getRouter($canonical, $this->language);
+        if(!is_null($router) && !empty($router)){
+            $method = 'index';
+            echo app($router->controller)->{$method}($router->module_id, $request, $page);
+        }
+    }
+
+    private function getRouter($canonical, $languageId){
+        $condition = [
+            ['canonical', '=', $canonical],
+            ['language_id', '=', $languageId],
+        ];
+        $router = $this->routerRepository->findByCondition($condition);
+        return $router;
     }
 
 
