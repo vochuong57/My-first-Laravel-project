@@ -18,7 +18,7 @@
                                 <div class="perpage uk-flex uk-flex-middle">
                                     <span class="filter-text">Hiển thi:</span>
                                     <select name="perpage" class="nice-select filtering" style="">
-                                        @for($i = 20; $i<=120; $i+=20)
+                                        @for($i = 15; $i<=90; $i+=15)
                                         <option value="{{ $i }}">{{ $i }} sản phẩm</option>
                                         @endfor
                                     </select>
@@ -48,6 +48,9 @@
                     @else
                     <div class="no-data" style="margin-bottom: 20px">Không có sản phẩm nào</div>
                     @endif
+                </div>
+                <div class="uk-flex uk-flex-center">
+                    @include('frontend.component.pagination', ['model' => $products])
                 </div>
            </div>
         </div>

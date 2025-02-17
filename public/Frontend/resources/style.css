@@ -2271,6 +2271,7 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover,
 /* pagination */
 .pagination{
     padding:0;
+    margin: 20px 0px;
 }
 .pagination li{
     list-style:none;

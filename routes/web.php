@@ -56,6 +56,7 @@ use App\Http\Controllers\Ajax\SourceController as AjaxSourceController;
 // FRONTEND ROUTES
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
 Route::get('{canonical}'.config('apps.general.suffix'), [RouterController::class, 'index'])->name('router.index')->where('canonical', '[a-zA-Z0-9-]+');
+Route::get('{canonical}/trang-{page}'.config('apps.general.suffix'), [RouterController::class, 'page'])->name('router.page')->where('canonical', '[a-zA-Z0-9-]+')->where('page', '[0-9]+');
 
 // BACKEND ROUTES
 
