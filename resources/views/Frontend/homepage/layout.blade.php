@@ -5,7 +5,9 @@
         @include('Frontend.component.header')
         @yield('content')
         @include('Frontend.component.footer')
-        @include('Frontend.component.popup')
+        @if(isset($popup) && $popup == true)
+            @include('Frontend.component.popup')
+        @endif
         @include('Frontend.component.script')
     </body>
 </html>

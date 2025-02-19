@@ -1,7 +1,7 @@
 @if(isset($slides['main-slide']) && !is_null($slides['main-slide']))
 <div class="panel-slide page-setup" data-setting="{{ json_encode($slides['main-slide']->setting) }}">
     <div class="uk-container uk-container-center">
-        <div class="swiper-container">
+        <div class="swiper-container slide-swiper-container">
             <div class="swiper-button-next"></div>
             <div class="swiper-button-prev"></div>
             <div class="swiper-wrapper">

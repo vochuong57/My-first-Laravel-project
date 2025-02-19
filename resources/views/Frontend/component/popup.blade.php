@@ -17,19 +17,19 @@
                 <div class="uk-grid uk-grid-medium">
                     <div class="uk-width-large-1-2">
                         <div class="popup-gallery">
-                            <div class="swiper-container">
+                            <div class="swiper-container popup-swiper-container">
                                 <div class="swiper-button-next"></div>
                                 <div class="swiper-button-prev"></div>
                                 <div class="swiper-wrapper big-pic">
                                     <?php foreach($colorImage as $key => $val){  ?>
-                                    <div class="swiper-slide" data-swiper-autoplay="2000">
-                                        <a href="<?php echo $val ?>" class="image img-cover"><img src="<?php echo $val?>" alt="<?php echo $val ?>"></a>
+                                    <div class="swiper-slide">
+                                        <a class="image img-cover"><img src="<?php echo $val?>" alt="<?php echo $val ?>"></a>
                                     </div>
                                     <?php }  ?>
                                 </div>
                                 <div class="swiper-pagination"></div>
                             </div>
-                            <div class="swiper-container-thumbs">
+                            <div class="swiper-container-thumbs popup-swiper-container-thumbs">
                                 <div class="swiper-wrapper pic-list">
                                     <?php foreach($colorImage as $key => $val){  ?>
                                     <div class="swiper-slide">
