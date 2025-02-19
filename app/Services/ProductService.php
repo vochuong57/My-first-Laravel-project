@@ -495,7 +495,21 @@ class ProductService extends BaseService implements ProductServiceInterface
         $condition = [
             ['publish', '=', 2]
         ];
-        $relation = [
+        $relation = $this->getProductRelation($language);
+        $items = $this->productRepository->findWhereInWithRelation('id', $productIds, $condition, $relation, $order = true);
+        // dd($items);
+        foreach($products as $key => $val){
+            // dd($items[$key]->promotions);
+            $val->languages = $items[$key]->languages->toArray();
+            $val->promotions = $items[$key]->promotions->toArray();
+            $val->product_catalogues = $items[$key]->product_catalogues->toArray();
+            $val->product_variants = $items[$key]->product_variants->toArray();
+        }
+        return $products;
+    }
+
+    public function getProductRelation($language){
+        return [
             'languages' => function($query) use ($language){
                 $query->where('language_id', $language);
             },
@@ -526,20 +540,10 @@ class ProductService extends BaseService implements ProductServiceInterface
                     $query->where('language_id', $language);
                 }]);
             },
-            'product_variants'=> function($query) {
+            'product_variants'=> function($query) use($language) {
                 // $query->where('publish', '=', 2);
             },
         ];
-        $items = $this->productRepository->findWhereInWithRelation('id', $productIds, $condition, $relation, $order = true);
-        // dd($items);
-        foreach($products as $key => $val){
-            // dd($items[$key]->promotions);
-            $val->languages = $items[$key]->languages->toArray();
-            $val->promotions = $items[$key]->promotions->toArray();
-            $val->product_catalogues = $items[$key]->product_catalogues->toArray();
-            $val->product_variants = $items[$key]->product_variants->toArray();
-        }
-        return $products;
     }
 }
 

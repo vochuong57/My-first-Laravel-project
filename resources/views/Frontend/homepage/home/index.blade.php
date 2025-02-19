@@ -1,4 +1,4 @@
-@extends('Frontend.homepage.layout')
+@extends('Frontend.homepage.layout', ['popup' => true])
 
 @section('content')
 <div id="homepage" class="homepage">
@@ -29,9 +29,9 @@
 
             @if(isset($widgets['category']) && !is_null($widgets['category']))
             <div class="panel-body">
-                <div class="swiper-button-next"></div>
-                <div class="swiper-button-prev"></div>
-                <div class="swiper-container">
+                <div class="swiper-container category-swiper-container">
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
                     <div class="swiper-wrapper">
                         @foreach($widgets['category'] as $key => $val)
                         @php
@@ -189,9 +189,9 @@
                     </div>
                     <div class="uk-width-large-3-4">
                         <div class="product-wrapper">
-                            <div class="swiper-button-next"></div>
-                            <div class="swiper-button-prev"></div>
-                            <div class="swiper-container">
+                            <div class="swiper-container bestseller-swipper-container">
+                                <div class="swiper-button-next"></div>
+                                <div class="swiper-button-prev"></div>
                                 <div class="swiper-wrapper">
                                     @foreach($widgets['bestseller']->toArray() as $key => $val)
                                     <div class="swiper-slide">

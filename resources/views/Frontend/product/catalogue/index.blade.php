@@ -1,4 +1,4 @@
-@extends('Frontend.homepage.layout')
+@extends('Frontend.homepage.layout', ['popup' => true])
 
 @section('content')
     <div class="product-catalogue page-wrapper">

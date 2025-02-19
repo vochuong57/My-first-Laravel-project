@@ -49,24 +49,44 @@
 			let setting = JSON.parse($('.panel-slide').attr('data-setting'))
 			let option = HT.swiperOption(setting)
 			console.log(option);
-			var swiper = new Swiper(".panel-slide .swiper-container", option);
+			var swiper = new Swiper(".panel-slide .slide-swiper-container", option);
 		}
 		
 	}
 
-	HT.carousel = () => {
-		$carousel.each(function(){
-			let _this = $(this);
-			let option = _this.find('.owl-carousel').attr('data-owl');
-			let owlInit = atob(option);
-			owlInit = JSON.parse(owlInit);
-			_this.find('.owl-carousel').owlCarousel(owlInit);
+	HT.popupSwipperSlide = () => {
+		var swiperThumbs = new Swiper('.popup-gallery .popup-swiper-container-thumbs', {
+			// loop: true,
+			spaceBetween: 10,
+			slidesPerView: 4,
+			// centeredSlides: true,
+			slideToClickedSlide: true,
 		});
-		
-	} 
 
-	HT.bestSeller = () => {
-		var swiper = new Swiper(".panel-besterseller .swiper-container", {
+		var swiperMain = new Swiper('.popup-gallery .popup-swiper-container', {
+			// loop: true,
+			effect: 'fade',
+			navigation: {
+				nextEl: '.swiper-button-next',
+				prevEl: '.swiper-button-prev',
+			},
+			autoplay: {
+				delay: 4000,
+				disableOnInteraction: false,
+				pauseOnMouseEnter: true,
+			},
+			pagination: {
+				el: '.swiper-pagination',
+			},
+			thumbs: {
+				swiper: swiperThumbs,
+			}
+		});
+
+	}
+
+	HT.categorySwipperSlide = () => {
+		var swiperMain = new Swiper('.panel-body .category-swiper-container', {
 			loop: false,
 			pagination: {
 				el: '.swiper-pagination',
@@ -84,37 +104,6 @@
 				  slidesPerView: 3,
 				},
 				1280: {
-					slidesPerView: 5,
-				}
-			},
-			navigation: {
-				nextEl: '.swiper-button-next',
-				prevEl: '.swiper-button-prev',
-			},
-			
-		});
-		
-	}
-
-	HT.swiperCategory = () => {
-		var swiper = new Swiper(".panel-category .swiper-container", {
-			loop: false,
-			pagination: {
-				el: '.swiper-pagination',
-			},
-			spaceBetween: 20,
-			slidesPerView: 3,
-			breakpoints: {
-				415: {
-					slidesPerView: 3,
-				},
-				500: {
-				  slidesPerView: 3,
-				},
-				768: {
-				  slidesPerView: 6,
-				},
-				1280: {
 					slidesPerView: 10,
 				}
 			},
@@ -124,10 +113,34 @@
 			},
 			
 		});
+
 	}
 
-	HT.swiperBestSeller = () => {
-		var swiper = new Swiper(".panel-bestseller .swiper-container", {
+	// Hàm khởi tạo Swiper sau khi mở popup
+	HT.openPopupAndInitializeSwiper = () => {
+		// Gắn sự kiện click cho phần tử mở popup
+		$('.addcart').on('click', function() {
+			// Mở popup
+			$('#popup').fadeIn();
+
+			HT.popupSwipperSlide();  // Gọi hàm khởi tạo Swiper sau khi popup đã mở
+		});
+	};
+
+
+	HT.carousel = () => {
+		$carousel.each(function(){
+			let _this = $(this);
+			let option = _this.find('.owl-carousel').attr('data-owl');
+			let owlInit = atob(option);
+			owlInit = JSON.parse(owlInit);
+			_this.find('.owl-carousel').owlCarousel(owlInit);
+		});
+		
+	} 
+
+	HT.bestsellerSwiperSlide = () => {
+		var swiper = new Swiper(".panel-bestseller .bestseller-swipper-container", {
 			loop: false,
 			pagination: {
 				el: '.swiper-pagination',
@@ -156,69 +169,66 @@
 		});
 	}
 
-	HT.swiperProject = () => {
-		var swiper = new Swiper(".panel-project .swiper-container", {
-			loop: false,
-			pagination: {
-				el: '.swiper-pagination',
-			},
-			spaceBetween: 20,
-			slidesPerView: 2,
-			breakpoints: {
-				415: {
-					slidesPerView: 1,
-				},
-				500: {
-				  slidesPerView: 2,
-				},
-				768: {
-				  slidesPerView: 2,
-				},
-				1280: {
-					slidesPerView: 3,
-				}
-			},
-			navigation: {
-				nextEl: '.swiper-button-next',
-				prevEl: '.swiper-button-prev',
-			},
+	// HT.swiperProject = () => {
+	// 	var swiper = new Swiper(".panel-project .swiper-container", {
+	// 		loop: false,
+	// 		pagination: {
+	// 			el: '.swiper-pagination',
+	// 		},
+	// 		spaceBetween: 20,
+	// 		slidesPerView: 2,
+	// 		breakpoints: {
+	// 			415: {
+	// 				slidesPerView: 1,
+	// 			},
+	// 			500: {
+	// 			  slidesPerView: 2,
+	// 			},
+	// 			768: {
+	// 			  slidesPerView: 2,
+	// 			},
+	// 			1280: {
+	// 				slidesPerView: 3,
+	// 			}
+	// 		},
+	// 		navigation: {
+	// 			nextEl: '.swiper-button-next',
+	// 			prevEl: '.swiper-button-prev',
+	// 		},
 			
-		});
-	}
+	// 	});
+	// }
 
-	HT.swiperVideo = () => {
-		var swiper = new Swiper(".panel-video .swiper-container", {
-			loop: false,
-			pagination: {
-				el: '.swiper-pagination',
-			},
-			spaceBetween: 20,
-			slidesPerView: 2,
-			breakpoints: {
-				415: {
-					slidesPerView: 1,
-				},
-				500: {
-				  slidesPerView: 2,
-				},
-				768: {
-				  slidesPerView: 2,
-				},
-				1280: {
-					slidesPerView: 4,
-				}
-			},
-			navigation: {
-				nextEl: '.swiper-button-next',
-				prevEl: '.swiper-button-prev',
-			},
+	// HT.swiperVideo = () => {
+	// 	var swiper = new Swiper(".panel-video .swiper-container", {
+	// 		loop: false,
+	// 		pagination: {
+	// 			el: '.swiper-pagination',
+	// 		},
+	// 		spaceBetween: 20,
+	// 		slidesPerView: 2,
+	// 		breakpoints: {
+	// 			415: {
+	// 				slidesPerView: 1,
+	// 			},
+	// 			500: {
+	// 			  slidesPerView: 2,
+	// 			},
+	// 			768: {
+	// 			  slidesPerView: 2,
+	// 			},
+	// 			1280: {
+	// 				slidesPerView: 4,
+	// 			}
+	// 		},
+	// 		navigation: {
+	// 			nextEl: '.swiper-button-next',
+	// 			prevEl: '.swiper-button-prev',
+	// 		},
 			
-		});
-	}
+	// 	});
+	// }
 	
-	
-	
-
 	HT.wow = () => {
 		var wow = new WOW(
 			{
@@ -247,49 +257,49 @@
 		
 	}
 
-	HT.openPreviewVideo = () => {
-		$('.choose-video').on('click', function(e){
-			e.preventDefault()
-			let _this = $(this)
-			let option = {
-				id: _this.attr('data-id')
-			}
-			$.ajax({
-				url: 'ajax/post/video', 
-				type: 'GET', 
-				data: option, 
-				dataType: 'json', 
-				beforeSend: function() {
+	// HT.openPreviewVideo = () => {
+	// 	$('.choose-video').on('click', function(e){
+	// 		e.preventDefault()
+	// 		let _this = $(this)
+	// 		let option = {
+	// 			id: _this.attr('data-id')
+	// 		}
+	// 		$.ajax({
+	// 			url: 'ajax/post/video', 
+	// 			type: 'GET', 
+	// 			data: option, 
+	// 			dataType: 'json', 
+	// 			beforeSend: function() {
 					
-				},
-				success: function(res) {
-					$('.video-preview .video-play').html(res.html)
-					$('.video-preview video').attr('autoplay', 'autoplay');
-					$('.video-preview iframe').attr('src', function (i, val) {
-						return val + (val.indexOf('?') !== -1 ? '&' : '?') + 'autoplay=1';
-					});
-				},
-			});
+	// 			},
+	// 			success: function(res) {
+	// 				$('.video-preview .video-play').html(res.html)
+	// 				$('.video-preview video').attr('autoplay', 'autoplay');
+	// 				$('.video-preview iframe').attr('src', function (i, val) {
+	// 					return val + (val.indexOf('?') !== -1 ? '&' : '?') + 'autoplay=1';
+	// 				});
+	// 			},
+	// 		});
 
-		})
-	}
+	// 	})
+	// }
 
 	$(document).ready(function(){
 		HT.wow()
-		HT.swiperCategory()
-		HT.swiperBestSeller()
-		// HT.swiperIntro()
-		HT.bestSeller()
-		HT.swiperProject()
-		HT.swiperVideo()
+		// HT.swiperProject()
+		// HT.swiperVideo()
 		
 		/* CORE JS */
 		HT.swiper()
+		HT.popupSwipperSlide()
+		HT.openPopupAndInitializeSwiper()
+		HT.categorySwipperSlide()
+		HT.bestsellerSwiperSlide()
 		HT.niceSelect()		
 		HT.carousel()
 
 
-		HT.openPreviewVideo()
+		// HT.openPreviewVideo()
 	});
 
 })(jQuery);
