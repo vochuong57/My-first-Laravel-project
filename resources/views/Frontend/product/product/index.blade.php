@@ -5,25 +5,18 @@
     <div class="uk-container uk-container-center">
         @include('Frontend.component.breadcrumb', ['model' => $productCatalogue, 'breadcrumb' => $breadcrumb])
         <div class="panel-body">
-            <?php   
-                $colorImage = [
-                    'https://wp.alithemes.com/html/ecom/demo/assets/imgs/page/product/img-gallery-2.jpg',
-                    'https://wp.alithemes.com/html/ecom/demo/assets/imgs/page/product/img-gallery-1.jpg',
-                    'https://wp.alithemes.com/html/ecom/demo/assets/imgs/page/product/img-gallery-3.jpg',
-                    'https://wp.alithemes.com/html/ecom/demo/assets/imgs/page/product/img-gallery-4.jpg',
-                    'https://wp.alithemes.com/html/ecom/demo/assets/imgs/page/product/img-gallery-5.jpg',
-                    'https://wp.alithemes.com/html/ecom/demo/assets/imgs/page/product/img-gallery-6.jpg',
-                    'https://wp.alithemes.com/html/ecom/demo/assets/imgs/page/product/img-gallery-7.jpg',
-                ]
-            ?>
+            @php
+                $album = json_decode($product->album) ?? [];
+            @endphp
             <div class="uk-grid uk-grid-medium">
                 <div class="uk-width-large-1-2">
                     <div class="popup-gallery">
+                        @if(!empty($album))
                         <div class="swiper-container popup-swiper-container">
                             <div class="swiper-button-next"></div>
                             <div class="swiper-button-prev"></div>
                             <div class="swiper-wrapper big-pic">
-                                <?php foreach($colorImage as $key => $val){  ?>
+                                <?php foreach($album as $key => $val){  ?>
                                 <div class="swiper-slide">
                                     <a class="image img-cover"><img src="<?php echo $val?>" alt="<?php echo $val ?>"></a>
                                 </div>
@@ -33,23 +26,43 @@
                         </div>
                         <div class="swiper-container-thumbs popup-swiper-container-thumbs">
                             <div class="swiper-wrapper pic-list">
-                                <?php foreach($colorImage as $key => $val){  ?>
+                                <?php foreach($album as $key => $val){  ?>
                                 <div class="swiper-slide">
                                     <span  class="image img-cover"><img src="<?php echo $val?>" alt="<?php echo $val ?>"></span>
                                 </div>
                                 <?php }  ?>
                             </div>
                         </div>
+                        @else
+                        @php
+                            $image = $product->image ?? 'Backend/img/not-found.png';
+                        @endphp
+                        <div class="swiper-container popup-swiper-container">
+                            <div class="swiper-button-next"></div>
+                            <div class="swiper-button-prev"></div>
+                            <div class="swiper-wrapper big-pic">
+                                <div class="swiper-slide">
+                                    <a class="image img-cover"><img src="{{ $image }}"></a>
+                                </div>
+                            </div>
+                            <div class="swiper-pagination"></div>
+                        </div>
+                        @endif
                     </div>
                 </div>
                 <div class="uk-width-large-1-2">
                     <div class="popup-product">
-                        <h2 class="title"><span>Category:Smartphones Tags:Blue,Smartphone
-                            SAMSUNG Galaxy S22 Ultra, 8K Camera & Video, Brightest Display Screen, S Pen Pro</span>
+                        @php
+                            $title = $product->languages->first()->pivot->name;
+                            $author = $product->users->name;
+                            $price = getPrice($product->toArray());
+                            $description = $product->languages->first()->pivot->description;
+                        @endphp
+                        <h2 class="title"><span>{{ $title }}</span>
                         </h2>
                         <div class="rating">
                             <div class="uk-flex uk-flex-middle">
-                                <div class="author">By Tuan Nguyen</div>
+                                <div class="author">{{ $author }}</div>
                                 <div class="star">
                                     <?php for($i = 0; $i<=4; $i++){ ?>
                                     <i class="fa fa-star"></i>
@@ -60,54 +73,53 @@
                         </div>
                         <div class="price">
                             <div class="uk-flex uk-flex-bottom">
-                                <div class="price-sale">9.000.000đ</div>
-                                <div class="price-old">10.900.000đ</div>
+                                <div class="price-sale">{{ $price['price_sale'] }}đ</div>
+                                <div class="price-old">{{ ($price['price_old'] == $price['price_sale']) ? '' : $price['price_old'].'đ' }}</div>
                             </div>
                         </div>
                         <div class="description">
-                            <p>8k super steady video</p>
-                            <p>Nightography plus portait mode</p>
-                            <p>50mp photo resolution plus bright display</p>
-                            <p>Adaptive color contrast</p>
-                            <p>premium design & craftmanship</p>
-                            <p>Long lasting battery plus fast charging</p>
+                            {!! $description !!}
                         </div>
                         <div class="attribute">
-                            <div class="attribute-item attribute-color">
+                            <!-- <div class="attribute-item attribute-color">
                                 <div class="label">Color: <span>Pink Gold</span></div>
                                 <div class="uk-grid uk-grid-small">
-                                    <?php foreach($colorImage as $key => $val){  ?>
+                                    <?php //foreach($album as $key => $val){  ?>
                                     <div class="uk-width-large-1-10">
-                                        <div class="color-item <?php if($key == 1){
-                                                echo 'outstock';
-                                            }else if($key == 4){
-                                                    echo 'active';
-                                            }  ?>">
-                                            <span class="image"><img src="<?php echo $val; ?>" alt=""></span>
+                                        <div class="color-item <?php //if($key == 1){
+                                                //echo 'outstock';
+                                            //}else if($key == 4){
+                                                    //echo 'active';
+                                            //}  ?>">
+                                            <span class="image"><img src="<?php //echo $val; ?>" alt=""></span>
                                         </div>
                                     </div>
-                                    <?php }  ?>
+                                    <?php //}  ?>
                                 </div>
-                            </div>
+                            </div> -->
+                            <!-- attribute -->
+                            @if(!empty($product->attributeInfo))
+                            @foreach($product->attributeInfo as $attibuteCatalogue)
+                            @php
+                                $attributeCatalogueName = $attibuteCatalogue['languages'][0]['pivot']['name'];
+                                $attributes = $attibuteCatalogue['attributes'];
+                            @endphp
                             <div class="attribute-item attribute-color">
-                                <div class="label">Styles: <span>S22</span></div>
+                                <div class="label">{{ $attributeCatalogueName }}: <span>S22</span></div>
+                                @if(!empty($attributes))
                                 <div class="attribute-value">
-                                    <a href="" title="">S22 Ultra</a>
-                                    <a href="" title="" class="active">S22</a>
-                                    <a href="" title="" class="outstock">S22 + Standing Cover</a>
+                                    @foreach($attributes as $attribute)
+                                    @php
+                                        $attributeName = $attribute['languages'][0]['pivot']['name'];
+                                    @endphp
+                                    <a href="" title="">{{ $attributeName }}</a>
+                                    @endforeach
                                 </div>
+                                @endif
                             </div>
-                            <div class="attribute-item attribute-color">
-                                <div class="label">Size: <span>125GB</span></div>
-                                <div class="attribute-value">
-                                    <a href="" title="" class="outstock">1GB</a>
-                                    <a href="" title="" class="active">512GB</a>
-                                    <a href="" title="">64GB</a>
-                                    <a href="" title="">128GB</a>
-                                    <a href="" title="">32GB</a>
-                                </div>
-                            </div>
-                        </div><!-- .attribute -->
+                            @endforeach
+                            @endif
+                        </div>
                         <div class="quantity">
                             <div class="text">Quantity</div>
                             <div class="uk-flex uk-flex-middle">

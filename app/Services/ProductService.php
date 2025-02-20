@@ -24,6 +24,8 @@ use App\Repositories\Interfaces\ProductVariantLanguageRepositoryInterface as Pro
 use App\Repositories\Interfaces\ProductVariantAttributeRepositoryInterface as ProductVariantAttributeRepository;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Pagination\Paginator;
+use App\Repositories\Interfaces\AttributeCatalogueRepositoryInterface as AttributeCatalogueRepository;
+use App\Repositories\Interfaces\AttributeRepositoryInterface as AttributeRepository;
 
 /**
  * Class UserService
@@ -37,13 +39,24 @@ class ProductService extends BaseService implements ProductServiceInterface
     protected $controllerName = 'ProductController';
     protected $productVariantLanguageRepository;
     protected $productVariantAttributeRepository;
+    protected $attributeCatalogueRepository;
 
-    public function __construct(ProductRepository $productRepository, RouterRepository $routerRepository, ProductLanguageRepository $productLanguageRepository, ProductVariantLanguageRepository $productVariantLanguageRepository, ProductVariantAttributeRepository $productVariantAttributeRepository){
+    public function __construct(
+        ProductRepository $productRepository, 
+        RouterRepository $routerRepository, 
+        ProductLanguageRepository $productLanguageRepository, 
+        ProductVariantLanguageRepository $productVariantLanguageRepository, 
+        ProductVariantAttributeRepository $productVariantAttributeRepository,
+        AttributeCatalogueRepository $attributeCatalogueRepository,
+        AttributeRepository $attributeRepository,
+    ){
         $this->productRepository=$productRepository;
         $this->routerRepository=$routerRepository;
         $this->productLanguageRepository=$productLanguageRepository;
         $this->productVariantLanguageRepository = $productVariantLanguageRepository;
         $this->productVariantAttributeRepository = $productVariantAttributeRepository;
+        $this->attributeCatalogueRepository = $attributeCatalogueRepository;
+        $this->attributeRepository = $attributeRepository;
     }
 
     public function paginate($request, $languageId, $productCatalogue = null, $extend = [], $page = 1){//$request để tiến hành chức năng tìm kiếm
@@ -543,7 +556,40 @@ class ProductService extends BaseService implements ProductServiceInterface
             'product_variants'=> function($query) use($language) {
                 // $query->where('publish', '=', 2);
             },
+            'users'=> function($query) use($language) {
+                $query->where('publish', '=', 2);
+            },
         ];
+    }
+
+    public function getAttributeInfo($product, $language)
+    {
+        // dd($product->attribute);
+        // dd(json_decode($product->attribute, true));
+        $attributeCatalogueIds = array_keys(json_decode($product->attribute, true));
+        // dd($attributeCatalogueIds);
+        $condition = [
+            ['publish', '=', 2],
+        ];
+        $relation = [
+            'languages' => function($query) use ($language) {
+                $query->where('language_id', $language);
+            },
+        ];
+        $attributeCatalogues = $this->attributeCatalogueRepository->findWhereInWithRelation('id', $attributeCatalogueIds, $condition, $relation, $order = true);
+        // dd($attributeCatalogues);
+
+        $attributeIds = array_values(json_decode($product->attribute, true));
+        // dd($attributeIds);
+
+        foreach($attributeCatalogues as $key => $val){
+            $attributes = $this->attributeRepository->findWhereInWithRelation('id', $attributeIds[$key], $condition, $relation, $order = true);
+            // dd($attributes);
+            $val->attributes = $attributes->toArray();
+        }
+        // dd($attributeCatalogues->toArray());
+
+        return $attributeCatalogues->toArray();
     }
 }
 

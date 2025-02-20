@@ -30,7 +30,7 @@ class ProductController extends FrontendController
         $relation = $this->productService->getProductRelation($languageId);
 
         $product = $this->productRepository->findById($id, ['*'], $relation);
-        // dd($product->toArray());
+        // dd($product);
         $config = $this->config();
         $seo = seo($product);
         // dd($seo);
@@ -44,6 +44,10 @@ class ProductController extends FrontendController
 
         $breadcrumb = $this->productCatalogueRepository->breadcrumb($productCatalogue, $languageId);
         // dd($breadcrumb);
+        if($product->attribute != null){
+            $product->attributeInfo = $this->productService->getAttributeInfo($product, $languageId);
+        }
+        // dd($product);
         
         return view('frontend.product.product.index', compact('config', 'languageId', 'seo', 'product', 'breadcrumb', 'productCatalogue'));
     }
