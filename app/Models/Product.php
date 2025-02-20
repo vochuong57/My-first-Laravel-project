@@ -62,4 +62,9 @@ class Product extends Model
     public function promotions(){
         return $this->belongsToMany(Promotion::class, 'promotion_object_variant', 'object_id', 'promotion_id');
     }
+
+    public function users()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
 }
