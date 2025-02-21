@@ -139,5 +139,45 @@
             </div>
         </div>
     </div>
+    <div class="uk-width-large-1-4">
+        <div class="aside">
+            @if(!is_null($categories))
+            @foreach($categories as $key => $val)
+            @php
+                $name = $val['item']->languages->first()->pivot->name;
+                $productCount = $val['products_count'];
+            @endphp
+            <div class="aside-panel aside-category">
+                <div class="aside-heading">{{ $name }} - Tổng: {{ $productCount }}</div>
+                @if(!is_null($val['children']) && !empty($val['children']))
+                @foreach($val['children'] as $key => $val)
+                @php
+                    $childrenName = $val['item']->languages->first()->pivot->name;
+                    $childrenCanonical = write_url($val['item']->languages->first()->pivot->canonical);
+                    $childrenImage = $val['item']->image;
+                    $productChildrenCount = $val['products_count'];
+                @endphp
+                <div class="aside-body">
+                    <ul class="uk-list uk-clearfix">
+                        <li class="mb20">
+                            <div class="categories-item-1">
+                                <a href="{{ $childrenCanonical }}" title="{{ $childrenName }}">
+                                    <div class="uk-flex uk-flex-middle">
+                                        <img src="{{ $childrenImage }}" alt="{{ $childrenName }}">
+                                        <span class="title">{{ $childrenName }}</span>
+                                    </div>
+                                    <span class="total">{{ $productChildrenCount }}</span>
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                @endforeach
+                @endif
+            </div>
+            @endforeach
+            @endif
+        </div>
+    </div>
 </div>
 @endsection

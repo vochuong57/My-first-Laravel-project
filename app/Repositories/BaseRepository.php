@@ -18,8 +18,21 @@ class BaseRepository implements BaseRepositoryInterface
     public function __construct(Model $model){
         $this->model=$model;
     }
-    public function all(array $relation = []){
-        return $this->model->with($relation)->get();
+    public function all(array $relation = [], array $condition = [])
+    {
+        $query = $this->model->newQuery();
+
+        // Thêm các điều kiện tìm kiếm vào query
+        foreach ($condition as $key => $val) {
+            $query->where($val[0], $val[1], $val[2]);
+        }
+
+        // Load các mối quan hệ
+        if (!empty($relation)) {
+            $query->with($relation);
+        }
+
+        return $query->get();
     }
     public function pagination(
         array $column=['*'],
