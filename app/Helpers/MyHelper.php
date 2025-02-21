@@ -380,6 +380,7 @@ if(!function_exists('cut_string_and_decode')){
     }
 }
 
+// V141
 if(!function_exists('seo')){
     function seo($model = null, $page = 1){
         $canonical = ($page == 1) ? write_url($model->languages->first()->pivot->canonical) : write_url($model->languages->first()->pivot->canonical, true, false).'/trang-'.$page.config('apps.general.suffix');
@@ -392,3 +393,29 @@ if(!function_exists('seo')){
         ];
     }
 }
+
+// V145
+if(!function_exists('modelCount')){
+    function modelCount($model, $relation = ''){
+        // dd($model);
+        // Đếm số lượng sản phẩm của danh mục hiện tại
+        $modelCount = isset($model['item']->$relation) ? count($model['item']->$relation) : 0;
+        // dd($modelCount);
+        // Nếu danh mục có danh mục con
+        if (isset($model['children']) && !empty($model['children'])) {
+            foreach ($model['children'] as $key => $val) {
+                // Đếm sản phẩm của từng danh mục con
+                $modelCount += isset($val['item']->$relation) ? count($val['item']->$relation) : 0;
+    
+                // Nếu danh mục con có danh mục con nữa, đệ quy tiếp tục
+                if (!empty($val['children'])) {
+                    $modelCount += modelCount($val, $relation); // Đệ quy vào danh mục con
+                }
+            }
+        }
+    
+        // Trả về tổng số sản phẩm
+        return $modelCount;
+    }
+}
+

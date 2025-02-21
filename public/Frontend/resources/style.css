@@ -3899,6 +3899,8 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover,
     }
 }
 .aside{
+    position: relative;
+    left: 270px;
     margin-top:30px !important;
     box-shadow: 5px 5px 15px rgba(0,0,0,.05);
 }

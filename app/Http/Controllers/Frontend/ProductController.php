@@ -39,6 +39,11 @@ class ProductController extends FrontendController
             'languages' => function($query) use ($languageId){
                 $query->where('language_id', $languageId);
             },
+            'products' => function($query) use ($languageId){
+            },
+        ];
+        $condition = [
+            ['publish', '=', 2],
         ];
         $productCatalogue = $this->productCatalogueRepository->findById($product->product_catalogue_id,['*'], $relation);
 
@@ -48,8 +53,27 @@ class ProductController extends FrontendController
             $product->attributeInfo = $this->productService->getAttributeInfo($product, $languageId);
         }
         // dd($product);
+
+        // dd($this->productCatalogueRepository->all($relation));
+        $categories = recursive($this->productCatalogueRepository->all($relation, $condition));
+        // dd($categories);
+
+        if (!is_null($categories)) {
+            foreach ($categories as $key => $val) {
+                // dd($val);
+                // Đếm số lượng sản phẩm cho danh mục cha
+                $categories[$key]['products_count'] = modelCount($val, 'products');
+                
+                // Đếm số lượng sản phẩm cho các danh mục con
+                foreach ($val['children'] as $childKey => $childVal) {
+                    $categories[$key]['children'][$childKey]['products_count'] = modelCount($childVal, 'products');
+                }
+            }
+        }
         
-        return view('frontend.product.product.index', compact('config', 'languageId', 'seo', 'product', 'breadcrumb', 'productCatalogue'));
+        // dd($categories);
+        
+        return view('frontend.product.product.index', compact('config', 'languageId', 'seo', 'product', 'breadcrumb', 'productCatalogue', 'categories'));
     }
 
     private function config(){
