@@ -98,27 +98,7 @@
                                 </div>
                             </div> -->
                             <!-- attribute -->
-                            @if(!empty($product->attributeInfo))
-                            @foreach($product->attributeInfo as $attibuteCatalogue)
-                            @php
-                                $attributeCatalogueName = $attibuteCatalogue['languages'][0]['pivot']['name'];
-                                $attributes = $attibuteCatalogue['attributes'];
-                            @endphp
-                            <div class="attribute-item attribute-color">
-                                <div class="label">{{ $attributeCatalogueName }}: <span>S22</span></div>
-                                @if(!empty($attributes))
-                                <div class="attribute-value">
-                                    @foreach($attributes as $attribute)
-                                    @php
-                                        $attributeName = $attribute['languages'][0]['pivot']['name'];
-                                    @endphp
-                                    <a href="" title="">{{ $attributeName }}</a>
-                                    @endforeach
-                                </div>
-                                @endif
-                            </div>
-                            @endforeach
-                            @endif
+                            @include('Frontend.product.product.component.attribute')
                         </div>
                         <div class="quantity">
                             <div class="text">Quantity</div>

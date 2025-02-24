@@ -284,6 +284,65 @@
 	// 	})
 	// }
 
+	HT.selectProductVariant = () => {
+		if($('.choose-attribute').length){
+			$(document).on('click', '.choose-attribute', function(e){
+				e.preventDefault()
+				let _this = $(this)
+				let attribute_id = _this.attr('data-attributeid')
+				console.log(attribute_id)
+				let attribute_name = _this.text()
+				_this.parents('.attribute-item').find('span').html(attribute_name)
+				_this.parents('.attribute-value').find('.choose-attribute').removeClass('active')
+				_this.addClass('active')
+				HT.handleAttribute()
+			})
+		}
+	}
+
+	HT.handleAttribute = () => {
+		let attribute_id = []
+		let flag = true
+		$('.attribute-value .choose-attribute').each(function(){
+			let _this = $(this)
+			if(_this.hasClass('active')){
+				attribute_id.push(_this.attr('data-attributeid'))
+			}
+		})
+		// console.log(attribute_id)
+
+		let count = 0;
+		$('.attribute').each(function() {
+			let attributeItems = $(this).find('.attribute-item');  // Tìm tất cả các .attribute-item trong .attribute
+			count += attributeItems.length;
+		})
+		console.log(count)
+
+		if(attribute_id.length < count){
+			flag = false
+			return false
+		}
+
+		if(flag){
+			$.ajax({
+				url: 'ajax/product/loadVariant',
+				type: 'GET',
+				data: {
+					'attribute_id': attribute_id,
+					'product_id': $('input[name=product_id]').val(),
+					'language_id': $('input[name=language_id]').val(),
+				},
+				dataType: 'json',
+				beforeSend: function (){
+	
+				},
+				success: function(res){
+					console.log(res)
+				}
+			})
+		}
+	}
+
 	$(document).ready(function(){
 		HT.wow()
 		// HT.swiperProject()
@@ -298,6 +357,8 @@
 		HT.niceSelect()		
 		HT.carousel()
 
+		HT.selectProductVariant()
+		HT.handleAttribute()
 
 		// HT.openPreviewVideo()
 	});

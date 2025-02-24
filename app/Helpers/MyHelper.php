@@ -419,3 +419,14 @@ if(!function_exists('modelCount')){
     }
 }
 
+// V146
+if(!function_exists('sortString')){
+    function sortString($string = ''){
+        $extract = explode(',', $string);
+        sort($extract,SORT_NUMERIC);
+        $newArray = implode(',', $extract);
+        // Loại bỏ khoảng trắng thừa trong chuỗi
+        $newArray = trim($newArray);
+        return $newArray;
+    }
+}

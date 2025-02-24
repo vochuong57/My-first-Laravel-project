@@ -58,6 +58,9 @@ Route::get('/', [HomeController::class, 'index'])->name('home.index');
 Route::get('{canonical}'.config('apps.general.suffix'), [RouterController::class, 'index'])->name('router.index')->where('canonical', '[a-zA-Z0-9-]+');
 Route::get('{canonical}/trang-{page}'.config('apps.general.suffix'), [RouterController::class, 'page'])->name('router.page')->where('canonical', '[a-zA-Z0-9-]+')->where('page', '[0-9]+');
 
+// FRONTEND AJAX ROUTES
+Route::get('ajax/product/loadVariant',[AjaxProductController::class, 'loadVariant'])->name('ajax.product.loadVariant');
+
 // BACKEND ROUTES
 
 //định nghĩa được một cái đưuòng dẫn và đưa cái đường dẫn đó vào route tương ứng

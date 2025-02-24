@@ -45,5 +45,14 @@ class ProductVariantRepository extends BaseRepository implements ProductVariantR
         //echo $query->toSql(); die();
     }    
 
-   
+    public function findVariant($code, $product_id, $language_id){
+        return $this->model->where([
+            ['code', '=', $code],
+            ['product_id', '=', $product_id],
+        ])
+        ->with('languages', function($query) use($language_id){
+            $query->where('language_id', $language_id);
+        })
+        ->first();
+    }
 }

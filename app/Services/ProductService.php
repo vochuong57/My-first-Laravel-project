@@ -467,7 +467,7 @@ class ProductService extends BaseService implements ProductServiceInterface
                 $variant_uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, 'Product, '.$product->id.', '.$payload['productVariant']['id'][$key]);
                 $variant[]=[
                     'variant_uuid' => $variant_uuid,
-                    'code' => ($payload['productVariant']['id'][$key]) ?? '',
+                    'code' => sortString($payload['productVariant']['id'][$key] ?? ''),
                     'quantity' => ($payload['variant']['quantity'][$key]) ?? 0,
                     'sku' => $val,
                     'price' => ($payload['variant']['price'][$key]) ? $this->convert_price($payload['variant']['price'][$key]) : 0.0,

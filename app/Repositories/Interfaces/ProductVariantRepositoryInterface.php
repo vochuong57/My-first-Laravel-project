@@ -27,5 +27,4 @@ interface ProductVariantRepositoryInterface
     public function updateByWhereIn(string $whereInField='', array $whereIn=[], array $payload=[]);//dùng khi ở toolbox thay đổi hàng loạt trạng thái user
     public function deleteByWhereIn(string $whereInField = '', array $whereIn = [], int $languageId = null);
     public function createPivot($model, array $payload=[], string $relation='');//xử lý logic thêm 2 bảng
-    public function getProductById(int $id=0, $language_id=0);//xử lý hiện thị dữ liệu từ 2 bảng
 }
