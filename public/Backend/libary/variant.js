@@ -434,6 +434,11 @@
             e.preventDefault()
             HT.browseServerAlbum()
         })
+
+        $(document).on('click', '.click-to-upload-variant-tool', function(e){
+            e.preventDefault()
+            HT.browseServerAlbum()
+        })
     }
 
     HT.browseServerAlbum=()=>{
@@ -468,10 +473,22 @@
         $(document).on('click','.variant-delete-image',function(){
             let _this=$(this)
             _this.parents('.ui-state-default').remove()
-            if($('.ui-state-default').length == 0){
+            if($('.upload-variant-list .ui-state-default').length == 0){
                 $('.click-to-upload-variant').removeClass('hidden')
                 $('.upload-variant-list').addClass('hidden')
             }
+
+            // let count = 0;
+            // $('.upload-variant-list').each(function() {
+            //     let attributeItems = $(this).find('.ui-state-default');  // Tìm tất cả các .ui-state-default trong .upload-variant-list
+            //     count += attributeItems.length;
+            // })
+            // console.log(count)
+            // if(count == 0){
+            //     $('.click-to-upload-variant').removeClass('hidden')
+            //     $('.upload-variant-list').addClass('hidden')
+            // }
+            
         })
     }
 
@@ -570,6 +587,10 @@
         html += '                </div>';
         html += '            </div>';
         html += '            <div class="ibox-content">';
+        html += '               <div class="uk-flex uk-flex-middle uk-flex-space-between">';
+        html += '                   <h5>'+album+'</h5>';
+        html += '                   <div class=""><a href="" class="click-to-upload-variant-tool">'+pickAlbum+'</a></div>';
+        html += '               </div>';
         html += '                <div class="click-to-upload-variant '+( (variantAlbum.length > 0 && variantAlbum[0] !== '') ? 'hidden' : '' )+'">';
         html += '                    <div class="icon">';
         html += '                        <a href="" class="upload-variant-picture">';

@@ -93,4 +93,6 @@
     let fileName = "{{ __('messages.Product_file_name') }}";
     let filePath = "{{ __('messages.Product_file_path') }}";
     let publish = "{{ __('messages.Product_publish') }}";
+    let album = "{{ __('messages.album') }}";
+    let pickAlbum = "{{ __('messages.pickAlbum') }}";
 </script>
