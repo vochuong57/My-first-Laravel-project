@@ -50,6 +50,9 @@
                         @endif
                     </div>
                 </div>
+                <script>
+                    let originalAlbum = <?php echo json_encode($album); ?>;
+                </script>
                 <div class="uk-width-large-1-2">
                     <div class="popup-product">
                         @php

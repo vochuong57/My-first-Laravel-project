@@ -317,6 +317,7 @@
 			count += attributeItems.length;
 		})
 		console.log(count)
+		// console.log($('.attribute .attribute-item').length)
 
 		if(attribute_id.length < count){
 			flag = false
@@ -338,9 +339,46 @@
 				},
 				success: function(res){
 					console.log(res)
+					let album = res.variant.album.split(',')
+					console.log(album)
+					if(album != ''){
+						HT.setupVariantGallery(album)
+					}else{
+						HT.setupVariantGallery(originalAlbum)
+					}
 				}
 			})
 		}
+	}
+
+	HT.setupVariantGallery = (album) => {
+		let html = 
+		`
+		<div class="swiper-container popup-swiper-container">
+			<div class="swiper-button-next"></div>
+			<div class="swiper-button-prev"></div>
+			<div class="swiper-wrapper big-pic">`
+				album.forEach((val, key) => {
+					html += `<div class="swiper-slide">
+								<a  class="image img-cover"><img src="${val}" alt="${val}"></a>
+							</div>`
+				})
+
+	html +=`</div>
+			<div class="swiper-pagination"></div>
+			</div>
+			<div class="swiper-container-thumbs popup-swiper-container-thumbs">
+				<div class="swiper-wrapper pic-list">`
+					album.forEach((val, key) => {
+						html += `<div class="swiper-slide">
+									<span  class="image img-cover"><img src="${val}" alt="${val}"></span>
+								</div>`
+					})
+		html+=`</div>
+			</div>`
+		
+		$('.popup-gallery').html(html)
+		HT.popupSwipperSlide()
 	}
 
 	$(document).ready(function(){
