@@ -344,6 +344,7 @@
 					if(album != ''){
 						HT.setupVariantGallery(album)
 					}else{
+						console.log(originalAlbum)
 						HT.setupVariantGallery(originalAlbum)
 					}
 				}
@@ -352,33 +353,60 @@
 	}
 
 	HT.setupVariantGallery = (album) => {
-		let html = 
-		`
-		<div class="swiper-container popup-swiper-container">
-			<div class="swiper-button-next"></div>
-			<div class="swiper-button-prev"></div>
-			<div class="swiper-wrapper big-pic">`
-				album.forEach((val, key) => {
-					html += `<div class="swiper-slide">
-								<a  class="image img-cover"><img src="${val}" alt="${val}"></a>
-							</div>`
-				})
+		if(album.length != 0){
+			if(Array.isArray(album)){
+				let html = 
+				`
+				<div class="swiper-container popup-swiper-container">
+					<div class="swiper-button-next"></div>
+					<div class="swiper-button-prev"></div>
+					<div class="swiper-wrapper big-pic">`
+						album.forEach((val, key) => {
+							html += `<div class="swiper-slide">
+										<a  class="image img-cover"><img src="${val}" alt="${val}"></a>
+									</div>`
+						})
 
-	html +=`</div>
-			<div class="swiper-pagination"></div>
-			</div>
-			<div class="swiper-container-thumbs popup-swiper-container-thumbs">
-				<div class="swiper-wrapper pic-list">`
-					album.forEach((val, key) => {
-						html += `<div class="swiper-slide">
-									<span  class="image img-cover"><img src="${val}" alt="${val}"></span>
-								</div>`
-					})
-		html+=`</div>
+			html +=`</div>
+					<div class="swiper-pagination"></div>
+					</div>
+					<div class="swiper-container-thumbs popup-swiper-container-thumbs">
+						<div class="swiper-wrapper pic-list">`
+							album.forEach((val, key) => {
+								html += `<div class="swiper-slide">
+											<span  class="image img-cover"><img src="${val}" alt="${val}"></span>
+										</div>`
+							})
+				html+=`</div>
+					</div>`
+				
+				$('.popup-gallery').html(html)
+				HT.popupSwipperSlide()
+			}else{
+				let html = 
+				`
+				<div class="big-pic">
+					<div class="">
+						<a class="image img-cover"><img src="${album}" alt="${album}"></a>
+					</div>
+				</div>
+				<div class=""></div>
+				`
+				$('.popup-gallery').html(html)
+			}
+		}else{
+			let html =
+			`
+			<div class="">
+				<div class="big-pic">
+					<div class="">
+						<a class="image img-cover"><img src="Backend/img/not-found.png"></a>
+					</div>
+				</div>
+				<div class=""></div>
 			</div>`
-		
-		$('.popup-gallery').html(html)
-		HT.popupSwipperSlide()
+			$('.popup-gallery').html(html)
+		}
 	}
 
 	$(document).ready(function(){
@@ -399,6 +427,22 @@
 		HT.handleAttribute()
 
 		// HT.openPreviewVideo()
+		let variants =[
+			[
+				{ "Dung lượng": "8" },
+				{ "Dung lượng": "14" }
+			],
+			[
+				{ "Màu sắc": "4" },
+				{ "Màu sắc": "12" }
+			]
+		]
+		
+		
+		variants = variants.reduce((a, b) => 
+			a.flatMap(d => b.map(e => ({ ...d, ...e })))
+		);
+		console.log(variants)
 	});
 
 })(jQuery);

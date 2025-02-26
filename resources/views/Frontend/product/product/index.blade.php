@@ -37,22 +37,22 @@
                         @php
                             $image = $product->image ?? 'Backend/img/not-found.png';
                         @endphp
-                        <div class="swiper-container popup-swiper-container">
-                            <div class="swiper-button-next"></div>
-                            <div class="swiper-button-prev"></div>
-                            <div class="swiper-wrapper big-pic">
-                                <div class="swiper-slide">
+                        <div class="">
+                            <div class="big-pic">
+                                <div class="">
                                     <a class="image img-cover"><img src="{{ $image }}"></a>
                                 </div>
                             </div>
-                            <div class="swiper-pagination"></div>
+                            <div class=""></div>
                         </div>
                         @endif
                     </div>
                 </div>
                 <script>
-                    let originalAlbum = <?php echo json_encode($album); ?>;
+                    let result = <?php echo json_encode($album) ?>;
+                    let originalAlbum = result.length !== 0 ? <?php echo json_encode($album) ?> : <?php echo json_encode($product->image) ?>;
                 </script>
+
                 <div class="uk-width-large-1-2">
                     <div class="popup-product">
                         @php

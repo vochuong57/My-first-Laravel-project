@@ -216,7 +216,7 @@
                     attr.push(item)
     
                     // Xử lý tạo mảng id phiên bản là gồm các id thuộc tính (attribute) để lưu vào name="" trong input <td hidden>
-                    itemVariant[attributeCatalogueId] = attribute[i].id
+                    itemVariant[optionText] = attribute[i].id
                     attrVariant.push(itemVariant)
                 }
                 //Xử lý tạo mảng tên tuộc tính để hiển thị trong bảng danh sách phiên bản
@@ -228,8 +228,8 @@
     
             })
             // console.log(attributeTitle)
-            // console.log(attributes)
-            // console.log(variants)
+            console.log(attributes)
+            console.log(variants)
             
             attributes = attributes.reduce(
                 (a, b) => a.flatMap( d => b.map( e => ( { ...d,...e } )))
@@ -239,7 +239,7 @@
             variants = variants.reduce((a, b) => 
                 a.flatMap(d => b.map(e => ({ ...d, ...e })))
             );
-            // console.log(variants)
+            console.log(variants)
             
             // Tạo append cho table.variantTable thead
             HT.createTableHeader(attributeTitle)
@@ -248,9 +248,11 @@
     
             // Tạo append cho table.variantTable tbody
             attributes.forEach((index,item) =>{
+                // console.log(variants[item])
                 let row = HT.createVariantRow(index, variants[item])
     
                 let classModified = 'tr-variant-' + Object.values(variants[item]).join(', ').replace(/, /g, '-')
+                // console.log(classModified)
                 trClass.push(classModified)
                 if(!$('table.variantTable tbody tr').hasClass(classModified)){
                     $('table.variantTable tbody').append(row)
@@ -319,6 +321,7 @@
         // console.log(classModified)
 
         let row = $('<tr>').addClass('variant-row tr-variant-' + classModified)
+        // console.log(row)
         let td
 
         td = $('<td>').append(
@@ -362,6 +365,7 @@
             .append($('<td>').addClass('td-price').text(mainPrice))
             .append($('<td>').addClass('td-sku').text(mainSku + '-' + classModified))
             .append(td)
+            // console.log(row)
 
         return row
 
@@ -752,33 +756,36 @@
     // V55 Lưu và đổ lại value của td hidden và đổ lại giữ liệu lên toolbox và lên td hiển thị khi submit form
     HT.productVariant = () =>{
         variant = JSON.parse(atob(variant))
-        // console.log(variant)
+        console.log(variant)
         // console.log($('.variant-row').length)
 
         $('.variant-row').each(function(index, value){
 
             let _this = $(this)
-            let inputHiddenFields = [
-                { name: 'variant[quantity][]', class: 'variant_quantity', value: variant.quantity[index]},
-                { name: 'variant[sku][]', class: 'variant_sku', value: variant.sku[index]},
-                { name: 'variant[price][]', class: 'variant_price', value: variant.price[index] },
-                { name: 'variant[barcode][]', class: 'variant_barcode', value: variant.barcode[index]},
-                { name: 'variant[file_name][]', class: 'variant_filename', value: variant.file_name[index]},
-                { name: 'variant[file_path][]', class: 'variant_filepath', value: variant.file_path[index]},
-                { name: 'variant[album][]', class: 'variant_album', value: variant.album[index]},
-            ]
-
-            for(let i = 0; i < inputHiddenFields.length; i++){
-                _this.find('input[name="'+inputHiddenFields[i].name+'"]').val(inputHiddenFields[i].value)
+            if(_this.find('.td-sku').text() == variant.sku[index]){
+                
+                let inputHiddenFields = [
+                    { name: 'variant[quantity][]', class: 'variant_quantity', value: variant.quantity[index]},
+                    { name: 'variant[sku][]', class: 'variant_sku', value: variant.sku[index]},
+                    { name: 'variant[price][]', class: 'variant_price', value: variant.price[index] },
+                    { name: 'variant[barcode][]', class: 'variant_barcode', value: variant.barcode[index]},
+                    { name: 'variant[file_name][]', class: 'variant_filename', value: variant.file_name[index]},
+                    { name: 'variant[file_path][]', class: 'variant_filepath', value: variant.file_path[index]},
+                    { name: 'variant[album][]', class: 'variant_album', value: variant.album[index]},
+                ]
+    
+                for(let i = 0; i < inputHiddenFields.length; i++){
+                    _this.find('input[name="'+inputHiddenFields[i].name+'"]').val(inputHiddenFields[i].value)
+                }
+    
+                let album = variant.album[index]
+                let variantImage = (album) ? album.split(',')[0] : 'Backend/img/not-found.png'
+                
+                _this.find('.td-quantity').html(HT.addCommas(variant.quantity[index]))
+                _this.find('.td-price').html(HT.addCommas(variant.price[index]))
+                _this.find('.td-sku').html(variant.sku[index])
+                _this.find('.imageSrc').attr('src', variantImage) 
             }
-
-            let album = variant.album[index]
-            let variantImage = (album) ? album.split(',')[0] : 'Backend/img/not-found.png'
-            
-            _this.find('.td-quantity').html(HT.addCommas(variant.quantity[index]))
-            _this.find('.td-price').html(HT.addCommas(variant.price[index]))
-            _this.find('.td-sku').html(variant.sku[index])
-            _this.find('.imageSrc').attr('src', variantImage) 
         })
     }
     

@@ -53,6 +53,9 @@ class ProductController extends FrontendController
             $product->attributeInfo = $this->productService->getAttributeInfo($product, $languageId);
         }
         // dd($product);
+        if($product->publish == 1){
+            return redirect()->route('home.index');
+        }
 
         // dd($this->productCatalogueRepository->all($relation));
         $categories = recursive($this->productCatalogueRepository->all($relation, $condition));

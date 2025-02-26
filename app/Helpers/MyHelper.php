@@ -397,36 +397,36 @@ if(!function_exists('seo')){
 // V145
 if(!function_exists('modelCount')){
     function modelCount($model, $relation = ''){
-        // dd($model);
-        // Đếm số lượng sản phẩm của danh mục hiện tại
-        $modelCount = isset($model['item']->$relation) ? count($model['item']->$relation) : 0;
-        // dd($modelCount);
+        // Đếm số lượng sản phẩm của danh mục hiện tại với điều kiện publish = 2
+        $modelCount = 0;
+        if (isset($model['item']->$relation)) {
+            foreach ($model['item']->$relation as $item) {
+                if ($item->publish == 2) {
+                    $modelCount++;
+                }
+            }
+        }
+
         // Nếu danh mục có danh mục con
         if (isset($model['children']) && !empty($model['children'])) {
             foreach ($model['children'] as $key => $val) {
-                // Đếm sản phẩm của từng danh mục con
-                $modelCount += isset($val['item']->$relation) ? count($val['item']->$relation) : 0;
-    
+                // Đếm sản phẩm của từng danh mục con với điều kiện publish = 2
+                if (isset($val['item']->$relation)) {
+                    foreach ($val['item']->$relation as $item) {
+                        if ($item->publish == 2) {
+                            $modelCount++;
+                        }
+                    }
+                }
+
                 // Nếu danh mục con có danh mục con nữa, đệ quy tiếp tục
                 if (!empty($val['children'])) {
                     $modelCount += modelCount($val, $relation); // Đệ quy vào danh mục con
                 }
             }
         }
-    
+
         // Trả về tổng số sản phẩm
         return $modelCount;
-    }
-}
-
-// V146
-if(!function_exists('sortString')){
-    function sortString($string = ''){
-        $extract = explode(',', $string);
-        sort($extract,SORT_NUMERIC);
-        $newArray = implode(',', $extract);
-        // Loại bỏ khoảng trắng thừa trong chuỗi
-        $newArray = trim($newArray);
-        return $newArray;
     }
 }
