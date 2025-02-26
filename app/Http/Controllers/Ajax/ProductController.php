@@ -81,7 +81,7 @@ class ProductController extends Controller
     public function loadVariant(Request $request){
         $get = $request->input();
         // dd($get);
-        $code = implode(',', $get['attribute_id']);
+        $code = implode(', ', $get['attribute_id']);
         // dd($code);
         $product_id = $get['product_id'];
         $language_id = $get['language_id'];
