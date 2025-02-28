@@ -319,7 +319,7 @@
 		console.log(count)
 		// console.log($('.attribute .attribute-item').length)
 
-		if(attribute_id.length < count){
+		if(attribute_id.length < count || count == 0){
 			flag = false
 			return false
 		}
@@ -349,6 +349,7 @@
 					}
 					HT.setupVariantName(res.variant.languages[0].pivot.name)
 					HT.setupVariantPrice(res.variantPrice)
+					HT.setupVariantUrl(attribute_id)
 				}
 			})
 		}
@@ -430,6 +431,58 @@
 		}
 	}
 
+	HT.loadProductVariant = () => {
+		let url = new URL(window.location.href);
+		let attributeParam = url.searchParams.get('attribute_id');
+	
+		if (!attributeParam) {
+			// Không có attribute_id → Chọn mặc định phần tử đầu tiên
+			if ($('.choose-attribute').length) {
+				$('.attribute-item').each(function() {
+					let _this = $(this);
+					let firstAttribute = _this.find('.choose-attribute').first();
+	
+					if (firstAttribute.length > 0) {
+						firstAttribute.addClass('active')
+						let attribute_name = firstAttribute.text()
+						_this.find('span').html(attribute_name)
+					}
+				});
+			}
+		} else {
+			// Có attribute_id → Tách thành mảng và xử lý từng giá trị
+			let attributeIds = attributeParam.split(',');
+			// console.log(attributeIds);
+			
+			$('.attribute-item').each(function() {
+				let _this = $(this)
+	
+				_this.find('.choose-attribute').each(function() {
+					let attrId = $(this).attr('data-attributeid')
+	
+					if (attributeIds.includes(attrId)) {
+						$(this).addClass('active')
+						let attribute_name = $(this).text();
+						_this.find('span').html(attribute_name);
+					}
+				})
+			});
+		}
+	};
+
+	HT.setupVariantUrl = (attribute_id) => {
+		console.log(attribute_id);
+		let queryString = '?attribute_id=' + attribute_id.join(',')
+		// console.log(queryString)
+		let productCanonical = $('.productCanonical').val()
+		// console.log(productCanonical)
+		productCanonical = productCanonical + queryString
+		console.log(productCanonical)
+
+		let stateObject = { attribute_id: attribute_id };
+		history.pushState(stateObject, "Page Title", productCanonical);
+	}
+
 	$(document).ready(function(){
 		HT.wow()
 		// HT.swiperProject()
@@ -444,6 +497,7 @@
 		HT.niceSelect()		
 		HT.carousel()
 
+		HT.loadProductVariant()
 		HT.selectProductVariant()
 		HT.handleAttribute()
 
