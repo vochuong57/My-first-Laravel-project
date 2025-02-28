@@ -20,4 +20,5 @@
 @endforeach
 <input type="hidden" name="product_id" value="{{ $product->id }}">
 <input type="hidden" name="language_id" value="{{ $languageId }}">
+<input type="hidden" class="productCanonical" value="{{ write_url($product->languages->first()->pivot->canonical) }}">
 @endif
