@@ -63,6 +63,7 @@
                         @endphp
                         <h2 class="title"><span>{{ $title }}</span>
                         </h2>
+                        <input type="hidden" class="productName" value="{{ $title }}">
                         <div class="rating">
                             <div class="uk-flex uk-flex-middle">
                                 <div class="author">{{ $author }}</div>

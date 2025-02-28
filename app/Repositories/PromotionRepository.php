@@ -44,4 +44,45 @@ class PromotionRepository extends BaseRepository implements PromotionRepositoryI
         //echo $query->toSql(); die();
     }    
 
+    public function findPromotionByVariantUuid($variant_uuid){
+        return $this->model->select(
+            'promotions.id',
+            'promotions.maxDiscountValue',
+            'promotions.discountValue',
+            'promotions.discountType'
+        )
+        ->selectRaw(
+            "
+                IF(promotions.maxDiscountValue != 0,
+                    LEAST(
+                        CASE
+                            WHEN discountType = 'cash' THEN 
+                                discountValue
+                            WHEN discountType = 'percent' THEN 
+                                pv.price * discountValue / 100
+                            ELSE 0
+                        END,
+                        promotions.maxDiscountValue
+                    ),
+                    CASE
+                        WHEN discountType = 'cash' THEN 
+                            discountValue
+                        ELSE 0
+                    END
+                ) as discount"
+        )
+        ->join('promotion_object_variant as pov', 'pov.promotion_id', '=', 'promotions.id')
+        ->join('product_variants as pv', 'pv.variant_uuid', '=', 'pov.object_variant_uuid')
+        ->where('pov.object_variant_uuid', $variant_uuid)
+        ->where('promotions.publish', 2)
+        ->where('promotions.startDate', '<', now())
+        ->where(function($query) { 
+            $query->where('promotions.endDate', '>', now())
+                ->orWhereNull('promotions.endDate');
+        })
+        ->orderBy('discount', 'desc')
+        ->first();
+    }
+    
+    
 }

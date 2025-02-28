@@ -9,17 +9,20 @@ use Illuminate\Http\Request;
 use App\Repositories\Interfaces\ProductRepositoryInterface as ProductRepository;
 use App\Models\Language;
 use App\Repositories\Interfaces\ProductVariantRepositoryInterface as ProductVariantRepository;
+use App\Repositories\Interfaces\PromotionRepositoryInterface as PromotionRepository;
 
 class ProductController extends Controller
 {
     protected $productRepository;
     protected $language;
     protected $productVariantRepository;
+    protected $promotionRepository;
     
 
-    public function __construct(ProductRepository $productRepository, ProductVariantRepository $productVariantRepository){
+    public function __construct(ProductRepository $productRepository, ProductVariantRepository $productVariantRepository, PromotionRepository $promotionRepository){
         $this->productRepository=$productRepository;
         $this->productVariantRepository=$productVariantRepository;
+        $this->promotionRepository=$promotionRepository;
 
         $this->middleware(function($request, $next) {
             $locale = app()->getLocale(); // vn cn en
@@ -89,8 +92,15 @@ class ProductController extends Controller
         $variant = $this->productVariantRepository->findVariant($code, $product_id, $language_id);
         // dd($variant);
 
+        // dd($variant->variant_uuid);
+        $variantPromotion = $this->promotionRepository->findPromotionByVariantUuid($variant->variant_uuid);
+        // dd($variantPromotion);
+        $variantPrice = getVariantPrice($variant, $variantPromotion);
+        // dd($variantPrice);
+
         return response()->json([
             'variant' => $variant,
+            'variantPrice' => $variantPrice,
         ]);
     }
 }
