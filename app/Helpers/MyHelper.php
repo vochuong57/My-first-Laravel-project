@@ -430,3 +430,22 @@ if(!function_exists('modelCount')){
         return $modelCount;
     }
 }
+
+if(!function_exists('getVariantPrice')){
+    function getVariantPrice($variant, $variantPromotion){
+        if(!is_null($variantPromotion)){
+            $priceSale = $variant->price - $variantPromotion->discount;
+            $result = [
+                'priceOld' => number_format($variant->price).'đ',
+                'priceSale' => number_format($priceSale).'đ',
+                'discountValue' => $variantPromotion->discountType == 'percent' ? $variantPromotion->discountValue.'%' : number_format($variantPromotion->discountValue).'đ',
+                'promotion' => true,
+            ];
+            return $result;
+        }
+        return $result = [
+            'priceOld' => number_format($variant->price).'đ',
+            'promotion' => false,
+        ];
+    }
+}

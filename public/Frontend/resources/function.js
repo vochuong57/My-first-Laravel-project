@@ -347,6 +347,8 @@
 						console.log(originalAlbum)
 						HT.setupVariantGallery(originalAlbum)
 					}
+					HT.setupVariantName(res.variant.languages[0].pivot.name)
+					HT.setupVariantPrice(res.variantPrice)
 				}
 			})
 		}
@@ -409,6 +411,25 @@
 		}
 	}
 
+	HT.setupVariantName = (name) => {
+		// console.log(name)
+		let productName = $('.productName').val()
+		console.log(productName)
+		let productVariantName = productName + ' - ' + name
+		$('.title span').text(productVariantName)
+	}
+
+	HT.setupVariantPrice = (price) => {
+		console.log(price)
+		if(price.promotion){
+			$('.price-sale').text(price.priceSale)
+			$('.price-old').text(price.priceOld)
+		}else{
+			$('.price-sale').text(price.priceOld)
+			$('.price-old').text('')
+		}
+	}
+
 	$(document).ready(function(){
 		HT.wow()
 		// HT.swiperProject()
@@ -427,22 +448,22 @@
 		HT.handleAttribute()
 
 		// HT.openPreviewVideo()
-		let variants =[
-			[
-				{ "Dung lượng": "8" },
-				{ "Dung lượng": "14" }
-			],
-			[
-				{ "Màu sắc": "4" },
-				{ "Màu sắc": "12" }
-			]
-		]
+		// let variants =[
+		// 	[
+		// 		{ "Dung lượng": "8" },
+		// 		{ "Dung lượng": "14" }
+		// 	],
+		// 	[
+		// 		{ "Màu sắc": "4" },
+		// 		{ "Màu sắc": "12" }
+		// 	]
+		// ]
 		
 		
-		variants = variants.reduce((a, b) => 
-			a.flatMap(d => b.map(e => ({ ...d, ...e })))
-		);
-		console.log(variants)
+		// variants = variants.reduce((a, b) => 
+		// 	a.flatMap(d => b.map(e => ({ ...d, ...e })))
+		// );
+		// console.log(variants)
 	});
 
 })(jQuery);
