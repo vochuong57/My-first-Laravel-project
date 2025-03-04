@@ -727,10 +727,10 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover,
     margin-right:10px;
 }
 .quantity .minus{
-    left:3px;
+    right:75px;
 }
 .quantity .plus{
-    right:3px;
+    left:75px;
 }
 .quantity .text{
     font-size:15px;

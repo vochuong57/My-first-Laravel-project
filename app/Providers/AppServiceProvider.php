@@ -57,6 +57,8 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\CustomerCatalogueServiceInterface' => 'App\Services\CustomerCatalogueService',
 
         'App\Services\Interfaces\CustomerServiceInterface' => 'App\Services\CustomerService',
+
+        'App\Services\Interfaces\CartServiceInterface' => 'App\Services\CartService',
     ];
     /**
      * Register any application services.
