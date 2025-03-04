@@ -6,6 +6,9 @@
         'Frontend/resources/function.js',
         'Frontend/core/plugins/jquery-nice-select-1.1.0/js/jquery.nice-select.min.js',
     ];
+    if(isset($config['js'])){
+        $coreScript = array_merge($coreScript, $config['js']);
+    }
 @endphp
 @foreach($coreScript as $item)
     <script src="{{ asset($item) }}"></script>

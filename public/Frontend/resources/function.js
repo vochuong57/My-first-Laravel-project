@@ -483,6 +483,28 @@
 		history.pushState(stateObject, "Page Title", productCanonical);
 	}
 
+	HT.updateQuantity = () => {
+		// Xử lý sự kiện khi nhấn vào nút plus
+		$(document).on('click', '.quantitybox .plus', function() {
+			let $input = $(this).siblings('.quantity-text');
+			let currentValue = parseInt($input.val());
+	
+			// Tăng giá trị lên 1
+			$input.val(currentValue + 1);
+		});
+	
+		// Xử lý sự kiện khi nhấn vào nút minus
+		$(document).on('click', '.quantitybox .minus', function() {
+			let $input = $(this).siblings('.quantity-text');
+			let currentValue = parseInt($input.val());
+	
+			// Giảm giá trị xuống 1 nhưng không được nhỏ hơn 1
+			if (currentValue > 1) {
+				$input.val(currentValue - 1);
+			}
+		});
+	};
+
 	$(document).ready(function(){
 		HT.wow()
 		// HT.swiperProject()
@@ -501,6 +523,7 @@
 		HT.selectProductVariant()
 		HT.handleAttribute()
 
+		HT.updateQuantity()
 		// HT.openPreviewVideo()
 		// let variants =[
 		// 	[
