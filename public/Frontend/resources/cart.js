@@ -37,7 +37,12 @@
 				},
 				success: function(res){
 					console.log(res)
-					
+                    toastr.clear()
+					if(res.code == 200){
+                        toastr.success(res.message, 'Thông báo từ hệ thống!')
+                    }else{
+                        toastr.error('Có vấn đề xảy ra! Hãy thử lại', 'Thông báo từ hệ thống!')
+                    }
 				}
 			})
         })

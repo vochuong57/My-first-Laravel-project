@@ -5,6 +5,7 @@
         'Frontend/resources/uikit/js/components/sticky.min.js',
         'Frontend/resources/function.js',
         'Frontend/core/plugins/jquery-nice-select-1.1.0/js/jquery.nice-select.min.js',
+        'Backend/js/plugins/toastr/toastr.min.js',
     ];
     if(isset($config['js'])){
         $coreScript = array_merge($coreScript, $config['js']);

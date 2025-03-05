@@ -39,6 +39,7 @@
         'Frontend/resources/plugins/wow/css/libs/animate.css',
         'Frontend/resources/style.css',
         'Frontend/core/plugins/jquery-nice-select-1.1.0/css/nice-select.css',
+        'Backend/css/plugins/toastr/toastr.min.css',
     ];
 @endphp
 @foreach($coreCss as $item)
