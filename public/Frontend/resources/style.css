@@ -2312,7 +2312,7 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover,
     font-weight: 500;
 }
 
-/* CART PAGE */
+/* CART PAGE V153*/
 .cart-container{
     border-bottom:1px solid #d9d9d9;
 }
@@ -2397,6 +2397,14 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover,
     border-right:1px solid #d9d9d9;
     padding-right:30px;
 }
+.cart-list{
+    overflow-x: hidden;
+    overflow-y: auto;
+    /* display: flex; */
+    -webkit-overflow-scrolling: touch;
+    max-height: 500px;
+    padding-top: 10px;
+}
 .cart-item{
     position: relative;
 }
@@ -2434,6 +2442,11 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover,
 }
 .cart-item .cart-item-info .title{
     font-weight: 500;
+    line-height: 1.5em; /* Điều chỉnh khoảng cách giữa các dòng */
+    max-height: 3em; /* Giới hạn 2 dòng (1.5em x 2) */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .cart-item .cart-item-qty{
     position: relative;

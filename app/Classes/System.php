@@ -61,6 +61,17 @@ class System{
             ]
         ];
 
+        $data['checkout'] = [
+            'label' => 'Cấu hình SEO dành cho thanh toán',
+            'description' => 'Cài đặt đầy đủ thông tin về SEO của trang thanh toán Website. Bao gồm tiêu đề SEO, từ khóa SEO, Mô tả SEO, Meta images',
+            'value' => [
+                'meta_title' => ['type' => 'text', 'label' => 'Tiêu đề SEO'],
+                'meta_keyword' => ['type' => 'text', 'label' => 'Từ khóa SEO'],
+                'meta_description' => ['type' => 'textarea', 'label' => 'Mô tả SEO'],
+                'meta_images' => ['type' => 'images', 'label' => 'Ảnh SEO'],
+            ]
+        ];
+
         return $data;
     }
 
