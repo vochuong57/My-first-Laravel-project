@@ -43,7 +43,11 @@
                     }else{
                         toastr.error('Có vấn đề xảy ra! Hãy thử lại', 'Thông báo từ hệ thống!')
                     }
-				}
+				},
+                error: function(xhr, status, error){
+                    console.log('Error:', xhr.responseText); // Xem nội dung lỗi
+                    toastr.error('Có lỗi xảy ra! Hãy thử lại.', 'Thông báo từ hệ thống!');
+                }
 			})
         })
     }
