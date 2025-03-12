@@ -20,7 +20,7 @@ class CartController extends FrontendController
 
         // Cart::instance('shopping')->destroy();
         $cart = Cart::instance('shopping')->content();
-        // dd($cart);
+        dd($cart);
         $systems = $this->getSystem();
         $seo = [
             'meta_title' => $systems['checkout_meta_title'],
