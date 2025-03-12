@@ -5,6 +5,7 @@
 	HT.addCart = (setting) => {
         $(document).on('click', '.addToCart', function(e){
             e.preventDefault()
+
             let _this = $(this)
             let id = _this.attr('data-id')
             let quantity = $('.quantity-text').val()
@@ -19,6 +20,10 @@
                     attribute_id.push(_this.attr('data-attributeid'))
                 }
             })
+
+            if(attribute_id.length == 0){
+                $('.popupProduct').hide();
+            }
 
             let option = {
                 id: id,

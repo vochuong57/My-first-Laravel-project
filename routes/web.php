@@ -64,6 +64,7 @@ Route::get('{canonical}/trang-{page}'.config('apps.general.suffix'), [RouterCont
 // FRONTEND AJAX ROUTES
 Route::get('ajax/product/loadVariant',[AjaxProductController::class, 'loadVariant'])->name('ajax.product.loadVariant');
 Route::get('ajax/cart/create',[AjaxCartController::class, 'create'])->name('ajax.cart.create');
+Route::get('ajax/product/detailShowPopup',[AjaxProductController::class, 'detailShowPopup'])->name('ajax.product.detailShowPopup');
 
 // BACKEND ROUTES
 

@@ -24,7 +24,7 @@
         }
         if (setting.navigate === 'dots') {
             option.pagination = {
-                el: '.swiper-pagination',
+                el: '.slide-swiper-pagination',
             };
         }
         if (setting.width) {
@@ -284,7 +284,7 @@
 	// 	})
 	// }
 
-	HT.selectProductVariant = () => {
+	HT.selectProductVariant = (popup) => {
 		if($('.choose-attribute').length){
 			$(document).on('click', '.choose-attribute', function(e){
 				e.preventDefault()
@@ -295,12 +295,12 @@
 				_this.parents('.attribute-item').find('span').html(attribute_name)
 				_this.parents('.attribute-value').find('.choose-attribute').removeClass('active')
 				_this.addClass('active')
-				HT.handleAttribute()
+				HT.handleAttribute(popup)
 			})
 		}
 	}
 
-	HT.handleAttribute = () => {
+	HT.handleAttribute = (popup) => {
 		let attribute_id = []
 		let flag = true
 		$('.attribute-value .choose-attribute').each(function(){
@@ -316,7 +316,7 @@
 			let attributeItems = $(this).find('.attribute-item');  // Tìm tất cả các .attribute-item trong .attribute
 			count += attributeItems.length;
 		})
-		console.log(count)
+		// console.log(count)
 		// console.log($('.attribute .attribute-item').length)
 
 		if(attribute_id.length < count || count == 0){
@@ -344,18 +344,31 @@
 					if(album != ''){
 						HT.setupVariantGallery(album)
 					}else{
-						console.log(originalAlbum)
-						HT.setupVariantGallery(originalAlbum)
+						//CASE detail page
+						if (typeof originalAlbum !== 'undefined') {
+							console.log(originalAlbum)
+							HT.setupVariantGallery(originalAlbum)
+						}else{// CASE popup
+							console.log('CASE popup');
+							let originalAlbum = $('.originalAlbum').val().trim()
+							console.log(originalAlbum);
+							originalAlbum = JSON.parse(originalAlbum)
+							HT.setupVariantGallery(originalAlbum)
+						}
 					}
 					HT.setupVariantName(res.variant.languages[0].pivot.name)
-					HT.setupVariantPrice(res.variantPrice)
-					HT.setupVariantUrl(attribute_id)
+					HT.setupVariantPrice(res.variantPrice, popup)
+					if(!popup){
+						HT.setupVariantUrl(attribute_id)
+					}
 				}
 			})
 		}
 	}
 
 	HT.setupVariantGallery = (album) => {
+		// console.log(album);
+		
 		if(album.length != 0){
 			if(Array.isArray(album)){
 				let html = 
@@ -420,14 +433,24 @@
 		$('.title span').text(productVariantName)
 	}
 
-	HT.setupVariantPrice = (price) => {
+	HT.setupVariantPrice = (price, popup) => {
 		console.log(price)
-		if(price.promotion){
-			$('.price-sale').text(price.priceSale)
-			$('.price-old').text(price.priceOld)
+		if(!popup){
+			if(price.promotion){
+				$('.price-sale').text(price.priceSale)
+				$('.price-old').text(price.priceOld)
+			}else{
+				$('.price-sale').text(price.priceOld)
+				$('.price-old').text('')
+			}
 		}else{
-			$('.price-sale').text(price.priceOld)
-			$('.price-old').text('')
+			if(price.promotion){
+				$('.popup-price-sale').text(price.priceSale)
+				$('.popup-price-old').text(price.priceOld)
+			}else{
+				$('.popup-price-sale').text(price.priceOld)
+				$('.popup-price-old').text('')
+			}
 		}
 	}
 
@@ -505,6 +528,215 @@
 		});
 	};
 
+	HT.detailShowPopup = () => {
+		$(document).on('click', '.detailShowPopup', function() {
+			let _this = $(this)
+			let product_id = _this.attr('data-id')
+			let option = {
+				product_id: product_id,
+			}
+			$.ajax({
+				url: 'ajax/product/detailShowPopup',
+				type: 'GET',
+				data: option,
+				dataType: 'json',
+				beforeSend: function (){
+	
+				},
+				success: function(res){
+					console.log(res)
+					HT.showPopup(res.product); // Render popup nội dung trước
+
+					$('#popup').fadeIn(); // Hiển thị popup
+					HT.popupSwipperSlide()
+					
+
+					let popup = true
+					HT.loadProductVariant()
+					HT.selectProductVariant(popup)
+					HT.handleAttribute(popup)
+				}
+			})
+		})
+	}
+
+	HT.renderPopup = (product) => {
+		let album = JSON.parse(product.album);
+		console.log(album);
+		let title = product.languages[0].pivot.name;
+		let author = product.users.name;
+		let price = product.price.replace(/\.00$/, '');
+		let description = product.languages[0].pivot.description;
+
+		let attributeHTML = '';
+		if (product.attributeInfo && product.attributeInfo.length > 0) {
+			product.attributeInfo.forEach(attibuteCatalogue => {
+				let attributeCatalogueName = attibuteCatalogue.languages[0].pivot.name;
+				let attributes = attibuteCatalogue.attributes;
+
+				if (attributes && attributes.length > 0) {
+					attributeHTML += `
+					<div class="attribute-item attribute-color">
+						<div class="label">${attributeCatalogueName}: <span></span></div>
+						<div class="attribute-value">`;
+
+					attributes.forEach(attribute => {
+						let attributeName = attribute.languages[0].pivot.name;
+						attributeHTML += `<a class="choose-attribute" title="${attributeName}" data-attributeid="${attribute.id}">${attributeName}</a>`;
+					});
+
+					attributeHTML += `</div></div>`;
+				}
+			});
+			attributeHTML += `<input type="hidden" name="product_id" value="${product.id}">
+			<input type="hidden" name="language_id" value="${product.languages[0].id}">`;
+		}
+
+		let html = `
+		<div id="popup" class="uk-modal popupProduct">
+			<div class="uk-modal-dialog modal-width-1138">
+				<a class="uk-modal-close uk-close"></a>
+				<div class="popup-container">
+					<div class="panel-body">
+						<div class="uk-grid uk-grid-medium">
+							<div class="uk-width-large-1-2">
+								<div class="popup-gallery">
+									<div class="swiper-container popup-swiper-container">
+										<div class="swiper-button-next"></div>
+										<div class="swiper-button-prev"></div>
+										<div class="swiper-wrapper big-pic">`;
+	
+		let image = product.image ?? 'Backend/img/not-found.png';
+		if(album.length > 0){
+			album.forEach((val) => {
+				html += `
+				<div class="swiper-slide">
+					<a class="image img-cover"><img src="${val.trim()}" alt=""></a>
+				</div>`;
+			});
+		}else{
+			html += `
+			<div class="swiper-slide">
+				<a class="image img-cover"><img src="${image}" alt=""></a>
+			</div>`;
+		}
+	
+		html += `
+										</div>
+										<div class="swiper-pagination"></div>
+									</div>
+									<div class="swiper-container-thumbs popup-swiper-container-thumbs">
+										<div class="swiper-wrapper pic-list">`;
+	
+		if (album.length > 0) {
+			album.forEach((val) => {
+				html += `
+				<div class="swiper-slide">
+					<span class="image img-cover"><img src="${val.trim()}" alt=""></span>
+				</div>`;
+			});
+		} else {
+			html += `
+			<div class="swiper-slide">
+				<span class="image img-cover"><img src="Backend/img/not-found.png" alt=""></span>
+			</div>`;
+		}
+	
+		html += `
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="uk-width-large-1-2">
+								<div class="popup-product">
+									<h2 class="title"><span>${title}</span></h2>
+									<input type="hidden" class="productName" value="${ title }">
+									<input type="hidden" class="originalAlbum" value='${ album.length != 0 ? JSON.stringify(album) : image }'>
+									<div class="rating">
+										<div class="uk-flex uk-flex-middle">
+											<div class="author">By ${author}</div>
+											<div class="star">`;
+	
+		for (let i = 0; i < 5; i++) {
+			html += `<i class="fa fa-star"></i>`;
+		}
+	
+		html += `
+											</div>
+											<div class="rate-number">(65 reviews)</div>
+										</div>
+									</div>
+									<div class="price">
+										<div class="uk-flex uk-flex-bottom">
+											<div class="popup-price-sale">${addCommas(price)}đ</div>
+											<div class="popup-price-old">${product.priceOld}đ</div>
+										</div>
+									</div>
+									<div class="description">${description}</div>`
+									html += `<div class="attribute">${attributeHTML}</div>`;
+									html += `
+									<div class="quantity">
+										<div class="text">Quantity</div>
+										<div class="uk-flex uk-flex-middle">
+											<div class="quantitybox uk-flex uk-flex-middle">
+												<div class="minus quantity-button">-</div>
+												<input type="text" class="quantity-text" value="1">
+												<div class="plus quantity-button">+</div>
+											</div>
+											<div class="btn-group uk-flex uk-flex-middle">
+												<div class="btn-item btn-1 addToCart" data-id="${product.id}"><a href="#" title="">Add To Cart</a></div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>`;
+	
+		return html;
+	};
+	
+	HT.showPopup = (product) => {
+		let popupHTML = HT.renderPopup(product);
+	
+		// Kiểm tra phần footer
+		let $footer = $('.footer');
+		if ($footer.length === 0) {
+			console.error('Không tìm thấy phần tử .footer');
+			return;
+		}
+	
+		// Xóa popup cũ nếu tồn tại
+		$('#popup').remove();
+	
+		// Chèn popup mới render ngay sau footer
+		$footer.after(popupHTML);
+	
+		// Đợi UIkit khởi tạo rồi mở popup
+		setTimeout(() => UIkit.modal('#popup').show(), 100);
+	};
+
+	HT.observePopup = () => {
+		let observer = new MutationObserver(function () {
+			let popup = $('#popup');
+			if (popup.length && popup.css('display') === 'none') {
+				popup.remove();
+				console.log('Popup đã bị ẩn và đã xóa.');
+			}
+		});
+	
+		observer.observe(document.body, {
+			childList: true,        // Theo dõi khi có phần tử con thay đổi
+			subtree: true,          // Kiểm tra tất cả phần tử con
+			attributes: true,       // Theo dõi thay đổi thuộc tính
+			attributeFilter: ['style'] // Chỉ theo dõi thuộc tính `style`
+		});
+	}
+	
+
 	$(document).ready(function(){
 		HT.wow()
 		// HT.swiperProject()
@@ -524,6 +756,9 @@
 		HT.handleAttribute()
 
 		HT.updateQuantity()
+
+		HT.detailShowPopup()
+		HT.observePopup()
 		// HT.openPreviewVideo()
 		// let variants =[
 		// 	[

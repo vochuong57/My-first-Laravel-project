@@ -45,7 +45,7 @@
                 </div>
                 @endforeach
             </div>
-            <div class="swiper-pagination"></div>
+            <div class="slide-swiper-pagination"></div>
         </div>
         
     </div>

@@ -1,4 +1,4 @@
-@extends('Frontend.homepage.layout', ['popup' => true])
+@extends('Frontend.homepage.layout', ['popup' => false])
 
 @section('content')
 <div id="homepage" class="homepage">

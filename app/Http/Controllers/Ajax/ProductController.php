@@ -10,6 +10,7 @@ use App\Repositories\Interfaces\ProductRepositoryInterface as ProductRepository;
 use App\Models\Language;
 use App\Repositories\Interfaces\ProductVariantRepositoryInterface as ProductVariantRepository;
 use App\Repositories\Interfaces\PromotionRepositoryInterface as PromotionRepository;
+use App\Services\Interfaces\ProductServiceInterface as ProductService;
 
 class ProductController extends Controller
 {
@@ -17,12 +18,13 @@ class ProductController extends Controller
     protected $language;
     protected $productVariantRepository;
     protected $promotionRepository;
-    
+    protected $productService;
 
-    public function __construct(ProductRepository $productRepository, ProductVariantRepository $productVariantRepository, PromotionRepository $promotionRepository){
+    public function __construct(ProductRepository $productRepository, ProductVariantRepository $productVariantRepository, PromotionRepository $promotionRepository, ProductService $productService){
         $this->productRepository=$productRepository;
         $this->productVariantRepository=$productVariantRepository;
         $this->promotionRepository=$promotionRepository;
+        $this->productService=$productService;
 
         $this->middleware(function($request, $next) {
             $locale = app()->getLocale(); // vn cn en
@@ -101,6 +103,31 @@ class ProductController extends Controller
         return response()->json([
             'variant' => $variant,
             'variantPrice' => $variantPrice,
+        ]);
+    }
+
+    public function detailShowPopup(Request $request){
+        // dd($request->input());
+        // dd($this->language);
+        $languageId = $this->language;
+        $id = $request->input('product_id');
+
+        $relation = $this->productService->getProductRelation($languageId);
+
+        $product = $this->productRepository->findById($id, ['*'], $relation);
+        // dd($product);
+
+        $flag = true;
+        if(!is_null($product) && $product->attribute != null){
+            $product->attributeInfo = $this->productService->getAttributeInfo($product, $languageId);
+        }else{
+            $flag = false;
+        }
+        // dd($product);
+       
+        return response()->json([
+            'product' => $product,
+            'code' => $flag ? 200 : 500
         ]);
     }
 }
