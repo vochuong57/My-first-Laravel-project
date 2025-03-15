@@ -65,6 +65,7 @@ Route::get('{canonical}/trang-{page}'.config('apps.general.suffix'), [RouterCont
 Route::get('ajax/product/loadVariant',[AjaxProductController::class, 'loadVariant'])->name('ajax.product.loadVariant');
 Route::get('ajax/cart/create',[AjaxCartController::class, 'create'])->name('ajax.cart.create');
 Route::get('ajax/product/detailShowPopup',[AjaxProductController::class, 'detailShowPopup'])->name('ajax.product.detailShowPopup');
+Route::get('ajax/location/getLocation',[LocationController::class, 'getLocation'])->name('ajax.location.getLocation');
 
 // BACKEND ROUTES
 
@@ -95,7 +96,6 @@ Route::group(['middleware' => ['admin','locale','backend_default_locale']], func
     });
 
     // AJAX get để sử dụng cơ sở dữ liệu và post để thay đổi cơ sở dữ liệu
-    Route::get('ajax/location/getLocation',[LocationController::class, 'getLocation'])->name('ajax.location.getLocation');//Trang thực thi chuyển đổi ... đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
     Route::post('ajax/dashboard/changeStatus',[AjaxDashboardController::class, 'changeStatus'])->name('ajax.dashboard.changeStatus');//Trang thực thi chuyển đổi ... đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
     Route::post('ajax/dashboard/changeStatusAll',[AjaxDashboardController::class, 'changeStatusAll'])->name('ajax.dashboard.changeStatusAll');//Trang thực thi chuyển đổi ... đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
     Route::post('ajax/dashboard/deleteAll',[AjaxDashboardController::class, 'deleteAll'])->name('ajax.dashboard.deleteAll');//Trang thực thi chuyển đổi ... đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')

@@ -41,9 +41,12 @@
         'Frontend/core/plugins/jquery-nice-select-1.1.0/css/nice-select.css',
         'Backend/css/plugins/toastr/toastr.min.css',
     ];
+    if(isset($config['css'])){
+        $coreCss = array_merge($coreCss, $config['css']);
+    }
 @endphp
 @foreach($coreCss as $item)
-    <link rel="stylesheet" href="{{ asset($item) }}" />
+    <link rel="stylesheet" href="{{ $item }}" />
 @endforeach
 <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
 <script src="{{ asset('Frontend/resources/library/js/jquery.js') }}"></script>

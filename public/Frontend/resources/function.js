@@ -55,6 +55,7 @@
 	}
 
 	HT.popupSwipperSlide = () => {
+		if($('.popup-swiper-container').length){
 		var swiperThumbs = new Swiper('.popup-gallery .popup-swiper-container-thumbs', {
 			// loop: true,
 			spaceBetween: 10,
@@ -82,10 +83,11 @@
 				swiper: swiperThumbs,
 			}
 		});
-
+		}
 	}
 
 	HT.categorySwipperSlide = () => {
+		if($('.category-swiper-container').length){
 		var swiperMain = new Swiper('.panel-body .category-swiper-container', {
 			loop: false,
 			pagination: {
@@ -113,7 +115,7 @@
 			},
 			
 		});
-
+		}
 	}
 
 	// Hàm khởi tạo Swiper sau khi mở popup
@@ -140,6 +142,7 @@
 	} 
 
 	HT.bestsellerSwiperSlide = () => {
+		if($('.bestseller-swipper-container').length){
 		var swiper = new Swiper(".panel-bestseller .bestseller-swipper-container", {
 			loop: false,
 			pagination: {
@@ -167,6 +170,7 @@
 			},
 			
 		});
+	}
 	}
 
 	// HT.swiperProject = () => {
@@ -736,6 +740,11 @@
 		});
 	}
 	
+	HT.select2=()=>{
+        if($('.setupSelect2').length){
+            $('.setupSelect2').select2();
+        }
+    }
 
 	$(document).ready(function(){
 		HT.wow()
@@ -759,6 +768,8 @@
 
 		HT.detailShowPopup()
 		HT.observePopup()
+
+		HT.select2()
 		// HT.openPreviewVideo()
 		// let variants =[
 		// 	[
