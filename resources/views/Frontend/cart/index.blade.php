@@ -36,18 +36,23 @@
                                     </div>
                                     <div class="uk-grid uk-grid-medium mb20">
                                         <div class="uk-width-large-1-3">
-                                            <select name="" id="" class="nice-select">
-                                                <option value="">{{ __('payment.select_province') }}</option>
+                                            <select name="province_id" id="" class="form-control setupSelect2 provinces location" data-target="DTdistricts">
+                                                <option value="0">{{ __('payment.select_province') }}</option>
+                                                @if(isset($provinces))
+                                                @foreach($provinces as $province)
+                                                <option value="{{ $province->code }}">{{ $province->name }}</option>
+                                                @endforeach
+                                                @endif
                                             </select>
                                         </div>
                                         <div class="uk-width-large-1-3">
-                                            <select name="" id="" class="nice-select">
-                                                <option value="">{{ __('payment.select_district') }}</option>
+                                            <select name="district_id" id="" class="form-control setupSelect2 districts DTdistricts location" data-target="DTwards">
+                                                <option value="0">{{ __('payment.select_district') }}</option>
                                             </select>
                                         </div>
                                         <div class="uk-width-large-1-3">
-                                            <select name="" id="" class="nice-select">
-                                                <option value="">{{ __('payment.select_ward') }}</option>
+                                            <select name="ward_id" id="" class="form-control setupSelect2 wards DTwards">
+                                                <option value="0">{{ __('payment.select_ward') }}</option>
                                             </select>
                                         </div>
                                     </div>
@@ -167,3 +172,9 @@
     </div>
 </div>
 @endsection
+<!-- XỬ LÝ HUYỆN XẢ KHI NHẬP SAI BỊ LOAD LẠI TRANG -->
+<script>
+    var province_id='{{ (isset($order->province_id)) ? $order->province_id : old('province_id') }}'
+    var district_id='{{ (isset($order->district_id)) ? $order->district_id : old('district_id') }}'
+    var ward_id='{{ (isset($order->ward_id)) ? $order->ward_id : old('ward_id') }}'
+</script>
