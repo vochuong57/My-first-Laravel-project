@@ -2660,6 +2660,10 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover,
     font-size:12px;
     text-decoration: line-through;
 }
+.cart-price-sale{
+    color:#777;
+    font-size:12px;
+}
 .cart-container .form{
     margin-block-end: 0 !important;
 }

@@ -88,36 +88,52 @@
                                 <h2 class="cart-heading">{{ __('payment.cart') }}</h2>
                             </div>
                             <div class="panel-body">
+                                @if(count($carts) && !is_null($carts))
                                 <div class="cart-list">
-                                    @for($i = 0; $i <= 5; $i++)
+                                    @php
+                                        $total = 0;
+                                    @endphp
+                                    @foreach($carts as $keyCart => $cart)
+                                    @php
+                                        $total += $cart->price * $cart->qty;
+                                    @endphp
                                     <div class="cart-item">
                                         <div class="uk-grid uk-grid-medium">
                                             <div class="uk-width-small-1-1 uk-width-medium-1-5">
                                                 <div class="cart-item-image">
-                                                    <span class="image img-scaledown"><img src="/userfiles/image/product/240615035944-macbook-air-m1-13-inch-8gb256gb-gray.png" alt=""></span>
-                                                    <span class="cart-item-number">1</span>
+                                                    <span class="image img-scaledown"><img src="{{ $cart->image }}" alt=""></span>
+                                                    <span class="cart-item-number">{{ $cart->qty }}</span>
                                                 </div>
                                             </div>
                                             <div class="uk-width-small-1-1 uk-width-medium-4-5">
                                                 <div class="cart-item-info">
-                                                    <h3 class="title"><span title="MacBook Air M1 13 inch 8GB/256GB - Chính Hãng VN 123123">MacBook Air M1 13 inch 8GB/256GB - Chính Hãng VN 123123</span></h3>
+                                                    <h3 class="title"><span title="{{ $cart->name }}">{{ $cart->name }}</span></h3>
                                                     <div class="cart-item-action uk-flex uk-flex-middle uk-flex-space-between">
                                                         <div class="cart-item-qty">
                                                             <button type="button" class="btn-qty minus">-</button>
-                                                            <input type="text" class="input-qty" value="1" readonly>
+                                                            <input type="text" class="input-qty" value="{{ $cart->qty }}" readonly>
                                                             <button type="button" class="btn-qty plus">+</button>
                                                         </div>
-                                                        <div class="cart-item-price">12.500.000đ</div>
+                                                        <div class="cart-item-price">
+                                                            <div class="uk-flex uk-flex-middle">
+                                                                @if(!is_null($cart->priceOriginal))
+                                                                <div class="cart-price-old mr10">{{ convert_price($cart->priceOriginal, true) }}đ</div>
+                                                                @endif
+                                                                <div class="cart-price-sale mr10">{{ convert_price($cart->price, true) }}đ</div>
+                                                                <div class="cart-price-total">{{ convert_price($cart->price * $cart->qty, true) }}đ</div>
+                                                            </div>
+                                                        </div>
                                                         <div class="cart-item-remove"><span>x</span></div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    @endfor
+                                    @endforeach
                                 </div>
+                                @endif
                             </div>
-                            <div class="panel-voucher">
+                            <div class="panel-voucher uk-hidden">
                                 <div class="voucher-list">
                                     @for($i = 0; $i <= 10; $i++)
                                     <div class="voucher-item {{ $i == 0 ? 'active' : '' }}">
@@ -136,18 +152,18 @@
                                     <a href="" class="apply-voucher">{{ __('payment.apply') }}</a>
                                 </div>
                             </div>
-                            <div class="panel-foot">
+                            <div class="panel-foot mt30">
                                 <div class="cart-summary">
                                     <div class="cart-summary-item">
                                         <div class="uk-flex uk-flex-middle uk-flex-space-between">
                                             <div class="summary-title">{{ __('payment.order_total') }}</div>
-                                            <div class="summary-value">75.000.000đ</div>
+                                            <div class="summary-value">{{ convert_price($total, true) }}đ</div>
                                         </div>
                                     </div>
                                     <div class="cart-summary-item">
                                         <div class="uk-flex uk-flex-middle uk-flex-space-between">
                                             <div class="summary-title">{{ __('payment.discount') }}</div>
-                                            <div class="summary-value">-37.500.000đ</div>
+                                            <div class="summary-value">-0đ</div>
                                         </div>
                                     </div>
                                     <div class="cart-summary-item">
@@ -159,7 +175,7 @@
                                     <div class="cart-summary-item">
                                         <div class="uk-flex uk-flex-middle uk-flex-space-between">
                                             <div class="summary-title bold">{{ __('payment.total_amount') }}</div>
-                                            <div class="summary-value cart-total">37.500.000đ</div>
+                                            <div class="summary-value cart-total">{{ convert_price($total, true) }}đ</div>
                                         </div>
                                     </div>
                                 </div>
