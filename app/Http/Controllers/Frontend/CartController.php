@@ -6,14 +6,17 @@ use App\Http\Controllers\FrontendController;
 use Illuminate\Http\Request;
 use Cart;
 use App\Repositories\Interfaces\ProvinceRepositoryInterface as ProvinceRepository;
+use App\Services\Interfaces\CartServiceInterface as CartService;
 
 class CartController extends FrontendController
 {
     protected $provinceRepository;
+    protected $cartService;
 
-    public function __construct(ProvinceRepository $provinceRepository){
+    public function __construct(ProvinceRepository $provinceRepository, CartService $cartService){
         parent::__construct();
         $this->provinceRepository = $provinceRepository;
+        $this->cartService = $cartService;
     }
 
     public function checkout(){
@@ -22,8 +25,10 @@ class CartController extends FrontendController
         $config = $this->config();
 
         // Cart::instance('shopping')->destroy();
-        $cart = Cart::instance('shopping')->content();
-        // dd($cart);
+        $carts = Cart::instance('shopping')->content(); // V151
+        // dd($carts);
+        $carts = $this->cartService->remakeCart($carts);
+        // dd($carts);
         $systems = $this->getSystem();
         $seo = [
             'meta_title' => $systems['checkout_meta_title'],
@@ -37,7 +42,7 @@ class CartController extends FrontendController
         $provinces=$this->provinceRepository->all();
         // dd($provinces);
         
-        return view('frontend.cart.index', compact('config', 'languageId', 'seo', 'provinces'));
+        return view('frontend.cart.index', compact('config', 'languageId', 'seo', 'provinces', 'carts'));
     }
 
 

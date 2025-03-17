@@ -92,5 +92,54 @@ class CartService extends BaseService implements CartServiceInterface
 
     // $cart = Cart::content();
     // dd($cart);
+
+    public function remakeCart($carts){
+        if(!is_null($carts)){
+            $cartIds = $carts->pluck('id');
+            // dd($cartIds);
+            $temp = [];
+            $objects = [];
+
+            if(count($cartIds)){
+                foreach($cartIds as $key => $val){
+                    $extractId = explode('_', $val);
+                    if(count($extractId) > 1){
+                        $temp['variant'][] = $extractId[1];
+                    }else{
+                        $temp['product'][] = $extractId[0];
+                    }
+                }
+                // dd($temp);
+
+                if(isset($temp['variant'])){
+                    $objects['variants'] = $this->productVariantRepository->findWhereIn('variant_uuid', $temp['variant'])->keyBy('variant_uuid');
+                }
+                if(isset($temp['product'])){
+                    $objects['products'] = $this->productRepository->findWhereIn('id', $temp['product'])->keyBy('id');
+                }
+                // dd($objects);
+
+                foreach($carts as $keyCart => $cart){
+                    $explode = explode('_', $cart->id);
+                    $objectId = $explode[1] ?? $explode[0];
+
+                    if(isset($objects['variants'][$objectId])){
+                        $variantItem = $objects['variants'][$objectId];
+                        $variantImage = explode(',', $variantItem->album)[0] ?? 'Backend/img/not-found.png';
+                        $cart->image = $variantImage;
+                        $cart->priceOriginal = ($cart->price != $variantItem->price) ? $variantItem->price : null;
+                    }elseif(isset($objects['products'][$objectId])){
+                        $productItem = $objects['products'][$objectId];
+                        $productImage = $productItem->image ?? 'Backend/img/not-found.png';
+                        $cart->image = $productImage;
+                        $cart->priceOriginal = ($cart->price != $productItem->price) ? $productItem->price : null;
+                    }
+                }
+            }
+        }else{
+            $carts = [];
+        }
+        return $carts;
+    }
 }
 
