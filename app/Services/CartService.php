@@ -141,5 +141,38 @@ class CartService extends BaseService implements CartServiceInterface
         }
         return $carts;
     }
+
+    public function update($request){
+        try {
+            $payload = $request->input();
+            // dd($payload);
+            Cart::instance('shopping')->update($payload['rowId'], $payload['qty']);
+
+            $carts = Cart::instance('shopping')->content();
+            $total = 0;
+            $totalItems = 0;
+            foreach($carts as $cart){
+                $total += $cart->price * $cart->qty;
+                $totalItems += $cart->qty;
+            }
+            // dd($total);
+
+            $cartItem = Cart::instance('shopping')->get($payload['rowId']);
+            // dd($cartItem);
+            $cartItemSubTotal = $cartItem->price * $cartItem->qty;
+            // dd($cartItemSubTotal);
+            $cartItemSubQuantity = $cartItem->qty;
+
+            return [
+                'cartTotal' => $total,
+                'cartTotalItems' => $totalItems,
+                'cartItemSubTotal' => $cartItemSubTotal,
+                'cartItemSubQuantity' => $cartItemSubQuantity,
+            ];
+        }catch (\Exception $e) {
+            echo $e->getMessage(); die();
+            return false;
+        }
+    }
 }
 

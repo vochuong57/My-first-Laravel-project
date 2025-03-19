@@ -31,5 +31,15 @@ class CartController extends FrontendController
             'code' => ($flag) ? 200 : 500
         ]);
     }
+
+    public function update(Request $request){
+        $flag = $this->cartService->update($request);
+
+        return response()->json([
+            'response' => $flag,
+            'message' => 'Cập nhật số lượng thành công!',
+            'code' => (!$flag) ? 500 : 200
+        ]);
+    }
     
 }

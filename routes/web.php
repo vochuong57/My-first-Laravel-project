@@ -66,6 +66,7 @@ Route::get('ajax/product/loadVariant',[AjaxProductController::class, 'loadVarian
 Route::get('ajax/cart/create',[AjaxCartController::class, 'create'])->name('ajax.cart.create');
 Route::get('ajax/product/detailShowPopup',[AjaxProductController::class, 'detailShowPopup'])->name('ajax.product.detailShowPopup');
 Route::get('ajax/location/getLocation',[LocationController::class, 'getLocation'])->name('ajax.location.getLocation');
+Route::get('ajax/cart/update',[AjaxCartController::class, 'update'])->name('ajax.cart.update');
 
 // BACKEND ROUTES
 

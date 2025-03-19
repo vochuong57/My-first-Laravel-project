@@ -55,6 +55,12 @@
                                                 <option value="0">{{ __('payment.select_ward') }}</option>
                                             </select>
                                         </div>
+                                        <!-- XỬ LÝ HUYỆN XẢ KHI NHẬP SAI BỊ LOAD LẠI TRANG -->
+                                        <script>
+                                            var province_id='{{ (isset($order->province_id)) ? $order->province_id : old('province_id') }}'
+                                            var district_id='{{ (isset($order->district_id)) ? $order->district_id : old('district_id') }}'
+                                            var ward_id='{{ (isset($order->ward_id)) ? $order->ward_id : old('ward_id') }}'
+                                        </script>
                                     </div>
                                     <div class="form-row mb20">
                                         <input type="text" name="address" value="" placeholder="{{ __('payment.enter_address') }}" class="input-text" required>
@@ -111,7 +117,8 @@
                                                     <div class="cart-item-action uk-flex uk-flex-middle uk-flex-space-between">
                                                         <div class="cart-item-qty">
                                                             <button type="button" class="btn-qty minus">-</button>
-                                                            <input type="text" class="input-qty" value="{{ $cart->qty }}" readonly>
+                                                            <input type="text" class="input-qty" value="{{ $cart->qty }}">
+                                                            <input type="hidden" class="rowId" value="{{ $cart->rowId }}">
                                                             <button type="button" class="btn-qty plus">+</button>
                                                         </div>
                                                         <div class="cart-item-price">
@@ -157,7 +164,7 @@
                                     <div class="cart-summary-item">
                                         <div class="uk-flex uk-flex-middle uk-flex-space-between">
                                             <div class="summary-title">{{ __('payment.order_total') }}</div>
-                                            <div class="summary-value">{{ convert_price($total, true) }}đ</div>
+                                            <div class="summary-value show-total-price">{{ (isset($total)) ? convert_price($total, true) : 0 }}đ</div>
                                         </div>
                                     </div>
                                     <div class="cart-summary-item">
@@ -175,7 +182,7 @@
                                     <div class="cart-summary-item">
                                         <div class="uk-flex uk-flex-middle uk-flex-space-between">
                                             <div class="summary-title bold">{{ __('payment.total_amount') }}</div>
-                                            <div class="summary-value cart-total">{{ convert_price($total, true) }}đ</div>
+                                            <div class="summary-value cart-total show-total-price">{{ (isset($total)) ? convert_price($total, true) : 0 }}đ</div>
                                         </div>
                                     </div>
                                 </div>
@@ -188,9 +195,3 @@
     </div>
 </div>
 @endsection
-<!-- XỬ LÝ HUYỆN XẢ KHI NHẬP SAI BỊ LOAD LẠI TRANG -->
-<script>
-    var province_id='{{ (isset($order->province_id)) ? $order->province_id : old('province_id') }}'
-    var district_id='{{ (isset($order->district_id)) ? $order->district_id : old('district_id') }}'
-    var ward_id='{{ (isset($order->ward_id)) ? $order->ward_id : old('ward_id') }}'
-</script>
