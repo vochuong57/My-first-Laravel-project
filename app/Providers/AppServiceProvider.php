@@ -11,6 +11,7 @@ use App\Http\ViewComposers\SystemComposer;
 use App\Http\ViewComposers\MenuComposer;
 use App\Http\ViewComposers\LanguageComposer;
 use Illuminate\Support\Facades\Schema;
+use App\Http\ViewComposers\CartComposer;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -99,6 +100,7 @@ class AppServiceProvider extends ServiceProvider
             SystemComposer::class,
             MenuComposer::class,
             LanguageComposer::class,
+            CartComposer::class,
         ];
         foreach($composerClasses as $class){
             view()->composer('Frontend.homepage.layout', $class);

@@ -124,7 +124,7 @@
                                             </clipPath>
                                             </defs>
                                         </svg>
-                                        <span class="number">0</span>
+                                        <span class="number" id="cartTotalItem">{{ $cartTotalItems }}</span>
                                     </div>
                                     <div class="toolbox-text">Giỏ Hàng</div>
                                 

@@ -51,6 +51,7 @@ class CartController extends FrontendController
             'js'=>[
                 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
                 'Backend/libary/location.js',
+                'Frontend/resources/cart.js',
             ],
             'css'=>[
                 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css',
