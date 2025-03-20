@@ -92,6 +92,14 @@
         item.parents('.cart-item').find('.cart-item-number').html(res.response.cartItemSubQuantity)
     }
 
+    HT.changeCartPreTotal = (res) => {
+        $('.show-pre-total-price').html(addCommas(res.response.cartPreTotal)+'đ')
+    }
+
+    HT.changeDiscountValue = (res) => {
+        $('.discount-value').html('-'+addCommas(res.response.discount)+'đ')
+    }
+
     HT.changeQuantityInput = () => {
         $(document).on('change', '.input-qty', function(){
             let _this = $(this)
@@ -137,6 +145,8 @@
                     HT.changeMiniCartQuantity(res)
                     HT.changeCartItemSubTotal(_this, res)
                     HT.changeCartItemSubQuantity(_this, res)
+                    HT.changeCartPreTotal(res)
+                    HT.changeDiscountValue(res)
                 }else{
                     toastr.error('Có vấn đề xảy ra! Hãy thử lại', 'Thông báo từ hệ thống!')
                 }
@@ -148,11 +158,52 @@
         })
     }
 
+    HT.removeCartItem = () => {
+        $(document).on('click', '.cart-item-remove', function(){
+            let _this = $(this)
+            let option = {
+                rowId: _this.attr('data-rowId')
+            }
+            $.ajax({
+                url: 'ajax/cart/delete',
+                type: 'GET',
+                data: option,
+                dataType: 'json',
+                beforeSend: function (){
+    
+                },
+                success: function(res){
+                    console.log(res)
+                    toastr.clear()
+                    if(res.code == 200){
+                        toastr.success(res.message, 'Thông báo từ hệ thống!')
+                        HT.removeCartItemRow(_this)
+                        HT.changeCartTotal(res)
+                        HT.changeMiniCartQuantity(res)
+                        HT.changeCartPreTotal(res)
+                        HT.changeDiscountValue(res)
+                    }else{
+                        toastr.error('Có vấn đề xảy ra! Hãy thử lại', 'Thông báo từ hệ thống!')
+                    }
+                },
+                error: function(xhr, status, error){
+                    console.log('Error:', xhr.responseText); // Xem nội dung lỗi
+                    toastr.error('Có lỗi xảy ra! Hãy thử lại.', 'Thông báo từ hệ thống!');
+                }
+            })
+        })
+    }
+
+    HT.removeCartItemRow = (_this) => {
+        _this.parents('.cart-item').remove()
+    }
+
 
 	$(document).ready(function(){
 		HT.addCart()
         HT.changeQuantity()
         HT.changeQuantityInput()
+        HT.removeCartItem()
 	});
 
 })(jQuery);
