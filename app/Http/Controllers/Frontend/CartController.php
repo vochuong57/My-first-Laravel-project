@@ -29,6 +29,12 @@ class CartController extends FrontendController
         // dd($carts);
         $carts = $this->cartService->remakeCart($carts);
         // dd($carts);
+
+        $cartCaculate = $this->cartService->reCaculateCart();
+        // dd($cartCaculate);
+        $cartPromotion = $this->cartService->cartPromotion($cartCaculate['cartTotal']);
+        // dd($cartPromotion);
+
         $systems = $this->getSystem();
         $seo = [
             'meta_title' => $systems['checkout_meta_title'],
@@ -42,7 +48,7 @@ class CartController extends FrontendController
         $provinces=$this->provinceRepository->all();
         // dd($provinces);
         
-        return view('frontend.cart.index', compact('config', 'languageId', 'seo', 'provinces', 'carts'));
+        return view('frontend.cart.index', compact('config', 'languageId', 'seo', 'provinces', 'carts', 'cartPromotion'));
     }
 
 

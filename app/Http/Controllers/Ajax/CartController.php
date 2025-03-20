@@ -42,4 +42,13 @@ class CartController extends FrontendController
         ]);
     }
     
+    public function delete(Request $request){
+        $flag = $this->cartService->delete($request);
+
+        return response()->json([
+            'response' => $flag,
+            'message' => 'Xóa sản phẩm khỏi giỏ hàng thành công!',
+            'code' => (!$flag) ? 500 : 200
+        ]);
+    }
 }

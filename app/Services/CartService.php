@@ -148,30 +148,111 @@ class CartService extends BaseService implements CartServiceInterface
             // dd($payload);
             Cart::instance('shopping')->update($payload['rowId'], $payload['qty']);
 
-            $carts = Cart::instance('shopping')->content();
-            $total = 0;
-            $totalItems = 0;
-            foreach($carts as $cart){
-                $total += $cart->price * $cart->qty;
-                $totalItems += $cart->qty;
-            }
-            // dd($total);
+            $cartCaculate = $this->reCaculateCart();
+            $cartPromotion = $this->cartPromotion($cartCaculate['cartTotal']);
+            $cartCaculate['cartTotal'] = $cartCaculate['cartTotal'] - $cartPromotion['discount'];
+            $cartCaculate['discount'] = $cartPromotion['discount'];
 
             $cartItem = Cart::instance('shopping')->get($payload['rowId']);
             // dd($cartItem);
-            $cartItemSubTotal = $cartItem->price * $cartItem->qty;
+            $cartCaculate['cartItemSubTotal'] = $cartItem->price * $cartItem->qty;
             // dd($cartItemSubTotal);
-            $cartItemSubQuantity = $cartItem->qty;
+            $cartCaculate['cartItemSubQuantity'] = $cartItem->qty;
 
-            return [
-                'cartTotal' => $total,
-                'cartTotalItems' => $totalItems,
-                'cartItemSubTotal' => $cartItemSubTotal,
-                'cartItemSubQuantity' => $cartItemSubQuantity,
-            ];
+            return $cartCaculate;
         }catch (\Exception $e) {
             echo $e->getMessage(); die();
             return false;
+        }
+    }
+
+    public function delete($request){
+        try {
+            $payload = $request->input();
+            // dd($payload);
+            Cart::instance('shopping')->remove($payload['rowId']);
+
+            $cartCaculate = $this->reCaculateCart();
+            $cartPromotion = $this->cartPromotion($cartCaculate['cartTotal']);
+            $cartCaculate['cartTotal'] = $cartCaculate['cartTotal'] - $cartPromotion['discount'];
+            $cartCaculate['discount'] = $cartPromotion['discount'];
+
+            return $cartCaculate;
+        }catch (\Exception $e) {
+            echo $e->getMessage(); die();
+            return false;
+        }
+    }
+
+    public function reCaculateCart(){
+        $carts = Cart::instance('shopping')->content();
+        $total = 0;
+        $totalItems = 0;
+        foreach($carts as $cart){
+            $total += $cart->price * $cart->qty;
+            $totalItems += $cart->qty;
+        }
+        // dd($total);
+
+        return [
+            'cartPreTotal' => $total,
+            'cartTotal' => $total,
+            'cartTotalItems' => $totalItems,
+        ];
+    }
+
+    public function cartPromotion($cartTotal){
+        $maxDisount = 0;
+        $selectedPromotion = null;
+        $promotions = $this->promotionRepository->getPromotionByCartTotal();
+        // dd($promotions);
+        if(!is_null($promotions)){
+            foreach($promotions as $key => $promotion){
+                // dd($promotion);
+                // echo 'promotion: '.$key;
+                // echo '<br><br>';
+                $discount = $promotion->discountInformation['info'];
+                // dd($discount);
+                $amountFrom = $discount['amountFrom'] ?? [];
+                $amountTo = $discount['amountTo'] ?? [];
+                $amountValue = $discount['amountValue'] ?? [];
+                $amountType = $discount['amountType'] ?? [];
+
+                if(!empty($amountFrom) && count($amountFrom) == count($amountTo) && count($amountTo) == count($amountValue)){
+                    for($i = 0; $i < count($amountFrom); $i++){
+                        $currentAmountFrom = convert_price($amountFrom[$i]);
+                        // echo $currentAmountFrom.'<br>';
+                        $currentAmountTo = convert_price($amountTo[$i]);
+                        // echo $currentAmountTo.'<br>';
+                        $currentAmountValue = convert_price($amountValue[$i]);
+                        // echo $currentAmountValue.'<br>';
+                        $currentAmountType = $amountType[$i];
+                        // echo $currentAmountType.'<br><br>';
+
+                        if($cartTotal > $currentAmountFrom && ($cartTotal <= $currentAmountTo || $cartTotal > $currentAmountTo)){
+                            if($currentAmountType == 'cash'){
+                                $maxDisount = max($maxDisount, $currentAmountValue);
+                            }
+                            $discountValue = 0;
+                            if($currentAmountType == 'percent'){
+                                $discountValue = ($currentAmountValue/100)*$cartTotal;
+                                $maxDisount = max($maxDisount, $discountValue);
+                            }
+                            if($maxDisount != 0 && ($maxDisount ==  $currentAmountValue || $maxDisount == $discountValue)){
+                                $selectedPromotion = $promotion;
+                            }
+                        }
+                    }
+                }
+            }
+            // echo $maxDisount;
+            // dd($selectedPromotion);
+            // die();
+
+            return[
+                'discount' => $maxDisount,
+                'selectedPromotion' => $selectedPromotion,
+            ];
         }
     }
 }
