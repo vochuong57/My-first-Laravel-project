@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Cart;
 use App\Repositories\Interfaces\ProvinceRepositoryInterface as ProvinceRepository;
 use App\Services\Interfaces\CartServiceInterface as CartService;
+use App\Http\Requests\StoreCartRequest;
 
 class CartController extends FrontendController
 {
@@ -48,7 +49,11 @@ class CartController extends FrontendController
         $provinces=$this->provinceRepository->all();
         // dd($provinces);
         
-        return view('frontend.cart.index', compact('config', 'languageId', 'seo', 'provinces', 'carts', 'cartPromotion'));
+        return view('frontend.cart.index', compact('config', 'languageId', 'seo', 'provinces', 'carts', 'cartPromotion', 'cartCaculate'));
+    }
+
+    public function create(){
+
     }
 
 
