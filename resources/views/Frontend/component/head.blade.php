@@ -48,5 +48,4 @@
 @foreach($coreCss as $item)
     <link rel="stylesheet" href="{{ $item }}" />
 @endforeach
-<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
 <script src="{{ asset('Frontend/resources/library/js/jquery.js') }}"></script>

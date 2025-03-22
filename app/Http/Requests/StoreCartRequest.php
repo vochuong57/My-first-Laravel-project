@@ -22,17 +22,23 @@ class StoreCartRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'fullname' => 'required',
+            'phone' => ['required', 'regex:/^\d+$/', 'max:20'],
             'email' => 'required|email',
-            'password' => 'required',
+            'address' => 'required',
         ];
     }
 
     public function messages(): array
     {
         return [
+            'fullname.required'=>'* Bạn chưa nhập Họ Tên.',
+            'phone.required'=>'* Bạn chưa nhập Số điện thoại.',
+            'phone.regex' => '* Số điện thoại chỉ được chứa các ký tự số.',
+            'phone.max' => '* Số điện thoại không được vượt quá 20 ký tự.',
             'email.required'=>'* Bạn chưa nhập email.',
             'email.email'=>'* Email chưa đúng định dạng. VD: abc@gmail.com',
-            'password.required'=>'* Bạn chưa nhập vào mật khẩu'
+            'address.required'=>'* Bạn chưa nhập Địa chỉ.',
         ];
     }
 }
