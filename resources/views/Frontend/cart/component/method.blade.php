@@ -8,7 +8,11 @@
                 name="method" 
                 value="{{ $val['name'] }}" 
                 id="{{ $val['name'] }}"
-                {{ $key == 0 ? 'checked' : '' }} 
+                @php
+                    // Lấy giá trị 'method' từ old hoặc từ DB
+                    $method = old('method', $order->method ?? 'cod');
+                @endphp
+                {{ ($method == $val['name']) ? 'checked' : '' }}
             >
             <span class="image"><img src="{{ $val['image'] }}" alt=""></span>
             <span class="title">{{ $val['title'] }}</span>

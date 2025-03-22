@@ -52,8 +52,11 @@ class CartController extends FrontendController
         return view('frontend.cart.index', compact('config', 'languageId', 'seo', 'provinces', 'carts', 'cartPromotion', 'cartCaculate'));
     }
 
-    public function create(){
-
+    public function create(StoreCartRequest $request){
+        if($this->cartService->createDB($request)){
+            return redirect()->route('cart.success')->with('success','Đặt hàng thành công');
+        }
+           return redirect()->route('cart.checkout')->with('error','Đặt hàng không thành công. Hãy thử lại');
     }
 
 

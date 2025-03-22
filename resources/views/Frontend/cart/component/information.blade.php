@@ -2,17 +2,17 @@
     <div class="uk-grid uk-grid-medium mb20">
         <div class="uk-width-large-1-2">
             <div class="form-row">
-                <input type="text" name="fullname" value="{{ old('fullname') }}" placeholder="{{ __('payment.enter_fullname') }}" class="input-text" required>
+                <input type="text" name="fullname" value="{{ old('fullname') }}" placeholder="{{ __('payment.enter_fullname') }}" class="input-text" >
             </div>
         </div>
         <div class="uk-width-large-1-2">
             <div class="form-row">
-                <input type="text" name="phone" value="{{ old('phone') }}" placeholder="{{ __('payment.enter_phone') }}" class="input-text" required>
+                <input type="text" name="phone" value="{{ old('phone') }}" placeholder="{{ __('payment.enter_phone') }}" class="input-text" >
             </div>
         </div>
     </div>
     <div class="form-row mb20">
-        <input type="text" name="email" value="{{ old('email') }}" placeholder="{{ __('payment.enter_email') }}" class="input-text" required>
+        <input type="text" name="email" value="{{ old('email') }}" placeholder="{{ __('payment.enter_email') }}" class="input-text" >
     </div>
     <div class="uk-grid uk-grid-medium mb20">
         <div class="uk-width-large-1-3">
@@ -43,7 +43,7 @@
         </script>
     </div>
     <div class="form-row mb20">
-        <input type="text" name="address" value="{{ old('address') }}" placeholder="{{ __('payment.enter_address') }}" class="input-text" required>
+        <input type="text" name="address" value="{{ old('address') }}" placeholder="{{ __('payment.enter_address') }}" class="input-text" >
     </div>
     <div class="form-row">
         <input type="text" name="description" value="{{ old('description') }}" placeholder="{{ __('payment.additional_note') }}" class="input-text">

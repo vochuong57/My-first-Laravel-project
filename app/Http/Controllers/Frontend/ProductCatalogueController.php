@@ -52,8 +52,14 @@ class ProductCatalogueController extends FrontendController
 
     private function config(){
         return [
+            'css' => [
+                // 'https://unpkg.com/swiper/swiper-bundle.min.css',
+                'Frontend/resources/library/css/swiper-bundle.min.css',
+            ],
             'js' => [
                 'Frontend/resources/cart.js',
+                 // 'https://unpkg.com/swiper/swiper-bundle.min.js',
+                 'Frontend/resources/library/js/swiper-bundle.min.js',
             ],
         ];
     }

@@ -60,6 +60,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home.index');
 Route::get('checkout'.config('apps.general.suffix'), [CartController::class, 'checkout'])->name('cart.checkout');
 Route::get('{canonical}'.config('apps.general.suffix'), [RouterController::class, 'index'])->name('router.index')->where('canonical', '^(?!checkout$)[a-zA-Z0-9-]+');
 Route::get('{canonical}/trang-{page}'.config('apps.general.suffix'), [RouterController::class, 'page'])->name('router.page')->where('canonical', '[a-zA-Z0-9-]+')->where('page', '[0-9]+');
+Route::post('cart/create',[CartController::class, 'create'])->name('cart.create');
 
 // FRONTEND AJAX ROUTES
 Route::get('ajax/product/loadVariant',[AjaxProductController::class, 'loadVariant'])->name('ajax.product.loadVariant');
