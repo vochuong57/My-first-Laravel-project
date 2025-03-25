@@ -19,6 +19,7 @@ use App\Repositories\Interfaces\ProductRepositoryInterface as ProductRepository;
 use App\Repositories\Interfaces\ProductVariantRepositoryInterface as ProductVariantRepository;
 use App\Repositories\Interfaces\PromotionRepositoryInterface as PromotionRepository;
 use App\Services\Interfaces\ProductServiceInterface as ProductService;
+use App\Repositories\Interfaces\OrderRepositoryInterface as OrderRepository;
 
 /**
  * Class UserService
@@ -30,12 +31,14 @@ class CartService extends BaseService implements CartServiceInterface
     protected $productVariantRepository;
     protected $promotionRepository;
     protected $productService;
+    protected $orderRepository;
 
-    public function __construct(ProductRepository $productRepository, ProductVariantRepository $productVariantRepository, PromotionRepository $promotionRepository, ProductService $productService){
+    public function __construct(ProductRepository $productRepository, ProductVariantRepository $productVariantRepository, PromotionRepository $promotionRepository, ProductService $productService, OrderRepository $orderRepository,){
         $this->productRepository = $productRepository;
         $this->productVariantRepository = $productVariantRepository;
         $this->promotionRepository = $promotionRepository;
         $this->productService = $productService;
+        $this->orderRepository = $orderRepository;
     }
 
     public function create($request, $languageId){
@@ -93,7 +96,7 @@ class CartService extends BaseService implements CartServiceInterface
     // $cart = Cart::content();
     // dd($cart);
 
-    public function remakeCart($carts){
+    public function remakeCart($carts, $languageId){
         if(!is_null($carts)){
             $cartIds = $carts->pluck('id');
             // dd($cartIds);
@@ -125,14 +128,44 @@ class CartService extends BaseService implements CartServiceInterface
 
                     if(isset($objects['variants'][$objectId])){
                         $variantItem = $objects['variants'][$objectId];
-                        $variantImage = explode(',', $variantItem->album)[0] ?? 'Backend/img/not-found.png';
+                        // dd($variantItem);
+                        $albumArray = explode(',', $variantItem->album);
+                        $variantImage = !empty($albumArray[0]) ? $albumArray[0] : 'Backend/img/not-found.png';
                         $cart->image = $variantImage;
                         $cart->priceOriginal = ($cart->price != $variantItem->price) ? $variantItem->price : null;
+                        $variantPromotion = $this->promotionRepository->findPromotionByVariantUuid($variantItem->variant_uuid);
+                        if(!is_null($variantPromotion)){
+                            $cart->promotion = [
+                                'id' => $variantPromotion->id,
+                                'maxDiscountValue' => $variantPromotion->maxDiscountValue,
+                                'discountValue' => $variantPromotion->discountValue,
+                                'discountType' => $variantPromotion->discountType,
+                                'discount' => $variantPromotion->discount,
+                            ];
+                        }else{
+                            $cart->promotion = null;
+                        }
                     }elseif(isset($objects['products'][$objectId])){
                         $productItem = $objects['products'][$objectId];
                         $productImage = $productItem->image ?? 'Backend/img/not-found.png';
                         $cart->image = $productImage;
                         $cart->priceOriginal = ($cart->price != $productItem->price) ? $productItem->price : null;
+                        $relation = $this->productService->getProductRelation($languageId);
+                        $product = $this->productRepository->findById($productItem->id, ['*'], $relation);
+                        // dd($product);
+                        if(isset($product->promotions[0])){
+                            $productPromotion = $product->promotions[0];
+                            // dd($productPromotion);
+                            $cart->promotion = [
+                                'id' => $productPromotion->id,
+                                'maxDiscountValue' => $productPromotion->maxDiscountValue,
+                                'discountValue' => $productPromotion->discountValue,
+                                'discountType' => $productPromotion->discountType,
+                                'discount' => $productPromotion->discount,
+                            ];
+                        }else{
+                            $cart->promotion = null;
+                        }
                     }
                 }
             }
@@ -256,8 +289,95 @@ class CartService extends BaseService implements CartServiceInterface
         }
     }
 
-    public function createDB($request){
-        echo 123; die();
+    public function createDB($request, $languageId){        
+        DB::beginTransaction();
+        try{
+            $payload = $this->requestOrderTable($request, $languageId);
+            // dd($payload);
+            $order = $this->orderRepository->create($payload);
+            if($order->id > 0){
+                $this->createOrderProduct($payload, $request, $order);
+                $this->paymentOnline($payload['method']);
+            }
+            // die();
+            DB::commit();
+            return true;
+        }catch(\Exception $ex){
+            DB::rollBack();
+            echo $ex->getMessage();die();
+            return false;
+        }
+
+        // automicity
+    }
+
+    private function requestOrderTable($request, $languageId){
+        $payload = $request->except(['_token', 'voucher', 'create']);
+        // dd($payload);
+        $carts = Cart::instance('shopping')->content();
+        // dd($carts);
+        $carts = $this->remakeCart($carts, $languageId);
+        // dd($carts);
+        $cartCaculate = $this->reCaculateCart();
+        // dd($cartCaculate);
+        $cartPromotion = $this->cartPromotion($cartCaculate['cartTotal']);
+        // dd($cartPromotion);
+        $payload['cart'] = $cartCaculate;
+        $payload['cart']['detail'] = $carts;
+        $payload['promotion']['discount'] = $cartPromotion['discount'];
+        $payload['promotion']['name'] = $cartPromotion['selectedPromotion']->name;
+        $payload['promotion']['code'] = $cartPromotion['selectedPromotion']->code;
+        $payload['promotion']['startDate'] = $cartPromotion['selectedPromotion']->startDate;
+        $payload['promotion']['endDate'] = $cartPromotion['selectedPromotion']->endDate;
+        $payload['confirm'] = 'pending';
+        $payload['payment'] = 'unpaid';
+        $payload['delivery'] = 'pending';
+        $payload['code'] = time();
+
+        return $payload;
+    }
+
+    private function createOrderProduct($payload, $request, $order){
+        // dd($payload);
+        $temp = [];
+        if(!is_null($payload['cart']['detail'])){
+            foreach($payload['cart']['detail'] as $key => $val){
+                $extract = explode('_', $val->id);
+                $temp[] = [
+                    'product_id' => $extract[0],
+                    'variant_uuid' => $extract[1] ?? null,
+                    'name' => $val->name,
+                    'qty' => $val->qty,
+                    'price' => $val->price,
+                    'priceOriginal' => $val->priceOriginal ?? null,
+                    'promotion' => !is_null($val->promotion) ? json_encode($val->promotion) : null,
+                    'option' => count($val->options) ? json_encode($val->options) : null,
+                ];
+                
+            }
+            // dd($temp);
+            $order->products()->sync($temp);
+        }
+    }
+
+    private function paymentOnline($method){
+        switch ($method) {
+            case 'zalo':
+                $this->zaloPay();
+                break;
+            case 'momo':
+                $this->momoPay();
+                break;
+            case 'shopee':
+                $this->shopeePay();
+                break;
+            case 'vnpay':
+                $this->vnPay();
+                break;
+            case 'paypal':
+                $this->paypal();
+                break;
+        }
     }
 }
 

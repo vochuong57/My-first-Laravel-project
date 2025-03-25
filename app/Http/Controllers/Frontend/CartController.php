@@ -28,7 +28,7 @@ class CartController extends FrontendController
         // Cart::instance('shopping')->destroy();
         $carts = Cart::instance('shopping')->content(); // V151
         // dd($carts);
-        $carts = $this->cartService->remakeCart($carts);
+        $carts = $this->cartService->remakeCart($carts, $languageId);
         // dd($carts);
 
         $cartCaculate = $this->cartService->reCaculateCart();
@@ -53,7 +53,7 @@ class CartController extends FrontendController
     }
 
     public function create(StoreCartRequest $request){
-        if($this->cartService->createDB($request)){
+        if($this->cartService->createDB($request, $this->language)){
             return redirect()->route('cart.success')->with('success','Đặt hàng thành công');
         }
            return redirect()->route('cart.checkout')->with('error','Đặt hàng không thành công. Hãy thử lại');
