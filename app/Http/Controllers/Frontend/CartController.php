@@ -8,16 +8,19 @@ use Cart;
 use App\Repositories\Interfaces\ProvinceRepositoryInterface as ProvinceRepository;
 use App\Services\Interfaces\CartServiceInterface as CartService;
 use App\Http\Requests\StoreCartRequest;
+use App\Repositories\Interfaces\OrderRepositoryInterface as OrderRepository;
 
 class CartController extends FrontendController
 {
     protected $provinceRepository;
     protected $cartService;
+    protected $orderRepository;
 
-    public function __construct(ProvinceRepository $provinceRepository, CartService $cartService){
+    public function __construct(ProvinceRepository $provinceRepository, CartService $cartService, OrderRepository $orderRepository){
         parent::__construct();
         $this->provinceRepository = $provinceRepository;
         $this->cartService = $cartService;
+        $this->orderRepository = $orderRepository;
     }
 
     public function checkout(){
@@ -53,12 +56,39 @@ class CartController extends FrontendController
     }
 
     public function create(StoreCartRequest $request){
-        if($this->cartService->createDB($request, $this->language)){
-            return redirect()->route('cart.success')->with('success','Đặt hàng thành công');
+        $order = $this->cartService->createDB($request, $this->language);
+        if($order['flag']){
+            Cart::instance('shopping')->destroy();
+            return redirect()->route('cart.success', ['code' => $order['order']->code])->with('success','Đặt hàng thành công');
         }
            return redirect()->route('cart.checkout')->with('error','Đặt hàng không thành công. Hãy thử lại');
     }
 
+    public function success($code){
+        // dd($code);
+        $condition = [
+            ['code', '=', $code],
+        ];
+        $order = $this->orderRepository->findByCondition($condition);
+        // dd($order);
+        $order = $this->cartService->getFullAddress($order);
+        if(!$order){
+            return redirect()->route('home.index')->with('error','Đơn hàng không tồn tại');
+        }
+        $languageId = $this->getLanguage();
+        $config = $this->config();
+        $systems = $this->getSystem();
+        $seo = [
+            'meta_title' => $systems['success_meta_title'],
+            'meta_keyword' => $systems['success_meta_keyword'],
+            'meta_description' => $systems['success_meta_description'],
+            'canonical' => write_url('cart/yourCode/success'),
+            'meta_images' => $systems['success_meta_images'],
+        ];
+        // dd($seo);
+
+        return view('frontend.cart.success', compact('config', 'languageId', 'seo', 'order'));
+    }
 
     private function config(){
         return [
