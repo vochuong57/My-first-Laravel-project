@@ -20,6 +20,9 @@ use App\Repositories\Interfaces\ProductVariantRepositoryInterface as ProductVari
 use App\Repositories\Interfaces\PromotionRepositoryInterface as PromotionRepository;
 use App\Services\Interfaces\ProductServiceInterface as ProductService;
 use App\Repositories\Interfaces\OrderRepositoryInterface as OrderRepository;
+use App\Repositories\Interfaces\ProvinceRepositoryInterface as ProvinceRepository;
+use App\Repositories\Interfaces\DistrictRepositoryInterface as DistrictRepository;
+use App\Repositories\Interfaces\WardRepositoryInterface as WardRepository;
 
 /**
  * Class UserService
@@ -32,13 +35,19 @@ class CartService extends BaseService implements CartServiceInterface
     protected $promotionRepository;
     protected $productService;
     protected $orderRepository;
+    protected $provinceRepository;
+    protected $districtRepository;
+    protected $wardRepository;
 
-    public function __construct(ProductRepository $productRepository, ProductVariantRepository $productVariantRepository, PromotionRepository $promotionRepository, ProductService $productService, OrderRepository $orderRepository,){
+    public function __construct(ProductRepository $productRepository, ProductVariantRepository $productVariantRepository, PromotionRepository $promotionRepository, ProductService $productService, OrderRepository $orderRepository, ProvinceRepository $provinceRepository, DistrictRepository $districtRepository, WardRepository $wardRepository){
         $this->productRepository = $productRepository;
         $this->productVariantRepository = $productVariantRepository;
         $this->promotionRepository = $promotionRepository;
         $this->productService = $productService;
         $this->orderRepository = $orderRepository;
+        $this->provinceRepository = $provinceRepository;
+        $this->districtRepository = $districtRepository;
+        $this->wardRepository = $wardRepository;
     }
 
     public function create($request, $languageId){
@@ -295,20 +304,46 @@ class CartService extends BaseService implements CartServiceInterface
             $payload = $this->requestOrderTable($request, $languageId);
             // dd($payload);
             $order = $this->orderRepository->create($payload);
+            // dd($order);
             if($order->id > 0){
                 $this->createOrderProduct($payload, $request, $order);
                 $this->paymentOnline($payload['method']);
             }
             // die();
             DB::commit();
-            return true;
+            return [
+                'order' => $order,
+                'flag' => true,
+            ];
         }catch(\Exception $ex){
             DB::rollBack();
             echo $ex->getMessage();die();
-            return false;
+            return [
+                'order' => null,
+                'flag' => false,
+            ];
         }
 
         // automicity
+    }
+
+    private function toArrayCartColumn($carts)
+    {
+        $result;
+        foreach($carts as $key => $val){
+            $result[] = [
+                'rowId' => $val->rowId,
+                'id' => $val->id,
+                'qty' => $val->qty,
+                'name' => $val->name,
+                'price' => $val->price,
+                'priceOriginal' => $val->priceOriginal,
+                'image' => $val->image,
+                'promotion' => $val->promotion,
+                'options' => $val->options->toArray(),
+            ];
+        }
+        return $result;
     }
 
     private function requestOrderTable($request, $languageId){
@@ -317,13 +352,13 @@ class CartService extends BaseService implements CartServiceInterface
         $carts = Cart::instance('shopping')->content();
         // dd($carts);
         $carts = $this->remakeCart($carts, $languageId);
-        // dd($carts);
+        // dd($carts->toArray());
         $cartCaculate = $this->reCaculateCart();
         // dd($cartCaculate);
         $cartPromotion = $this->cartPromotion($cartCaculate['cartTotal']);
         // dd($cartPromotion);
         $payload['cart'] = $cartCaculate;
-        $payload['cart']['detail'] = $carts;
+        $payload['cart']['detail'] = $this->toArrayCartColumn($carts);
         $payload['promotion']['discount'] = $cartPromotion['discount'];
         $payload['promotion']['name'] = $cartPromotion['selectedPromotion']->name;
         $payload['promotion']['code'] = $cartPromotion['selectedPromotion']->code;
@@ -342,16 +377,16 @@ class CartService extends BaseService implements CartServiceInterface
         $temp = [];
         if(!is_null($payload['cart']['detail'])){
             foreach($payload['cart']['detail'] as $key => $val){
-                $extract = explode('_', $val->id);
+                $extract = explode('_', $val['id']);
                 $temp[] = [
                     'product_id' => $extract[0],
                     'variant_uuid' => $extract[1] ?? null,
-                    'name' => $val->name,
-                    'qty' => $val->qty,
-                    'price' => $val->price,
-                    'priceOriginal' => $val->priceOriginal ?? null,
-                    'promotion' => !is_null($val->promotion) ? json_encode($val->promotion) : null,
-                    'option' => count($val->options) ? json_encode($val->options) : null,
+                    'name' => $val['name'],
+                    'qty' => $val['qty'],
+                    'price' => $val['price'],
+                    'priceOriginal' => $val['priceOriginal'] ?? null,
+                    'promotion' => !is_null($val['promotion']) ? json_encode($val['promotion']) : null,
+                    'option' => count($val['options']) ? json_encode($val['options']) : null,
                 ];
                 
             }
@@ -378,6 +413,24 @@ class CartService extends BaseService implements CartServiceInterface
                 $this->paypal();
                 break;
         }
+    }
+
+    public function getFullAddress($order){
+        $arrAddress;
+        $modelName = ['province', 'district', 'ward'];
+        $arrCode = [$order->province_id, $order->district_id, $order->ward_id];
+        for($i = 0; $i < count($modelName); $i++){
+            $modelRepository = $modelName[$i].'Repository';
+            $code = $arrCode[$i];
+            $condition = [
+                ['code', '=', $code],
+            ];
+            $arrAddress[$modelRepository] = $this->$modelRepository->findByCondition($condition)->name;
+        }
+        // dd($arrAddress);
+        $addressPDW = $arrAddress['wardRepository'].', '.$arrAddress['districtRepository'].', '.$arrAddress['provinceRepository'];
+        $order->fullAddress = $order->address.', '.$addressPDW;
+        return $order;
     }
 }
 

@@ -61,6 +61,7 @@ Route::get('checkout'.config('apps.general.suffix'), [CartController::class, 'ch
 Route::get('{canonical}'.config('apps.general.suffix'), [RouterController::class, 'index'])->name('router.index')->where('canonical', '^(?!checkout$)[a-zA-Z0-9-]+');
 Route::get('{canonical}/trang-{page}'.config('apps.general.suffix'), [RouterController::class, 'page'])->name('router.page')->where('canonical', '[a-zA-Z0-9-]+')->where('page', '[0-9]+');
 Route::post('cart/create',[CartController::class, 'create'])->name('cart.create');
+Route::get('cart/{code}/success'.config('apps.general.suffix'),[CartController::class, 'success'])->name('cart.success')->where(['code'=>'[0-9]+']);
 
 // FRONTEND AJAX ROUTES
 Route::get('ajax/product/loadVariant',[AjaxProductController::class, 'loadVariant'])->name('ajax.product.loadVariant');
