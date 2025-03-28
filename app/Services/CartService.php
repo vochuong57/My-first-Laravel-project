@@ -23,6 +23,8 @@ use App\Repositories\Interfaces\OrderRepositoryInterface as OrderRepository;
 use App\Repositories\Interfaces\ProvinceRepositoryInterface as ProvinceRepository;
 use App\Repositories\Interfaces\DistrictRepositoryInterface as DistrictRepository;
 use App\Repositories\Interfaces\WardRepositoryInterface as WardRepository;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\OrderMail;
 
 /**
  * Class UserService
@@ -298,7 +300,7 @@ class CartService extends BaseService implements CartServiceInterface
         }
     }
 
-    public function createDB($request, $languageId){        
+    public function createDB($request, $languageId, $systems){        
         DB::beginTransaction();
         try{
             $payload = $this->requestOrderTable($request, $languageId);
@@ -308,6 +310,7 @@ class CartService extends BaseService implements CartServiceInterface
             if($order->id > 0){
                 $this->createOrderProduct($payload, $request, $order);
                 $this->paymentOnline($payload['method']);
+                $this->mail($order, $systems);
             }
             // die();
             DB::commit();
@@ -431,6 +434,16 @@ class CartService extends BaseService implements CartServiceInterface
         $addressPDW = $arrAddress['wardRepository'].', '.$arrAddress['districtRepository'].', '.$arrAddress['provinceRepository'];
         $order->fullAddress = $order->address.', '.$addressPDW;
         return $order;
+    }
+
+    private function mail($order, $systems){
+        $to = $order->email;
+        $cc = $systems['contact_email'];
+        $order = $this->getFullAddress($order);
+        $order->link = route('home.index');
+        $data = $order;
+        // dd($data);
+        Mail::to($to)->cc($cc)->send(new OrderMail($data));
     }
 }
 

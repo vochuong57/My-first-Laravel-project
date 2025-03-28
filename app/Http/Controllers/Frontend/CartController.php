@@ -56,7 +56,8 @@ class CartController extends FrontendController
     }
 
     public function create(StoreCartRequest $request){
-        $order = $this->cartService->createDB($request, $this->language);
+        $systems = $this->getSystem();
+        $order = $this->cartService->createDB($request, $this->language, $systems);
         if($order['flag']){
             Cart::instance('shopping')->destroy();
             return redirect()->route('cart.success', ['code' => $order['order']->code])->with('success','Đặt hàng thành công');
