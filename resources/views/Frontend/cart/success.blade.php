@@ -62,8 +62,8 @@
                                 <td>-{{ !is_null($order->promotion) ? convert_price($order->promotion['discount'], true) : 0 }}đ</td>
                             </tr>
                             <tr>
-                                <td colspan="4">{{ __('success.shipping_fee') }}đ</td>
-                                <td>0</td>
+                                <td colspan="4">{{ __('success.shipping_fee') }}</td>
+                                <td>0đ</td>
                             </tr>
                             <tr class="total_payment">
                                 <td colspan="4"><span>{{ __('success.total_payment') }}</span></td>
