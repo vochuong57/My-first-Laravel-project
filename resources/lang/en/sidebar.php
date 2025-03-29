@@ -144,6 +144,16 @@
                     ],
                 ],
             ],
-                                        
+            [
+                'title' => 'Order Management',
+                'icon' => 'fa fa-shopping-bag',
+                'name' => ['order'],
+                'subModule' => [
+                    [
+                        'title' => 'Order Management',
+                        'route' => 'order/index'
+                    ],
+                ]
+            ],                         
         ]
     ];

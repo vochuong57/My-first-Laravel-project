@@ -17,5 +17,28 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
     public function __construct(Order $model){
         $this->model=$model;
     }
-    
+    public function pagination(
+        array $column=['*'],
+        array $condition=[],
+        int $perpage=0, 
+        array $extend=[],
+        array $orderBy=[],
+        array $join=[],
+        array $relations=[],
+        array $rawQuery = []
+        ) 
+    {
+        $query = $this->model->select($column);
+        
+        return $query
+        ->Keyword($condition['keyword'] ?? null, ['fullname', 'phone', 'email', 'address', 'code'])
+        ->Relation($relations ?? null)
+        ->CustomWhereRaw($rawQuery['whereRaw'] ?? null)
+        ->CustomJoin($join ?? null)
+        ->CustomGroupBy($extend['groupBy'] ?? null)
+        ->CustomOrderBy($orderBy ?? null)
+        ->paginate($perpage)->withQueryString()->withPath(env('APP_URL') . $extend['path']);
+
+        //echo $query->toSql(); die();
+    }
 }

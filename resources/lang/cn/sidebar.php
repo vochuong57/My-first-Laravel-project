@@ -144,7 +144,17 @@
                     ],
                 ],
             ],
-                                   
+            [
+                'title' => '订单管理',
+                'icon' => 'fa fa-shopping-bag',
+                'name' => ['order'],
+                'subModule' => [
+                    [
+                        'title' => '订单管理',
+                        'route' => 'order/index'
+                    ],
+                ]
+            ],                  
         ]
     ];
 

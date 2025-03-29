@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Traits\QueryScopes;
 
 class Order extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, QueryScopes;
 
     protected $fillable = [//c=những trường nào cho phép người dùng cập nhật thông tin
         'code',
@@ -53,5 +54,15 @@ class Order extends Model
 
     public function order_paymentable(){
         return $this->belongsTo(OrderPayment::class, 'order_id', 'id');
+    }
+
+    public function provinces(){
+        return $this->belongsTo(Province::class, 'province_id', 'code');
+    }
+    public function districts(){
+        return $this->belongsTo(District::class, 'district_id', 'code');
+    }
+    public function wards(){
+        return $this->belongsTo(Ward::class, 'ward_id', 'code');
     }
 }

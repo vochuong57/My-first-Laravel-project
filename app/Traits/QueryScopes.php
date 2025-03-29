@@ -4,12 +4,18 @@ namespace App\Traits;
 
 trait QueryScopes{
 
-    public function scopeKeyword($query, $keyword){
+    public function scopeKeyword($query, $keyword, $fieldsSearch = []){
         if(!empty($keyword)){
-            $query->where('name', 'LIKE', '%' . $keyword . '%');
-            // Kiểm tra nếu bảng có cột 'canonical'
-            if (\Schema::hasColumn($this->getTable(), 'canonical')) {
-                $query->orWhere('canonical', 'LIKE', '%' . $keyword . '%');
+            if(isset($fieldsSearch) && count($fieldsSearch)){
+                foreach($fieldsSearch as $field){
+                    $query->orWhere($field, 'LIKE', '%' . $keyword . '%');
+                }
+            }else{
+                $query->where('name', 'LIKE', '%' . $keyword . '%');
+                // Kiểm tra nếu bảng có cột 'canonical'
+                if (\Schema::hasColumn($this->getTable(), 'canonical')) {
+                    $query->orWhere('canonical', 'LIKE', '%' . $keyword . '%');
+                }
             }
         }
         return $query;
@@ -44,6 +50,15 @@ trait QueryScopes{
         if(!empty($relation)){
             foreach($relation as $item){
                 $query->withCount($item);
+            }
+        }
+        return $query;
+    }
+
+    public function scopeRelation($query, $relation){
+        if(!empty($relation)){
+            foreach($relation as $item){
+                $query->with($item);
             }
         }
         return $query;
