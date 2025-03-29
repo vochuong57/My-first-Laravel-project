@@ -563,4 +563,24 @@ return [
     //toolbox
     'toolboxDestroyCustomer' => '您确定要删除这些客户吗？',
 
+    // ORDER
+    'order' => [
+        'index'=>[
+            'title'=> '订单管理',
+        ],
+    ],
+
+    // TABLE
+    'tableOrder_brand' => '发票列表',
+    'code' => '代码',
+    'created_at' => '创建时间',
+    'customer' => '客户',
+    'payment' => '付款',
+    'method' => '方式',
+    'discount' => '折扣',
+    'shipping_fee' => '运费',
+    'total_final' => '最终总额',
+    'delivery' => '配送',
+    'status' => '状态',
+    'total_before_discount' => '*折扣前最终总额',
 ];

@@ -562,4 +562,24 @@ return[
     //toolbox
     'toolboxDestroyCustomer' => 'Are you sure you want to delete these customers?',
 
+    // ORDER
+    'order' => [
+        'index'=>[
+            'title'=> 'Order Management',
+        ],
+    ],
+
+    // TABLE
+    'tableOrder_brand' => 'Invoice list',
+    'code' => 'Code',
+    'created_at' => 'Created At',
+    'customer' => 'Customer',
+    'payment' => 'Payment',
+    'method' => 'Method',
+    'discount' => 'Discount',
+    'shipping_fee' => 'Shipping Fee',
+    'total_final' => 'Final Total',
+    'delivery' => 'Delivery',
+    'status' => 'Status',
+    'total_before_discount' => '*Final total before discount',
 ];

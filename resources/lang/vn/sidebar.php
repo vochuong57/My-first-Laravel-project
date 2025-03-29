@@ -146,5 +146,16 @@
                     ]
                 ]
             ],
+            [
+                'title'=>'Quản lý đơn hàng',
+                'icon'=>'fa fa-shopping-bag',
+                'name'=>['order'],
+                'subModule'=>[
+                    [
+                        'title'=>'QL đơn hàng',
+                        'route'=>'order/index'
+                    ],
+                ]
+            ],
         ]
     ];

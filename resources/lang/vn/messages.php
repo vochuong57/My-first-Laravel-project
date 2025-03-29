@@ -593,4 +593,27 @@ return[
 
     //toolbox
     'toolboxDestroyCustomer'=>'Bạn có chắc nhắn muốn xóa những khách hàng này?',
+
+    //ORDER
+    'order' => [
+        'index'=>[
+            'title'=> 'Quản lý hóa đơn',
+        ],
+    ],
+
+    //table
+    'tableOrder_brand'=>'Danh sách hóa đơn',
+    'code' => 'Mã',
+    'created_at' => 'Ngày tạo',
+    'customer' => 'Khách hàng',
+    'payment' => 'Thanh toán',
+    'method' => 'Hình thức',
+    'discount' => 'Giảm giá',
+    'shipping_fee' => 'Phí ship',
+    'total_final' => 'Tổng cuối',
+    'delivery' => 'Giao hàng',
+    'status' => 'Trạng thái',
+    'total_before_discount' => '*Tổng cuối chưa tính giảm giá',
+    
+    
 ];

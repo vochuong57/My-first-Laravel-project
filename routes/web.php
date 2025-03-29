@@ -32,6 +32,7 @@ use App\Http\Controllers\Backend\CustomerCatalogueController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\RouterController;
 use App\Http\Controllers\Frontend\CartController;
+use App\Http\Controllers\Backend\OrderController;
 //@@useController@@
 
 
@@ -373,6 +374,10 @@ Route::group(['middleware' => ['admin','locale','backend_default_locale']], func
 
         Route::get('{id}/destroy',[CustomerController::class, 'destroy'])->name('customer.destroy')->where(['id'=>'[0-9]+']);//hiển thị form xóa customer khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
         Route::post('{id}/delete',[CustomerController::class, 'delete'])->name('customer.delete')->where(['id'=>'[0-9]+']);//Thực thi xử lý xóa customer khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+    });
+
+    Route::group(['prefix'=>'order'], function(){
+        Route::get('index',[OrderController::class, 'index'])->name('order.index');//hiển thị form order khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
     });
 
     //@@new-module@@
