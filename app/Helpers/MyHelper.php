@@ -197,8 +197,8 @@ if(!function_exists('loadClassInterface')){
 
 //V120
 if(!function_exists('convertDateTime')){
-    function convertDateTime(string $date = '', string $format = 'd/m/Y H:i',){
-        $carbonDate = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $date);
+    function convertDateTime(string $date = '', string $format = 'd/m/Y H:i', $inputFormat = 'Y-m-d H:i:s'){
+        $carbonDate = \Carbon\Carbon::createFromFormat($inputFormat, $date);
         return $carbonDate->format($format);
     }
 }

@@ -583,4 +583,10 @@ return [
     'delivery' => '配送',
     'status' => '状态',
     'total_before_discount' => '*折扣前最终总额',
+
+    //filter
+    'dateRange' => '选择日期范围',
+    'trans_daterange_apply' => '应用',
+    'trans_daterange_delete' => '删除',
+    'trans_daterange_month' => '月份',
 ];
