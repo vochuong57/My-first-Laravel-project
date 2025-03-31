@@ -252,16 +252,66 @@
     }
 
     HT.setupDatePicker = () => {
-        $('.datepicker').datetimepicker({
-            
-            // minDate:'-1970/01/2',
-            // maxDate:'+1970/01/2',
-            timepicker:true,
-            format:'d/m/Y H:i',
-            // value: new Date(),
-            minDate: new Date(),
-        });
+        if($('.datepicker').length){
+            $('.datepicker').datetimepicker({
+                
+                // minDate:'-1970/01/2',
+                // maxDate:'+1970/01/2',
+                timepicker:true,
+                format:'d/m/Y H:i',
+                // value: new Date(),
+                minDate: new Date(),
+            });
+        }
     }
+
+    HT.setupDateRangePicker = () => {
+        if ($('.daterange').length) {
+            $('.daterange').each(function () {
+                let $this = $(this);
+                let defaultDateRange = $this.val(); // Lấy giá trị từ input
+    
+                let start = moment().startOf('day'); // Mặc định ngày bắt đầu
+                let end = moment().endOf('day'); // Mặc định ngày kết thúc
+    
+                // Nếu input có giá trị sẵn, parse ra startDate & endDate
+                if (defaultDateRange) {
+                    let dates = defaultDateRange.split(' - ');
+                    start = moment(dates[0], 'DD/MM/YYYY HH:mm');
+                    end = moment(dates[1], 'DD/MM/YYYY HH:mm');
+                }
+    
+                $this.daterangepicker({
+                    singleDatePicker: false,
+                    showDropdowns: true,
+                    timePicker: true,
+                    timePicker24Hour: true,
+                    timePickerSeconds: false,
+                    timePickerIncrement: 1, // Chọn từng phút
+                    autoApply: false,
+                    locale: {
+                        format: 'DD/MM/YYYY HH:mm',
+                        applyLabel: trans_daterange.apply,
+                        cancelLabel: trans_daterange.delete,
+                        daysOfWeek: ["CN", "T2", "T3", "T4", "T5", "T6", "T7"],
+                        monthNames: [
+                            trans_daterange.month+" 1", trans_daterange.month+" 2", trans_daterange.month+" 3", trans_daterange.month+" 4", trans_daterange.month+" 5", trans_daterange.month+" 6",
+                            trans_daterange.month+" 7", trans_daterange.month+" 8", trans_daterange.month+" 9", trans_daterange.month+" 10", trans_daterange.month+" 11", trans_daterange.month+" 12"
+                        ],
+                        firstDay: 1
+                    },
+                    startDate: start,
+                    endDate: end
+                }).on('apply.daterangepicker', function (ev, picker) {
+                    // Cập nhật lại giá trị trong input sau khi chọn ngày
+                    $(this).val(picker.startDate.format('DD/MM/YYYY HH:mm') + ' - ' + picker.endDate.format('DD/MM/YYYY HH:mm'));
+                }).on('cancel.daterangepicker', function () {
+                    $(this).val(''); // Xóa giá trị khi nhấn Cancel
+                });
+            });
+        }
+    };
+    
 
     $document.ready(function(){
         console.log(123);
@@ -293,6 +343,8 @@
         HT.sortui();
 
         HT.setupDatePicker();
+
+        HT.setupDateRangePicker();
     })
 
 })(jQuery)

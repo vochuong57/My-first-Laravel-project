@@ -615,5 +615,9 @@ return[
     'status' => 'Trạng thái',
     'total_before_discount' => '*Tổng cuối chưa tính giảm giá',
     
-    
+    // filter
+    'dateRange' => 'Chọn khoảng thời gian',
+    'trans_daterange_apply' => 'Áp dụng',
+    'trans_daterange_delete' => 'Xóa',
+    'trans_daterange_month' => 'Tháng',
 ];

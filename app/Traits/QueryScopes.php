@@ -4,7 +4,7 @@ namespace App\Traits;
 
 trait QueryScopes{
 
-    public function scopeKeyword($query, $keyword, $fieldsSearch = []){
+    public function scopeKeyword($query, $keyword, $fieldsSearch = [], $whereHas = []){
         if(!empty($keyword)){
             if(isset($fieldsSearch) && count($fieldsSearch)){
                 foreach($fieldsSearch as $field){
@@ -18,12 +18,45 @@ trait QueryScopes{
                 }
             }
         }
+        if(isset($whereHas) && count($whereHas)){
+            $field = $whereHas['field'];
+            $query->orWhereHas($whereHas['relation'], function($q) use ($field, $keyword){
+                $q->where($field, 'LIKE', '%' . $keyword . '%');
+            });
+        }
         return $query;
     }
 
     public function scopePublish($query, $publish){
         if(!empty($publish)){
             $query->where('publish', '=', $publish);
+        }
+        return $query;
+    }
+
+    public function scopeCustomDropdownFilter($query, $dropdownCondition = []){
+        if(!empty($dropdownCondition)){
+            foreach($dropdownCondition as $key => $val){
+                if($val != 0){
+                    $query->where($key, '=', $val);
+                }
+            }
+        }
+        return $query;
+    }
+
+    public function scopeCustomCreatedAt($query, $createdAt = []){
+        if(!is_null($createdAt)){
+            $createdAt = explode(' - ', $createdAt);
+            // dd($createdAt);
+            if(count($createdAt) == 1){
+                $createdAt[1] = $createdAt[0];
+            }
+            $startDate = convertDateTime($createdAt[0], 'Y-m-d H:i', 'd/m/Y H:i');
+            $endDate = convertDateTime($createdAt[1], 'Y-m-d H:i', 'd/m/Y H:i');
+            // dd($startDate, $endDate);
+            $query->where('created_at', '>=', $startDate);
+            $query->where('created_at', '<=', $endDate);
         }
         return $query;
     }

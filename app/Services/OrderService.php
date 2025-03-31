@@ -25,6 +25,13 @@ class OrderService implements OrderServiceInterface
     public function paginate($request){
         $condition['keyword']=addslashes($request->input('keyword'));
         //dd($condition);
+        $condition['dropdown'] = [
+            'confirm' => $request->input('confirm'),
+            'payment' => $request->input('payment'),
+            'delivery' => $request->input('delivery'),
+        ];
+        $condition['created_at'] = $request->input('created_at');
+        // dd($condition);
         $perpage=$request->integer('perpage', 20);
         $orders=$this->orderRepository->pagination(
             $this->paginateSelect(), 

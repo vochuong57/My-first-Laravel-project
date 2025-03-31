@@ -582,4 +582,10 @@ return[
     'delivery' => 'Delivery',
     'status' => 'Status',
     'total_before_discount' => '*Final total before discount',
+
+    // filter
+    'dateRange' => 'Select date range',
+    'trans_daterange_apply' => 'Apply',
+    'trans_daterange_delete' => 'Delete',
+    'trans_daterange_month' => 'Month',
 ];
