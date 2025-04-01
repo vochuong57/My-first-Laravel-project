@@ -599,6 +599,23 @@ return[
         'index'=>[
             'title'=> 'Quản lý hóa đơn',
         ],
+        'detail'=>[
+            'title'=>'Quản lý chi tiết hóa đơn',
+            'btnConfirm'=>'Xác nhận',
+            'invoice_details' => 'Chi tiết hóa đơn',
+            'not_delivered' => 'Chưa giao',
+            'source' => 'Nguồn:',
+            'discount_code' => 'Mã giảm giá:',
+            'subtotal' => 'Tổng tạm',
+            'discount' => 'Giảm giá',
+            'shipping' => 'Vận chuyển',
+            'total_final' => 'Tổng cuối',
+            'pending_order_confirmation' => 'ĐANG CHỜ XÁC NHẬN ĐƠN HÀNG',
+            'confirm_order' => 'Xác nhận đơn hàng',
+            'note' => 'Ghi chú',
+            'edit' => 'Sửa',
+            'customer_info' => 'Thông tin khách hàng',
+        ],
     ],
 
     //table

@@ -568,6 +568,23 @@ return [
         'index'=>[
             'title'=> '订单管理',
         ],
+        'detail' => [
+            'title' => '管理订单详情',
+            'btnConfirm' => '确认',
+            'invoice_details' => '发票详情',
+            'not_delivered' => '未送达',
+            'source' => '来源：',
+            'discount_code' => '折扣码：',
+            'subtotal' => '小计',
+            'discount' => '折扣',
+            'shipping' => '运费',
+            'total_final' => '最终总额',
+            'pending_order_confirmation' => '待确认订单',
+            'confirm_order' => '确认订单',
+            'note' => '备注',
+            'edit' => '编辑',
+            'customer_info' => '客户信息',
+        ],
     ],
 
     // TABLE
@@ -589,4 +606,6 @@ return [
     'trans_daterange_apply' => '应用',
     'trans_daterange_delete' => '删除',
     'trans_daterange_month' => '月份',
+
+    //detail page
 ];

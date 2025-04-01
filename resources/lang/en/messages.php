@@ -567,6 +567,23 @@ return[
         'index'=>[
             'title'=> 'Order Management',
         ],
+        'detail' => [
+            'title' => 'Manage order details',
+            'btnConfirm' => 'Confirm',
+            'invoice_details' => 'Invoice details',
+            'not_delivered' => 'Not delivered',
+            'source' => 'Source:',
+            'discount_code' => 'Discount code:',
+            'subtotal' => 'Subtotal',
+            'discount' => 'Discount',
+            'shipping' => 'Shipping',
+            'total_final' => 'Final total',
+            'pending_order_confirmation' => 'PENDING ORDER CONFIRMATION',
+            'confirm_order' => 'Confirm order',
+            'note' => 'Note',
+            'edit' => 'Edit',
+            'customer_info' => 'Customer information',
+        ],
     ],
 
     // TABLE
