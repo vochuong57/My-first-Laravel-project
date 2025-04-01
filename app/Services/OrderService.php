@@ -48,6 +48,7 @@ class OrderService implements OrderServiceInterface
     
     private function paginateSelect(){
         return [
+            'id',
             'code',
             'fullname',
             'phone',

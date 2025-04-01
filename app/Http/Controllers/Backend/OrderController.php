@@ -31,6 +31,22 @@ class OrderController extends Controller
         return view('Backend.dashboard.layout', compact('template','config','orders'));
     }
 
+    public function detail($id, Request $request){
+        // echo $id; die();
+        $config=$this->configIndex();
+
+        $template='Backend.order.order.detail';
+
+        $config['seo']=__('messages.order');
+
+        // $orders = $this->orderService->paginate($request);
+        // dd($orders);
+
+        // $this->authorize('modules', 'order.detail');
+
+        return view('Backend.dashboard.layout', compact('template','config'));
+    }
+
     private function configIndex(){
         return[
             'js'=>[
