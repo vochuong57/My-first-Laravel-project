@@ -615,6 +615,9 @@ return[
             'note' => 'Ghi chú',
             'edit' => 'Sửa',
             'customer_info' => 'Thông tin khách hàng',
+            'not_found' => 'Không tìm thấy hóa đơn',
+            'no_description' => 'Không có ghi chú',
+            'no_product' => 'Không có sản phẩm nào trong hóa đơn này',
         ],
     ],
 

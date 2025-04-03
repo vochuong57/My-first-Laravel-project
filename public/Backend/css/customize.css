@@ -1088,3 +1088,6 @@ input[type=checkbox]{
 .custom-line:not(:last-child){
     margin-bottom: 10px;
 }
+.edit{
+    cursor: pointer;
+}

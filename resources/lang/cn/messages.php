@@ -584,6 +584,9 @@ return [
             'note' => '备注',
             'edit' => '编辑',
             'customer_info' => '客户信息',
+            'not_found' => '未找到发票',
+            'no_description' => '没有备注',
+            'no_product' => '此发票中没有产品',
         ],
     ],
 
