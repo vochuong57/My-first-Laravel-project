@@ -21,38 +21,39 @@
                 <div class="ibox-content">
                     <table class="table-order">
                         <tbody>
-                            @for($i = 0; $i < 3; $i++)
+                            @if($order->cart['detail'])
+                            @foreach($order->cart['detail'] as $key => $val)
                             <tr class="order-item">
                                 <td>
                                     <div class="image">
-                                        <span class="image img-scaledown"><img src="https://byvn.net/YhAJ" alt=""></span>
+                                        <span class="image img-scaledown"><img src="{{ $val['image'] ?? 'Backend/img/not-found.png' }}" alt=""></span>
                                     </div>
                                 </td>
                                 <td>
-                                    <div class="order-item-name">Laptop Acer Aspire 7 A715 76G</div>
-                                    <div class="order-item-voucher">{{ $config['seo']['detail']['discount_code'] }} -</div>
+                                    <div class="order-item-name">{{ $val['name'] }}</div>
+                                    <div class="order-item-voucher text-danger">{{ $config['seo']['detail']['discount_code'] }} - không có</div>
                                 </td>
                                 <td>
-                                    <div class="order-item-price">17,000,000đ</div>
+                                    <div class="order-item-price">{{ convert_price($val['price'], true).'đ' }}</div>
                                 </td>
                                 <td>
                                     <div class="order-item-time">x</div>
                                 </td>
                                 <td>
-                                    <div class="order-item-qty">1</div>
+                                    <div class="order-item-qty">{{ $val['qty'] }}</div>
                                 </td>
                                 <td>
-                                    <div class="order-item-subtotal">17,000,000đ</div>
+                                    <div class="order-item-subtotal">{{ convert_price($val['qty'] * $val['price'], true).'đ' }}</div>
                                 </td>
                             </tr>
-                            @endfor
+                            @endforeach
                             <tr>
                                 <td colspan="5" class="text-right">{{ $config['seo']['detail']['subtotal'] }}</td>
-                                <td class="text-right">51.000.000đ</td>
+                                <td class="text-right">{{ convert_price($order->cart['cartTotal'], true) }}đ</td>
                             </tr>
                             <tr>
                                 <td colspan="5" class="text-right">{{ $config['seo']['detail']['discount'] }}</td>
-                                <td class="text-right">-0đ</td>
+                                <td class="text-right">-{{ !is_null($order->promotion) ? convert_price($order->promotion['discount'], true) : 0 }}đ</td>
                             </tr>
                             <tr>
                                 <td colspan="5" class="text-right">{{ $config['seo']['detail']['shipping'] }}</td>
@@ -60,8 +61,13 @@
                             </tr>
                             <tr>
                                 <td colspan="5" class="text-right"><strong>{{ $config['seo']['detail']['total_final'] }}</strong></td>
-                                <td class="text-right"><strong>51.000.000đ</strong></td>
+                                <td class="text-right"><strong>{{ !is_null($order->promotion) ? convert_price($order->cart['cartTotal'] - $order->promotion['discount'], true) : convert_price($order->cart['cartTotal'], true) }}đ</strong></td>
                             </tr>
+                            @else
+                            <tr>
+                                <td colspan="6" class="text-center">{{ $config['seo']['detail']['no_product'] }}</td>
+                            </tr>
+                            @endif
                         </tbody>
                     </table>
                 </div>
@@ -71,9 +77,9 @@
                             <span class="icon"><img src="Backend/img/warning.png" alt=""></span>
                             <div class="payment-title">
                                 <div class="text_1">
-                                    <span class="isConfirm">{{ $config['seo']['detail']['pending_order_confirmation'] }}</span> 51.000.000đ
+                                    <span class="isConfirm">{{ $config['seo']['detail']['pending_order_confirmation'] }}</span> {{ !is_null($order->promotion) ? convert_price($order->cart['cartTotal'] - $order->promotion['discount'], true) : convert_price($order->cart['cartTotal'], true) }}đ
                                 </div>
-                                <div class="text_2">Thanh toán khi nhận hàng (COD)</div>
+                                <div class="text_2">{{ array_column(__('payment.method'), 'title', 'name')[$order->method] ?? $order->method }}</div>
                             </div>
                         </div>
                         <div class="cancle-block">
@@ -108,7 +114,7 @@
                 </div>
                 <div class="ibox-content">
                     <div class="description">
-                        Giao hàng lúc 3:00 PM
+                        {{ $order->description ?? $config['seo']['detail']['no_description'] }}
                     </div>
                 </div>
             </div>
@@ -121,25 +127,25 @@
                 </div>
                 <div class="ibox-content">
                     <div class="customer-line">
-                        <strong>N: </strong>Chương Võ
+                        <strong>N: </strong>{{ $order->fullname }}
                     </div>
                     <div class="customer-line">
-                        <strong>E: </strong>vochuong57@gmail.com
+                        <strong>E: </strong>{{ $order->email }}
                     </div>
                     <div class="customer-line">
-                        <strong>P: </strong>0346337782
+                        <strong>P: </strong>{{ $order->phone }}
                     </div>
                     <div class="customer-line">
-                        <strong>A: </strong>55b đường 19
+                        <strong>A: </strong>{{ $order->address }}
                     </div>
                     <div class="customer-line">
-                        <strong>P: </strong>Linh Chiểu
+                        <strong>P: </strong>{{ $order->wards->name }}
                     </div>
                     <div class="customer-line">
-                        <strong>Q: </strong>Thủ Đức
+                        <strong>Q: </strong>{{ $order->districts->name }}
                     </div>
                     <div class="customer-line">
-                        <strong>T: </strong>Hồ Chí Minh
+                        <strong>T: </strong>{{ $order->provinces->name }}
                     </div>
                 </div>
             </div>

@@ -33,6 +33,14 @@ class OrderController extends Controller
 
     public function detail($id, Request $request){
         // echo $id; die();
+
+        $order = $this->orderRepository->findById($id, ['*'], ['products']);
+        // dd($order);
+
+        if(!$order) {
+            return redirect()->route('order.index')->with('error', __('messages.detail.not_found'));
+        }
+
         $config=$this->configIndex();
 
         $template='Backend.order.order.detail';
@@ -44,7 +52,7 @@ class OrderController extends Controller
 
         // $this->authorize('modules', 'order.detail');
 
-        return view('Backend.dashboard.layout', compact('template','config'));
+        return view('Backend.dashboard.layout', compact('template','config', 'order'));
     }
 
     private function configIndex(){

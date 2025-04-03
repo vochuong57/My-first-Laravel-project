@@ -583,6 +583,9 @@ return[
             'note' => 'Note',
             'edit' => 'Edit',
             'customer_info' => 'Customer information',
+            'not_found' => 'Invoice not found',
+            'no_description' => 'No description available',
+            'no_product' => 'No products in this invoice',
         ],
     ],
 
