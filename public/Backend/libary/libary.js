@@ -314,7 +314,7 @@
     
 
     $document.ready(function(){
-        console.log(123);
+        // console.log(123);
         //gọi function lặp switchery (giao diện)
         HT.switchery();
 

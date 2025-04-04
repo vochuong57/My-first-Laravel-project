@@ -109,7 +109,7 @@
                 <div class="ibox-title">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
                         <h5>{{ $config['seo']['detail']['note'] }}</h5>
-                        <div class="edit span">{{ $config['seo']['detail']['edit'] }}</div>
+                        <div class="edit span edit-order" data-target="description">{{ $config['seo']['detail']['edit'] }}</div>
                     </div>
                 </div>
                 <div class="ibox-content">
@@ -122,7 +122,7 @@
                 <div class="ibox-title">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
                         <h5>{{ $config['seo']['detail']['customer_info'] }}</h5>
-                        <div class="edit span">{{ $config['seo']['detail']['edit'] }}</div>
+                        <div class="edit span edit-order" data-target="customerInfo">{{ $config['seo']['detail']['edit'] }}</div>
                     </div>
                 </div>
                 <div class="ibox-content">
@@ -152,3 +152,4 @@
         </div>
     </div>
 </div>
+<input type="hidden" class="orderId" value="{{ $order->id }}">

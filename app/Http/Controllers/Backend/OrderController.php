@@ -50,7 +50,7 @@ class OrderController extends Controller
         // $orders = $this->orderService->paginate($request);
         // dd($orders);
 
-        // $this->authorize('modules', 'order.detail');
+        $this->authorize('modules', 'order.detail');
 
         return view('Backend.dashboard.layout', compact('template','config', 'order'));
     }
@@ -62,12 +62,15 @@ class OrderController extends Controller
                 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
                 'https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js',
                 'Backend/js/plugins/daterangepicker/daterangepicker.js',
+                'Backend/libary/order.js',
+                'Backend/js/plugins/toastr/toastr.min.js',
 
             ],
             'css'=>[
                 'Backend/css/plugins/switchery/switchery.css',
                 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css',
                 'Backend/css/plugins/daterangepicker/daterangepicker-bs3.css',
+                'Backend/css/plugins/toastr/toastr.min.css',
             ],
             'model'=>'Order'
         ];

@@ -45,6 +45,7 @@ use App\Http\Controllers\Ajax\SlideController as AjaxSlideController;
 use App\Http\Controllers\Ajax\ProductController as AjaxProductController;
 use App\Http\Controllers\Ajax\SourceController as AjaxSourceController;
 use App\Http\Controllers\Ajax\CartController as AjaxCartController;
+use App\Http\Controllers\Ajax\OrderController as AjaxOrderController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -115,7 +116,8 @@ Route::group(['middleware' => ['admin','locale','backend_default_locale']], func
     Route::get('ajax/product/loadProductPromotion',[AjaxProductController::class, 'loadProductPromotion'])->name('ajax.product.loadProductPromotion');//Trang thực thi chuyển đổi ... đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
     Route::get('ajax/source/getAllSource',[AjaxSourceController::class, 'getAllSource'])->name('ajax.source.getAllSource');//Trang thực thi chuyển đổi ... đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
     Route::get('ajax/dashboard/getPromotionConditionValue',[AjaxDashboardController::class, 'getPromotionConditionValue'])->name('ajax.dashboard.getPromotionConditionValue');//Trang thực thi chuyển đổi ... đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
-
+    Route::post('ajax/order/update',[AjaxOrderController::class, 'update'])->name('ajax.order.update');
+    
     //UserCatalogueController (Trang quản lí nhóm người dùng)
     Route::group(['prefix'=>'user/catalogue'], function(){
         Route::get('index',[UserCatalogueController::class, 'index'])->name('user.catalogue.index');//hiển thị form user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')

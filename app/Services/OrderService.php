@@ -45,6 +45,22 @@ class OrderService implements OrderServiceInterface
         // dd($orders);
         return $orders;
     }
+
+    public function update($post){
+        DB::beginTransaction();
+        try{
+            $id = $post['id'];
+            $payload = $post['payload'];
+            // dd($payload);
+            $this->orderRepository->update($id, $payload);
+            DB::commit();
+            return true;
+        }catch(\Exception $ex){
+            DB::rollBack();
+            echo $ex->getMessage();//die();
+            return false;
+        }
+    }
     
     private function paginateSelect(){
         return [
