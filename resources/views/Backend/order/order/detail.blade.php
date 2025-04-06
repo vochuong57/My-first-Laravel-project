@@ -127,16 +127,16 @@
                 </div>
                 <div class="ibox-content">
                     <div class="customer-line">
-                        <strong>N: </strong>{{ $order->fullname }}
+                        <strong>N: </strong><span class="fullname">{{ $order->fullname }}</span>
                     </div>
                     <div class="customer-line">
-                        <strong>E: </strong>{{ $order->email }}
+                        <strong>E: </strong><span class="email">{{ $order->email }}</span>
                     </div>
                     <div class="customer-line">
-                        <strong>P: </strong>{{ $order->phone }}
+                        <strong>P: </strong><span class="phone">{{ $order->phone }}</span>
                     </div>
                     <div class="customer-line">
-                        <strong>A: </strong>{{ $order->address }}
+                        <strong>A: </strong><span class="address">{{ $order->address }}</span>
                     </div>
                     <div class="customer-line">
                         <strong>P: </strong>{{ $order->wards->name }}
@@ -153,3 +153,14 @@
     </div>
 </div>
 <input type="hidden" class="orderId" value="{{ $order->id }}">
+<input type="hidden" class="ward_id" value="{{ $order->ward_id }}">
+<input type="hidden" class="district_id" value="{{ $order->district_id }}">
+<input type="hidden" class="province_id" value="{{ $order->province_id }}">
+<script>
+    var provinces = @json($provinces->map(function ($item) {
+        return [
+            'id' => $item->code,
+            'name' => $item->name,
+        ];
+    })->values());
+</script>

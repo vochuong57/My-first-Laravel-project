@@ -48,6 +48,7 @@ class LocationController extends Controller
         // cách 2 lấy dữ liệu từ function tự tạo dùng chung trong Base lưu ý nhớ xây dựng lại phương thức trong lớp model để định nghĩa lại tên khóa ngoại, khóa chính của mỗi bảng nếu tên đó không đúng với chuẩn larvel
         $html='';
         $get=$request->input();
+        // dd($get);
 
         if($get['target']=='DTdistricts'){
             $ListDistricts=$this->provinceRepository->findById($get['data']['location_id'],['code','name'],['districts']);
