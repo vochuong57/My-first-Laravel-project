@@ -2,23 +2,28 @@
     var HT={};
     var _token = $('meta[name="csrf-token"]').attr('content')
 
+    HT.select2=()=>{
+        if($('.setupSelect2').length){
+            $('.setupSelect2').select2();
+        }
+    }
+
     HT.editOrder = () => {
         $(document).on('click', '.edit-order', function(){
             let _this = $(this)
             let target = _this.attr('data-target')
             let html = ''
-            let originalHtml
+            let originalHtml = _this.parents('.ibox').find('.ibox-content').html()
             if(target == 'description'){
                 html = HT.renderDescriptionOrder(_this)
-                
-                originalHtml = _this.parents('.ibox').find('.ibox-content').html()
-                
-                HT.changeEditToCancle(_this, originalHtml)
-                
                 description = _this.parents('.ibox').find('.ibox-content .description').text()
             }else if(target == 'customerInfo'){
                 html = HT.renderCustomerInfoOrder()
+                setTimeout(() => {
+                    HT.select2()
+                }, 0);
             }
+            HT.changeEditToCancle(_this, originalHtml)
             _this.parents('.ibox').find('.ibox-content').html(html)
         })
     }
@@ -31,7 +36,143 @@
     }
 
     HT.renderCustomerInfoOrder = () => {
-        return 123;
+
+        let data = {
+            fullname: $('.fullname').text(),
+            email: $('.email').text(),
+            phone: $('.phone').text(),
+            address: $('.address').text(),
+            province_id: $('.province_id').val(),
+            district_id: $('.district_id').val(),
+            ward_id: $('.ward_id').val(),
+        }
+        console.log(data.province_id);
+        
+        console.log(provinces);
+        
+
+        let html = `
+            <div class="mb15">
+                <label for="">Họ Tên</label>
+                <input type="text" name="fullname" value="${data.fullname}" class="form-control">
+            </div>
+            <div class="mb15">
+                <label for="">Email</label>
+                <input type="text" name="email" value="${data.email}" class="form-control">
+            </div>
+            <div class="mb15">
+                <label for="">Điện Thoại</label>
+                <input type="text" name="phone" value="${data.phone}" class="form-control">
+            </div>
+            <div class="mb15">
+                <label for="">Địa Chỉ</label>
+                <input type="text" name="address" value="${data.address}" class="form-control">
+            </div>
+            <div class="mb15">
+                <label for="">Tỉnh/Thành</label>
+                <select name="province_id" class="form-control setupSelect2 provinces location" data-target="DTdistricts">
+                    <option value="0">Chọn tỉnh/thành</option>
+                    ${HT.provinceList()}
+                    ${setTimeout(() => {
+                        HT.loadCity(data.province_id)
+                    }, 0)}
+                </select>
+            </div>
+            <div class="mb15">
+                <label for="">Quận/Huyện</label>
+                <select name="district_id" class="form-control setupSelect2 location DTdistricts" data-target="DTwards">
+                    <option value="0">Chọn quận/huyện</option>
+                </select>
+            </div>
+            <div class="mb15">
+                <label for="">Phường/Xã</label>
+                <select name="ward_id" class="form-control setupSelect2 DTwards">
+                    <option value="0">Chọn phường/xã</option>
+                </select>
+            </div>
+            <div class="mb15">
+                <button class="btn btn-primary saveCustomer">Lưu lại</button>
+            </div>
+        `
+        return html
+    }
+
+    HT.provinceList = () => {
+        let html = ''
+        provinces.forEach(function(item, index){
+            html += `<option value="${item.id}">${item.name}</option>`
+        })
+        return html
+    }
+
+    HT.loadCity=(province_id)=>{
+        if(province_id!=''){
+            $('.provinces').val(province_id).trigger('change');
+        }
+    }
+
+    HT.getLocation=()=>{
+        $(document).on('change', '.location', function(){
+            let _this = $(this);
+            let option = {
+                'data': {
+                    'location_id': _this.val(),
+                },
+                'target': _this.data('target')
+            };
+            console.log(option);
+            HT.sendDataTogetLocation(option);
+            
+        });
+    }
+
+    HT.sendDataTogetLocation=(option)=>{
+        let district_id = $('.district_id').val()
+        let ward_id = $('.ward_id').val()
+        $.ajax({
+            url: 'ajax/location/getLocation',
+            type: 'GET',
+            data: option,
+            dataType: 'json',
+            success: function(res){
+                //console.log(res);
+                $('.'+option.target).html(res.html);
+
+                if(district_id!=''&& option.target=='DTdistricts'){
+                    $('.DTdistricts').val(district_id).trigger('change')
+                }
+                if(ward_id!=''&& option.target=='DTwards'){
+                    $('.DTwards').val(ward_id).trigger('change')
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown){
+                console.log('Lỗi: '+jqXHR);
+                console.log('Lỗi request: '+ textStatus);
+                console.log('Lỗi nội dung: '+ errorThrown);
+            }
+        });
+    }
+
+    HT.saveCustomer = (e) => {
+        $(document).on('click', '.saveCustomer', function(){
+            let _this = $(this)
+            let orderId = $('.orderId').val()
+            let option = {
+                id: orderId,
+                payload: {
+                    fullname: $('input[name="fullname"]').val(),
+                    email: $('input[name="email"]').val(),
+                    phone: $('input[name="phone"]').val(),
+                    address: $('input[name="address"]').val(),
+                    province_id: $('select[name="province_id"]').val(),
+                    district_id: $('select[name="district_id"]').val(),
+                    ward_id: $('select[name="ward_id"]').val(),
+                },
+                _token: _token
+            }
+            // console.log(option);
+            HT.ajaxUpdateOrderInfo(option, _this);
+        })
     }
     
     HT.changeEditToCancle = (_this, originalHtml) => {
@@ -105,6 +246,12 @@
                         toastr.success(res.message, 'Thông báo từ hệ thống!')                        
                         HT.renderDescriptionHtml(option.payload.description, _this.parents('.ibox'))
                     }
+                    else if(_this.parents('.ibox').find('.cancel-edit').attr('data-target') == 'customerInfo'){
+                        toastr.success(res.message, 'Thông báo từ hệ thống!') 
+                        // console.log(res.order);
+                                               
+                        HT.renderCustomerInfoHtml(res, _this.parents('.ibox'))
+                    }
                 }
             },
             error: function(xhr, status, error){
@@ -120,10 +267,43 @@
         target.find('.ibox-content').html('<div class="description">'+value+'</div>')
     }
 
+    HT.renderCustomerInfoHtml = (res, target) => {
+        let html = `
+            <div class="customer-line">
+                <strong>N: </strong><span class="fullname">${res.order.fullname}</span>
+            </div>
+            <div class="customer-line">
+                <strong>E: </strong><span class="email">${res.order.email}</span>
+            </div>
+            <div class="customer-line">
+                <strong>P: </strong><span class="phone">${res.order.phone}</span>
+            </div>
+            <div class="customer-line">
+                <strong>A: </strong><span class="address">${res.order.address}</span>
+            </div>
+            <div class="customer-line">
+                <strong>P: </strong>${res.order.wards.name}
+            </div>
+            <div class="customer-line">
+                <strong>Q: </strong>${res.order.districts.name}
+            </div>
+            <div class="customer-line">
+                <strong>T: </strong>${res.order.provinces.name}
+            </div>
+        `
+        $('.province_id').val(res.order.province_id)
+        $('.district_id').val(res.order.district_id)
+        $('.ward_id').val(res.order.ward_id)
+        target.find('.ibox-title .cancel-edit').html('Sửa').removeClass('cancel-edit').addClass('edit-order').attr('data-html', '')
+        target.find('.ibox-content').html(html)
+    }
+
     $(document).ready(function(){
         HT.updateDescription()
         HT.cancelEdit()
         HT.editOrder()
+        HT.getLocation()
+        HT.saveCustomer()
     })
 
 })(jQuery)

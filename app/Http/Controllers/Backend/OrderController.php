@@ -6,15 +6,18 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\Interfaces\OrderServiceInterface as OrderService;
 use App\Repositories\Interfaces\OrderRepositoryInterface as OrderRepository;
+use App\Repositories\Interfaces\ProvinceRepositoryInterface as ProvinceRepository;
 
 class OrderController extends Controller
 {
     protected $orderService;
     protected $orderRepository;
+    protected $provinceRepository;
 
-    public function __construct(OrderService $orderService, OrderRepository $orderRepository){
+    public function __construct(OrderService $orderService, OrderRepository $orderRepository, ProvinceRepository $provinceRepository){
         $this->orderService=$orderService;
         $this->orderRepository=$orderRepository;
+        $this->provinceRepository=$provinceRepository;
     }
     public function index(Request $request){
         $config=$this->configIndex();
@@ -50,9 +53,11 @@ class OrderController extends Controller
         // $orders = $this->orderService->paginate($request);
         // dd($orders);
 
+        $provinces=$this->provinceRepository->all();
+
         $this->authorize('modules', 'order.detail');
 
-        return view('Backend.dashboard.layout', compact('template','config', 'order'));
+        return view('Backend.dashboard.layout', compact('template','config', 'order', 'provinces'));
     }
 
     private function configIndex(){
