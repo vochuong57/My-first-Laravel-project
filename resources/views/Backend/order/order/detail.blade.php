@@ -7,7 +7,7 @@
                 <div class="ibox-title">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
                         <div class="ibox-title-left">
-                            <span>{{ $config['seo']['detail']['invoice_details'] }}</span>
+                            <span>{{ $config['seo']['detail']['invoice_details'] }} #{{ $order->code }}</span>
                             <span class="badge">
                                 <div class="badge__tip"></div>
                                 <div class="badge-text">{{ $config['seo']['detail']['not_delivered'] }}</div>
@@ -71,19 +71,31 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="payment-confirm">
+                <div class="payment-confirm confirm-box">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
                         <div class="uk-flex uk-flex-middle">
-                            <span class="icon"><img src="Backend/img/warning.png" alt=""></span>
+                            <span class="icon"><img src="{{ $order->confirm == 'pending' ? 'Backend/img/warning.png' : 'Backend/img/correct.png' }}" alt=""></span>
                             <div class="payment-title">
                                 <div class="text_1">
-                                    <span class="isConfirm">{{ $config['seo']['detail']['pending_order_confirmation'] }}</span> {{ !is_null($order->promotion) ? convert_price($order->cart['cartTotal'] - $order->promotion['discount'], true) : convert_price($order->cart['cartTotal'], true) }}đ
+                                    @php
+                                        $confirm = $order->confirm;
+                                        if($confirm == 'pending') {
+                                            $confirm = $config['seo']['detail']['pending_order_confirmation'];
+                                        } elseif ($confirm == 'confirm') {
+                                            $confirm = $config['seo']['detail']['order_confirmed'];
+                                        } elseif ($confirm == 'cancel') {
+                                            $confirm = $config['seo']['detail']['order_cancelled'];
+                                        }
+                                    @endphp
+                                    <span class="isConfirm">{{ $confirm }}</span> {{ !is_null($order->promotion) ? convert_price($order->cart['cartTotal'] - $order->promotion['discount'], true) : convert_price($order->cart['cartTotal'], true) }}đ
                                 </div>
                                 <div class="text_2">{{ array_column(__('payment.method'), 'title', 'name')[$order->method] ?? $order->method }}</div>
                             </div>
                         </div>
-                        <div class="cancle-block">
-                            <!-- <button class="button">Hủy đơn</button> -->
+                        <div class="cancel-block">
+                            @if($order->confirm == 'confirm')
+                            <button class="button cancel updateField" data-field="confirm" data-confirm="cancel" data-title="{{ $config['seo']['detail']['order_cancelled'] }}">{{ $config['seo']['detail']['btnCancel'] }}</button>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -97,8 +109,14 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="cancle-block">
-                            <button class="button confirm">{{ $config['seo']['detail']['btnConfirm'] }}</button>
+                        <div class="confirm-block">
+                            @if($order->confirm == 'pending')
+                            <button class="button confirm updateField" data-field="confirm" data-confirm="confirm" data-title="{{ $config['seo']['detail']['order_confirmed'] }}">{{ $config['seo']['detail']['btnConfirm'] }}</button>
+                            @elseif($order->confirm == 'confirm')
+                            {{ $config['seo']['detail']['confirmed'] }}
+                            @elseif($order->confirm == 'cancel')
+                            {{ $config['seo']['detail']['cancelled'] }}
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -163,4 +181,9 @@
             'name' => $item->name,
         ];
     })->values());
+
+    var txtCancelButton = '{{ $config['seo']['detail']['btnCancel'] }}';
+    var txtOrderCancelled = '{{ $config['seo']['detail']['order_cancelled'] }}';
+    var txtConfirmed = '{{ $config['seo']['detail']['confirmed'] }}';
+    var txtCancelled = '{{ $config['seo']['detail']['cancelled'] }}';
 </script>

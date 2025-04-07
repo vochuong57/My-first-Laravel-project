@@ -618,6 +618,11 @@ return[
             'not_found' => 'Không tìm thấy hóa đơn',
             'no_description' => 'Không có ghi chú',
             'no_product' => 'Không có sản phẩm nào trong hóa đơn này',
+            'btnCancel' => 'Hủy đơn',
+            'order_confirmed' => 'ĐƠN HÀNG ĐÃ ĐƯỢC XÁC NHẬN',
+            'order_cancelled' => 'ĐƠN HÀNG ĐÃ BỊ HỦY',
+            'confirmed' => 'Đã xác nhận',
+            'cancelled' => 'Đã hủy',
         ],
     ],
 

@@ -586,6 +586,11 @@ return[
             'not_found' => 'Invoice not found',
             'no_description' => 'No description available',
             'no_product' => 'No products in this invoice',
+            'btnCancel' => 'Cancel order',
+            'order_confirmed' => 'ORDER HAS BEEN CONFIRMED',
+            'order_cancelled' => 'ORDER HAS BEEN CANCELLED',
+            'confirmed' => 'Confirmed',
+            'cancelled' => 'Cancelled',
         ],
     ],
 

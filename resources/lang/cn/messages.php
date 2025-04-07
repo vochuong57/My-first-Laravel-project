@@ -587,6 +587,11 @@ return [
             'not_found' => '未找到发票',
             'no_description' => '没有备注',
             'no_product' => '此发票中没有产品',
+            'btnCancel' => '取消订单',
+            'order_confirmed' => '订单已确认',
+            'order_cancelled' => '订单已取消',
+            'confirmed' => '已确认',
+            'cancelled' => '已取消',
         ],
     ],
 
