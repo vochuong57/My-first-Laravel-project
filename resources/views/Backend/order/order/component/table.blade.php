@@ -8,13 +8,13 @@
             <th>{{ __('messages.code') }}</th>
             <th>{{ __('messages.created_at') }}</th>
             <th>{{ __('messages.customer') }}</th>
-            <th>{{ __('messages.payment') }}</th>
             <th>{{ __('messages.method') }}</th>
             <th class="text-right">{{ __('messages.discount') }}</th>
             <th class="text-right">{{ __('messages.shipping_fee') }}</th>
             <th class="text-right">{{ __('messages.total_final') }}</th>
-            <th class="text-center">{{ __('messages.delivery') }}</th>
             <th class="text-center">{{ __('messages.status') }}</th>
+            <th>{{ __('messages.payment') }}</th>
+            <th class="text-center">{{ __('messages.delivery') }}</th>
         </tr>
     </thead>
     <tbody>
@@ -37,9 +37,6 @@
                 <div><b>A:</b> {{ $order->address.', '.$order->wards->name.', '.$order->districts->name.', '.$order->provinces->name }}</div>
             </td>
             <td>
-                {{ __('cart.payment')[$order->payment] }}
-            </td>
-            <td>
                 {{ array_column(__('payment.method'), 'title', 'name')[$order->method] ?? $order->method }}
             </td>
             <td class="text-right">
@@ -52,10 +49,13 @@
                 {{ convert_price($order->cart['cartTotal'], true) }}đ
             </td>
             <td class="text-center">
-                {{ __('cart.delivery')[$order->delivery] }}
+                {{ __('cart.confirm')[$order->confirm] }}
+            </td>
+            <td>
+                {{ __('cart.payment')[$order->payment] }}
             </td>
             <td class="text-center">
-                {{ __('cart.confirm')[$order->confirm] }}
+                {{ __('cart.delivery')[$order->delivery] }}
             </td>
         </tr>
         @endforeach

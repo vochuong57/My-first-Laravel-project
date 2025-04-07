@@ -298,12 +298,65 @@
         target.find('.ibox-content').html(html)
     }
 
+    HT.updateField = () => {
+        $(document).on('click', '.updateField', function(){
+            let _this = $(this)
+            let field = _this.attr('data-field')
+            let value = _this.attr('data-confirm')
+            let orderId = $('.orderId').val()
+            let option = {
+                id: orderId,
+                payload: {
+                    [field]: value,
+                },
+                _token: _token
+            }
+            console.log(option);
+
+            $.ajax({
+                url: 'ajax/order/update',
+                type: 'POST',
+                data: option,
+                dataType: 'json',
+                success: function(res){
+                    console.log(res);
+                    toastr.clear()
+                    toastr.success(res.message, 'Thông báo từ hệ thống!')                        
+                    HT.createOrderConfirmSection(_this)
+                },
+                error: function(xhr, status, error){
+                    console.log(xhr.responseText);
+                    toastr.error('Có lỗi xảy ra! Hãy thử lại.', 'Thông báo từ hệ thống!');
+                }
+            })
+        })
+    }
+
+    HT.createOrderConfirmSection = (_this) => {
+        let button = `<button class="button cancel updateField" data-field="confirm" data-confirm="cancel" data-title="${txtOrderCancelled}">${txtCancelButton}</button>`
+        $('.cancel-block').html(button)
+        
+        let correctImage = `Backend/img/correct.png`
+        $('.confirm-box').find('img').attr('src', correctImage)
+
+        $('.isConfirm').html(_this.attr('data-title'))
+
+        if(_this.attr('data-confirm') == 'confirm'){
+            $('.confirm-block').html(txtConfirmed)
+        }
+        if(_this.attr('data-confirm') == 'cancel'){
+            $('.confirm-block').html(txtCancelled)
+            $('.cancel-block').empty()
+        }
+    }
+
     $(document).ready(function(){
         HT.updateDescription()
         HT.cancelEdit()
         HT.editOrder()
         HT.getLocation()
         HT.saveCustomer()
+        HT.updateField()
     })
 
 })(jQuery)
