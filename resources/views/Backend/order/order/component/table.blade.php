@@ -13,7 +13,7 @@
             <th class="text-right">{{ __('messages.shipping_fee') }}</th>
             <th class="text-right">{{ __('messages.total_final') }}</th>
             <th class="text-center">{{ __('messages.status') }}</th>
-            <th>{{ __('messages.payment') }}</th>
+            <th class="text-center">{{ __('messages.payment') }}</th>
             <th class="text-center">{{ __('messages.delivery') }}</th>
         </tr>
     </thead>
@@ -48,15 +48,25 @@
             <td class="text-right">
                 {{ convert_price($order->cart['cartTotal'], true) }}đ
             </td>
-            <td class="text-center">
+            <td class="text-center td-confirm" data-confirm="{{ $order->confirm }}">
                 {{ __('cart.confirm')[$order->confirm] }}
             </td>
-            <td>
-                {{ __('cart.payment')[$order->payment] }}
-            </td>
+            @if($order->confirm != 'cancel')
+            @foreach(__('cart') as $key => $value)
+            @if($key == 'confirm') @continue @endif
             <td class="text-center">
-                {{ __('cart.delivery')[$order->delivery] }}
+                <select name="{{ $key }}" class="setupSelect2 updateBadge" data-field="{{ $key }}">
+                    @foreach($value as $k => $v)
+                    @if($k == '0') @continue @endif
+                    <option value="{{ $k }}" {{ $order->{$key} == $k ? 'selected' : '' }}>{{ $v }}</option>
+                    @endforeach
+                </select>
             </td>
+            @endforeach
+            @else
+            <td></td>
+            <td></td>
+            @endif
         </tr>
         @endforeach
         @endif

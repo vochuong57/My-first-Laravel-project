@@ -623,6 +623,10 @@ return[
             'order_cancelled' => 'ĐƠN HÀNG ĐÃ BỊ HỦY',
             'confirmed' => 'Đã xác nhận',
             'cancelled' => 'Đã hủy',
+            'shipping' => 'Đang giao',
+            'delivered' => 'Đã giao',
+            'unpaid' => 'Chưa thanh toán',
+            'paid' => 'Đã thanh toán',
         ],
     ],
 

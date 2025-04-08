@@ -10,7 +10,21 @@
                             <span>{{ $config['seo']['detail']['invoice_details'] }} #{{ $order->code }}</span>
                             <span class="badge">
                                 <div class="badge__tip"></div>
-                                <div class="badge-text">{{ $config['seo']['detail']['not_delivered'] }}</div>
+                                <div class="badge-text">{{ $order->payment == 'unpaid' ? $config['seo']['detail']['unpaid'] : $config['seo']['detail']['paid'] }}</div>
+                            </span>
+                            <span class="badge">
+                                <div class="badge__tip"></div>
+                                @php
+                                    $status = $order->delivery;
+                                    if($status == 'pending') {
+                                        $status = $config['seo']['detail']['not_delivered'];
+                                    } elseif ($status == 'shipping') {
+                                        $status = $config['seo']['detail']['shipping'];
+                                    } elseif ($status == 'delivered') {
+                                        $status = $config['seo']['detail']['delivered'];
+                                    }
+                                @endphp
+                                <div class="badge-text">{{ $status }}</div>
                             </span>
                         </div>
                         <div class="ibox-title-right">
