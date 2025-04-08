@@ -592,6 +592,10 @@ return [
             'order_cancelled' => '订单已取消',
             'confirmed' => '已确认',
             'cancelled' => '已取消',
+            'shipping' => '配送中',
+            'delivered' => '已送达',
+            'unpaid' => '未付款',
+            'paid' => '已付款',
         ],
     ],
 

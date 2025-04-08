@@ -591,6 +591,10 @@ return[
             'order_cancelled' => 'ORDER HAS BEEN CANCELLED',
             'confirmed' => 'Confirmed',
             'cancelled' => 'Cancelled',
+            'delivering' => 'Delivering',
+            'shipping' => 'Delivered',
+            'unpaid' => 'Unpaid',
+            'paid' => 'Paid',
         ],
     ],
 

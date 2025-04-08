@@ -350,6 +350,62 @@
         }
     }
 
+    HT.updateBadge = () => {
+        $(document).on('change', '.updateBadge', function(){
+            let _this = $(this)
+
+            // Nếu đang trong trạng thái skip (bỏ qua change), thì reset và thoát
+            if (_this.data('skip') === true) {
+                _this.data('skip', false); // reset lại
+                return; // thoát không chạy tiếp
+            }
+
+            let field = _this.attr('data-field')
+            let value = _this.val()
+            let orderId = _this.parents('tr').find('.checkBoxItem').val()
+            let option = {
+                id: orderId,
+                payload: {
+                    [field]: value,
+                },
+                _token: _token
+            }
+            console.log(option);
+
+            let confirmStatus = _this.parents('tr').find('.td-confirm').attr('data-confirm')
+
+            if(confirmStatus != 'confirm'){
+                // Đánh dấu là skip lần kế tiếp khi trigger change
+                _this.data('skip', true);
+                toastr.clear()
+                toastr.error('Đơn hàng chưa được xác nhận! Bạn phải xác nhận đơn hàng trước khi thực hiện cập nhật này!', 'Thông báo từ hệ thống!');
+                if(field == 'payment'){
+                    _this.val('unpaid').trigger('change')
+                }
+                if(field == 'delivery'){
+                    _this.val('pending').trigger('change')
+                }
+                return;
+            }
+
+            $.ajax({
+                url: 'ajax/order/update',
+                type: 'POST',
+                data: option,
+                dataType: 'json',
+                success: function(res){
+                    console.log(res);
+                    toastr.clear()
+                    toastr.success(res.message, 'Thông báo từ hệ thống!')                        
+                },
+                error: function(xhr, status, error){
+                    console.log(xhr.responseText);
+                    toastr.error('Có lỗi xảy ra! Hãy thử lại.', 'Thông báo từ hệ thống!');
+                }
+            })
+        })
+    }
+
     $(document).ready(function(){
         HT.updateDescription()
         HT.cancelEdit()
@@ -357,6 +413,7 @@
         HT.getLocation()
         HT.saveCustomer()
         HT.updateField()
+        HT.updateBadge()
     })
 
 })(jQuery)
