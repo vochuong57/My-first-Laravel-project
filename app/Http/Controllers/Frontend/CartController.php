@@ -9,18 +9,21 @@ use App\Repositories\Interfaces\ProvinceRepositoryInterface as ProvinceRepositor
 use App\Services\Interfaces\CartServiceInterface as CartService;
 use App\Http\Requests\StoreCartRequest;
 use App\Repositories\Interfaces\OrderRepositoryInterface as OrderRepository;
+use App\Classes\Vnpay;
 
 class CartController extends FrontendController
 {
     protected $provinceRepository;
     protected $cartService;
     protected $orderRepository;
+    protected $vnpay;
 
-    public function __construct(ProvinceRepository $provinceRepository, CartService $cartService, OrderRepository $orderRepository){
+    public function __construct(ProvinceRepository $provinceRepository, CartService $cartService, OrderRepository $orderRepository, Vnpay $vnpay){
         parent::__construct();
         $this->provinceRepository = $provinceRepository;
         $this->cartService = $cartService;
         $this->orderRepository = $orderRepository;
+        $this->vnpay = $vnpay;
     }
 
     public function checkout(){
@@ -58,8 +61,15 @@ class CartController extends FrontendController
     public function create(StoreCartRequest $request){
         $systems = $this->getSystem();
         $order = $this->cartService->createDB($request, $this->language, $systems);
+        // dd($order);
         if($order['flag']){
-            Cart::instance('shopping')->destroy();
+            if($order['order']->method == 'vnpay'){
+                $response = $this->vnpay->payment($order['order']);
+                if($response['code'] == '00'){
+                    return redirect()->away($response['url']);
+                }
+            }
+            // Cart::instance('shopping')->destroy();
             return redirect()->route('cart.success', ['code' => $order['order']->code])->with('success','Đặt hàng thành công');
         }
            return redirect()->route('cart.checkout')->with('error','Đặt hàng không thành công. Hãy thử lại');
