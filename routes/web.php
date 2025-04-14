@@ -33,6 +33,7 @@ use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\RouterController;
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Backend\OrderController;
+use App\Http\Controllers\Frontend\VnpayController;
 //@@useController@@
 
 
@@ -72,6 +73,9 @@ Route::get('ajax/product/detailShowPopup',[AjaxProductController::class, 'detail
 Route::get('ajax/location/getLocation',[LocationController::class, 'getLocation'])->name('ajax.location.getLocation');
 Route::get('ajax/cart/update',[AjaxCartController::class, 'update'])->name('ajax.cart.update');
 Route::get('ajax/cart/delete',[AjaxCartController::class, 'delete'])->name('ajax.cart.delete');
+
+// VNPAY
+Route::get('return/vnpay'.config('apps.general.suffix'),[VnpayController::class, 'vnpay_return'])->name('vnpay.vnpay_return');
 
 // BACKEND ROUTES
 

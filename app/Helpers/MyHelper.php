@@ -449,3 +449,14 @@ if(!function_exists('getVariantPrice')){
         ];
     }
 }
+
+if(!function_exists('vnpayConfig')){
+    function vnpayConfig(){
+        return [
+            'vnp_Url' => 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html',
+            'vnp_Returnurl' => write_url('return/vnpay'),
+            'vnp_TmnCode' => '585RTEM4',
+            'vnp_HashSecret' => 'NSGEJNJVH7KHXR9ZTQZ885791JN6GWB9',
+        ];
+    }
+}

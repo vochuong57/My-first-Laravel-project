@@ -309,7 +309,6 @@ class CartService extends BaseService implements CartServiceInterface
             // dd($order);
             if($order->id > 0){
                 $this->createOrderProduct($payload, $request, $order);
-                $this->paymentOnline($payload['method']);
                 $this->mail($order, $systems);
             }
             // die();
@@ -398,25 +397,6 @@ class CartService extends BaseService implements CartServiceInterface
         }
     }
 
-    private function paymentOnline($method){
-        switch ($method) {
-            case 'zalo':
-                $this->zaloPay();
-                break;
-            case 'momo':
-                $this->momoPay();
-                break;
-            case 'shopee':
-                $this->shopeePay();
-                break;
-            case 'vnpay':
-                $this->vnPay();
-                break;
-            case 'paypal':
-                $this->paypal();
-                break;
-        }
-    }
 
     public function getFullAddress($order){
         $arrAddress;
