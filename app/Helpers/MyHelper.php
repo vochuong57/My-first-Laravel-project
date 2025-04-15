@@ -455,8 +455,10 @@ if(!function_exists('vnpayConfig')){
         return [
             'vnp_Url' => 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html',
             'vnp_Returnurl' => write_url('return/vnpay'),
-            'vnp_TmnCode' => '585RTEM4',
-            'vnp_HashSecret' => 'NSGEJNJVH7KHXR9ZTQZ885791JN6GWB9',
+            'vnp_TmnCode' => 'W262GW7Y',
+            'vnp_HashSecret' => 'LUOFH1YA9VXOQEC7LLBKX9A4U3IG8SRI',
+            'vnp_apiUrl' => 'http://sandbox.vnpayment.vn/merchant_webapi/merchant.html',
+            'apiUrl' => 'https://sandbox.vnpayment.vn/merchant_webapi/api/transaction',
         ];
     }
 }

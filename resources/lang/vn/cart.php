@@ -10,6 +10,7 @@ return [
         '0' => 'Chọn tình trạng thanh toán',
         'unpaid' => 'Chưa thanh toán',
         'paid' => 'Đã thanh toán',
+        'failed' => 'Thanh toán thất bại',
     ],
     'delivery' => [
         '0' => 'Chọn tình trạng giao hàng',

@@ -76,6 +76,7 @@ Route::get('ajax/cart/delete',[AjaxCartController::class, 'delete'])->name('ajax
 
 // VNPAY
 Route::get('return/vnpay'.config('apps.general.suffix'),[VnpayController::class, 'vnpay_return'])->name('vnpay.vnpay_return');
+Route::get('return/vnpay_ipn'.config('apps.general.suffix'),[VnpayController::class, 'vnpay_ipn'])->name('vnpay.vnpay_ipn');
 
 // BACKEND ROUTES
 

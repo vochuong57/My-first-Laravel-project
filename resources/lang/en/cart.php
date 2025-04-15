@@ -10,6 +10,7 @@ return [
         '0' => 'Select payment status',
         'unpaid' => 'Unpaid',
         'paid' => 'Paid',
+        'failed' => 'Payment failed',
     ],
     'delivery' => [
         '0' => 'Select shipping status',

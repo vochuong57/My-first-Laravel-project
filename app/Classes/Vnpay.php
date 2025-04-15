@@ -9,11 +9,15 @@ class Vnpay{
 
     public function payment($order){
         // dd($order);
+        //Expire time
+        $startTime = date('YmdHis');
+        $expire = date('YmdHis', strtotime('+15 minutes', strtotime($startTime)));
+
         $configVnpay = vnpayConfig();
-        $vnp_Url = $configVnpay['vnp_Url'];
-        $vnp_Returnurl = $configVnpay['vnp_Returnurl'];
         $vnp_TmnCode = $configVnpay['vnp_TmnCode'];//Mã website tại VNPAY 
         $vnp_HashSecret = $configVnpay['vnp_HashSecret']; //Chuỗi bí mật
+        $vnp_Url = $configVnpay['vnp_Url'];
+        $vnp_Returnurl = $configVnpay['vnp_Returnurl'];
         
         $vnp_TxnRef = $order->code; //Mã đơn hàng. Trong thực tế Merchant cần insert đơn hàng vào DB và gửi mã này sang VNPAY
         $vnp_OrderInfo = (!is_null($order->description)) ? $order->description : 'Thanh toán đơn hàng mã: #' . $order->code . ' qua VNPAY';
