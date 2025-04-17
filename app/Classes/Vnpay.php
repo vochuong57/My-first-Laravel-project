@@ -73,9 +73,9 @@ class Vnpay{
             $vnp_Url .= 'vnp_SecureHash=' . $vnpSecureHash;
         }
         $returnData = array(
-            'code' => '00', 
+            'resultCode' => '0', 
             'message' => 'success', 
-            'url' => $vnp_Url
+            'payUrl' => $vnp_Url
         );
         return $returnData;
     }
