@@ -10,6 +10,7 @@ use App\Services\Interfaces\CartServiceInterface as CartService;
 use App\Http\Requests\StoreCartRequest;
 use App\Repositories\Interfaces\OrderRepositoryInterface as OrderRepository;
 use App\Classes\Vnpay;
+use App\Classes\Momo;
 
 class CartController extends FrontendController
 {
@@ -17,13 +18,15 @@ class CartController extends FrontendController
     protected $cartService;
     protected $orderRepository;
     protected $vnpay;
+    protected $momo;
 
-    public function __construct(ProvinceRepository $provinceRepository, CartService $cartService, OrderRepository $orderRepository, Vnpay $vnpay){
+    public function __construct(ProvinceRepository $provinceRepository, CartService $cartService, OrderRepository $orderRepository, Vnpay $vnpay, Momo $momo){
         parent::__construct();
         $this->provinceRepository = $provinceRepository;
         $this->cartService = $cartService;
         $this->orderRepository = $orderRepository;
         $this->vnpay = $vnpay;
+        $this->momo = $momo;
     }
 
     public function checkout(){
@@ -63,16 +66,28 @@ class CartController extends FrontendController
         $order = $this->cartService->createDB($request, $this->language, $systems);
         // dd($order);
         if($order['flag']){
-            if($order['order']->method == 'vnpay'){
-                $response = $this->vnpay->payment($order['order']);
-                if($response['code'] == '00'){
-                    return redirect()->away($response['url']);
+            if($order['order']->method != 'cod'){
+                $response = $this->paymentMethod($order);
+                if($response['resultCode'] == '0'){
+                    return redirect()->away($response['payUrl']);
                 }
             }
             // Cart::instance('shopping')->destroy();
             return redirect()->route('cart.success', ['code' => $order['order']->code])->with('success','Đặt hàng thành công');
         }
            return redirect()->route('cart.checkout')->with('error','Đặt hàng không thành công. Hãy thử lại');
+    }
+
+    private function paymentMethod($order){
+        switch ($order['order']->method) {
+            case 'vnpay':
+                $response = $this->vnpay->payment($order['order']);
+                break;
+            case 'momo':
+                $response = $this->momo->payment($order['order']);
+                break;
+        }
+        return $response;
     }
 
     public function success($code){
