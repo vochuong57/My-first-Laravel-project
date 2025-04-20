@@ -20,25 +20,30 @@ return [
             'image' => 'Frontend/resources/img/payment/logo-cod.svg',
             'title' => 'Cash on Delivery (COD)',
         ],
-        [
-            'name' => 'zalo',
-            'image' => 'Frontend/resources/img/payment/logo-zalopay.svg',
-            'title' => 'Pay via ZaloPay Wallet',
-        ],
+        // [
+        //     'name' => 'zalo',
+        //     'image' => 'Frontend/resources/img/payment/logo-zalopay.svg',
+        //     'title' => 'Pay via ZaloPay Wallet',
+        // ],
         [
             'name' => 'momo',
             'image' => 'Frontend/resources/img/payment/logo-momo.webp',
             'title' => 'Pay via Momo Wallet',
         ],
-        [
-            'name' => 'shopee',
-            'image' => 'Frontend/resources/img/payment/logo-shopee.webp',
-            'title' => 'Pay via ShopeePay',
-        ],
+        // [
+        //     'name' => 'shopee',
+        //     'image' => 'Frontend/resources/img/payment/logo-shopee.webp',
+        //     'title' => 'Pay via ShopeePay',
+        // ],
         [
             'name' => 'vnpay',
             'image' => 'Frontend/resources/img/payment/logo-vnpay.webp',
             'title' => 'Pay via VNPAY Wallet',
+        ],
+        [
+            'name' => 'paypal',
+            'image' => 'Frontend/resources/img/payment/paypal.ico',
+            'title' => 'Pay with PayPal',
         ],
     ],
 

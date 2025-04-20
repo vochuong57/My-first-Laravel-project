@@ -35,6 +35,7 @@ use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Backend\OrderController;
 use App\Http\Controllers\Frontend\VnpayController;
 use App\Http\Controllers\Frontend\MomoController;
+use App\Http\Controllers\Frontend\PaypalController;
 //@@useController@@
 
 
@@ -83,6 +84,9 @@ Route::get('return/vnpay_ipn'.config('apps.general.suffix'),[VnpayController::cl
 Route::get('return/momo'.config('apps.general.suffix'),[MomoController::class, 'momo_return'])->name('momo.momo_return');
 Route::get('return/momo_ipn'.config('apps.general.suffix'),[MomoController::class, 'momo_ipn'])->name('momo.momo_ipn');
 
+//PAYPAL
+Route::get('paypal/success'.config('apps.general.suffix'),[PaypalController::class, 'success'])->name('paypal.success');
+Route::get('paypal/cancel'.config('apps.general.suffix'),[PaypalController::class, 'cancel'])->name('paypal.cancel');
 // BACKEND ROUTES
 
 //định nghĩa được một cái đưuòng dẫn và đưa cái đường dẫn đó vào route tương ứng

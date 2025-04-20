@@ -20,25 +20,30 @@ return [
             'image' => 'Frontend/resources/img/payment/logo-cod.svg',
             'title' => 'Thanh toán khi nhận hàng (COD)',
         ],
-        [
-            'name' => 'zalo',
-            'image' => 'Frontend/resources/img/payment/logo-zalopay.svg',
-            'title' => 'Thanh toán qua ví điện tử ZaloPay',
-        ],
+        // [
+        //     'name' => 'zalo',
+        //     'image' => 'Frontend/resources/img/payment/logo-zalopay.svg',
+        //     'title' => 'Thanh toán qua ví điện tử ZaloPay',
+        // ],
         [
             'name' => 'momo',
             'image' => 'Frontend/resources/img/payment/logo-momo.webp',
             'title' => 'Thanh toán qua ví Momo',
         ],
-        [
-            'name' => 'shopee',
-            'image' => 'Frontend/resources/img/payment/logo-shopee.webp',
-            'title' => 'Thanh toán qua ShopeePay',
-        ],
+        // [
+        //     'name' => 'shopee',
+        //     'image' => 'Frontend/resources/img/payment/logo-shopee.webp',
+        //     'title' => 'Thanh toán qua ShopeePay',
+        // ],
         [
             'name' => 'vnpay',
             'image' => 'Frontend/resources/img/payment/logo-vnpay.webp',
             'title' => 'Thanh toán qua ví điện tử VNPAY',
+        ],
+        [
+            'name' => 'paypal',
+            'image' => 'Frontend/resources/img/payment/paypal.ico',
+            'title' => 'Thanh toán qua Paypal',
         ],
     ],
 

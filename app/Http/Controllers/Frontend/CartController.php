@@ -11,6 +11,7 @@ use App\Http\Requests\StoreCartRequest;
 use App\Repositories\Interfaces\OrderRepositoryInterface as OrderRepository;
 use App\Classes\Vnpay;
 use App\Classes\Momo;
+use App\Classes\Paypal;
 
 class CartController extends FrontendController
 {
@@ -19,14 +20,16 @@ class CartController extends FrontendController
     protected $orderRepository;
     protected $vnpay;
     protected $momo;
+    protected $paypal;
 
-    public function __construct(ProvinceRepository $provinceRepository, CartService $cartService, OrderRepository $orderRepository, Vnpay $vnpay, Momo $momo){
+    public function __construct(ProvinceRepository $provinceRepository, CartService $cartService, OrderRepository $orderRepository, Vnpay $vnpay, Momo $momo, Paypal $paypal){
         parent::__construct();
         $this->provinceRepository = $provinceRepository;
         $this->cartService = $cartService;
         $this->orderRepository = $orderRepository;
         $this->vnpay = $vnpay;
         $this->momo = $momo;
+        $this->paypal = $paypal;
     }
 
     public function checkout(){
@@ -72,21 +75,24 @@ class CartController extends FrontendController
                     return redirect()->away($response['payUrl']);
                 }
             }
-            // Cart::instance('shopping')->destroy();
+            Cart::instance('shopping')->destroy();
             return redirect()->route('cart.success', ['code' => $order['order']->code])->with('success','Đặt hàng thành công');
         }
            return redirect()->route('cart.checkout')->with('error','Đặt hàng không thành công. Hãy thử lại');
     }
 
     private function paymentMethod($order){
-        switch ($order['order']->method) {
-            case 'vnpay':
-                $response = $this->vnpay->payment($order['order']);
-                break;
-            case 'momo':
-                $response = $this->momo->payment($order['order']);
-                break;
-        }
+        $class = $order['order']->method;
+        $response = $this->{$class}->payment($order['order']);
+
+        // switch ($order['order']->method) {
+        //     case 'vnpay':
+        //         $response = $this->vnpay->payment($order['order']);
+        //         break;
+        //     case 'momo':
+        //         $response = $this->momo->payment($order['order']);
+        //         break;
+        // }
         return $response;
     }
 
