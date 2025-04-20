@@ -20,25 +20,30 @@ return [
             'image' => 'Frontend/resources/img/payment/logo-cod.svg',
             'title' => '货到付款 (COD)',
         ],
-        [
-            'name' => 'zalo',
-            'image' => 'Frontend/resources/img/payment/logo-zalopay.svg',
-            'title' => '通过ZaloPay钱包支付',
-        ],
+        // [
+        //     'name' => 'zalo',
+        //     'image' => 'Frontend/resources/img/payment/logo-zalopay.svg',
+        //     'title' => '通过ZaloPay钱包支付',
+        // ],
         [
             'name' => 'momo',
             'image' => 'Frontend/resources/img/payment/logo-momo.webp',
             'title' => '通过Momo钱包支付',
         ],
-        [
-            'name' => 'shopee',
-            'image' => 'Frontend/resources/img/payment/logo-shopee.webp',
-            'title' => '通过ShopeePay支付',
-        ],
+        // [
+        //     'name' => 'shopee',
+        //     'image' => 'Frontend/resources/img/payment/logo-shopee.webp',
+        //     'title' => '通过ShopeePay支付',
+        // ],
         [
             'name' => 'vnpay',
             'image' => 'Frontend/resources/img/payment/logo-vnpay.webp',
             'title' => '通过VNPAY钱包支付',
+        ],
+        [
+            'name' => 'paypal',
+            'image' => 'Frontend/resources/img/payment/paypal.ico',
+           'title' => '通过PayPal支付',
         ],
     ],
 

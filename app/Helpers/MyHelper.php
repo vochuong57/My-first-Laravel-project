@@ -1,4 +1,6 @@
 <?php
+use Illuminate\Support\Facades\Http;
+
 if(!function_exists('convert_price')){
     function convert_price(string $price = '', $flag = false){
         return ($flag == false) ? str_replace('.','',$price) : number_format($price, 0, ',', '.');
@@ -491,4 +493,26 @@ if(!function_exists('execPostRequest')){
         curl_close($ch);
         return $result;
     }
+}
+if(!function_exists('convertVndToUsd')){
+    function convertVndToUsd($vnd){
+        $response = Http::withOptions([
+            'verify' => false,
+            'http_errors' => false,
+        ])->get('https://open.er-api.com/v6/latest/USD');
+    
+        if ($response->successful()) {
+            $data = $response->json();
+    
+            if (isset($data['rates']['VND']) && $data['rates']['VND'] != 0) {
+                return round($vnd / $data['rates']['VND'], 2); 
+            }
+    
+            dd('Không có tỷ giá VND trong phản hồi:', $data);
+        }
+    
+        dd('Lỗi khi gọi API:', $response->status(), $response->body());
+        return null;
+    }
+    
 }

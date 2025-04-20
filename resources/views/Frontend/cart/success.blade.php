@@ -83,7 +83,9 @@
                 <div>{{ __('success.recipient_phone') }} <span>{{ $order->phone }}</span></div>
                 <div>{{ __('success.payment_method') }} <span>{{ array_column(__('payment.method'), 'title', 'name')[$order->method] ?? $order->method }}</span></div>
 
-                @include($template ?? '')
+                @if(isset($template))
+                    @include($template)
+                @endif
             </div>
         </div>
     </div>
