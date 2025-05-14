@@ -58,8 +58,8 @@ class ProductCatalogueController extends FrontendController
             ],
             'js' => [
                 'Frontend/resources/cart.js',
-                 // 'https://unpkg.com/swiper/swiper-bundle.min.js',
-                 'Frontend/resources/library/js/swiper-bundle.min.js',
+                // 'https://unpkg.com/swiper/swiper-bundle.min.js',
+                'Frontend/resources/library/js/swiper-bundle.min.js',
             ],
         ];
     }

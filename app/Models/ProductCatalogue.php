@@ -25,10 +25,15 @@ class ProductCatalogue extends Model
         'publish',
         'order',
         'user_id',
-        'follow'
+        'follow',
+        'attribute',
     ];
 
     protected $table='product_catalogues';
+
+    protected $casts = [
+        'attribute' => 'json',    
+    ];
 
     //Chức năng thêm, Sửa cho bảng product_catalogue_language khi cho 2 khóa ngoại thay khóa chính
     public function languages(){//function này sẽ đc sử dụng ở lơp base để tiến tiến hành attach dữ liệu từ bảng thứ 2 sẽ khởi tạo cụ thể nó là createLanguagePivot

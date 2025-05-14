@@ -26,6 +26,7 @@ use Ramsey\Uuid\Uuid;
 use Illuminate\Pagination\Paginator;
 use App\Repositories\Interfaces\AttributeCatalogueRepositoryInterface as AttributeCatalogueRepository;
 use App\Repositories\Interfaces\AttributeRepositoryInterface as AttributeRepository;
+use App\Services\Interfaces\ProductCatalogueServiceInterface as ProductCatalogueService;
 
 /**
  * Class UserService
@@ -40,6 +41,7 @@ class ProductService extends BaseService implements ProductServiceInterface
     protected $productVariantLanguageRepository;
     protected $productVariantAttributeRepository;
     protected $attributeCatalogueRepository;
+    protected $productCatalogueService;
 
     public function __construct(
         ProductRepository $productRepository, 
@@ -49,6 +51,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         ProductVariantAttributeRepository $productVariantAttributeRepository,
         AttributeCatalogueRepository $attributeCatalogueRepository,
         AttributeRepository $attributeRepository,
+        ProductCatalogueService $productCatalogueService
     ){
         $this->productRepository=$productRepository;
         $this->routerRepository=$routerRepository;
@@ -57,6 +60,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         $this->productVariantAttributeRepository = $productVariantAttributeRepository;
         $this->attributeCatalogueRepository = $attributeCatalogueRepository;
         $this->attributeRepository = $attributeRepository;
+        $this->productCatalogueService = $productCatalogueService;
     }
 
     public function paginate($request, $languageId, $productCatalogue = null, $extend = [], $page = 1){//$request để tiến hành chức năng tìm kiếm
@@ -118,6 +122,8 @@ class ProductService extends BaseService implements ProductServiceInterface
                     $this->createVariant($product, $request, $languageId);
                 }
                 
+                //tạo dữ liệu cột attribute bảng product_catalogues
+                $this->productCatalogueService->setAttribute($product->product_catalogue_id, $request->attribute);
             }
             DB::commit();
             return true;
@@ -151,7 +157,8 @@ class ProductService extends BaseService implements ProductServiceInterface
                 if ($request->input('attribute')) {
                     $this->createVariant($product, $request, $languageId);
                 }
-                
+                //tạo dữ liệu cột attribute bảng product_catalogues
+                $this->productCatalogueService->setAttribute($product->product_catalogue_id, $request->attribute);
             }
             DB::commit();
             return true;
@@ -191,6 +198,8 @@ class ProductService extends BaseService implements ProductServiceInterface
             if(!$flag){
                 $product=$this->productRepository->forceDelete($id);
             }
+            //tạo dữ liệu cột attribute bảng product_catalogues
+            $this->productCatalogueService->setAttribute($product->product_catalogue_id, json_decode($product->attribute, TRUE));
             DB::commit();
             return true;
         }catch(\Exception $ex){
