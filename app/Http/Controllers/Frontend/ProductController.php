@@ -81,7 +81,11 @@ class ProductController extends FrontendController
 
     private function config(){
         return [
+            'css' => [
+                'Frontend/resources/library/css/swiper-bundle.min.css',
+            ],
             'js' => [
+                'Frontend/resources/library/js/swiper-bundle.min.js',
                 'Frontend/resources/cart.js',
             ],
         ];

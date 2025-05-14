@@ -585,7 +585,7 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover,
     background: #555;
 }
 .filter-choose .totalProduct{
-    color:var(--hover-cover);
+    color:var(--secondary-color);
     font-size:13px;
 }
 .star-list i,

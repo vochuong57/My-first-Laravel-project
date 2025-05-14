@@ -10,26 +10,26 @@
     HT.priceRange = () => {
         let isInitialized = false;
 		$("#price-range").slider({
-			step: 50000,
-			range: true, 
-			min: 0, 
-			max: 100000000, 
-			values: [0, 100000000], 
-			slide: function(event, ui){
-				$('.min-value').val(addCommas(ui.values[0]))
-				$('.max-value').val(addCommas(ui.values[1]))
+            step: 50000,
+            range: true, 
+            min: 0, 
+            max: 100000000, 
+            values: [0, 100000000], 
+            slide: function(event, ui){
+                $('.min-value').val(addCommas(ui.values[0]))
+                $('.max-value').val(addCommas(ui.values[1]))
 
-			},
+            },
             create: function(event, ui) {
                 isInitialized = true;
             },
             change: function(event, ui) {
-                if (isInitialized) {
-                //   let filterOption = HT.filterOption();
-                    HT.sendDataToFilter();
-                }
-              }
-		  });
+            if (isInitialized) {
+                // let filterOption = HT.filterOption();
+                // HT.sendDataToFilter();
+            }
+            }
+        });
         $("#priceRange").val($("#price-range")
                         .slider("values", 0) + " - " + $("#price-range")
                         .slider("values", 1));
@@ -43,23 +43,23 @@
     }
 
 
-    HT.sendDataToFilter = () => {
-        let option = HT.filterOption()
-        $.ajax({
-            url: 'ajax/product/filter', 
-            type: 'GET', 
-            data: option, 
-            dataType: 'json', 
-            beforeSend: function() {
+    // HT.sendDataToFilter = () => {
+    //     let option = HT.filterOption()
+    //     $.ajax({
+    //         url: 'ajax/product/filter', 
+    //         type: 'GET', 
+    //         data: option, 
+    //         dataType: 'json', 
+    //         beforeSend: function() {
                 
-            },
-            success: function(res) {
+    //         },
+    //         success: function(res) {
 
-                let html = res.data
-                $('.product-catalogue .product-list').html(html);
-            },
-        });
-    }
+    //             let html = res.data
+    //             $('.product-catalogue .product-list').html(html);
+    //         },
+    //     });
+    // }
 
    
 

@@ -318,6 +318,27 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
         //dd($payloadLanguage);
         return $payloadLanguage;
     }
-    
+    public function setAttribute($product_catalogue_id, $attribute){
+        // dd($product_catalogue_id);
+        // dd($attribute);
+        $productCatalogue=$this->productCatalogueRepository->findById($product_catalogue_id);
+        // dd($productCatalogue);
+        if(!is_array($productCatalogue->attribute)){
+            $payload['attribute'] = $attribute;
+        }else{
+            $mergeArray = $productCatalogue->attribute;
+            foreach($attribute as $key => $val){
+                if(!isset($mergeArray[$key])){
+                    $mergeArray[$key] = $val;
+                }else{
+                    $mergeArray[$key] = array_values(array_unique(array_merge($mergeArray[$key], $val)));
+                }
+            }
+            $payload['attribute'] = $mergeArray;
+        }
+        // dd($mergeArray, json_encode($payload['attribute']));
+        $result = $this->productCatalogueRepository->update($product_catalogue_id, $payload);
+        return $result;
+    }
 }
 
