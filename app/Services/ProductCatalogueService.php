@@ -318,26 +318,62 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
         //dd($payloadLanguage);
         return $payloadLanguage;
     }
-    public function setAttribute($product_catalogue_id, $attribute){
+    public function setAttribute($product_catalogue_id, $attribute, $actionDetele = false){
         // dd($product_catalogue_id);
         // dd($attribute);
-        $productCatalogue=$this->productCatalogueRepository->findById($product_catalogue_id);
-        // dd($productCatalogue);
-        if(!is_array($productCatalogue->attribute)){
-            $payload['attribute'] = $attribute;
-        }else{
-            $mergeArray = $productCatalogue->attribute;
-            foreach($attribute as $key => $val){
-                if(!isset($mergeArray[$key])){
-                    $mergeArray[$key] = $val;
+        // Thêm hay không dữ liệu vào cột attribute ở bảng product_catalogues
+        if(!$actionDetele){
+            $productCatalogue=$this->productCatalogueRepository->findById($product_catalogue_id);
+            // dd($productCatalogue);
+            if(!is_array($productCatalogue->attribute)){
+                $payload['attribute'] = $attribute;
+            }else{
+                $mergeArray = $productCatalogue->attribute;
+                foreach($attribute as $key => $val){
+                    if(!isset($mergeArray[$key])){
+                        $mergeArray[$key] = $val;
+                    }else{
+                        $mergeArray[$key] = array_values(array_unique(array_merge($mergeArray[$key], $val)));
+                    }
+                }
+                $payload['attribute'] = $mergeArray;
+            }
+            // dd($mergeArray, json_encode($payload['attribute']));
+            $result = $this->productCatalogueRepository->update($product_catalogue_id, $payload);
+        }
+        // Xóa hay không xóa dữ liệu ở cột attribute ở bảng product_catalogues
+        else{
+            $arrProduct = $this->productRepository->findByConditions([
+                ['product_catalogue_id', '=', $product_catalogue_id],
+            ]);
+            // dd($arrProduct);
+            $arrAttribute = $arrProduct->pluck('attribute')->toArray();
+            // dd($arrAttribute);
+            foreach($arrAttribute as $key => $val){
+                if($val == null){
+                    unset($arrAttribute[$key]);
+                    continue;
                 }else{
-                    $mergeArray[$key] = array_values(array_unique(array_merge($mergeArray[$key], $val)));
+                    $arrAttribute[$key] = json_decode($val, TRUE);
                 }
             }
-            $payload['attribute'] = $mergeArray;
+            // dd($arrAttribute);
+            
+            $arrMerge = [];
+            foreach($arrAttribute as $key => $val){
+                foreach($val as $k => $v){
+                    if(!isset($arrMerge[$k])){
+                        $arrMerge[$k] = $v;
+                    }else{
+                        $arrMerge[$k] = array_values(array_unique(array_merge($arrMerge[$k], $v)));
+                    }
+                }
+            }
+            // dd($arrMerge, $attribute);
+            
+            $payload['attribute'] = $arrMerge;
+            $result = $this->productCatalogueRepository->update($product_catalogue_id, $payload);
         }
-        // dd($mergeArray, json_encode($payload['attribute']));
-        $result = $this->productCatalogueRepository->update($product_catalogue_id, $payload);
         return $result;
     }
 }

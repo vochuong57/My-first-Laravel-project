@@ -123,7 +123,9 @@ class ProductService extends BaseService implements ProductServiceInterface
                 }
                 
                 //tạo dữ liệu cột attribute bảng product_catalogues
-                $this->productCatalogueService->setAttribute($product->product_catalogue_id, $request->attribute);
+                if ($request->input('attribute')) {
+                    $this->productCatalogueService->setAttribute($product->product_catalogue_id, $request->attribute);
+                }
             }
             DB::commit();
             return true;
@@ -158,7 +160,9 @@ class ProductService extends BaseService implements ProductServiceInterface
                     $this->createVariant($product, $request, $languageId);
                 }
                 //tạo dữ liệu cột attribute bảng product_catalogues
-                $this->productCatalogueService->setAttribute($product->product_catalogue_id, $request->attribute);
+                if ($request->input('attribute')) {
+                    $this->productCatalogueService->setAttribute($product->product_catalogue_id, $request->attribute);
+                }
             }
             DB::commit();
             return true;
@@ -193,13 +197,19 @@ class ProductService extends BaseService implements ProductServiceInterface
                 ['product_id', '=', $id]
             ];
             $flag = $this->productLanguageRepository->findByCondition($condition);
+            
+            $attribute = json_decode($this->productRepository->findById($id)->attribute, TRUE) ?? [];
+            $product_catalogue_id = $this->productRepository->findById($id)->product_catalogue_id;
+            // dd($attribute);
 
             //Nếu không tìm thấy nữa thì ta mới tiến hành xóa đi Product
             if(!$flag){
                 $product=$this->productRepository->forceDelete($id);
             }
             //tạo dữ liệu cột attribute bảng product_catalogues
-            $this->productCatalogueService->setAttribute($product->product_catalogue_id, json_decode($product->attribute, TRUE));
+            if (!empty($attribute)) {
+                $this->productCatalogueService->setAttribute($product_catalogue_id, $attribute, $actionDetele = true);
+            }
             DB::commit();
             return true;
         }catch(\Exception $ex){
