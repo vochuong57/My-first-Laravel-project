@@ -161,7 +161,15 @@ class ProductService extends BaseService implements ProductServiceInterface
                 }
                 //tạo dữ liệu cột attribute bảng product_catalogues
                 if ($request->input('attribute')) {
-                    $this->productCatalogueService->setAttribute($product->product_catalogue_id, $request->attribute);
+                    $product_catalogue_id_request = $request->input('product_catalogue_id');
+                    $this->productCatalogueService->updateAttribute($product->product_catalogue_id, $request->attribute, $id, $product_catalogue_id_request);
+                }else{
+                    // TH nếu như khi cập nhật mà trước đó đã có attribute lưu vào DB rồi nhưng ta đã bỏ đi hết các attribute khi ấn cập nhật
+                    $attribute = json_decode($product->attribute, TRUE) ?? [];
+                    // dd($attribute);
+                    if(!empty($attribute)){
+                        $this->productCatalogueService->setAttribute($product->product_catalogue_id, $attribute, $actionDetele = true);
+                    }
                 }
             }
             DB::commit();
