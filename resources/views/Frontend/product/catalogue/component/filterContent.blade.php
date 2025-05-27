@@ -4,15 +4,30 @@
             <i class="fi fi-rs-cross"></i>
         </div>
         <div class="filter-content-container">
+            @if(!is_null($filters))
+            @foreach($filters as $key => $val)
+            @php
+                $attributeCatalogueName = $val->languages->first()->pivot->name;
+            @endphp
             <div class="filter-item">
-                <div class="filter-heading">Chất liệu</div>
+                <div class="filter-heading">{{ $attributeCatalogueName }}</div>
+                @if(count($val->attributes))
                 <div class="filter-body">
+                    @foreach($val->attributes as $attribute)
+                    @php
+                        $attributeName = $attribute->languages->first()->pivot->name;
+                        $attributeId = $attribute->id;
+                    @endphp
                     <div class="filter-choose">
-                        <input type="checkbox" id="attribute-1" class="input-checkbox filtering">
-                        <label for="attribute-1">Vàng</label>
+                        <input type="checkbox" id="attribute-{{ $attributeId }}" value="{{ $attributeId }}" class="input-checkbox filtering">
+                        <label for="attribute-{{ $attributeId }}">{{ $attributeName }}</label>
                     </div>
+                    @endforeach
                 </div>
+                @endif
             </div>
+            @endforeach
+            @endif
             <div class="filter-item filter-price slider-box">
                 <div class="filter-heading" for="priceRange">Lọc Theo Giá:</div>
                 <div class="filter-price-content">

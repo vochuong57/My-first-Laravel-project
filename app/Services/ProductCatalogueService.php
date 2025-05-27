@@ -23,6 +23,8 @@ use App\Repositories\Interfaces\RouterRepositoryInterface as RouterRepository;
 use App\Repositories\Interfaces\ProductCatalogueLanguageRepositoryInterface as ProductCatalogueLanguageRepository;
 use App\Repositories\Interfaces\ProductRepositoryInterface as ProductRepository;
 use App\Repositories\Interfaces\ProductLanguageRepositoryInterface as ProductLanguageRepository;
+use App\Repositories\Interfaces\AttributeCatalogueRepositoryInterface as AttributeCatalogueRepository;
+use App\Repositories\Interfaces\AttributeRepositoryInterface as AttributeRepositoryInterface;
 
 
 /**
@@ -38,8 +40,10 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
     protected $productRepository;
     protected $productLanguageRepository;
     protected $controllerName = 'ProductCatalogueController';
+    protected $attributeCatalogueRepository;
+    protected $attributeRepository;
 
-    public function __construct(ProductCatalogueRepository $productCatalogueRepository, RouterRepository $routerRepository, ProductCatalogueLanguageRepository $productCatalogueLanguageRepository, ProductRepository $productRepository, ProductLanguageRepository $productLanguageRepository){
+    public function __construct(ProductCatalogueRepository $productCatalogueRepository, RouterRepository $routerRepository, ProductCatalogueLanguageRepository $productCatalogueLanguageRepository, ProductRepository $productRepository, ProductLanguageRepository $productLanguageRepository, AttributeCatalogueRepository $attributeCatalogueRepository, AttributeRepositoryInterface $attributeRepository){
         $this->productCatalogueRepository=$productCatalogueRepository;
         $this->language=$this->currentLanguage();
         $this->nestedset=new Nestedsetbie([
@@ -51,6 +55,8 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
         $this->productCatalogueLanguageRepository=$productCatalogueLanguageRepository;
         $this->productRepository=$productRepository;
         $this->productLanguageRepository=$productLanguageRepository;
+        $this->attributeCatalogueRepository=$attributeCatalogueRepository;
+        $this->attributeRepository=$attributeRepository;
     }
 
     public function paginate($request, $languageId){//$request để tiến hành chức năng tìm kiếm
@@ -440,6 +446,79 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
         $result = $this->productCatalogueRepository->update($product_catalogue_id, $payload);
         
         return $result;
+    }
+
+    public function getFilterList($arrayAttribute, $languageId){
+        // dd($arrayAttribute);
+        $attributeCatalogueId = array_keys($arrayAttribute);
+        // dd($attributeCatalogueId);
+        // $attributeId = array_values($arrayAttribute);
+        // dd($arrayAttribute, $attributeId);
+        $attributeId = array_unique(array_merge(...$arrayAttribute));
+        // dd($attributeId);
+
+        $condition = [
+            ['publish', '=', 2],
+        ];
+        $relation = [
+            'languages' => function($query) use ($languageId){
+                $query->where('language_id', $languageId);
+            },
+        ];
+
+        $attributeCatalogues = $this->attributeCatalogueRepository->findWhereInWithRelation('id', $attributeCatalogueId, $condition, $relation, $order = true);
+        // dd($attributeCatalogues);
+
+        $attributes = $this->attributeRepository->findWhereInWithRelation('id', $attributeId, $condition, $relation, $order = true);
+        // dd($attributes);
+        
+        foreach($attributeCatalogues as $key => $val){
+            foreach($attributes as $k => $v){
+                if($v->attribute_catalogue_id == $val->id){
+                    $attributeItem[] = $v;
+                    $val->setAttribute('attributes', $attributeItem);
+                }
+            }
+            $attributeItem = [];
+        }
+        // dd($attributeCatalogues);
+        return $attributeCatalogues;
+    }
+
+    public function hasChildren($productCatalogueId){
+        $arrChildren = $this->productCatalogueRepository->findByConditions(
+            [
+                ['parent_id', '=', $productCatalogueId],
+            ]
+        );
+        // dd($arrChildren);
+        if($arrChildren->isEmpty()){
+            return false;
+        }
+        $arrAttribute = $arrChildren->pluck('attribute');
+        // dd($arrAttribute);
+        foreach($arrAttribute as $key => $val){
+            if($val == null){
+                unset($arrAttribute[$key]);
+                continue;
+            }else{
+                $arrAttribute[$key] = $val;
+            }
+        }
+        // dd($arrAttribute);
+        
+        $arrMerge = [];
+        foreach($arrAttribute as $key => $val){
+            foreach($val as $k => $v){
+                if(!isset($arrMerge[$k])){
+                    $arrMerge[$k] = $v;
+                }else{
+                    $arrMerge[$k] = array_values(array_unique(array_merge($arrMerge[$k], $v)));
+                }
+            }
+        }
+        // dd($arrMerge);
+        return $arrMerge;
     }
 }
 

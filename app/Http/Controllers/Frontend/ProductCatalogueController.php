@@ -6,15 +6,18 @@ use App\Http\Controllers\FrontendController;
 use Illuminate\Http\Request;
 use App\Repositories\Interfaces\ProductCatalogueRepositoryInterface as ProductCatalogueRepository;
 use App\Services\Interfaces\ProductServiceInterface as ProductService;
+use App\Services\Interfaces\ProductCatalogueServiceInterface as ProductCatalogueService;
 
 class ProductCatalogueController extends FrontendController
 {
     protected $productCatalogueRepository;
     protected $productService;
-    public function __construct(ProductCatalogueRepository $productCatalogueRepository, ProductService $productService){
+    protected $productCatalogueService;
+    public function __construct(ProductCatalogueRepository $productCatalogueRepository, ProductService $productService, ProductCatalogueService $productCatalogueService){
         parent::__construct();
         $this->productCatalogueRepository = $productCatalogueRepository;
         $this->productService = $productService;
+        $this->productCatalogueService = $productCatalogueService;
     }
 
     public function index($id, $request, $page){
@@ -45,8 +48,19 @@ class ProductCatalogueController extends FrontendController
             $products = $this->productService->combineProductWithPromotion($productIds, $languageId, $products);
         }
         // dd($products->items());
+
+        $filters = null;
+        if($productCatalogue->attribute != null){
+            $filters = $this->productCatalogueService->getFilterList($productCatalogue->attribute, $languageId);
+        }else{
+            $hasChildren = $this->productCatalogueService->hasChildren($productCatalogue->id);
+            if($hasChildren){
+                $filters = $this->productCatalogueService->getFilterList($hasChildren, $languageId);
+            }
+        }
+        // dd($filters);
         
-        return view('frontend.product.catalogue.index', compact('config', 'languageId', 'seo', 'productCatalogue', 'breadcrumb', 'products'));
+        return view('frontend.product.catalogue.index', compact('config', 'languageId', 'seo', 'productCatalogue', 'breadcrumb', 'products', 'filters'));
     }
 
 
