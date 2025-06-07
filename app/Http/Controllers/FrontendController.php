@@ -33,7 +33,7 @@ class FrontendController extends Controller
     }
 
     public function getSystem(){
-        $systems = System::where('language_id', $this->language)->get();
+        $systems = System::where('language_id', $this->language ?? 1)->get();
         $systems = convert_array($systems, 'keyword', 'content');
         // dd($systems);
         return $systems;
