@@ -78,6 +78,10 @@
     cursor: pointer;
 }
 
+.review-container .panel-body{
+    border-top:1px solid #eaeaea;
+}
+
 .review-filter{
     background: #f8f9fa;
     padding:15px 20px;
@@ -135,7 +139,11 @@
     line-height:20px;
     margin-bottom:10px;
 }
-
+.review-content .review-toolbox{
+    display: flex;
+    align-items: center;
+    margin-bottom:10px;
+}
 .review-content .created_at{
     color:#939ca3;
     font-weight: 500;

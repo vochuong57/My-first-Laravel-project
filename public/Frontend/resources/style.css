@@ -4736,9 +4736,3 @@ time.woocommerce-review__published-date {
         width:calc(100% - 150px);
     }
 }
-.review-filter{
-   display: none; 
-}
-.review-container .panel-body{
-    border-top:1px solid #eaeaea;
-}

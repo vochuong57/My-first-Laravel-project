@@ -75,14 +75,17 @@ class ProductController extends FrontendController
         }
         
         // dd($categories);
+
+        $systems = $this->getSystem();
         
-        return view('frontend.product.product.index', compact('config', 'languageId', 'seo', 'product', 'breadcrumb', 'productCatalogue', 'categories'));
+        return view('frontend.product.product.index', compact('config', 'languageId', 'seo', 'product', 'breadcrumb', 'productCatalogue', 'categories', 'systems'));
     }
 
     private function config(){
         return [
             'css' => [
                 'Frontend/resources/library/css/swiper-bundle.min.css',
+                'Frontend/core/css/product.css',
             ],
             'js' => [
                 'Frontend/resources/library/js/swiper-bundle.min.js',
