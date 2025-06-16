@@ -34,7 +34,7 @@
                 <div class="uk-width-large-1-3">
                     <div class="review-action review-item">
                         <div class="text">Bạn đã mua sản phẩm này chưa?</div>
-                        <button class="btn btn-review">Gửi đánh giá</button>
+                        <button class="btn btn-review" data-uk-modal="{target:'#review'}">Gửi đánh giá</button>
                     </div>
                 </div>
             </div>
@@ -118,6 +118,73 @@
                 </div>
             </div>
             @endfor
+        </div>
+    </div>
+</div>
+
+<div id="review" class="uk-modal">
+    <div class="uk-modal-dialog">
+        <a href="" class="uk-modal-close uk-close"></a>
+        <div class="review-popup-wrapper">
+            <div class="panel-head">Đánh giá sản phẩm</div>
+            <div class="panel-body">
+                <div class="product-review">
+                    <span class="image img-scaledown">
+                        <img src="{{ $product->image ?? 'Backend/img/not-found.png' }}" alt="{{ $product->name }}">
+                    </span>
+                    <div class="product-title">{{ $product->languages->first()->pivot->name }}</div>
+                    <div class="popup-rating">
+                        <div class="rate">
+                            <input type="radio" id="star5" name="rate" value="5" />
+                            <label for="star5" title="text">5 stars</label>
+                            <input type="radio" id="star4" name="rate" value="4" />
+                            <label for="star4" title="text">4 stars</label>
+                            <input type="radio" id="star3" name="rate" value="3" />
+                            <label for="star3" title="text">3 stars</label>
+                            <input type="radio" id="star2" name="rate" value="2" />
+                            <label for="star2" title="text">2 stars</label>
+                            <input type="radio" id="star1" name="rate" value="1" />
+                            <label for="star1" title="text">1 star</label>
+                        </div>
+                        <!-- <div class="rate-text">Không thích</div> -->
+                    </div>
+                    <div class="review-form">
+                        <form action="" class="uk-form form">
+                            <div class="form-row">
+                                <textarea name="" id="" class="review-textarea"></textarea>
+                            </div>
+                            <div class="form-row">
+                                <div class="uk-flex uk-flex-middle">
+                                    <div class="gender-item uk-flex uk-flex-middle">
+                                        <input type="radio" name="gender" value="male" id="male">
+                                        <label for="">Nam</label>
+                                    </div>
+                                    <div class="gender-item uk-flex uk-flex-middle">
+                                        <input type="radio" name="gender" value="female" id="female">
+                                        <label for="">Nữ</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="uk-grid uk-grid-medium">
+                                <div class="uk-width-large-1-2">
+                                    <div class="form-row">
+                                        <input type="text" name="fullname" value="" class="review-text" placeholder="Nhập họ và tên">
+                                    </div>
+                                </div>
+                                <div class="uk-width-large-1-2">
+                                    <div class="form-row">
+                                        <input type="text" name="phone" value="" class="review-text" placeholder="Nhập số điện thoại">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <input type="text" name="email" value="" class="review-text" placeholder="Nhập vào email">
+                            </div>
+                            <button type="button" class="btn-send-review">Hoàn tất</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

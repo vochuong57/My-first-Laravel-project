@@ -122,6 +122,11 @@
                 </div>
             </div>
             @include('Frontend.product.product.component.review')
+            </div>
+            </div>
+            </div>
+            </div>
+            </div>
         </div>
     </div>
     <div class="uk-width-large-1-4">
