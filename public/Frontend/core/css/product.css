@@ -236,7 +236,7 @@
     color: #c59b08;
 }
 
-.review-popup-wrapper .product-preview .image{
+.review-popup-wrapper .product-review .image{
     height:96px;
     margin-bottom:10px;
 }
@@ -262,11 +262,12 @@
     height: 280px;
     margin-bottom:10px;
 }
-.product-preview .product-title{
+.product-review .product-title{
     margin-bottom:20px;
     font-size:18px;
     color:#000;
     font-weight: 500;
+    text-align: center
 }
 .review-form{
     padding:15px;
@@ -305,6 +306,8 @@
     border-radius: 5px;
     border:0;
     cursor: pointer;
+    display: block;
+    margin: 20px auto 0 auto; 
 }
 .uk-modal{
     background: rgba(0, 0, 0, .8);
