@@ -1,0 +1,104 @@
+<?php
+namespace App\Classes;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+
+class ReviewNested{
+    protected $params, $data, $lft, $count, $level, $count_level, $checked, $rgt;
+    function __construct($params = NULL){
+        $this->params = $params;
+        $this->checked = NULL;
+        $this->data = NULL;
+        $this->count = 0;
+        $this->count_level = 0;
+        $this->lft = NULL;
+        $this->rgt = NULL;
+        $this->level = NULL;
+    }
+
+    public function Get(){
+        //dd($this->params);
+        $result = DB::table($this->params['table'].' as ')
+        ->select('id','parent_id', 'lft', 'rgt', 'level')
+        ->where('reviewable_type','=',$this->params['reviewable_type'])->whereNull('deleted_at')
+        ->orderBy('lft','asc')->get()->toArray();
+        $this->data=$result;
+        // dd($this->data);
+    }
+
+    public function Set(){
+        if(isset($this->data)&&is_array($this->data)){
+            $arr=NULL;
+            foreach($this->data as $key => $val){
+                $arr[$val->id][$val->parent_id]=1;
+                $arr[$val->parent_id][$val->id]=1;
+            }
+            return $arr;
+        }
+    }
+
+    public function recursive($start = 0, $arr = NULL, $depth = 0, $maxDepth = 10) {
+        $this->lft[$start] = ++$this->count;
+        $this->level[$start] = $this->count_level;
+    
+        if ($depth >= $maxDepth) {
+            return; // Kết thúc đệ quy nếu đạt đến độ sâu tối đa
+        }
+    
+        if (isset($arr) && is_array($arr)) {
+            foreach ($arr as $key => $val) {
+                if ((isset($arr[$start][$key]) || isset($arr[$key][$start])) &&
+                    (!isset($this->checked[$key][$start]) && !isset($this->checked[$start][$key]))) {
+                    $this->count_level++;
+                    $this->checked[$start][$key] = 1;
+                    $this->checked[$key][$start] = 1;
+                    $this->recursive($key, $arr, $depth + 1, $maxDepth); // Gọi đệ quy với độ sâu tăng lên
+                    $this->count_level--;
+                }
+            }
+        }
+        $this->rgt[$start] = ++$this->count;
+    }
+    
+
+    public function Action(){
+        if(isset($this->level)&&is_array($this->rgt)){
+            $data=NULL;
+            foreach($this->level as $key => $val){
+                if($key==0) continue;
+                $data[]=array(
+                    'id'=>$key,
+                    'level'=>$val,
+                    'lft'=>$this->lft[$key],
+                    'rgt'=>$this->rgt[$key],
+                    // 'user_id'=>Auth::id(),
+                    'reviewable_type'=>$this->params['reviewable_type'],
+                    'reviewable_id' => $this->params['reviewable_id'],
+                    'fullname' => $this->params['fullname'],
+                    'phone' => $this->params['phone'],
+                    'email' => $this->params['email'],
+                    'gender' => $this->params['gender'],
+                    'description' => $this->params['description'],
+                    'score' => $this->params['score'],
+                    'customer_id' => $this->params['customer_id'] ?? null,
+
+                );
+            }
+            if(isset($data)&&is_array($data)&&count($data)){
+                DB::table($this->params['table'])->upsert($data, 'id', ['level','lft','rgt']);
+            }
+        }
+    }
+
+    public function Dropdown($param = NULL){//lấy được tất cả các thông tin
+        $this->Get();
+        if(isset($this->data)&&is_array($this->data)){
+            $temp=NULL;
+            $temp[0]=(isset($param['text'])&&!empty($param['text']))?$param['text']:'[Root]';
+            foreach($this->data as $key => $val){
+                $temp[$val->id] = str_repeat('|----', (($val->level>0)?($val->level-1):0)).$val->name;
+            }
+            return $temp;
+        }
+    }
+}

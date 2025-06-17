@@ -49,6 +49,7 @@ use App\Http\Controllers\Ajax\ProductController as AjaxProductController;
 use App\Http\Controllers\Ajax\SourceController as AjaxSourceController;
 use App\Http\Controllers\Ajax\CartController as AjaxCartController;
 use App\Http\Controllers\Ajax\OrderController as AjaxOrderController;
+use App\Http\Controllers\Ajax\ReviewController as AjaxReviewController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -75,6 +76,7 @@ Route::get('ajax/product/detailShowPopup',[AjaxProductController::class, 'detail
 Route::get('ajax/location/getLocation',[LocationController::class, 'getLocation'])->name('ajax.location.getLocation');
 Route::get('ajax/cart/update',[AjaxCartController::class, 'update'])->name('ajax.cart.update');
 Route::get('ajax/cart/delete',[AjaxCartController::class, 'delete'])->name('ajax.cart.delete');
+Route::post('ajax/review/create',[AjaxReviewController::class, 'create'])->name('ajax.review.create');
 
 // VNPAY
 Route::get('return/vnpay'.config('apps.general.suffix'),[VnpayController::class, 'vnpay_return'])->name('vnpay.vnpay_return');

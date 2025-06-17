@@ -121,7 +121,7 @@
                     </div>
                 </div>
             </div>
-            @include('Frontend.product.product.component.review')
+            @include('Frontend.component.review', ['model' => $product, 'reviewable' => 'App\Models\Product'])
             </div>
             </div>
             </div>
