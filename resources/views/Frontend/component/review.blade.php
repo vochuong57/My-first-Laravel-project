@@ -148,10 +148,12 @@
                         </div>
                         <!-- <div class="rate-text">Không thích</div> -->
                     </div>
+                    <div class="score-error"></div>
                     <div class="review-form">
                         <form action="" class="uk-form form">
                             <div class="form-row">
                                 <textarea name="" id="" class="review-textarea"></textarea>
+                                <div class="error description-error"></div>
                             </div>
                             <div class="form-row">
                                 <div class="uk-flex uk-flex-middle">
@@ -164,21 +166,25 @@
                                         <label for="">Nữ</label>
                                     </div>
                                 </div>
+                                <div class="error gender-error"></div>
                             </div>
                             <div class="uk-grid uk-grid-medium">
                                 <div class="uk-width-large-1-2">
                                     <div class="form-row">
                                         <input type="text" name="fullname" value="" class="review-text" placeholder="Nhập họ và tên">
+                                        <div class="error fullname-error"></div>
                                     </div>
                                 </div>
                                 <div class="uk-width-large-1-2">
                                     <div class="form-row">
                                         <input type="text" name="phone" value="" class="review-text" placeholder="Nhập số điện thoại">
+                                        <div class="error phone-error"></div>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-row">
                                 <input type="text" name="email" value="" class="review-text" placeholder="Nhập vào email">
+                                <div class="error email-error"></div>
                             </div>
                             <button type="button" class="btn-send-review">Hoàn tất</button>
                         </form>

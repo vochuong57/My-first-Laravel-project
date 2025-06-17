@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Ajax;
+use App\Http\Requests\StoreReviewRequest;
 
 //chèn thêm thư viện có sẵn Request để lấy thông tin value của input mà ajax đã thiết lập
 use Illuminate\Http\Request;
@@ -20,7 +21,7 @@ class ReviewController extends FrontendController
         $this->reviewRepository=$reviewRepository;
     }
 
-    public function create(Request $request){
+    public function create(StoreReviewRequest $request){
         $post = $request->except('_token');
         // dd($post);
         $response = $this->reviewService->create($post);
