@@ -373,3 +373,15 @@ label{
 .addToWishlist svg{
     color:#fff;
 }
+
+.error{
+    font-style: italic;
+    margin-top: 4px;
+    color: red;
+}
+
+.score-error{
+    font-style: italic;
+    color: red;
+    margin-left: 16px;
+}

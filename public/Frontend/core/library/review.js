@@ -23,14 +23,17 @@
             }
             // console.log(option);
 
+            let productReview = $(this).closest('.product-review');
+
             $.ajax({
 				url: 'ajax/review/create', 
 				type: 'POST', 
 				data: option, 
 				dataType: 'json', 
-				beforeSend: function() {
-					
-				},
+				beforeSend: function(){
+                    productReview.find('.error').html('')
+                    productReview.find('.score-error').html('')
+                },
 				success: function(res) {
 					if(res.code === 200){
                         toastr.success(res.messages, 'Thông báo từ hệ thống!')
@@ -41,6 +44,20 @@
                         toastr.error(res.messages, 'Thông báo từ hệ thống!')
                      }
 				},
+                error: function(jqXHR, textStatus, errorThrown){
+                    if(jqXHR.status === 422){
+                        let errors = jqXHR.responseJSON.errors
+                        console.log(errors)
+
+                        for(let field in errors){
+                            let errorMessage = errors[field]
+                            // console.log(errorMessage)
+                            errorMessage.forEach(function(message){
+                                $('.'+field+'-error').html(message)
+                            })
+                        }
+                    }
+                }
 			});
         })
     }
