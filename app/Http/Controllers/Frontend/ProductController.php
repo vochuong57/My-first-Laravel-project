@@ -90,6 +90,7 @@ class ProductController extends FrontendController
             'js' => [
                 'Frontend/resources/library/js/swiper-bundle.min.js',
                 'Frontend/resources/cart.js',
+                'Frontend/core/library/review.js',
             ],
         ];
     }

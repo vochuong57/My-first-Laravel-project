@@ -49,3 +49,4 @@
     <link rel="stylesheet" href="{{ $item }}" />
 @endforeach
 <script src="{{ asset('Frontend/resources/library/js/jquery.js') }}"></script>
+<meta name="csrf-token" content="{{ csrf_token() }}">

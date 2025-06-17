@@ -130,9 +130,9 @@
             <div class="panel-body">
                 <div class="product-review">
                     <span class="image img-scaledown">
-                        <img src="{{ $product->image ?? 'Backend/img/not-found.png' }}" alt="{{ $product->name }}">
+                        <img src="{{ $model->image ?? 'Backend/img/not-found.png' }}" alt="{{ $model->name }}">
                     </span>
-                    <div class="product-title">{{ $product->languages->first()->pivot->name }}</div>
+                    <div class="product-title">{{ $model->languages->first()->pivot->name }}</div>
                     <div class="popup-rating">
                         <div class="rate">
                             <input type="radio" id="star5" name="rate" value="5" />
@@ -156,11 +156,11 @@
                             <div class="form-row">
                                 <div class="uk-flex uk-flex-middle">
                                     <div class="gender-item uk-flex uk-flex-middle">
-                                        <input type="radio" name="gender" value="male" id="male">
+                                        <input type="radio" class="gender" value="male" id="male">
                                         <label for="">Nam</label>
                                     </div>
                                     <div class="gender-item uk-flex uk-flex-middle">
-                                        <input type="radio" name="gender" value="female" id="female">
+                                        <input type="radio" class="gender" value="female" id="female">
                                         <label for="">Nữ</label>
                                     </div>
                                 </div>
@@ -188,3 +188,7 @@
         </div>
     </div>
 </div>
+
+<input type="hidden" class="reviewable_type" value="{{ $reviewable }}">
+<input type="hidden" class="reviewable_id" value="{{ $model->id }}">
+<input type="hidden" class="review_parent_id" value="0">
