@@ -501,6 +501,11 @@
 		console.log(attribute_id);
 		let queryString = '?attribute_id=' + attribute_id.join(',')
 		// console.log(queryString)
+		let urlParams = new URLSearchParams(window.location.search);
+		let page = urlParams.get('page');
+		if (page) {
+			queryString += '&page=' + page;
+		}
 		let productCanonical = $('.productCanonical').val()
 		// console.log(productCanonical)
 		productCanonical = productCanonical + queryString

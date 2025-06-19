@@ -385,3 +385,10 @@ label{
     color: red;
     margin-left: 16px;
 }
+
+.no-review .text{
+    font-size: 16px;
+    line-height: 24px;
+    color: #444b52;
+    margin-bottom: 8px;
+}
