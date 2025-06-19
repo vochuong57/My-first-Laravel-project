@@ -586,6 +586,8 @@ class ProductService extends BaseService implements ProductServiceInterface
             'users'=> function($query) use($language) {
                 $query->where('publish', '=', 2);
             },
+            'reviews'=> function($query) use($language) {
+            },
         ];
     }
 

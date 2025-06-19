@@ -65,14 +65,18 @@
                         </h2>
                         <input type="hidden" class="productName" value="{{ $title }}">
                         <div class="rating">
+                            @php
+                                $totalReviews = $product->reviews->count();
+                                $totalRate = $product->reviews->avg('score');
+                                //dd($totalRate, $totalReviews);
+                                $starPercent = $totalRate ? ($totalRate / 5) * 100 : 0;
+                            @endphp
                             <div class="uk-flex uk-flex-middle">
                                 <div class="author">{{ $author }}</div>
-                                <div class="star">
-                                    <?php for($i = 0; $i<=4; $i++){ ?>
-                                    <i class="fa fa-star"></i>
-                                    <?php }  ?>
+                                <div class="star-rating" style="--star-width: {{ $starPercent }}%;">
+                                    <div class="stars"></div>
                                 </div>
-                                <div class="rate-number">(65 reviews)</div>
+                                <div class="rate-number">({{ $totalReviews }} reviews)</div>
                             </div>
                         </div>
                         <div class="price">

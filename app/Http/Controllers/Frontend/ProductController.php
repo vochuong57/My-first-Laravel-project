@@ -6,6 +6,7 @@ use App\Http\Controllers\FrontendController;
 use Illuminate\Http\Request;
 use App\Repositories\Interfaces\ProductRepositoryInterface as ProductRepository;
 use App\Repositories\Interfaces\ProductCatalogueRepositoryInterface as ProductCatalogueRepository;
+use App\Repositories\Interfaces\ReviewRepositoryInterface as ReviewRepository;
 use App\Services\Interfaces\ProductServiceInterface as ProductService;
 use Illuminate\Support\Facades\DB;
 
@@ -14,11 +15,14 @@ class ProductController extends FrontendController
     protected $productRepository;
     protected $productCatalogueRepository;
     protected $productService;
-    public function __construct(ProductRepository $productRepository, ProductService $productService, ProductCatalogueRepository $productCatalogueRepository){
+    protected $reviewRepository;
+    public function __construct(ProductRepository $productRepository, ProductService $productService, ProductCatalogueRepository $productCatalogueRepository, ReviewRepository $reviewRepository){
+         // dd($productRepository);
         parent::__construct();
         $this->productRepository = $productRepository;
         $this->productService = $productService;
         $this->productCatalogueRepository = $productCatalogueRepository;
+        $this->reviewRepository = $reviewRepository;
     }
 
     public function index($id, $request){
@@ -77,8 +81,12 @@ class ProductController extends FrontendController
         // dd($categories);
 
         $systems = $this->getSystem();
+
+        $reviews = $this->reviewRepository->getReviews($id, 'App\Models\Product', 5, $product->languages->first()->pivot->canonical.config('apps.general.suffix'));
+        // dd($reviews);
+        // dd($product->reviews->count(), $product->reviews->sum('score'), $product->reviews->avg('score'));
         
-        return view('frontend.product.product.index', compact('config', 'languageId', 'seo', 'product', 'breadcrumb', 'productCatalogue', 'categories', 'systems'));
+        return view('frontend.product.product.index', compact('config', 'languageId', 'seo', 'product', 'breadcrumb', 'productCatalogue', 'categories', 'systems', 'reviews'));
     }
 
     private function config(){

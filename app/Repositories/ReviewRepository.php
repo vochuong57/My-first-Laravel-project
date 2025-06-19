@@ -43,4 +43,13 @@ class ReviewRepository extends BaseRepository implements ReviewRepositoryInterfa
 
         //echo $query->toSql(); die();
     }
+
+    public function getReviews($reviewable_id, $reviewable_type, $page, $canonical){
+        return $this->model
+        ->where('reviewable_id', $reviewable_id)
+        ->where('reviewable_type', $reviewable_type)
+        ->where('parent_id', 0)
+        ->orderBy('created_at', 'desc')
+        ->paginate($page)->withQueryString()->withPath(env('APP_URL').$canonical);
+    }
 }

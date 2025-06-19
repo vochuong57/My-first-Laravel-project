@@ -29,5 +29,12 @@ class Review extends Model
 
     protected $table='reviews';
 
-   
+    public function products(){
+        return $this->belongsTo(Product::class,'reviewable_id', 'id');
+    }
+
+    public function reviewable()
+    {
+        return $this->morphTo();
+    }
 }

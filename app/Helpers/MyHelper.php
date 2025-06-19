@@ -516,3 +516,34 @@ if(!function_exists('convertVndToUsd')){
     }
     
 }
+if(!function_exists('getReviewName')){
+    function getReviewName($string){
+        $words = explode(' ', $string);
+        // dd($words);
+        $initialize = '';
+        foreach ($words as $key => $val) {
+            if ($key <= 2) {
+                $initialize .= strtoupper(substr($val, 0, 1));
+            } else {
+                break;
+            }
+        }
+        return $initialize;
+    }
+}
+if(!function_exists('generateStarRating')){
+    function generateStarRating($rating){
+        $rating = max(1, min(5, $rating)); // Đảm bảo rating nằm trong khoảng từ 1 đến 5
+
+        $output = '<div class="review-star">';
+        for ($i = 1; $i <= 5; $i++) {
+            if ($i <= $rating) {
+                $output .= '<i class="fa fa-star"></i>';
+            } else {
+                $output .= '<i class="fa fa-star-o"></i>';
+            }
+        }
+        $output .= '</div>';
+        return $output;
+    }
+}
