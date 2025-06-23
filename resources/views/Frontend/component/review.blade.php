@@ -1,6 +1,6 @@
 @php
     $totalReviews = $model->reviews->count() ?? 0;
-    $totalRate = $model->reviews->avg('score') ?? 0;
+    $totalRate = round($model->reviews->avg('score') ?? 0, 1);
     //dd($totalRate, $totalReviews);
     $starPercent = $totalRate ? ($totalRate / 5) * 100 : 0 ?? 0;
 @endphp

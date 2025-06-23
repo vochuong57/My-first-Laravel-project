@@ -649,4 +649,42 @@ return[
     'trans_daterange_apply' => 'Áp dụng',
     'trans_daterange_delete' => 'Xóa',
     'trans_daterange_month' => 'Tháng',
+
+    //REVIEW
+    'review' => [
+        'index'=>[
+            'title'=> 'Quản lý đánh giá',
+        ],
+        'delete' => [
+            'title' => 'Xóa đánh giá',
+            'btnDelete' => 'Xóa dữ liệu',
+            'fullname'=>'Tên Khách hàng',
+            'email'=>'Email',
+            'content'=>'Nội dung',
+            'score'=>'Đánh giá',
+        ]
+    ],
+
+    //table
+    'tableReview_brand'=>'Danh sách đánh giá',
+    'tableReview_image'=>'Ảnh',
+    'tableReview_name'=>'Tên Khách hàng',
+    'tableReview_phone'=>'Số điện thoại',
+    'tableReview_email'=>'Email',
+    'tableReview_content'=>'Nội dung',
+    'tableReview_score'=>'Đánh giá',
+    'tableReview_publish'=>'Tình trạng',
+    'tableReview_action'=>'Thao tác',
+
+    //filter
+    'score'=>[
+        '0'=>'Chọn đánh giá',
+        '1'=>'1 sao',
+        '2'=>'2 sao',
+        '3'=>'3 sao',
+        '4'=>'4 sao',
+        '5'=>'5 sao',
+    ],
+
+    //toolbox
 ];

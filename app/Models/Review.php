@@ -25,6 +25,7 @@ class Review extends Model
         'description',
         'score',
         'customer_id',
+        'publish',
     ];
 
     protected $table='reviews';

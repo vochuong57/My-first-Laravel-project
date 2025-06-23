@@ -31,7 +31,7 @@ class ReviewRepository extends BaseRepository implements ReviewRepositoryInterfa
         $query = $this->model->select($column);
         
         return $query
-        ->Keyword($condition['keyword'] ?? null, ['fullname', 'phone', 'email', 'address', 'code'], ['field' => 'name', 'relation' => 'products'])
+        ->Keyword($condition['keyword'] ?? null, ['fullname', 'phone', 'email', 'description'], ['field' => 'product_language.name', 'relation' => 'products.languages'])
         ->CustomDropdownFilter($condition['dropdown'] ?? null)
         ->CustomCreatedAt($condition['created_at'] ?? null)
         ->Relation($relations ?? null)
@@ -49,6 +49,7 @@ class ReviewRepository extends BaseRepository implements ReviewRepositoryInterfa
         ->where('reviewable_id', $reviewable_id)
         ->where('reviewable_type', $reviewable_type)
         ->where('parent_id', 0)
+        ->where('publish', 2)
         ->orderBy('created_at', 'desc')
         ->paginate($page)->withQueryString()->withPath(env('APP_URL').$canonical);
     }

@@ -27,6 +27,15 @@ class ReviewService extends BaseService implements ReviewServiceInterface
 
     public function paginate($request){
         $condition['keyword']=addslashes($request->input('keyword'));
+        $condition['dropdown']['score']=$request->input('score');
+        if($condition['dropdown']['score'] == '0') {
+            $condition['dropdown']['score'] = null;
+        }
+        $condition['dropdown']['publish']=$request->input('publish');
+        // Kiểm tra nếu giá trị publish là 0, thì gán lại thành null
+        if ($condition['dropdown']['publish'] == '0') {
+            $condition['dropdown']['publish'] = null;
+        }
         // dd($condition);
         $perpage=$request->integer('perpage', 20);
         $reviews=$this->reviewRepository->pagination(
@@ -36,6 +45,7 @@ class ReviewService extends BaseService implements ReviewServiceInterface
             ['path'=> 'review/index'],
             ['reviews.id', 'DESC'],
             [],
+            ['reviewable']
         );
         // dd($reviews);
         return $reviews;
@@ -76,6 +86,71 @@ class ReviewService extends BaseService implements ReviewServiceInterface
             ];
         }
     }
+
+    public function deleteReview($id){
+        DB::beginTransaction();
+        try{
+            $review=$this->reviewRepository->forceDelete($id);
+
+            DB::commit();
+            return true;
+        }catch(\Exception $ex){
+            DB::rollBack();
+            echo $ex->getMessage();die();
+            return false;
+        }
+    }
+
+    public function updateStatus($post=[]){
+        //echo 123; die();
+        DB::beginTransaction();
+        try{
+            $payload[$post['field']]=(($post['value']==1)?2:1);
+            
+            //dd($payload);
+            $review=$this->reviewRepository->update($post['modelId'], $payload);
+            //echo 1; die();
+            //$this->changeUserStatus($post, $payload[$post['field']]);
+            DB::commit();
+            return true;
+        }catch(\Exception $ex){
+            DB::rollBack();
+            echo $ex->getMessage();//die();
+            return false;
+        }
+        
+    }
+    public function updateStatusAll($post=[]){
+        //echo 123; die();
+        DB::beginTransaction();
+        try{
+            //dd($post);
+            $payload[$post['field']]=$post['value'];
+            
+            //dd($payload);
+            $review=$this->reviewRepository->updateByWhereIn('id', $post['id'], $payload);
+            //echo 1; die();
+            DB::commit();
+            return true;
+        }catch(\Exception $ex){
+            DB::rollBack();
+            echo $ex->getMessage();die();
+            return false;
+        }
+    }
+    public function deleteAll($post=[]){
+        DB::beginTransaction();
+        try{
+            $review=$this->reviewRepository->deleteByWhereIn('id',$post['id']);
+            //echo 1; die();
+            DB::commit();
+            return true;
+        }catch(\Exception $ex){
+            DB::rollBack();
+            echo $ex->getMessage();die();
+            return false;
+        }
+    }
     
     private function paginateSelect(){
         return [
@@ -91,6 +166,7 @@ class ReviewService extends BaseService implements ReviewServiceInterface
             'created_at',
             'updated_at',
             'deleted_at',
+            'publish',
         ];
     }
 }

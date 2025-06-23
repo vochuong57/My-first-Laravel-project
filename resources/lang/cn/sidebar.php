@@ -154,7 +154,18 @@
                         'route' => 'order/index'
                     ],
                 ]
-            ],                  
+            ],
+            [
+                'title' => '评价/评论管理',
+                'icon' => 'fa fa-star',
+                'name' => ['review'],
+                'subModule' => [
+                    [
+                        'title' => '评价管理',
+                        'route' => 'review/index'
+                    ],
+                ]
+            ]
         ]
     ];
 

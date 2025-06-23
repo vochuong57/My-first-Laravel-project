@@ -154,6 +154,17 @@
                         'route' => 'order/index'
                     ],
                 ]
-            ],                         
+            ],  
+            [
+                'title' => 'Review/Comment Management',
+                'icon' => 'fa fa-star',
+                'name' => ['review'],
+                'subModule' => [
+                    [
+                        'title' => 'Review Management',
+                        'route' => 'review/index'
+                    ],
+                ]
+            ]
         ]
     ];

@@ -19,7 +19,8 @@
                 reviewable_type: $('.reviewable_type').val(),
                 reviewable_id: $('.reviewable_id').val(),
                 _token: _token,
-                parent_id: $('.review_parent_id').val()
+                parent_id: $('.review_parent_id').val(),
+                publish: 2,
             }
             // console.log(option);
 
