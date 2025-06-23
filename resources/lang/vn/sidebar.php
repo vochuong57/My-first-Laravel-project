@@ -157,5 +157,16 @@
                     ],
                 ]
             ],
+            [
+                'title'=>'Quản lý Đánh giá/Bình luận',
+                'icon'=>'fa fa-comments',
+                'name'=>['review'],
+                'subModule'=>[
+                    [
+                        'title'=>'QL đánh giá',
+                        'route'=>'review/index'
+                    ],
+                ]
+            ],
         ]
     ];

@@ -617,4 +617,42 @@ return[
     'trans_daterange_apply' => 'Apply',
     'trans_daterange_delete' => 'Delete',
     'trans_daterange_month' => 'Month',
+
+    //REVIEW
+    'review' => [
+        'index'=>[
+            'title'=> 'Review Management',
+        ],
+        'delete' => [
+            'title' => 'Delete Review',
+            'btnDelete' => 'Delete Data',
+            'fullname'=>'Customer Name',
+            'email'=>'Email',
+            'content'=>'Content',
+            'score'=>'Rating',
+        ]
+    ],
+
+    //table
+    'tableReview_brand'=>'Review List',
+    'tableReview_image'=>'Image',
+    'tableReview_name'=>'Customer Name',
+    'tableReview_phone'=>'Phone Number',
+    'tableReview_email'=>'Email',
+    'tableReview_content'=>'Content',
+    'tableReview_score'=>'Rating',
+    'tableReview_publish'=>'Status',
+    'tableReview_action'=>'Action',
+
+    //filter
+    'score'=>[
+        '0'=>'Select Rating',
+        '1'=>'1 star',
+        '2'=>'2 stars',
+        '3'=>'3 stars',
+        '4'=>'4 stars',
+        '5'=>'5 stars',
+    ],
+
+    //toolbox
 ];

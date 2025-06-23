@@ -620,4 +620,42 @@ return [
     'trans_daterange_month' => '月份',
 
     //detail page
+
+    //REVIEW
+    'review' => [
+        'index'=>[
+            'title'=> '评价管理',
+        ],
+        'delete' => [
+            'title' => '删除评价',
+            'btnDelete' => '删除数据',
+            'fullname'=>'客户姓名',
+            'email'=>'电子邮件',
+            'content'=>'内容',
+            'score'=>'评分',
+        ]
+    ],
+
+    //table
+    'tableReview_brand'=>'评价列表',
+    'tableReview_image'=>'图片',
+    'tableReview_name'=>'客户姓名',
+    'tableReview_phone'=>'电话号码',
+    'tableReview_email'=>'电子邮件',
+    'tableReview_content'=>'内容',
+    'tableReview_score'=>'评分',
+    'tableReview_publish'=>'状态',
+    'tableReview_action'=>'操作',
+
+    //filter
+    'score'=>[
+        '0'=>'选择评分',
+        '1'=>'1星',
+        '2'=>'2星',
+        '3'=>'3星',
+        '4'=>'4星',
+        '5'=>'5星',
+    ],
+
+    //toolbox
 ];

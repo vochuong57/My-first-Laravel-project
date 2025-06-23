@@ -36,6 +36,7 @@ use App\Http\Controllers\Backend\OrderController;
 use App\Http\Controllers\Frontend\VnpayController;
 use App\Http\Controllers\Frontend\MomoController;
 use App\Http\Controllers\Frontend\PaypalController;
+use App\Http\Controllers\Backend\ReviewController;
 //@@useController@@
 
 
@@ -397,6 +398,13 @@ Route::group(['middleware' => ['admin','locale','backend_default_locale']], func
     Route::group(['prefix'=>'order'], function(){
         Route::get('index',[OrderController::class, 'index'])->name('order.index');//hiển thị form order khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
         Route::get('{id}/detail',[OrderController::class, 'detail'])->name('order.detail')->where(['id'=>'[0-9]+']);
+    });
+
+    Route::group(['prefix'=>'review'], function(){
+        Route::get('index',[ReviewController::class, 'index'])->name('review.index');//hiển thị form order khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
+
+        Route::get('{id}/destroy',[ReviewController::class, 'destroy'])->name('review.destroy')->where(['id'=>'[0-9]+']);
+        Route::post('{id}/delete',[ReviewController::class, 'delete'])->name('review.delete')->where(['id'=>'[0-9]+']);
     });
 
     //@@new-module@@
