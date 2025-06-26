@@ -39,10 +39,8 @@ use Illuminate\Support\Str;
         <h3 class="title"><a href="{{ $product['canonical'] }}" title="{{ $product['name'] }}">{{ $product['name'] }}</a></h3>
         <div class="rating">
             <div class="uk-flex uk-flex-middle">
-                <div class="star">
-                    @for($j = 1; $j <= $review['star']; $j++)
-                    <i class="fa fa-star"></i>
-                    @endfor
+                <div class="star-rating" style="--star-width: {{ $review['starPercent'] }}%;">
+                    <div class="stars"></div>
                 </div>
                 <span class="rate-number">({{ $review['count'] }})</span>
             </div>
