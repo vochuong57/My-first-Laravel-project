@@ -326,9 +326,13 @@ if(!function_exists('getPromotion')){
 
 if(!function_exists('getReview')){
     function getReview($val){
+        // dd($val);
+        $totalReview = count($val['reviews']);
+        $totalRate = ($totalReview != 0) ? round(array_sum(array_column($val['reviews'], 'score')) / $totalReview, 1) : 0;
+        $starPercent = ($totalRate / 5) * 100;
         return [
-            'star' => rand(1, 5),
-            'count' => rand(0, 100),
+            'starPercent' => $starPercent,
+            'count' => $totalReview,
         ];
     }
 }

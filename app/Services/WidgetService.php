@@ -341,6 +341,9 @@ class WidgetService extends BaseService implements WidgetServiceInterface
                 'product_variants'=> function($query) {
                     // $query->where('publish', '=', 2);
                 },
+                'reviews'=> function($query) {
+                    // $query->where('publish', '=', 2);
+                },
             ];
         }
         else{
@@ -491,6 +494,9 @@ class WidgetService extends BaseService implements WidgetServiceInterface
             }]);
         })
         ->with('product_variants', function($query) {
+            // $query->where('publish', '=', 2);
+        })
+        ->with('reviews', function($query) {
             // $query->where('publish', '=', 2);
         });
     }

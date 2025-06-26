@@ -544,6 +544,7 @@ class ProductService extends BaseService implements ProductServiceInterface
             $val->promotions = $items[$key]->promotions->toArray();
             $val->product_catalogues = $items[$key]->product_catalogues->toArray();
             $val->product_variants = $items[$key]->product_variants->toArray();
+            $val->reviews = $items[$key]->reviews->toArray();
         }
         return $products;
     }
