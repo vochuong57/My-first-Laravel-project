@@ -130,4 +130,11 @@ class ProductController extends Controller
             'code' => $flag ? 200 : 500
         ]);
     }
+
+    public function filter(Request $request)
+    {
+        $get = $request->input();
+        // dd($get);
+        $products = $this->productService->filter($get);
+    }
 }

@@ -60,7 +60,7 @@ class ProductCatalogueController extends FrontendController
         }
         // dd($filters);
         
-        return view('frontend.product.catalogue.index', compact('config', 'languageId', 'seo', 'productCatalogue', 'breadcrumb', 'products', 'filters'));
+        return view('frontend.product.catalogue.index', compact('config', 'languageId', 'seo', 'productCatalogue', 'breadcrumb', 'products', 'filters', 'id'));
     }
 
 

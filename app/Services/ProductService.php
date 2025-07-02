@@ -621,5 +621,61 @@ class ProductService extends BaseService implements ProductServiceInterface
 
         return $attributeCatalogues->toArray();
     }
+
+    public function filter($get)
+    {
+        // dd($get);
+        $perpage = $get['perpage'];
+        $sort = $get['sort'];
+        $price = $this->convertPriceFilter($get['price']);
+        $attribute = $this->convertAttributeFilter($get['attributes'] ?? [], $get['productCatalogueId']);
+        // dd($attribute);
+        
+        $rate = $this->convertRateFilter($get['rate'] ?? []);
+
+        $products = $this->productRepository->filter($attribute['joins'], $attribute['wheres']);
+        dd($products);
+    }
+    private function convertPriceFilter($price){
+        // dd($price);
+    }
+    private function convertAttributeFilter($attribute, $productCatalogueId){
+        $joins = [];
+        // dd($attribute);
+        $wheres = [];
+        if(count($attribute)){
+            $joins = [
+                ['product_language as pl', 'pl.product_id', '=', 'products.id'],
+                ['product_variants as pv', 'pv.product_id', '=', 'products.id'],
+            ];
+            foreach($attribute as $key => $val){
+                $joins[] = ['product_variant_attribute as pva'.$key, 'pva'.$key.'.product_variant_id', '=', 'pv.id'];
+            }
+
+            $wheres = [
+                ['products.publish', '=', 2],
+                ['product_catalogue_id', '=', $productCatalogueId],
+            ];
+
+            foreach ($attribute as $key => $vals) {
+                $wheres[] = function ($query) use ($key, $vals) {
+                    $query->where(function ($q) use ($key, $vals) {
+                        foreach ($vals as $val) {
+                            $q->orWhere('pva' . $key . '.attribute_id', '=', $val);
+                        }
+                    });
+                };
+            }
+        }
+        // dd($joins);
+        // dd($wheres);
+        return [
+            'joins' => $joins,
+            'wheres' => $wheres,
+        ];
+    }
+    private function convertRateFilter($rate){
+        // dd($rate);
+    }
 }
 
