@@ -19,7 +19,7 @@
                         $attributeId = $attribute->id;
                     @endphp
                     <div class="filter-choose">
-                        <input type="checkbox" id="attribute-{{ $attributeId }}" value="{{ $attributeId }}" class="input-checkbox filtering">
+                        <input type="checkbox" id="attribute-{{ $attributeId }}" value="{{ $attributeId }}" class="input-checkbox filtering filterAttribute" data-group="{{ $val->id}}">
                         <label for="attribute-{{ $attributeId }}">{{ $attributeName }}</label>
                     </div>
                     @endforeach
@@ -45,7 +45,7 @@
                     </div>
                 </div>
             </div>
-            <div class="filter-item filter-category">
+            <!-- <div class="filter-item filter-category">
                 <div class="filter-heading">Tình trạng sản phẩm</div>
                 <div class="filter-body">
                     <div class="filter-choose">
@@ -57,7 +57,7 @@
                         <label for="input-outstock">Hết hàng</label>
                     </div>
                 </div>
-            </div>
+            </div> -->
             <div class="filter-item filter-review">
                 <div class="filter-heading">Lọc theo đánh giá</div>
                 <div class="filter-choose uk-flex uk-flex-middle">
@@ -119,3 +119,4 @@
         </div>
     </div>
 </div>
+<input type="hidden" class="product_catalogue_id" value="{{ $id }}">

@@ -26,7 +26,7 @@
             change: function(event, ui) {
             if (isInitialized) {
                 // let filterOption = HT.filterOption();
-                // HT.sendDataToFilter();
+                HT.sendDataToFilter();
             }
             }
         });
@@ -43,23 +43,27 @@
     }
 
 
-    // HT.sendDataToFilter = () => {
-    //     let option = HT.filterOption()
-    //     $.ajax({
-    //         url: 'ajax/product/filter', 
-    //         type: 'GET', 
-    //         data: option, 
-    //         dataType: 'json', 
-    //         beforeSend: function() {
+    HT.sendDataToFilter = () => {
+        // console.log(123);
+        
+        let option = HT.filterOption()
+        // console.log(option);
+        
+        $.ajax({
+            url: 'ajax/product/filter', 
+            type: 'GET', 
+            data: option, 
+            dataType: 'json', 
+            beforeSend: function() {
                 
-    //         },
-    //         success: function(res) {
+            },
+            success: function(res) {
 
-    //             let html = res.data
-    //             $('.product-catalogue .product-list').html(html);
-    //         },
-    //     });
-    // }
+                let html = res.data
+                $('.product-catalogue .product-list').html(html);
+            },
+        });
+    }
 
    
 

@@ -109,4 +109,37 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
         $query->orderBy('products.id', 'desc');
         return $query->paginate(20);
     }
+
+    public function filter($joins, $wheres){
+        // dd($wheres);
+        $query = $this->model->newQuery();
+        $query->select([
+            'products.id',
+            'products.image',
+            'products.price',
+            'pl.name',
+            'pl.canonical',
+            'pv.sku',
+            'pv.variant_uuid',
+        ]);
+        if(count($joins)){
+            foreach($joins as $join){
+                $query->join($join[0], $join[1], $join[2], $join[3]);
+            }
+        }
+        // $query->with(['languages']);
+        if(count($wheres)){
+            foreach($wheres as $key => $val){
+                if(is_array($val) && count($val) == 3){
+                    $query->where($val[0], $val[1], $val[2]);
+                }else{
+                    $query->where($val);
+                }
+            }
+        }
+        return $query->get();
+
+    }
+
+    
 }
