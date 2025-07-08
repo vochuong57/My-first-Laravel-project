@@ -486,11 +486,26 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
     }
 
     public function hasChildren($productCatalogueId){
-        $arrChildren = $this->productCatalogueRepository->findByConditions(
+        // $arrChildren = $this->productCatalogueRepository->findByConditions(
+        //     [
+        //         ['parent_id', '=', $productCatalogueId],
+        //     ]
+        // );
+        $rawCondition = [
             [
-                ['parent_id', '=', $productCatalogueId],
+                'product_catalogues.id IN (
+                    SELECT id
+                    FROM product_catalogues
+                    WHERE lft >= (SELECT lft FROM product_catalogues as pc WHERE pc.id = ?)
+                    AND rgt <= (SELECT rgt FROM product_catalogues as pc WHERE pc.id = ?)
+                )',
+                [$productCatalogueId, $productCatalogueId]
             ]
-        );
+        ];
+
+
+        $arrChildren = $this->productCatalogueRepository->applyWhereRaw([], $rawCondition);
+        // dd($arrChildren);
         // dd($arrChildren);
         if($arrChildren->isEmpty()){
             return false;

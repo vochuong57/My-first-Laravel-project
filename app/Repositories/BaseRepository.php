@@ -117,6 +117,29 @@ class BaseRepository implements BaseRepositoryInterface
         }
         return $query->get();
     }
+    public function applyWhereRaw(array $joins = [], array $whereRawConditions = [])
+    {
+        $query = $this->model->newQuery();
+
+        // Thêm các join trước
+        if (count($joins) > 0) {
+            foreach ($joins as $join) {
+                if (is_callable($join[1])) {
+                    $query->join($join[0], $join[1]); // join với callback (closure)
+                } else {
+                    $query->join($join[0], $join[1], $join[2], $join[3]); // join thông thường
+                }
+            }
+        }
+
+        // Áp dụng whereRaw
+        foreach ($whereRawConditions as $condition) {
+            $query->whereRaw($condition[0], $condition[1] ?? []);
+        }
+
+        return $query->get();
+    }
+
     public function findByConditionsWithOrder(array $condition = [], array $orderBy = ['id', 'desc']) {
         $query = $this->model->newQuery();
         foreach ($condition as $key => $val) {

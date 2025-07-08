@@ -120,3 +120,4 @@
     </div>
 </div>
 <input type="hidden" class="product_catalogue_id" value="{{ $id }}">
+<input type="hidden" class="canonical" value="{{ write_url($productCatalogue->languages->first()->pivot->canonical) }}">
