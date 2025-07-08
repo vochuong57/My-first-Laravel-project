@@ -24,6 +24,7 @@ interface BaseRepositoryInterface
     public function findWhereInWithRelation(string $column = '', array $ids = [], array $condition = [], array $relation = []);
     public function findByCondition(array $condition = []);
     public function findByConditions(array $condition = []);
+    public function applyWhereRaw(array $joins = [], array $whereRawConditions = []);
     public function findByConditionsWithOrder(array $condition = []);
     public function findByConditionsWithRelation(array $condition = [], array $relation = []);
     public function findByWhereHas(array $condition = [], string $relation = '', string $alias = '');

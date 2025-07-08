@@ -110,34 +110,90 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
         return $query->paginate(20);
     }
 
-    public function filter($joins, $wheres){
-        // dd($wheres);
+    public function filter($joins, $leftJoins, $wheres, $whereRaws, $selectRaws, $havingRaws, $perpage, $path, $sort, $languageId){
+        
         $query = $this->model->newQuery();
-        $query->select([
-            'products.id',
-            'products.image',
-            'products.price',
-            'pl.name',
-            'pl.canonical',
-            'pv.sku',
-            'pv.variant_uuid',
-        ]);
+        $query->selectRaw('
+            products.id,
+            MAX(products.image) as image,
+            MAX(products.price) as price,
+            MAX(pl.name) as name,
+            MAX(pl.canonical) as canonical,
+            MAX(pv.sku) as sku,
+            MAX(pv.variant_uuid) as variant_uuid
+        ');
         if(count($joins)){
             foreach($joins as $join){
+                if (count($join) === 4) {
                 $query->join($join[0], $join[1], $join[2], $join[3]);
+                } elseif (count($join) === 2 && is_callable($join[1])) {
+                    // Dạng [table, function($join) { ... }]
+                    $query->join($join[0], $join[1]);
+                }
             }
         }
+        if (count($leftJoins)) {
+            foreach ($leftJoins as $val) {
+                if (is_array($val)) {
+                    if (count($val) === 4) {
+                        // Dạng [table, col1, operator, col2]
+                        $query->leftJoin($val[0], $val[1], $val[2], $val[3]);
+                    } elseif (count($val) === 2 && is_callable($val[1])) {
+                        // Dạng [table, function($join) { ... }]
+                        $query->leftJoin($val[0], $val[1]);
+                    }
+                }
+            }
+        }
+
         // $query->with(['languages']);
+        $query->with(['product_catalogues.languages' => function($query) use ($languageId){
+            $query->where('language_id', $languageId);
+        }]);
+
         if(count($wheres)){
             foreach($wheres as $key => $val){
                 if(is_array($val) && count($val) == 3){
                     $query->where($val[0], $val[1], $val[2]);
                 }else{
+                    // Dang function ($query) use...
                     $query->where($val);
                 }
             }
         }
-        return $query->get();
+        // dd($selectRaws);
+        if(count($whereRaws)){
+            foreach($whereRaws as $key => $val){
+                $query->whereRaw($val[0], $val[1]);
+            }
+        }
+        if (count($selectRaws)) {
+            foreach ($selectRaws as $selectRaw) {
+                $query->selectRaw($selectRaw);
+            }
+        }
+        if (count($havingRaws)) {
+            foreach ($havingRaws as $havingRaw) {
+                $query->havingRaw($havingRaw['condition'], $havingRaw['bindings']);
+            }
+        }
+        $query->groupBy('products.id');
+
+        // dd($sort);
+        $sort = explode(':', $sort);
+        // dd($sort);
+        if($sort[0] != ''){
+            if($sort[0] == 'name'){
+                $query->orderBy('pl.'.$sort[0], $sort[1]);
+            }elseif($sort[0] == 'price'){
+                $query->orderBy('products.'.$sort[0], $sort[1]);
+            }
+        }else{
+            $query->orderBy('products.id', 'desc');
+        }
+
+        // dd($query->toSql());
+        return $query->paginate($perpage)->withQueryString()->withPath($path);
 
     }
 

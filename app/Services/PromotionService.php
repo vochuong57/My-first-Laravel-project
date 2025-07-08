@@ -118,6 +118,8 @@ class PromotionService extends BaseService implements PromotionServiceInterface
             $payload['startDate'] = Carbon::createFromFormat('d/m/Y H:i', $payload['startDate']);
             if(isset($payload['endDate'])){
                 $payload['endDate'] = Carbon::createFromFormat('d/m/Y H:i', $payload['endDate']);
+            }else{
+                $payload['endDate'] = null;
             }
             if(isset($payload['neverDate'])){
                 $payload['neverEndDate'] = $payload['neverDate'];

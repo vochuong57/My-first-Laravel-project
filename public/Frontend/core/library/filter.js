@@ -71,6 +71,7 @@
         var filterOption = {
             perpage: $('select[name=perpage]').val(),
             sort: $('select[name=sort]').val(),
+            path: $('.canonical').val(),
             rate: $('input[name="rate[]"]:checked').map(function(){
                 return this.value
             }).get(),

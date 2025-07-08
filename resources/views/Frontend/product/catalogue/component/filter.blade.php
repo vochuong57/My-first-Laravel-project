@@ -21,8 +21,8 @@
             <option value="">Lọc kết quả theo</option>
             <option value="price:desc">Giá: Từ cao đến thấp</option>
             <option value="price:asc">Giá: Từ thấp đến cao</option>
-            <option value="title:asc">Tên sản phẩm từ A-Z</option>
-            <option value="title:desc">Tên sản phẩm từ Z-A</option>
+            <option value="name:asc">Tên sản phẩm từ A-Z</option>
+            <option value="name:desc">Tên sản phẩm từ Z-A</option>
         </select>
     </div>
 </div>

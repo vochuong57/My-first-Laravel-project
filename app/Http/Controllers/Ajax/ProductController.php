@@ -135,6 +135,7 @@ class ProductController extends Controller
     {
         $get = $request->input();
         // dd($get);
-        $products = $this->productService->filter($get);
+        $languageId = $this->language;
+        $products = $this->productService->filter($get, $languageId);
     }
 }

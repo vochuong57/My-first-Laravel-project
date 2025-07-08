@@ -622,60 +622,236 @@ class ProductService extends BaseService implements ProductServiceInterface
         return $attributeCatalogues->toArray();
     }
 
-    public function filter($get)
+    public function filter($get, $languageId)
     {
         // dd($get);
         $perpage = $get['perpage'];
+        $path = $get['path'];
         $sort = $get['sort'];
-        $price = $this->convertPriceFilter($get['price']);
-        $attribute = $this->convertAttributeFilter($get['attributes'] ?? [], $get['productCatalogueId']);
-        // dd($attribute);
+        $productCatalogueQuery = $this->queryProductCatalogue($get['productCatalogueId']);
+        // dd($productCatalogueQuery);
+        $priceQuery = $this->queryPriceFilter($get['price']);
+        // dd($priceQuery);
+        $attributeQuery = $this->queryAttributeFilter($get['attributes'] ?? []);
+        // dd($attributeQuery);
+        $rateQuery = $this->queryRateFilter($get['rate'] ?? []);
+        // dd($rateQuery);
+        $joins = [
+            ['product_language as pl', 'pl.product_id', '=', 'products.id'],           
+        ];
+
+        $leftJoins = [
+            ['product_variants as pv', 'pv.product_id', '=', 'products.id'],
+        ];
+
+        $wheres = [
+            ['products.publish', '=', 2],
+            ['pl.language_id', '=', $languageId],
+        ];
+
+        $whereRaws = [];
+
+        $selectRaws = [];
+
+        $havingRaws = [];
+
+        // dd($wheres);
+        if(count($productCatalogueQuery['joins'])){
+            $joins = array_merge($joins, $productCatalogueQuery['joins']);
+        }
+        if(count($productCatalogueQuery['whereRaws'])){
+            $whereRaws = array_merge($whereRaws, $productCatalogueQuery['whereRaws']);
+        }
+
+        if(count($attributeQuery['joins'])){
+            $joins = array_merge($joins, $attributeQuery['joins']);
+        }
         
-        $rate = $this->convertRateFilter($get['rate'] ?? []);
+        // dd($priceQuery);
+        if(count($priceQuery['leftJoins'])){
+            $leftJoins = array_merge($leftJoins, $priceQuery['leftJoins']);
+        }
+        if(count($priceQuery['selectRaws'])){
+            $selectRaws = array_merge($selectRaws, $priceQuery['selectRaws']);
+        }
+        if(count($priceQuery['havingRaws'])){
+            $havingRaws = array_merge($havingRaws, $priceQuery['havingRaws']);
+        }
+        // dd($havingRaws);
 
-        $products = $this->productRepository->filter($attribute['joins'], $attribute['wheres']);
-        dd($products);
+        if(count($rateQuery['joins'])){
+            $joins = array_merge($joins, $rateQuery['joins']);
+        }
+        if(count($rateQuery['havingRaws'])){
+            $havingRaws = array_merge($havingRaws, $rateQuery['havingRaws']);
+        }
+
+        $products = $this->productRepository->filter($joins, $leftJoins, $wheres, $whereRaws, $selectRaws, $havingRaws, $perpage, $path, $sort, $languageId);
+        // dd($products);
+
+        return $products;
     }
-    private function convertPriceFilter($price){
+
+    private function queryProductCatalogue($productCatalogueId){
+        // dd($productCatalogueId);
+        $productCatalogueQuery['whereRaws'] = [];
+        $productCatalogueQuery['joins'] = [];
+
+        if(isset($productCatalogueId)){
+            $productCatalogueQuery['joins'][] = ['product_catalogue_product as pcp', 'pcp.product_id', '=', 'products.id'];
+            $productCatalogueQuery['whereRaws']=[
+                [
+                    'pcp.product_catalogue_id IN (
+                        SELECT id
+                        FROM product_catalogues
+                        WHERE lft >= (SELECT lft FROM product_catalogues as pc WHERE pc.id = ?)
+                        AND rgt <= (SELECT rgt FROM product_catalogues as pc WHERE pc.id = ?)
+                    )',
+                    [$productCatalogueId, $productCatalogueId]
+                ]
+            ];
+        }
+        return $productCatalogueQuery;
+    }
+    
+    private function queryPriceFilter($price){
         // dd($price);
-    }
-    private function convertAttributeFilter($attribute, $productCatalogueId){
-        $joins = [];
-        // dd($attribute);
-        $wheres = [];
-        if(count($attribute)){
-            $joins = [
-                ['product_language as pl', 'pl.product_id', '=', 'products.id'],
-                ['product_variants as pv', 'pv.product_id', '=', 'products.id'],
-            ];
-            foreach($attribute as $key => $val){
-                $joins[] = ['product_variant_attribute as pva'.$key, 'pva'.$key.'.product_variant_id', '=', 'pv.id'];
-            }
+        $priceQuery['leftJoins'] = [];
+        $priceQuery['selectRaws'] = [];
+        $priceQuery['havingRaws'] = [];
 
-            $wheres = [
-                ['products.publish', '=', 2],
-                ['product_catalogue_id', '=', $productCatalogueId],
-            ];
-
-            foreach ($attribute as $key => $vals) {
-                $wheres[] = function ($query) use ($key, $vals) {
-                    $query->where(function ($q) use ($key, $vals) {
-                        foreach ($vals as $val) {
-                            $q->orWhere('pva' . $key . '.attribute_id', '=', $val);
-                        }
-                    });
-                };
+        if(isset($price) && count($price)){
+            $priceMin = convert_price($price['price_min']);
+            $priceMax = convert_price($price['price_max']);
+            // dd($priceMin, $priceMax);
+    
+            if($priceMax > $priceMin){
+                $priceQuery['leftJoins'] = [
+                    ['promotion_object_variant as pov', function($join) {
+                        $join->on('pov.object_id', '=', 'products.id')
+                            ->where('pov.model', '=', 'Product');
+                    }],
+                    ['promotions as p', function($join) {
+                        $join->on('p.id', '=', 'pov.promotion_id')
+                            ->where('p.publish', '=', 2)
+                            ->where('p.startDate', '<', now())
+                            ->where(function($q) {
+                                $q->where('p.endDate', '>', now())->orWhereNull('p.endDate');
+                            });
+                    }],
+                    ['product_variants as pv2', 'pv2.variant_uuid', '=', 'pov.object_variant_uuid'],
+                ];
+                
+                $priceQuery['selectRaws'][] = 
+                "
+                MIN( 
+                    IF(pov.object_variant_uuid IS NOT NULL,
+                        -- Có variant
+                        IF(p.maxDiscountValue != 0,
+                            pv2.price - LEAST(
+                                CASE
+                                    WHEN p.discountType = 'percent' THEN pv2.price * p.discountValue / 100
+                                    ELSE 0
+                                END,
+                                p.maxDiscountValue
+                            ),
+                            GREATEST(
+                                pv2.price - 
+                                    CASE
+                                        WHEN p.discountType = 'cash' THEN p.discountValue
+                                        ELSE 0
+                                    END,
+                                0
+                            )
+                        ),
+                        -- Không có variant
+                        IF(p.maxDiscountValue != 0,
+                            products.price - LEAST(
+                                CASE
+                                    WHEN p.discountType = 'percent' THEN products.price * p.discountValue / 100
+                                    ELSE 0
+                                END,
+                                p.maxDiscountValue
+                            ),
+                            GREATEST(
+                                products.price -
+                                    CASE
+                                        WHEN p.discountType = 'cash' THEN p.discountValue
+                                        ELSE 0
+                                    END,
+                                0       
+                            )                      
+                        )
+                    )
+                ) AS price_discounted
+                ";
+                $priceQuery['havingRaws'] = [
+                    [
+                        'condition' => 'price_discounted >= ? AND price_discounted <= ?',
+                        'bindings'  => [$priceMin, $priceMax],
+                    ],
+                ];
+    
             }
         }
-        // dd($joins);
-        // dd($wheres);
-        return [
-            'joins' => $joins,
-            'wheres' => $wheres,
-        ];
+        return $priceQuery;
     }
-    private function convertRateFilter($rate){
+    private function queryAttributeFilter($attribute) {
+        // dd($attribute);
+        $attributeQuery['joins'] = [];
+
+        if (isset($attribute) && count($attribute)) {
+            $attributeQuery['joins'][] = ['product_variants as pv3', 'pv3.product_id', '=', 'products.id'];
+            foreach ($attribute as $key => $vals) {
+                $alias = 'pva' . $key;
+
+                $attributeQuery['joins'][] = [
+                    "product_variant_attribute as $alias",function ($join) use ($alias, $key, $vals) {
+                        $join->on("$alias.product_variant_id", '=', 'pv3.id')
+                            ->where(function ($q) use ($alias, $vals) {
+                                foreach ($vals as $val) {
+                                    $q->orWhere("$alias.attribute_id", '=', $val);
+                                }
+                            });
+                    }
+                ];
+            }
+        }
+
+        return $attributeQuery;
+    }
+
+    private function queryRateFilter($rate){
         // dd($rate);
+        $rateQuery['joins'] = [];
+        $rateQuery['havingRaws'] = [];
+
+        if(isset($rate) && count($rate)){
+            $rateQuery['joins'][] = ['reviews as r', 'r.reviewable_id', '=', 'products.id'];
+            $rateCondition = [];
+            $bingings = [];
+            foreach($rate as $key => $val){
+                if($val != 5){
+                    $minRate = $val.'.1';
+                    $maxRate = $val.'.9';
+                    $rateCondition[] = '(AVG(r.score) >= ? AND AVG(r.score) <= ?)';
+                    $bingings[] = $minRate;
+                    $bingings[] = $maxRate;
+                }else{
+                    $rateCondition[] = 'AVG(r.score) = ?';
+                    $bingings[] = 5;
+                }
+            }
+            $rateQuery['havingRaws'] = [
+                [
+                    'condition' => implode(' OR ', $rateCondition),
+                    'bindings'  => $bingings,
+                ],
+            ];
+        }
+        // dd($rateCondition);
+        
+        return $rateQuery;
     }
 }
 
