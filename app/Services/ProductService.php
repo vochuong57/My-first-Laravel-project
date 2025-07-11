@@ -627,7 +627,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         // dd($get);
         $perpage = $get['perpage'];
         $path = $get['path'];
-        $sort = $get['sort'];
+        $sort = $get['sort'] ?? '';
         $productCatalogueQuery = $this->queryProductCatalogue($get['productCatalogueId']);
         // dd($productCatalogueQuery);
         $priceQuery = $this->queryPriceFilter($get['price']);
