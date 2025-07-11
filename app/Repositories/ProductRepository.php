@@ -147,9 +147,10 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
         }
 
         // $query->with(['languages']);
-        $query->with(['product_catalogues.languages' => function($query) use ($languageId){
-            $query->where('language_id', $languageId);
-        }]);
+        // $query->with(['product_catalogues.languages' => function($query) use ($languageId){
+        //     $query->where('language_id', $languageId);
+        // }]);
+        // $query->with(['reviews']);
 
         if(count($wheres)){
             foreach($wheres as $key => $val){

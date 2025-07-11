@@ -23,7 +23,7 @@
                     <div class="no-data" style="margin-bottom: 20px">Không có sản phẩm nào</div>
                     @endif
                 </div>
-                <div class="uk-flex uk-flex-center">
+                <div class="uk-flex uk-flex-center pagination-laravel">
                     @include('frontend.component.pagination', ['model' => $products])
                 </div>
            </div>
