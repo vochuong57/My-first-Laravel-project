@@ -188,6 +188,75 @@
         return queryString;
     };
 
+    // Hàm gán lại các giá trị đã chọn từ query string vào các trường input, select, checkbox của bộ lọc
+    // để khi người dùng truy cập lại trang với url có queryString sẽ thấy các bộ lọc đã được áp dụng lại theo đúng query string đó
+    HT.fillterCheckedByQueryString = () => {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        // Tất cả được gán lại vào file filterContent.blade.php và filter.blade.php
+        // Gán lại perpage
+        const perpage = urlParams.get('perpage');
+        if (perpage) {
+            $('select[name="perpage"]').val(perpage).trigger('change');
+            $('select[name="perpage"]').niceSelect('update'); // ← Bắt buộc với Nice Select
+        }
+
+        // Gán lại sort
+        const sort = urlParams.get('sort');
+        if (sort) {
+            $('select[name="sort"]').val(sort).trigger('change');
+            $('select[name="sort"]').niceSelect('update');
+        }
+
+        // Gán lại productCatalogueId
+        // const productCatalogueId = urlParams.get('productCatalogueId');
+        // if (productCatalogueId) {
+        //     $('.product_catalogue_id').val(productCatalogueId);
+        // }
+
+        // Gán lại giá trị price_min và price_max
+        const priceMin = urlParams.get('price[price_min]');
+        const priceMax = urlParams.get('price[price_max]');
+        console.log(priceMin, priceMax);
+        
+        if (priceMin) $('.min-value').val(priceMin);
+        if (priceMax) $('.max-value').val(priceMax);
+
+        // Gán lại checkbox rate[]
+        const rateValues = urlParams.getAll('rate[]');
+        console.log(rateValues);
+        if (rateValues.length > 0) {
+            rateValues.forEach(rate => {
+                $(`input[name="rate[]"][value="${rate}"]`).prop('checked', true);
+            });
+        }
+
+        // Gán lại checkbox attributes
+        // Lọc riêng các key có dạng attributes[attribute_catalogue_id][]
+        const uniqueAttributeCatalogueIds = [...new Set(
+            Array.from(urlParams.keys()).filter(key => key.startsWith('attributes[')) // lọc các key bắt đầu bằng 'attributes[' dùng filter để lấy ra các key duy nhất
+        )];
+        console.log(uniqueAttributeCatalogueIds);// ['attributes[4][]', 'attributes[5][]', ...] đây chính là các attribute_catalogue_id
+
+        // Lặp qua từng attribute_catalogue_id và gán giá trị cho checkbox tương ứng
+        uniqueAttributeCatalogueIds.forEach(key => {
+            console.log(key); // vd: attributes[4][]
+            
+            const match = key.match(/attributes\[(.*?)\]/); // mục đích để đễ dàng lấy ra attribute_catalogue_id
+            console.log(match); // ['attributes[4][]', '4'] nếu có kết quả như vậy thì match[1] sẽ là attribute_catalogue_id có giá trị là 4
+            
+            if (match && match[1]) {
+                const attribute_catalogue_id = match[1];
+                const values = urlParams.getAll(key); // lấy tất cả value thuộc group đó (values chính là các attribute_id)
+                console.log(values); // vd: ['1', '2', '3'] nếu có kết quả như vậy thì đây là các giá trị của attribute_catalogue_id 4
+                
+                values.forEach(value => {
+                    $(`.filterAttribute[data-group="${attribute_catalogue_id}"][value="${value}"]`).prop('checked', true);
+                });
+            }
+        });
+    };
+
 
     HT.filterOption = () => {
         var filterOption = {
@@ -243,6 +312,7 @@
 
 	$(document).ready(function(){
         HT.checkTypePagination()
+        HT.fillterCheckedByQueryString()
         HT.priceRange()
         HT.filter()
         HT.openFilter()

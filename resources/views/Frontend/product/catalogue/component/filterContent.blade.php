@@ -40,8 +40,8 @@
                 </div>
                 <div class="filter-input-value mt5">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <input type="text" class="min-value input-value" value="0đ">
-                        <input type="text" class="max-value input-value" value="100.000.000đ">
+                        <input type="text" class="min-value input-value" value="0đ" readonly>
+                        <input type="text" class="max-value input-value" value="100.000.000đ" readonly>
                     </div>
                 </div>
             </div>
