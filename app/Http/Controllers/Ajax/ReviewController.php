@@ -29,4 +29,71 @@ class ReviewController extends FrontendController
         return response()->json($response);
     }
     
+    public function filter(Request $request){
+        $option = $request->all();
+        // dd($option);
+        // dd($option['reviewable_link']);
+        if(isset($option['score'])){
+            if($option['score'] === 'null'){
+                $option['score'] = null;
+            }
+        }else{
+            $option['score'] = null;
+        }
+        $response = $this->reviewRepository->fillterReviews($option['reviewable_id'], $option['reviewable_type'], 5, $option['reviewable_link'], $option['score']);
+        // dd($response);
+        return response()->json(
+            [
+                'code' => 200,
+                'html' => $this->htmlReviews($response),
+                'current_page' => $response->currentPage(),
+            ]
+        );
+    }
+
+    private function htmlReviews($reviews){
+    $systems = $this->getSystem();
+    $html = '';
+
+    if($reviews->isNotEmpty()){
+        foreach($reviews as $review){
+            $html .= '
+                <div class="review-block-item">
+                    <div class="review-general uk-clearfix">
+                        <div class="review-avatar">
+                            <span class="shae">' . getReviewName($review->fullname) . '</span>
+                        </div>
+                        <div class="review-content-block">
+                            <div class="review-content">
+                                <div class="name">
+                                    <span>' . $review->fullname . '</span>
+                                    <span class="review-buy">
+                                        <i class="fa fa-check"></i>
+                                        Đã mua hàng tại ' . $systems['homepage_brand'] . '
+                                    </span>
+                                </div>
+                                ' . generateStarRating($review->score) . '
+                                <div class="description">
+                                    ' . $review->description . '
+                                </div>
+                                <div class="review-toolbox">
+                                    <div class="created_at">Ngày đăng: ' . convertDateTime($review->created_at, 'd/m/Y H:i:s') . '</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            ';
+        }
+        $html .= '
+                <div class="uk-flex uk-flex-center">
+                    '.$reviews->links('pagination::bootstrap-4').'
+                </div>';
+    } else {
+        $html = '<div class="no-review"><span class="text">Chưa có đánh giá nào. Hãy là người đánh giá đầu tiên!</span></div>';
+    }
+
+    return $html;
+}
+
 }
