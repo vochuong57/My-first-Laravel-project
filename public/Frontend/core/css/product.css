@@ -101,6 +101,11 @@
     color:#fff;
     cursor: pointer;
 }
+.filter-item span.active{
+    background: #444b52;
+    color:#fff;
+    cursor: pointer;
+}
 .review-wrapper{
     padding:20px;
 }

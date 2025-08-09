@@ -136,6 +136,9 @@
                 <span class="text">Chưa có đánh giá nào. Hãy là người đánh giá đầu tiên!</span>
             </div>
             @endif
+            </div>
+            </div>
+            </div>
         </div>
     </div>
 </div>
@@ -216,3 +219,4 @@
 <input type="hidden" class="reviewable_type" value="{{ $reviewable }}">
 <input type="hidden" class="reviewable_id" value="{{ $model->id }}">
 <input type="hidden" class="review_parent_id" value="0">
+<input type="hidden" class="reviewable_link" value="{{ $model->languages->first()->pivot->canonical.config('apps.general.suffix') }}">

@@ -79,6 +79,7 @@ Route::get('ajax/cart/update',[AjaxCartController::class, 'update'])->name('ajax
 Route::get('ajax/cart/delete',[AjaxCartController::class, 'delete'])->name('ajax.cart.delete');
 Route::post('ajax/review/create',[AjaxReviewController::class, 'create'])->name('ajax.review.create');
 Route::get('ajax/product/filter',[AjaxProductController::class, 'filter'])->name('ajax.product.filter');
+Route::get('ajax/review/filter',[AjaxReviewController::class, 'filter'])->name('ajax.review.filter');
 
 // VNPAY
 Route::get('return/vnpay'.config('apps.general.suffix'),[VnpayController::class, 'vnpay_return'])->name('vnpay.vnpay_return');
