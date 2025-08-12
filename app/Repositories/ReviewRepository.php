@@ -54,7 +54,7 @@ class ReviewRepository extends BaseRepository implements ReviewRepositoryInterfa
         ->paginate($page)->withQueryString()->withPath(env('APP_URL').$canonical);
     }
 
-    public function fillterReviews($reviewable_id, $reviewable_type, $page, $canonical, $score){
+    public function fillterReviews($reviewable_id, $reviewable_type, $page, $canonical, $score, $sort){
         $query = $this->model
         ->where('reviewable_id', $reviewable_id)
         ->where('reviewable_type', $reviewable_type)
@@ -64,9 +64,11 @@ class ReviewRepository extends BaseRepository implements ReviewRepositoryInterfa
         if($score != null){
             $query->where('score', $score);
         }
-
+        if($sort != null){
+            $sort = explode(':', $sort);
+        }
         // dd($query->toSql());
-        return $query->orderBy('created_at', 'desc')
+        return $query->orderBy($sort[0] ?? 'created_at', $sort[1] ?? 'desc')
         ->paginate($page)->withQueryString()->withPath(env('APP_URL').$canonical);
     }
 }

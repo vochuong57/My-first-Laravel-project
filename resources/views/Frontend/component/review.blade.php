@@ -61,6 +61,24 @@
                     <span>1 sao</span>
                 </div>
             </div>
+            <div class="controls-row">
+                <div class="filter-inline">
+                    <span class="filter-text">Sắp xếp theo:</span>
+                    <select class="sort-select">
+                        <option value="id:desc">Mới nhất</option>
+                        <option value="id:asc">Cũ nhất</option>
+                    </select>
+                </div>
+
+                <div class="filter-inline">
+                    <span class="filter-text">Số bản ghi:</span>
+                    <select class="perpage-select">
+                    @for($i = 5; $i <= 25; $i += 5)
+                        <option value="{{ $i }}">{{ $i }} bản ghi</option>
+                    @endfor
+                    </select>
+                </div>
+            </div>
         </div>
         <div class="review-wrapper">
             @if($reviews->isNotEmpty())

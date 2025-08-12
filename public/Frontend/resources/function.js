@@ -364,11 +364,14 @@
 					HT.setupVariantPrice(res.variantPrice, popup)
 					// V154-Xây-dựng-chức-năng-giỏ-hàng-Phần-4
 					// V192-Xây-dựng-chức-năng-lọc-đánh-giá-sản-phẩm---Phần-1
+					// V193-Xây-dựng-chức-năng-lọc-đánh-giá-sản-phẩm---Phần-2
 					if(!popup){
 						let url = new URL(window.location.href);
 						let scoreParam = url.searchParams.get('score');
 						let pageParam = url.searchParams.get('page');
-						HT.setupVariantUrl(attribute_id, scoreParam, pageParam);
+						let sortParam = url.searchParams.get('sort');
+						let perpageParam = url.searchParams.get('perpage');
+						HT.setupVariantUrl(attribute_id, scoreParam, pageParam, sortParam, perpageParam);
 					}
 				}
 			})
@@ -505,8 +508,11 @@
 	// V150-Xây-dựng-giao-diện-người-dùng-Phần-26-END
 	// V185-Xây-dựng-chức-năng-lọc-sản-phẩm---Phần-10
 	// V192-Xây-dựng-chức-năng-lọc-đánh-giá-sản-phẩm---Phần-1
-	HT.setupVariantUrl = (attribute_id, score, page) => { 
+	// V193-Xây-dựng-chức-năng-lọc-đánh-giá-sản-phẩm---Phần-2
+	HT.setupVariantUrl = (attribute_id, score, page, sort, perpage) => { 
 		console.log(attribute_id);
+		console.log(sort);
+		
 		let queryString = '?attribute_id=' + attribute_id.join(',')
 		// console.log(queryString)
 		console.log('page:', page);
@@ -516,6 +522,12 @@
 		}
 		if (page) {
 			queryString += '&page=' + page;
+		}
+		if (sort) {
+			queryString += '&sort=' + sort;
+		}
+		if (perpage) {
+			queryString += '&perpage=' + perpage;
 		}
 		let productCanonical = $('.productCanonical').val()
 		// console.log(productCanonical)
