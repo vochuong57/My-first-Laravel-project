@@ -397,3 +397,43 @@ label{
     color: #444b52;
     margin-bottom: 8px;
 }
+
+/* views\Frontend\component\review.blade.php */
+
+/* Ép container chính là 1 hàng, không wrap */
+.review-filter .controls-row {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: nowrap !important;
+  gap: 1rem; /* khoảng cách giữa 2 nhóm */
+  margin-top: 10px;
+}
+
+/* Mỗi nhóm label+select là inline-flex (không xuống hàng) */
+.review-filter .filter-inline {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: .3rem;
+  white-space: nowrap;
+}
+
+.review-filter .filter-inline:last-child {
+  margin-left: 10px;
+}
+/* Bắt select về dạng inline, không chiếm 100% */
+.review-filter .filter-inline select,
+.review-filter .filter-inline .nice-select, /* nếu có plugin tạo element khác */
+.review-filter .filter-inline .form-select {
+  display: inline-block !important;
+  width: auto !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  vertical-align: middle !important;
+}
+
+/* Nếu Bootstrap .form-select vẫn ép padding/width, dùng kiểu nhỏ cho select */
+.review-filter .sort-select,
+.review-filter .perpage-select {
+  padding: .25rem .5rem;
+  font-size: .9rem;
+}

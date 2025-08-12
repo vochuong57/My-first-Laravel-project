@@ -29,6 +29,7 @@ class ReviewController extends FrontendController
         return response()->json($response);
     }
     
+    //V192 V193
     public function filter(Request $request){
         $option = $request->all();
         // dd($option);
@@ -40,7 +41,7 @@ class ReviewController extends FrontendController
         }else{
             $option['score'] = null;
         }
-        $response = $this->reviewRepository->fillterReviews($option['reviewable_id'], $option['reviewable_type'], 5, $option['reviewable_link'], $option['score']);
+        $response = $this->reviewRepository->fillterReviews($option['reviewable_id'], $option['reviewable_type'], $option['perpage'], $option['reviewable_link'], $option['score'], $option['sort']);
         // dd($response);
         return response()->json(
             [
