@@ -63,6 +63,7 @@ use App\Http\Controllers\Ajax\ReviewController as AjaxReviewController;
 */
 
 // FRONTEND ROUTES
+Route::group(['middleware' => ['locale','backend_default_locale']], function (){
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
 Route::get('checkout'.config('apps.general.suffix'), [CartController::class, 'checkout'])->name('cart.checkout');
 Route::get('{canonical}'.config('apps.general.suffix'), [RouterController::class, 'index'])->name('router.index')->where('canonical', '^(?!checkout$)[a-zA-Z0-9-]+');
@@ -92,6 +93,7 @@ Route::get('return/momo_ipn'.config('apps.general.suffix'),[MomoController::clas
 //PAYPAL
 Route::get('paypal/success'.config('apps.general.suffix'),[PaypalController::class, 'success'])->name('paypal.success');
 Route::get('paypal/cancel'.config('apps.general.suffix'),[PaypalController::class, 'cancel'])->name('paypal.cancel');
+});
 // BACKEND ROUTES
 
 //định nghĩa được một cái đưuòng dẫn và đưa cái đường dẫn đó vào route tương ứng

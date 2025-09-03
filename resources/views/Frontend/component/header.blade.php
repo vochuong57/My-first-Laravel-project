@@ -27,7 +27,7 @@
                 <div class="slogan">{{ $systems['homepage_slogan'] }}</div>
                 <div class="header-widget">
                     <div class="uk-flex uk-flex-middle">
-                        <div class="call-us">Cần hỗ trợ? Gọi cho chúng tôi: <a href="tel:{{ $systems['contact_hotline'] }}" title="">{{ $systems['contact_hotline'] }}</a></div>
+                        <div class="call-us">{{ __('frontend.need_help') }} <a href="tel:{{ $systems['contact_hotline'] }}" title="">{{ $systems['contact_hotline'] }}</a></div>
                         @if(isset($languages))
                         <div class="language">
                             @foreach($languages as $key => $val)
@@ -38,7 +38,7 @@
                             <ul class="uk-list uk-clearfix language-dropdown">
                                 @foreach($languages as $key => $val)
                                 @if($key == 0) @continue; @endif
-                                <li><a href="" title="" class="change-language">{{ $val->name }}</a></li>
+                                <li><a href="{{ route('language.switch', $val->id) }}" title="" class="change-language">{{ $val->name }}</a></li>
                                 @endforeach
                             </ul>
                         </div>

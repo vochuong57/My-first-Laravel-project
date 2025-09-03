@@ -161,8 +161,8 @@
     }
 
     // V192, V193
-    // Hàm này được gọi khi người dùng chọn các thuộc tính để lọc hoặc chuyển trang
-    // Nó sẽ cập nhật URL với các tham số attribute_id, score và page
+    // Hàm này được gọi khi người dùng chọn các thuộc tính để lọc hoặc chuyển trang hoặc nếu lần đầu tiên truy cập trang với url gốc thì sẽ render thêm các thuộc tính url lọc ban đầu
+    // Nó sẽ cập nhật URL với các tham số attribute_id, score, page, sort và perpage
     // để có thể sử dụng lại khi tải lại trang với url chuẩn khi đã lọc trước đó nếu có
     HT.setupUrlForFilterOrSwitchPage = (page, sort, perpage) => {
         let attribute_id = [];
