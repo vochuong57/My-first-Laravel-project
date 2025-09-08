@@ -61,6 +61,10 @@ use App\Http\Controllers\Ajax\ReviewController as AjaxReviewController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+// V20 đã tạo lần đầu và dùng trong route group admin 
+// V194 dùng lại cho phía admin nhưng chưa đây route này ra ngoài để tránh lỗi middleware 'admin'
+// V195 đưa route này ra ngoài để tránh lỗi middleware 'admin'
+Route::get('{id}/switch',[LanguageController::class, 'swithBackendLanguage'])->name('language.switch')->where(['id'=>'[0-9]+']);//hiển thị form user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
 
 // FRONTEND ROUTES
 Route::group(['middleware' => ['locale','backend_default_locale']], function (){
@@ -170,7 +174,6 @@ Route::group(['middleware' => ['admin','locale','backend_default_locale']], func
         Route::get('{id}/destroy',[LanguageController::class, 'destroy'])->name('language.destroy')->where(['id'=>'[0-9]+']);//hiển thị form xóa user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
         Route::post('{id}/delete',[LanguageController::class, 'delete'])->name('language.delete')->where(['id'=>'[0-9]+']);//Thực thi xử lý xóa user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
 
-        Route::get('{id}/switch',[LanguageController::class, 'swithBackendLanguage'])->name('language.switch')->where(['id'=>'[0-9]+']);//hiển thị form user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
     
         Route::get('{id}/{languageId}/{model}/translate',[LanguageController::class, 'translate'])->name('language.translate')->where(['id'=>'[0-9]+', 'languageId'=>'[0-9]+']);//thực thi xử lý thêm user khi đăng nhập thành công | Nếu ở đây mà người dùng chưa đăng nhập trước đó thì dùng middleware này để chuyển người dùng qua route ('auth.admin')
         Route::post('storeTranslate',[LanguageController::class, 'storeTranslate'])->name('language.storeTranslate');

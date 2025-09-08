@@ -60,7 +60,7 @@
                     <div class="header-form">
                         <form action="" class="uk-form form search-form">
                             <div class="form-row">
-                                <input type="text" name="" class="input-text" placeholder="Tìm kiếm sản phẩm...">
+                                <input type="text" name="" class="input-text" placeholder="{{ __('frontend.search_product') }}">
                             </div>
                             <button type="submit" name="search" value="submit">Search</button>
                         </form>
@@ -68,7 +68,7 @@
                 </div>
                 <div class="middle-widget">
                     <div class="uk-flex uk-flex-middle">
-                        <a href="" class="become-vendor">Trở thành đại lý <i class="fa fa-long-arrow-right" aria-hidden="true"></i></a>
+                        <a href="" class="become-vendor">{{ __('frontend.become_agent') }} <i class="fa fa-long-arrow-right" aria-hidden="true"></i></a>
                         <div class="widget-toolbox uk-flex uk-flex-middle">
                             <div class="toolbox-item">
                                 <a href="" title="" class="uk-flex uk-flex-bottom">
@@ -87,7 +87,7 @@
                                         </svg>
                                         <span class="number">0</span>
                                     </div>
-                                    <div class="toolbox-text">So sánh</div>
+                                    <div class="toolbox-text">{{ __('frontend.compare') }}</div>
                                 </a>
                             </div>
                             <div class="toolbox-item">
@@ -105,12 +105,12 @@
                                         </svg>
                                         <span class="number">0</span>
                                     </div>
-                                    <div class="toolbox-text">Yêu thích</div>
+                                    <div class="toolbox-text">{{ __('frontend.wishlist') }}</div>
                                 
                                 </a>
                             </div>
                             <div class="toolbox-item">
-                                <a href="" title="" class="uk-flex uk-flex-bottom">
+                                <a href="{{ route('cart.checkout') }}" title="" class="uk-flex uk-flex-bottom">
                                     <div class="icon">
                                         <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <g>
@@ -126,7 +126,7 @@
                                         </svg>
                                         <span class="number" id="cartTotalItem">{{ $cartTotalItems }}</span>
                                     </div>
-                                    <div class="toolbox-text">Giỏ Hàng</div>
+                                    <div class="toolbox-text">{{ __('frontend.cart') }}</div>
                                 
                                 </a>
                             </div>
@@ -143,7 +143,7 @@
                                         </clipPath>
                                         </defs>
                                         </svg>
-                                    <div class="toolbox-text">Tài khoản</div>
+                                    <div class="toolbox-text">{{ __('frontend.account') }}</div>
                                 </a>
                             </div>
                         </div>
@@ -156,23 +156,38 @@
         <div class="uk-container uk-container-center">
             <div class="uk-flex uk-flex-middle">
                 <div class="categories">
-                    <span>Danh mục sản phẩm</span>
-                    <?php $categories = ['Rượu & Đồ uống','Rau củ', 'Sữa','Hải sản','Hoa quả','Ưu đãi trong ngày','Thời trang','Bánh mỳ & nước ép','Nguyên liệu']  ?>
+                    <span>{{ __('frontend.product_category') }}</span>
+                    @if(!is_null($categories))
+                    @foreach($categories as $key => $val)
+                    @php
+                        $name = $val['item']->languages->first()->pivot->name;
+                        $productCount = $val['products_count'];
+                    @endphp
                     <div class="categories-dropdown">
                         <div class="uk-grid uk-grid-small">
-                            <?php for($i = 0; $i<count($categories);$i++){  ?>
+                            @if(!is_null($val['children']) && !empty($val['children']))
+                            @foreach($val['children'] as $key => $val)
+                            @php
+                                $childrenName = $val['item']->languages->first()->pivot->name;
+                                $childrenCanonical = write_url($val['item']->languages->first()->pivot->canonical);
+                                $childrenImage = $val['item']->image;
+                                $productChildrenCount = $val['products_count'];
+                            @endphp
                             <div class="uk-width-large-1-2 mb10">
                                 <div class="categories-item">
-                                    <a href="" title="" class="uk-flex uk-flex-middle">
-                                        <img src="resources/img/categories-<?php echo $i+1; ?>.png" alt="">
-                                        <span class="title"><?php echo $categories[$i] ?></span>
-                                        <span class="total"><?php echo rand(0, 20) ?></span>
+                                    <a href="{{ $childrenCanonical }}" title="{{ $childrenName }}" class="uk-flex uk-flex-middle">
+                                        <img src="{{ $childrenImage }}" alt="{{ $childrenImage }}">
+                                        <span class="title">{{ $childrenName }}</span>
+                                        <span class="total">{{ $productChildrenCount }}</span>
                                     </a>
                                 </div>
                             </div>
-                            <?php }  ?>
+                            @endforeach
+                            @endif
                         </div>
                     </div>
+                    @endforeach
+                    @endif
                 </div>
                 @include('frontend.component.navigation')
             </div>

@@ -34,6 +34,31 @@ class BaseRepository implements BaseRepositoryInterface
 
         return $query->get();
     }
+
+    //phương thức lấy tất cả bản ghi có điều kiện và có quan hệ và có whereHas
+    public function allRelationWhereHas(array $relation = [], array $condition = [])
+    {
+        $query = $this->model->newQuery();
+
+        foreach ($condition as $val) {
+            $query->where($val[0], $val[1], $val[2]);
+        }
+
+        // whereHas cho những quan hệ cần
+        foreach ($relation as $rel => $options) {
+            if (!empty($options['whereHas']) && $options['whereHas'] === true) {
+                $query->whereHas($rel, $options['closure']);
+            }
+        }
+
+        // eager load tất cả
+        foreach ($relation as $rel => $options) {
+            $query->with([$rel => $options['closure']]);
+        }
+
+        return $query->get();
+    }
+
     public function pagination(
         array $column=['*'],
         array $condition=[],
