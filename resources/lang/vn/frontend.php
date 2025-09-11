@@ -10,4 +10,9 @@ return [
     'cart' => 'Giỏ Hàng',
     'account' => 'Tài khoản',
     'product_category' => 'Danh mục sản phẩm',
+    'address' => 'Địa chỉ',
+    'work_time' => 'Giờ làm việc',
+    'work' => 'Làm việc',
+    'support' => 'Hỗ trợ',
+    'follow_us' => 'Theo dõi chúng tôi',
 ];

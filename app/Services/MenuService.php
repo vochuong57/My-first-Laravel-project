@@ -507,7 +507,7 @@ class MenuService extends BaseService implements MenuServiceInterface
                 $temp=[
                     'language_id' => $languageTranslateId,
                     'name' => $val,
-                    'canonical' => $payload['translate']['canonical'][$key]
+                    'canonical' => Str::slug($payload['translate']['canonical'][$key])
                 ];
                 // dd($temp);
                 $menu = $this->menuRepository->findById($payload['translate']['id'][$key]);

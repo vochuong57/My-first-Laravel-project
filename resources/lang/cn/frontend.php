@@ -10,4 +10,9 @@ return [
     'cart' => '购物车',
     'account' => '账户',
     'product_category' => '产品分类',
+    'address' => '地址',
+    'work_time' => '工作时间',
+    'work' => '工作',
+    'support' => '支持',
+    'follow_us' => '关注我们',
 ];
