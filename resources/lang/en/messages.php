@@ -390,7 +390,9 @@ return[
         'create' => [
             'title' => 'Add New Menu',
             'children' => 'Update sub-menu for menu ',
-            'btnTitle' => 'Add New'
+            'btnTitle' => 'Add New',
+            'btnTitleCreate' => 'Create new',
+            'btnTitleSave' => 'Save',
         ],
         'show' => [
             'title' => 'Menu List',

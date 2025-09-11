@@ -391,7 +391,9 @@ return [
         'create' => [
             'title' => '新增菜单',
             'children' => '更新菜单的子菜单',
-            'btnTitle' => '新增'
+            'btnTitle' => '新增',
+            'btnTitleCreate' => '新增',
+            'btnTitleSave' => '保存',
         ],
         'show' => [
             'title' => '菜单列表',

@@ -10,4 +10,9 @@ return [
     'cart' => 'Cart',
     'account' => 'Account',
     'product_category' => 'Product category',
+    'address' => 'Address',
+    'work_time' => 'Working hours',
+    'work' => 'Work',
+    'support' => 'Support',
+    'follow_us' => 'Follow us',
 ];

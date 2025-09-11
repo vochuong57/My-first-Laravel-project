@@ -31,14 +31,17 @@
                         @if(isset($languages))
                         <div class="language">
                             @foreach($languages as $key => $val)
-                            @if($key > 0) @break; @endif
+                            @if($val->canonical == app()->getLocale())
                             <a href="" class="active">{{ $val->name }}</a>
+                            @break
+                            @endif
                             @endforeach
                             <i class="fa fa-caret-down ml5" aria-hidden="true"></i>
                             <ul class="uk-list uk-clearfix language-dropdown">
                                 @foreach($languages as $key => $val)
-                                @if($key == 0) @continue; @endif
+                                @if($val->canonical != app()->getLocale())
                                 <li><a href="{{ route('language.switch', $val->id) }}" title="" class="change-language">{{ $val->name }}</a></li>
+                                @endif
                                 @endforeach
                             </ul>
                         </div>
@@ -54,7 +57,7 @@
                 <div class="uk-flex uk-flex-middle">
                     <div class="logo">
                         <a href="" class="logo-image">
-                            <img src="https://themepanthers.com/wp/nest/d1/wp-content/uploads/2022/02/logo.png" alt="">
+                            <img src="{{ $systems['homepage_logo'] }}" alt="">
                         </a>
                     </div>
                     <div class="header-form">

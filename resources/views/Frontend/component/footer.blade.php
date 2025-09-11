@@ -7,10 +7,10 @@
                         <a href="" class="image img-scaledown"><img src="{{ $systems['homepage_favicon'] }}" alt=""></a>
                         <div class="footer-slogan">{{ $systems['homepage_slogan'] }}</div>
                         <div class="company-address">
-                            <div class="address">{{ $systems['contact_office'] }}</div>
+                            <div class="address">{{ __('frontend.address') }}: {{ $systems['contact_office'] }}</div>
                             <div class="phone">Hotline: {{ $systems['contact_hotline'] }}</div>
                             <div class="email">Email: {{ $systems['contact_email'] }}</div>
-                            <div class="hour">Giờ làm việc: {{ $systems['contact_work_hour'] }}</div>
+                            <div class="hour">{{ __('frontend.work_time') }}: {{ $systems['contact_work_hour'] }}</div>
                         </div>
                     </div>
                 </div>
@@ -65,17 +65,17 @@
                     <div class="uk-flex uk-flex-middle">
                         <div class="phone-item">
                             <div class="p">Hotline: {{ $systems['contact_hotline'] }}</div>
-                            <div class="worktime">Làm việc: 8:00 - 22:00</div>
+                            <div class="worktime">{{ __('frontend.work') }}: 8:00 - 22:00</div>
                         </div>
                         <div class="phone-item">
                             <div class="p">Support: {{ $systems['contact_hotline'] }}</div>
-                            <div class="worktime">Hỗ trợ 24/7</div>
+                            <div class="worktime">{{ __('frontend.support') }} 24/7</div>
                         </div>
                     </div>
                 </div>
                 <div class="social">
                     <div class="uk-flex uk-flex-middle">
-                        <div class="span">Follow us:</div>
+                        <div class="span">{{ __('frontend.follow_us') }}:</div>
                         <div class="social-list">
                             @php
                                 $socials = ['facebook', 'youtube', 'twitter'];
